@@ -1,8 +1,18 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { useState } from "react";
 
 export const Hero = () => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   return (
     <div className="min-h-[80vh] flex flex-col justify-center items-center text-center px-4 animate-fade-up">
       <div className="max-w-4xl mx-auto">
@@ -18,7 +28,11 @@ export const Hero = () => {
           The intelligent note-taking platform designed for students. Organize, collaborate, and excel in your studies with AI-powered tools.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button size="lg" className="bg-primary hover:bg-accent transition-all duration-300">
+          <Button 
+            size="lg" 
+            className="bg-primary hover:bg-accent transition-all duration-300"
+            onClick={() => setIsDialogOpen(true)}
+          >
             Get Started Free
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
@@ -27,6 +41,25 @@ export const Hero = () => {
           </Button>
         </div>
       </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Start Your Journey</DialogTitle>
+            <DialogDescription>
+              Join thousands of students who are already transforming their study experience. Create your free account to get started.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <p className="text-sm text-muted-foreground">
+              Since you haven't connected Supabase yet, this is just a demo popup. Once Supabase is connected, we can add proper authentication forms here.
+            </p>
+            <Button onClick={() => setIsDialogOpen(false)}>
+              Close for now
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
