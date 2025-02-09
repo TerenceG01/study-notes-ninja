@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { NavigationBar } from "@/components/navigation/NavigationBar";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
 type Note = {
   id: string;
@@ -27,6 +27,7 @@ const Notes = () => {
   const [newNote, setNewNote] = useState({ title: "", content: "" });
   const [loading, setLoading] = useState(true);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [editingNote, setEditingNote] = useState<Note | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -93,6 +94,45 @@ const Notes = () => {
     }
   };
 
+  const updateNote = async () => {
+    if (!editingNote || !editingNote.title || !editingNote.content) {
+      toast({
+        variant: "destructive",
+        title: "Missing fields",
+        description: "Please fill in both title and content.",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("notes")
+        .update({
+          title: editingNote.title,
+          content: editingNote.content,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", editingNote.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Note updated successfully!",
+      });
+
+      setEditingNote(null);
+      setSelectedNote(null);
+      fetchNotes();
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error updating note",
+        description: "Failed to update note. Please try again.",
+      });
+    }
+  };
+
   if (!user) return null;
 
   return (
@@ -147,7 +187,10 @@ const Notes = () => {
                     <TableRow 
                       key={note.id}
                       className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => setSelectedNote(note)}
+                      onClick={() => {
+                        setSelectedNote(note);
+                        setEditingNote(note);
+                      }}
                     >
                       <TableCell>{note.title}</TableCell>
                       <TableCell className="max-w-md truncate">
@@ -166,12 +209,41 @@ const Notes = () => {
         </div>
       </div>
 
-      <Dialog open={!!selectedNote} onOpenChange={() => setSelectedNote(null)}>
+      <Dialog 
+        open={!!selectedNote} 
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedNote(null);
+            setEditingNote(null);
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>{selectedNote?.title}</DialogTitle>
+            <DialogTitle>
+              <Input
+                value={editingNote?.title || ""}
+                onChange={(e) => setEditingNote(editingNote ? { ...editingNote, title: e.target.value } : null)}
+                className="mt-2"
+              />
+            </DialogTitle>
           </DialogHeader>
-          <div className="mt-4 whitespace-pre-wrap">{selectedNote?.content}</div>
+          <Textarea
+            value={editingNote?.content || ""}
+            onChange={(e) => setEditingNote(editingNote ? { ...editingNote, content: e.target.value } : null)}
+            className="min-h-[200px] mt-4"
+          />
+          <DialogFooter className="flex justify-end space-x-2 mt-4">
+            <Button variant="outline" onClick={() => {
+              setSelectedNote(null);
+              setEditingNote(null);
+            }}>
+              Cancel
+            </Button>
+            <Button onClick={updateNote}>
+              Save Changes
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
