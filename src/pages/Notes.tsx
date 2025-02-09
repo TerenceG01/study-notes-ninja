@@ -137,6 +137,69 @@ const Notes = () => {
     });
   };
 
+  const generateSummary = async () => {
+    if (!selectedNote) return;
+
+    try {
+      setSummarizing(true);
+      const { data, error } = await supabase.functions.invoke('summarize-note', {
+        body: {
+          content: selectedNote.content,
+          level: summaryLevel,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.summary) {
+        setEditingNote(prev => prev ? { ...prev, summary: data.summary } : null);
+        setShowSummary(true);
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error generating summary",
+        description: "Failed to generate summary. Please try again.",
+      });
+    } finally {
+      setSummarizing(false);
+    }
+  };
+
+  const updateNote = async () => {
+    if (!editingNote) return;
+
+    try {
+      const { error } = await supabase
+        .from("notes")
+        .update({
+          title: editingNote.title,
+          content: editingNote.content,
+          summary: editingNote.summary,
+          tags: editingNote.tags,
+        })
+        .eq("id", editingNote.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Note updated successfully!",
+      });
+
+      setSelectedNote(null);
+      setEditingNote(null);
+      setShowSummary(false);
+      fetchNotes();
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error updating note",
+        description: "Failed to update note. Please try again.",
+      });
+    }
+  };
+
   if (!user) return null;
 
   return (

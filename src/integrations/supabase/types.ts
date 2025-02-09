@@ -16,6 +16,7 @@ export type Database = {
           folder: string | null
           id: string
           summary: string | null
+          tags: string[] | null
           title: string
           updated_at: string
           user_id: string
@@ -26,6 +27,7 @@ export type Database = {
           folder?: string | null
           id?: string
           summary?: string | null
+          tags?: string[] | null
           title?: string
           updated_at?: string
           user_id: string
@@ -36,6 +38,7 @@ export type Database = {
           folder?: string | null
           id?: string
           summary?: string | null
+          tags?: string[] | null
           title?: string
           updated_at?: string
           user_id?: string
