@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +11,7 @@ import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Loader2, Bold, Italic, List, Code, Heading, Hash } from "lucide-react";
 
 type Note = {
   id: string;
@@ -20,6 +20,7 @@ type Note = {
   created_at: string;
   folder: string;
   summary?: string;
+  tags?: string[];
 };
 
 type SummaryLevel = 'brief' | 'medium' | 'detailed';
@@ -29,13 +30,16 @@ const Notes = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [notes, setNotes] = useState<Note[]>([]);
-  const [newNote, setNewNote] = useState({ title: "", content: "" });
+  const [newNote, setNewNote] = useState({ title: "", content: "", tags: [] as string[] });
   const [loading, setLoading] = useState(true);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [summarizing, setSummarizing] = useState(false);
   const [summaryLevel, setSummaryLevel] = useState<SummaryLevel>('medium');
   const [showSummary, setShowSummary] = useState(false);
+  const [isEditorExpanded, setIsEditorExpanded] = useState(false);
+  const [newTag, setNewTag] = useState("");
+  const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!user) {
@@ -43,6 +47,18 @@ const Notes = () => {
       return;
     }
     fetchNotes();
+
+    // Handle clicks outside the editor
+    const handleClickOutside = (event: MouseEvent) => {
+      if (editorRef.current && !editorRef.current.contains(event.target as Node)) {
+        if (!newNote.title && !newNote.content) {
+          setIsEditorExpanded(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [user, navigate]);
 
   const fetchNotes = async () => {
@@ -80,6 +96,7 @@ const Notes = () => {
         {
           title: newNote.title,
           content: newNote.content,
+          tags: newNote.tags,
           user_id: user?.id,
         },
       ]);
@@ -91,7 +108,8 @@ const Notes = () => {
         description: "Note created successfully!",
       });
 
-      setNewNote({ title: "", content: "" });
+      setNewNote({ title: "", content: "", tags: [] });
+      setIsEditorExpanded(false);
       fetchNotes();
     } catch (error) {
       toast({
@@ -102,84 +120,21 @@ const Notes = () => {
     }
   };
 
-  const updateNote = async () => {
-    if (!editingNote || !editingNote.title || !editingNote.content) {
-      toast({
-        variant: "destructive",
-        title: "Missing fields",
-        description: "Please fill in both title and content.",
+  const addTag = () => {
+    if (newTag && !newNote.tags.includes(newTag)) {
+      setNewNote({
+        ...newNote,
+        tags: [...newNote.tags, newTag]
       });
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from("notes")
-        .update({
-          title: editingNote.title,
-          content: editingNote.content,
-          summary: editingNote.summary,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", editingNote.id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Note updated successfully!",
-      });
-
-      setEditingNote(null);
-      setSelectedNote(null);
-      fetchNotes();
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error updating note",
-        description: "Failed to update note. Please try again.",
-      });
+      setNewTag("");
     }
   };
 
-  const generateSummary = async () => {
-    if (!editingNote) return;
-
-    setSummarizing(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('summarize-note', {
-        body: {
-          content: editingNote.content,
-          level: summaryLevel,
-        },
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      if (data) {
-        setEditingNote({
-          ...editingNote,
-          summary: data.summary,
-        });
-        setShowSummary(true);
-
-        toast({
-          title: "Summary generated",
-          description: "Your note has been summarized successfully!",
-        });
-      }
-    } catch (error) {
-      console.error('Error generating summary:', error);
-      toast({
-        variant: "destructive",
-        title: "Error generating summary",
-        description: "Failed to generate summary. Please try again.",
-      });
-    } finally {
-      setSummarizing(false);
-    }
+  const removeTag = (tagToRemove: string) => {
+    setNewNote({
+      ...newNote,
+      tags: newNote.tags.filter(tag => tag !== tagToRemove)
+    });
   };
 
   if (!user) return null;
@@ -191,21 +146,83 @@ const Notes = () => {
         <h1 className="text-3xl font-bold mb-8">My Notes</h1>
 
         <div className="grid gap-6 mb-8">
-          <div className="space-y-4 p-6 bg-card rounded-lg border">
-            <h2 className="text-xl font-semibold">Create New Note</h2>
-            <Input
-              placeholder="Note Title"
-              value={newNote.title}
-              onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
-              className="mb-4"
-            />
-            <Textarea
-              placeholder="Write your note here..."
-              value={newNote.content}
-              onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
-              className="min-h-[100px]"
-            />
-            <Button onClick={createNote}>Save Note</Button>
+          <div 
+            ref={editorRef}
+            className={`space-y-4 p-6 bg-card rounded-lg border transition-all duration-300 ${
+              isEditorExpanded ? 'shadow-lg' : ''
+            }`}
+          >
+            {!isEditorExpanded ? (
+              <Button 
+                onClick={() => setIsEditorExpanded(true)}
+                className="w-full py-8 text-lg hover:bg-accent hover:text-accent-foreground transition-colors"
+              >
+                Add a New Note
+              </Button>
+            ) : (
+              <div className="space-y-4 animate-fade-in">
+                <Input
+                  placeholder="Note Title"
+                  value={newNote.title}
+                  onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
+                  className="text-lg font-semibold"
+                  style={{ textTransform: 'capitalize' }}
+                />
+                
+                <div className="flex gap-2 p-2 bg-muted rounded-md">
+                  <Button variant="ghost" size="sm"><Bold className="h-4 w-4" /></Button>
+                  <Button variant="ghost" size="sm"><Italic className="h-4 w-4" /></Button>
+                  <Button variant="ghost" size="sm"><List className="h-4 w-4" /></Button>
+                  <Button variant="ghost" size="sm"><Code className="h-4 w-4" /></Button>
+                  <Button variant="ghost" size="sm"><Heading className="h-4 w-4" /></Button>
+                </div>
+
+                <Textarea
+                  placeholder="Write your note here..."
+                  value={newNote.content}
+                  onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
+                  className="min-h-[200px] resize-y"
+                />
+
+                <div className="flex flex-wrap gap-2 items-center">
+                  <Hash className="h-4 w-4 text-muted-foreground" />
+                  {newNote.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2 py-1 bg-secondary text-secondary-foreground rounded-full text-sm flex items-center gap-1"
+                    >
+                      {tag}
+                      <button
+                        onClick={() => removeTag(tag)}
+                        className="hover:text-destructive"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                  <Input
+                    placeholder="Add tag..."
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && addTag()}
+                    className="!mt-0 w-24 h-7 text-sm"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditorExpanded(false);
+                      setNewNote({ title: "", content: "", tags: [] });
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button onClick={createNote}>Save Note</Button>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="bg-card rounded-lg border">
