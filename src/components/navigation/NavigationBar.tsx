@@ -47,7 +47,7 @@ export const NavigationBar = () => {
         <div className="flex justify-between items-center">
           <Link to="/" className="text-xl font-bold text-primary flex items-center gap-2">
             {user && profile?.username && (
-              <span className="text-muted-foreground">[{profile.username}]</span>
+              <span className="text-muted-foreground">{profile.username}</span>
             )}
             StudyNotes
           </Link>
