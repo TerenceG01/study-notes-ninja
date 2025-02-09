@@ -176,7 +176,7 @@ const Notes = () => {
           title: editingNote.title,
           content: editingNote.content,
           summary: editingNote.summary,
-          tags: editingNote.tags,
+          tags: editingNote.tags || [],
         })
         .eq("id", editingNote.id);
 
@@ -267,7 +267,15 @@ const Notes = () => {
                     placeholder="Add tag..."
                     value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && addTag()}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && newTag && editingNote) {
+                        setEditingNote({
+                          ...editingNote,
+                          tags: [...(editingNote.tags || []), newTag]
+                        });
+                        setNewTag("");
+                      }
+                    }}
                     className="!mt-0 w-24 h-7 text-sm"
                   />
                 </div>
@@ -355,11 +363,20 @@ const Notes = () => {
               <Input
                 value={editingNote?.title || ""}
                 onChange={(e) => setEditingNote(editingNote ? { ...editingNote, title: e.target.value } : null)}
-                className="mt-2"
+                className="mt-2 text-lg font-semibold"
+                style={{ textTransform: 'capitalize' }}
               />
             </DialogTitle>
           </DialogHeader>
           
+          <div className="flex gap-2 p-2 bg-muted rounded-md mt-4">
+            <Button variant="ghost" size="sm"><Bold className="h-4 w-4" /></Button>
+            <Button variant="ghost" size="sm"><Italic className="h-4 w-4" /></Button>
+            <Button variant="ghost" size="sm"><List className="h-4 w-4" /></Button>
+            <Button variant="ghost" size="sm"><Code className="h-4 w-4" /></Button>
+            <Button variant="ghost" size="sm"><Heading className="h-4 w-4" /></Button>
+          </div>
+
           <div className="flex gap-4 items-center mt-4">
             <Select
               value={summaryLevel}
@@ -413,9 +430,45 @@ const Notes = () => {
               <Textarea
                 value={editingNote?.content || ""}
                 onChange={(e) => setEditingNote(editingNote ? { ...editingNote, content: e.target.value } : null)}
-                className="min-h-[300px]"
+                className="min-h-[300px] resize-y"
               />
             )}
+          </div>
+
+          <div className="flex flex-wrap gap-2 items-center mt-4">
+            <Hash className="h-4 w-4 text-muted-foreground" />
+            {editingNote?.tags?.map((tag) => (
+              <span
+                key={tag}
+                className="px-2 py-1 bg-secondary text-secondary-foreground rounded-full text-sm flex items-center gap-1"
+              >
+                {tag}
+                <button
+                  onClick={() => setEditingNote({
+                    ...editingNote,
+                    tags: editingNote.tags?.filter(t => t !== tag) || []
+                  })}
+                  className="hover:text-destructive"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+            <Input
+              placeholder="Add tag..."
+              value={newTag}
+              onChange={(e) => setNewTag(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && newTag && editingNote) {
+                  setEditingNote({
+                    ...editingNote,
+                    tags: [...(editingNote.tags || []), newTag]
+                  });
+                  setNewTag("");
+                }
+              }}
+              className="!mt-0 w-24 h-7 text-sm"
+            />
           </div>
 
           <DialogFooter className="flex justify-end space-x-2 mt-4">
