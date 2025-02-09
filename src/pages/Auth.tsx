@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,20 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    // Check for confirmation email success
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const type = hashParams.get('type');
+    
+    if (type === 'recovery' || type === 'signup') {
+      navigate('/profile');
+      toast({
+        title: "Email confirmed!",
+        description: "Your email has been confirmed. Welcome!",
+      });
+    }
+  }, [navigate, toast]);
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -23,6 +37,9 @@ const Auth = () => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: window.location.origin + '/auth#signup'
+      }
     });
 
     if (error) {
@@ -56,7 +73,7 @@ const Auth = () => {
         description: error.message,
       });
     } else {
-      navigate("/notes");
+      navigate("/profile");
     }
     setLoading(false);
   };
