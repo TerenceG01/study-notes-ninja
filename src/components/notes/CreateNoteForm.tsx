@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 type CreateNoteFormProps = {
   onNoteCreated: () => void;
@@ -12,9 +13,19 @@ type CreateNoteFormProps = {
 
 export const CreateNoteForm = ({ onNoteCreated }: CreateNoteFormProps) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [newNote, setNewNote] = useState({ title: "", content: "" });
 
   const createNote = async () => {
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Authentication required",
+        description: "Please log in to create notes.",
+      });
+      return;
+    }
+
     if (!newNote.title || !newNote.content) {
       toast({
         variant: "destructive",
@@ -25,12 +36,11 @@ export const CreateNoteForm = ({ onNoteCreated }: CreateNoteFormProps) => {
     }
 
     try {
-      const { error } = await supabase.from("notes").insert([
-        {
-          title: newNote.title,
-          content: newNote.content,
-        },
-      ]);
+      const { error } = await supabase.from("notes").insert({
+        title: newNote.title,
+        content: newNote.content,
+        user_id: user.id
+      });
 
       if (error) throw error;
 
