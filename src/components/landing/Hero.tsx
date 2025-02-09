@@ -10,19 +10,29 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Hero = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { user } = useAuth();
 
   return (
     <div className="relative min-h-[80vh] flex flex-col justify-center items-center text-center px-4 animate-fade-up">
       <div className="absolute top-4 right-4 flex gap-4">
-        <Button variant="ghost" asChild>
-          <Link to="/auth">Sign In</Link>
-        </Button>
-        <Button asChild>
-          <Link to="/auth?tab=sign-up">Get Started</Link>
-        </Button>
+        {user ? (
+          <Button asChild>
+            <Link to="/notes">My Notes</Link>
+          </Button>
+        ) : (
+          <>
+            <Button variant="ghost" asChild>
+              <Link to="/auth">Sign In</Link>
+            </Button>
+            <Button asChild>
+              <Link to="/auth?tab=sign-up">Get Started</Link>
+            </Button>
+          </>
+        )}
       </div>
       
       <div className="max-w-4xl mx-auto">
