@@ -56,7 +56,7 @@ const Auth = () => {
         description: error.message,
       });
     } else {
-      navigate("/");
+      navigate("/notes");
     }
     setLoading(false);
   };
