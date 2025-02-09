@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +15,16 @@ export const Hero = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
-    <div className="min-h-[80vh] flex flex-col justify-center items-center text-center px-4 animate-fade-up">
+    <div className="relative min-h-[80vh] flex flex-col justify-center items-center text-center px-4 animate-fade-up">
+      <div className="absolute top-4 right-4 flex gap-4">
+        <Button variant="ghost" asChild>
+          <Link to="/auth">Sign In</Link>
+        </Button>
+        <Button asChild>
+          <Link to="/auth?tab=sign-up">Get Started</Link>
+        </Button>
+      </div>
+      
       <div className="max-w-4xl mx-auto">
         <div className="inline-block animate-fade-down">
           <span className="px-3 py-1 rounded-full text-sm font-medium bg-secondary text-primary mb-8 inline-block">
