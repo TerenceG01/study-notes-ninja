@@ -1,40 +1,23 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const Hero = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { user } = useAuth();
+  const navigate = useNavigate();
 
+  const handleGetStarted = () => {
+    if (user) {
+      navigate('/notes');
+    } else {
+      navigate('/auth?tab=sign-up');
+    }
+  };
+  
   return (
     <div className="relative min-h-[80vh] flex flex-col justify-center items-center text-center px-4 animate-fade-up">
-      <div className="absolute top-4 right-4 flex gap-4">
-        {user ? (
-          <Button asChild>
-            <Link to="/notes">My Notes</Link>
-          </Button>
-        ) : (
-          <>
-            <Button variant="ghost" asChild>
-              <Link to="/auth">Sign In</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/auth?tab=sign-up">Get Started</Link>
-            </Button>
-          </>
-        )}
-      </div>
-      
       <div className="max-w-4xl mx-auto">
         <div className="inline-block animate-fade-down">
           <span className="px-3 py-1 rounded-full text-sm font-medium bg-secondary text-primary mb-8 inline-block">
@@ -51,7 +34,7 @@ export const Hero = () => {
           <Button 
             size="lg" 
             className="bg-primary hover:bg-accent transition-all duration-300"
-            onClick={() => setIsDialogOpen(true)}
+            onClick={handleGetStarted}
           >
             Get Started Free
             <ArrowRight className="ml-2 h-4 w-4" />
@@ -61,25 +44,6 @@ export const Hero = () => {
           </Button>
         </div>
       </div>
-
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Start Your Journey</DialogTitle>
-            <DialogDescription>
-              Join thousands of students who are already transforming their study experience. Create your free account to get started.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <p className="text-sm text-muted-foreground">
-              Since you haven't connected Supabase yet, this is just a demo popup. Once Supabase is connected, we can add proper authentication forms here.
-            </p>
-            <Button onClick={() => setIsDialogOpen(false)}>
-              Close for now
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
