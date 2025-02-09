@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -148,38 +147,31 @@ const Notes = () => {
 
     setSummarizing(true);
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/summarize-note`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            content: editingNote.content,
-            level: summaryLevel,
-          }),
-        }
-      );
+      const { data, error } = await supabase.functions.invoke('summarize-note', {
+        body: {
+          content: editingNote.content,
+          level: summaryLevel,
+        },
+      });
 
-      const data = await response.json();
-      
-      if (data.error) {
-        throw new Error(data.error);
+      if (error) {
+        throw error;
       }
 
-      setEditingNote({
-        ...editingNote,
-        summary: data.summary,
-      });
-      setShowSummary(true);
+      if (data) {
+        setEditingNote({
+          ...editingNote,
+          summary: data.summary,
+        });
+        setShowSummary(true);
 
-      toast({
-        title: "Summary generated",
-        description: "Your note has been summarized successfully!",
-      });
+        toast({
+          title: "Summary generated",
+          description: "Your note has been summarized successfully!",
+        });
+      }
     } catch (error) {
+      console.error('Error generating summary:', error);
       toast({
         variant: "destructive",
         title: "Error generating summary",
