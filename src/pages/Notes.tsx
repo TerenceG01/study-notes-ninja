@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { NavigationBar } from "@/components/navigation/NavigationBar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 type Note = {
   id: string;
@@ -25,6 +26,7 @@ const Notes = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState({ title: "", content: "" });
   const [loading, setLoading] = useState(true);
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -142,7 +144,11 @@ const Notes = () => {
                   </TableRow>
                 ) : (
                   notes.map((note) => (
-                    <TableRow key={note.id}>
+                    <TableRow 
+                      key={note.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => setSelectedNote(note)}
+                    >
                       <TableCell>{note.title}</TableCell>
                       <TableCell className="max-w-md truncate">
                         {note.content}
@@ -159,6 +165,15 @@ const Notes = () => {
           </div>
         </div>
       </div>
+
+      <Dialog open={!!selectedNote} onOpenChange={() => setSelectedNote(null)}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>{selectedNote?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="mt-4 whitespace-pre-wrap">{selectedNote?.content}</div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
