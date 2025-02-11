@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Shuffle, ArrowLeft, ArrowRight, Check, X } from "lucide-react";
@@ -32,6 +32,10 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['flashcards', deckId] });
+      toast({
+        title: learned ? "Card marked as learned" : "Card marked for practice",
+        description: "Your progress has been saved.",
+      });
     },
     onError: (error) => {
       toast({
@@ -41,6 +45,15 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
       });
     },
   });
+
+  const navigateCards = useCallback((direction: 'prev' | 'next') => {
+    setIsFlipped(false);
+    if (direction === 'prev' && currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    } else if (direction === 'next' && currentIndex < cards.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  }, [currentIndex, cards.length]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -55,16 +68,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isFlipped]);
-
-  const navigateCards = (direction: 'prev' | 'next') => {
-    setIsFlipped(false);
-    if (direction === 'prev' && currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    } else if (direction === 'next' && currentIndex < cards.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
+  }, [isFlipped, navigateCards]);
 
   const shuffleCards = () => {
     const shuffled = [...cards].sort(() => Math.random() - 0.5);
@@ -74,7 +78,10 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
   };
 
   const markCard = (learned: boolean) => {
-    updateFlashcardMutation.mutate({ id: currentCard.id, learned });
+    updateFlashcardMutation.mutate({ 
+      id: currentCard.id, 
+      learned 
+    });
     if (currentIndex < cards.length - 1) {
       navigateCards('next');
     }
