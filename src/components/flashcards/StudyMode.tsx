@@ -121,10 +121,14 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     }
   };
 
-  const scrollToTable = () => {
-    setShowTable(true);
-    if (tableRef.current) {
-      tableRef.current.scrollIntoView({ behavior: 'smooth' });
+  const toggleTableVisibility = () => {
+    setShowTable(!showTable);
+    if (!showTable) {
+      setTimeout(() => {
+        if (tableRef.current) {
+          tableRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
     }
   };
 
@@ -170,14 +174,14 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div 
                   className="bg-secondary/50 p-4 rounded-lg cursor-pointer hover:bg-secondary/70 transition-colors"
-                  onClick={scrollToTable}
+                  onClick={toggleTableVisibility}
                 >
                   <div className="text-2xl font-bold">{learnedCount}</div>
                   <div className="text-sm text-muted-foreground">Cards Learned</div>
                 </div>
                 <div 
                   className="bg-secondary/50 p-4 rounded-lg cursor-pointer hover:bg-secondary/70 transition-colors"
-                  onClick={scrollToTable}
+                  onClick={toggleTableVisibility}
                 >
                   <div className="text-2xl font-bold">{cards.length - learnedCount}</div>
                   <div className="text-sm text-muted-foreground">Need Practice</div>
@@ -279,4 +283,3 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     </div>
   );
 };
-
