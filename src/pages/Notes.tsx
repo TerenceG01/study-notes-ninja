@@ -11,7 +11,7 @@ import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { Loader2, Hash } from "lucide-react";
+import { Loader2, Hash, BookOpen } from "lucide-react";
 
 type Note = {
   id: string;
@@ -40,6 +40,7 @@ const Notes = () => {
   const [isEditorExpanded, setIsEditorExpanded] = useState(false);
   const [newTag, setNewTag] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
+  const [generatingFlashcards, setGeneratingFlashcards] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -200,6 +201,37 @@ const Notes = () => {
     }
   };
 
+  const generateFlashcards = async (note: Note) => {
+    try {
+      setGeneratingFlashcards(true);
+      const { data, error } = await supabase.functions.invoke('generate-flashcards', {
+        body: {
+          noteId: note.id,
+          content: note.content,
+          title: note.title,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast({
+          title: "Success",
+          description: `Created ${data.flashcardsCount} flashcards! You can find them in your flashcard decks.`,
+        });
+        navigate(`/flashcards/${data.deckId}`);
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error generating flashcards",
+        description: "Failed to generate flashcards. Please try again.",
+      });
+    } finally {
+      setGeneratingFlashcards(false);
+    }
+  };
+
   if (!user) return null;
 
   return (
@@ -297,18 +329,19 @@ const Notes = () => {
                   <TableHead>Content</TableHead>
                   <TableHead>Created At</TableHead>
                   <TableHead>Folder</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center">
+                    <TableCell colSpan={5} className="text-center">
                       Loading...
                     </TableCell>
                   </TableRow>
                 ) : notes.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center">
+                    <TableCell colSpan={5} className="text-center">
                       No notes found. Create your first note above!
                     </TableCell>
                   </TableRow>
@@ -317,20 +350,52 @@ const Notes = () => {
                     <TableRow 
                       key={note.id}
                       className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => {
+                    >
+                      <TableCell onClick={() => {
                         setSelectedNote(note);
                         setEditingNote(note);
                         setShowSummary(false);
-                      }}
-                    >
-                      <TableCell>{note.title}</TableCell>
-                      <TableCell className="max-w-md truncate">
+                      }}>{note.title}</TableCell>
+                      <TableCell className="max-w-md truncate" onClick={() => {
+                        setSelectedNote(note);
+                        setEditingNote(note);
+                        setShowSummary(false);
+                      }}>
                         {note.content}
                       </TableCell>
-                      <TableCell>
+                      <TableCell onClick={() => {
+                        setSelectedNote(note);
+                        setEditingNote(note);
+                        setShowSummary(false);
+                      }}>
                         {new Date(note.created_at).toLocaleDateString()}
                       </TableCell>
-                      <TableCell>{note.folder}</TableCell>
+                      <TableCell onClick={() => {
+                        setSelectedNote(note);
+                        setEditingNote(note);
+                        setShowSummary(false);
+                      }}>{note.folder}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => generateFlashcards(note)}
+                          disabled={generatingFlashcards}
+                          className="flex items-center gap-2"
+                        >
+                          {generatingFlashcards ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              Generating...
+                            </>
+                          ) : (
+                            <>
+                              <BookOpen className="h-4 w-4" />
+                              Create Flashcards
+                            </>
+                          )}
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))
                 )}
