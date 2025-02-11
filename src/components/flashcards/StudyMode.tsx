@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Shuffle, ArrowLeft, ArrowRight, Check, X, Brain } from "lucide-react";
@@ -21,6 +21,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showProgress, setShowProgress] = useState(false);
+  const tableRef = useRef<HTMLDivElement>(null);
 
   const currentCard = cards[currentIndex];
 
@@ -119,6 +120,12 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     }
   };
 
+  const scrollToTable = () => {
+    if (tableRef.current) {
+      tableRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const learnedCount = cards.filter(card => card.learned).length;
   const progressPercentage = (learnedCount / cards.length) * 100;
 
@@ -154,17 +161,23 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
             <h3 className="text-lg font-semibold mb-4">Progress Tracking</h3>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="bg-secondary/50 p-4 rounded-lg">
+                <div 
+                  className="bg-secondary/50 p-4 rounded-lg cursor-pointer hover:bg-secondary/70 transition-colors"
+                  onClick={scrollToTable}
+                >
                   <div className="text-2xl font-bold">{learnedCount}</div>
                   <div className="text-sm text-muted-foreground">Cards Learned</div>
                 </div>
-                <div className="bg-secondary/50 p-4 rounded-lg">
+                <div 
+                  className="bg-secondary/50 p-4 rounded-lg cursor-pointer hover:bg-secondary/70 transition-colors"
+                  onClick={scrollToTable}
+                >
                   <div className="text-2xl font-bold">{cards.length - learnedCount}</div>
                   <div className="text-sm text-muted-foreground">Need Practice</div>
                 </div>
               </div>
 
-              <div className="border rounded-lg">
+              <div className="border rounded-lg" ref={tableRef}>
                 <Table>
                   <TableHeader>
                     <TableRow>
