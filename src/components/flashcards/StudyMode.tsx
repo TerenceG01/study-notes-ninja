@@ -102,7 +102,6 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
       if (reviewError) throw reviewError;
     },
     onSuccess: (_, { id, learned }) => {
-      // Update queries to refresh the UI
       queryClient.invalidateQueries({ queryKey: ['flashcards', deckId] });
       queryClient.invalidateQueries({ queryKey: ['flashcard-reviews', deckId] });
       queryClient.invalidateQueries({ queryKey: ['flashcard-deck', deckId] });
@@ -113,6 +112,11 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
           card.id === id ? { ...card, learned } : card
         )
       );
+
+      toast({
+        title: learned ? "Card marked as learned" : "Card marked for practice",
+        description: "Your progress has been saved.",
+      });
     },
     onError: (error) => {
       toast({
@@ -158,10 +162,6 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     updateFlashcardMutation.mutate({ 
       id: currentCard.id, 
       learned 
-    });
-    toast({
-      title: learned ? "Card marked as learned" : "Card marked for practice",
-      description: "Your progress has been saved.",
     });
     if (currentIndex < cards.length - 1) {
       navigateCards('next');
@@ -312,7 +312,11 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
             <div className="flex gap-2">
               <Button
                 variant={currentCard.learned === false ? "default" : "outline"}
-                className={currentCard.learned === false ? "bg-red-500 hover:bg-red-600" : "text-red-500 hover:text-red-600"}
+                className={`${
+                  currentCard.learned === false 
+                    ? "bg-red-500 hover:bg-red-600 text-white" 
+                    : "border-red-500 text-red-500 hover:bg-red-50"
+                }`}
                 onClick={() => markCard(false)}
               >
                 <X className="h-4 w-4 mr-2" />
@@ -320,7 +324,11 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
               </Button>
               <Button
                 variant={currentCard.learned ? "default" : "outline"}
-                className={currentCard.learned ? "bg-green-500 hover:bg-green-600" : "text-green-500 hover:text-green-600"}
+                className={`${
+                  currentCard.learned 
+                    ? "bg-green-500 hover:bg-green-600 text-white" 
+                    : "border-green-500 text-green-500 hover:bg-green-50"
+                }`}
                 onClick={() => markCard(true)}
               >
                 <Check className="h-4 w-4 mr-2" />
