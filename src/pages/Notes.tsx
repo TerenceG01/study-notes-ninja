@@ -11,7 +11,7 @@ import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { Loader2, Bold, Italic, List, Code, Heading, Hash } from "lucide-react";
+import { Loader2, Hash } from "lucide-react";
 
 type Note = {
   id: string;
@@ -200,53 +200,6 @@ const Notes = () => {
     }
   };
 
-  const insertTextAtCursor = (textarea: HTMLTextAreaElement, before: string, after: string = "") => {
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    const selectedText = text.substring(start, end);
-    const newText = text.substring(0, start) + before + selectedText + after + text.substring(end);
-    
-    textarea.value = newText;
-    textarea.focus();
-    textarea.setSelectionRange(start + before.length, end + before.length);
-    
-    // Trigger onChange event manually since we're directly modifying the value
-    const event = new Event('input', { bubbles: true });
-    textarea.dispatchEvent(event);
-  };
-
-  const handleFormat = (type: string, textareaId: string) => {
-    const textarea = document.getElementById(textareaId) as HTMLTextAreaElement;
-    if (!textarea) return;
-
-    switch (type) {
-      case 'bold':
-        insertTextAtCursor(textarea, '**', '**');
-        break;
-      case 'italic':
-        insertTextAtCursor(textarea, '_', '_');
-        break;
-      case 'list':
-        insertTextAtCursor(textarea, '- ');
-        break;
-      case 'code':
-        insertTextAtCursor(textarea, '`', '`');
-        break;
-      case 'heading':
-        insertTextAtCursor(textarea, '# ');
-        break;
-    }
-
-    // Update the state based on which textarea we're formatting
-    const newContent = textarea.value;
-    if (textareaId === 'new-note-content') {
-      setNewNote(prev => ({ ...prev, content: newContent }));
-    } else if (textareaId === 'edit-note-content') {
-      setEditingNote(prev => prev ? { ...prev, content: newContent } : null);
-    }
-  };
-
   if (!user) return null;
 
   return (
@@ -278,14 +231,6 @@ const Notes = () => {
                   className="text-lg font-semibold"
                   style={{ textTransform: 'capitalize' }}
                 />
-                
-                <div className="flex gap-2 p-2 bg-muted rounded-md">
-                  <Button variant="ghost" size="sm" onClick={() => handleFormat('bold', 'new-note-content')}><Bold className="h-4 w-4" /></Button>
-                  <Button variant="ghost" size="sm" onClick={() => handleFormat('italic', 'new-note-content')}><Italic className="h-4 w-4" /></Button>
-                  <Button variant="ghost" size="sm" onClick={() => handleFormat('list', 'new-note-content')}><List className="h-4 w-4" /></Button>
-                  <Button variant="ghost" size="sm" onClick={() => handleFormat('code', 'new-note-content')}><Code className="h-4 w-4" /></Button>
-                  <Button variant="ghost" size="sm" onClick={() => handleFormat('heading', 'new-note-content')}><Heading className="h-4 w-4" /></Button>
-                </div>
 
                 <Textarea
                   id="new-note-content"
@@ -416,14 +361,6 @@ const Notes = () => {
               />
             </DialogTitle>
           </DialogHeader>
-          
-          <div className="flex gap-2 p-2 bg-muted rounded-md mt-4">
-            <Button variant="ghost" size="sm" onClick={() => handleFormat('bold', 'edit-note-content')}><Bold className="h-4 w-4" /></Button>
-            <Button variant="ghost" size="sm" onClick={() => handleFormat('italic', 'edit-note-content')}><Italic className="h-4 w-4" /></Button>
-            <Button variant="ghost" size="sm" onClick={() => handleFormat('list', 'edit-note-content')}><List className="h-4 w-4" /></Button>
-            <Button variant="ghost" size="sm" onClick={() => handleFormat('code', 'edit-note-content')}><Code className="h-4 w-4" /></Button>
-            <Button variant="ghost" size="sm" onClick={() => handleFormat('heading', 'edit-note-content')}><Heading className="h-4 w-4" /></Button>
-          </div>
 
           <div className="flex gap-4 items-center mt-4">
             <Select
