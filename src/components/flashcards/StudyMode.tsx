@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
+import { MultipleChoiceMode } from "@/components/flashcards/MultipleChoiceMode";
 
 interface StudyModeProps {
   flashcards: any[];
@@ -15,6 +15,7 @@ interface StudyModeProps {
 }
 
 export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
+  const [mode, setMode] = useState<'standard' | 'multiple-choice'>('standard');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [cards, setCards] = useState(flashcards);
@@ -158,33 +159,6 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     setIsFlipped(false);
   };
 
-  const markCard = (learned: boolean) => {
-    updateFlashcardMutation.mutate({ 
-      id: currentCard.id, 
-      learned 
-    });
-    if (currentIndex < cards.length - 1) {
-      navigateCards('next');
-    }
-  };
-
-  const toggleTableVisibility = () => {
-    setShowTable(!showTable);
-    if (!showTable) {
-      setTimeout(() => {
-        if (tableRef.current) {
-          tableRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    }
-  };
-
-  const handleResetProgress = () => {
-    if (window.confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
-      resetProgressMutation.mutate();
-    }
-  };
-
   const learnedCount = cards.filter(card => card.learned).length;
 
   if (!currentCard) {
@@ -198,8 +172,21 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <div className="text-sm text-muted-foreground">
-          Card {currentIndex + 1} of {cards.length}
+        <div className="flex gap-2">
+          <Button 
+            variant={mode === 'standard' ? 'default' : 'outline'}
+            onClick={() => setMode('standard')}
+          >
+            <Brain className="h-4 w-4 mr-2" />
+            Standard Mode
+          </Button>
+          <Button 
+            variant={mode === 'multiple-choice' ? 'default' : 'outline'}
+            onClick={() => setMode('multiple-choice')}
+          >
+            <Check className="h-4 w-4 mr-2" />
+            Multiple Choice
+          </Button>
         </div>
         <div className="flex gap-2">
           <Button 
@@ -219,138 +206,115 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
         </div>
       </div>
 
-      {showProgress ? (
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Progress Tracking</h3>
-              <Button 
-                variant="outline" 
-                onClick={handleResetProgress}
-                className="text-destructive hover:text-destructive"
-              >
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reset Progress
-              </Button>
-            </div>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div 
-                  className="bg-secondary/50 p-4 rounded-lg cursor-pointer hover:bg-secondary/70 transition-colors"
-                  onClick={toggleTableVisibility}
-                >
-                  <div className="text-2xl font-bold">{learnedCount}</div>
-                  <div className="text-sm text-muted-foreground">Cards Learned</div>
-                </div>
-                <div 
-                  className="bg-secondary/50 p-4 rounded-lg cursor-pointer hover:bg-secondary/70 transition-colors"
-                  onClick={toggleTableVisibility}
-                >
-                  <div className="text-2xl font-bold">{cards.length - learnedCount}</div>
-                  <div className="text-sm text-muted-foreground">Need Practice</div>
-                </div>
-              </div>
-
-              {showTable && (
-                <div className="border rounded-lg" ref={tableRef}>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Question</TableHead>
-                        <TableHead>Last Review</TableHead>
-                        <TableHead>Status</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {reviewHistory?.slice(0, 5).map((review: any) => (
-                        <TableRow key={review.id}>
-                          <TableCell className="font-medium">{review.flashcard.question}</TableCell>
-                          <TableCell>{format(new Date(review.review_date), 'PPp')}</TableCell>
-                          <TableCell>
-                            {review.is_correct ? (
-                              <span className="text-green-500 flex items-center gap-1">
-                                <Check className="h-4 w-4" /> Learned
-                              </span>
-                            ) : (
-                              <span className="text-red-500 flex items-center gap-1">
-                                <X className="h-4 w-4" /> Needs Practice
-                              </span>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
+      {mode === 'standard' ? (
         <>
-          <Card 
-            className="min-h-[300px] cursor-pointer transition-all hover:shadow-lg"
-            onClick={() => setIsFlipped(!isFlipped)}
-          >
-            <CardContent className="flex items-center justify-center p-8 min-h-[300px]">
-              <div className="text-xl font-medium text-center">
-                {isFlipped ? currentCard.answer : currentCard.question}
-              </div>
-            </CardContent>
-          </Card>
+          {showProgress ? (
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold">Progress Tracking</h3>
+                  <Button 
+                    variant="outline" 
+                    onClick={handleResetProgress}
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <RotateCcw className="h-4 w-4 mr-2" />
+                    Reset Progress
+                  </Button>
+                </div>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div 
+                      className="bg-secondary/50 p-4 rounded-lg cursor-pointer hover:bg-secondary/70 transition-colors"
+                      onClick={toggleTableVisibility}
+                    >
+                      <div className="text-2xl font-bold">{learnedCount}</div>
+                      <div className="text-sm text-muted-foreground">Cards Learned</div>
+                    </div>
+                    <div 
+                      className="bg-secondary/50 p-4 rounded-lg cursor-pointer hover:bg-secondary/70 transition-colors"
+                      onClick={toggleTableVisibility}
+                    >
+                      <div className="text-2xl font-bold">{cards.length - learnedCount}</div>
+                      <div className="text-sm text-muted-foreground">Need Practice</div>
+                    </div>
+                  </div>
 
-          <div className="flex justify-between items-center mt-6">
-            <Button
-              variant="outline"
-              onClick={() => navigateCards('prev')}
-              disabled={currentIndex === 0}
+                  {showTable && (
+                    <div className="border rounded-lg" ref={tableRef}>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Question</TableHead>
+                            <TableHead>Last Review</TableHead>
+                            <TableHead>Status</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {reviewHistory?.slice(0, 5).map((review: any) => (
+                            <TableRow key={review.id}>
+                              <TableCell className="font-medium">{review.flashcard.question}</TableCell>
+                              <TableCell>{format(new Date(review.review_date), 'PPp')}</TableCell>
+                              <TableCell>
+                                {review.is_correct ? (
+                                  <span className="text-green-500 flex items-center gap-1">
+                                    <Check className="h-4 w-4" /> Learned
+                                  </span>
+                                ) : (
+                                  <span className="text-red-500 flex items-center gap-1">
+                                    <X className="h-4 w-4" /> Needs Practice
+                                  </span>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card 
+              className="min-h-[300px] cursor-pointer transition-all hover:shadow-lg"
+              onClick={() => setIsFlipped(!isFlipped)}
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Previous Card
-            </Button>
-
-            <div className="flex gap-2">
-              <Button
-                variant={currentCard.learned === false ? "default" : "outline"}
-                className={`${
-                  currentCard.learned === false 
-                    ? "bg-red-500 hover:bg-red-600 text-white" 
-                    : "border-red-500 text-red-500 hover:bg-red-50"
-                }`}
-                onClick={() => markCard(false)}
-              >
-                <X className="h-4 w-4 mr-2" />
-                Need Practice
-              </Button>
-              <Button
-                variant={currentCard.learned ? "default" : "outline"}
-                className={`${
-                  currentCard.learned 
-                    ? "bg-green-500 hover:bg-green-600 text-white" 
-                    : "border-green-500 text-green-500 hover:bg-green-50"
-                }`}
-                onClick={() => markCard(true)}
-              >
-                <Check className="h-4 w-4 mr-2" />
-                Learned
-              </Button>
-            </div>
-
-            <Button
-              variant="outline"
-              onClick={() => navigateCards('next')}
-              disabled={currentIndex === cards.length - 1}
-            >
-              Next Card
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
-          </div>
-
-          <div className="text-center mt-4 text-sm text-muted-foreground">
-            Press Enter to flip • Arrow keys to navigate
-          </div>
+              <CardContent className="flex items-center justify-center p-8 min-h-[300px]">
+                <div className="text-xl font-medium text-center">
+                  {isFlipped ? currentCard.answer : currentCard.question}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </>
+      ) : (
+        <MultipleChoiceMode flashcards={cards} deckId={deckId} />
       )}
+
+      <div className="flex justify-between items-center mt-6">
+        <Button
+          variant="outline"
+          onClick={() => navigateCards('prev')}
+          disabled={currentIndex === 0}
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Previous Card
+        </Button>
+
+        <Button
+          variant="outline"
+          onClick={() => navigateCards('next')}
+          disabled={currentIndex === cards.length - 1}
+        >
+          Next Card
+          <ArrowRight className="h-4 w-4 ml-2" />
+        </Button>
+      </div>
+
+      <div className="text-center mt-4 text-sm text-muted-foreground">
+        Press Enter to flip • Arrow keys to navigate
+      </div>
     </div>
   );
 };
