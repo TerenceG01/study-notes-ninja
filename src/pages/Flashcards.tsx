@@ -1,14 +1,18 @@
 
 import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useAuth } from "@/contexts/AuthContext";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 const Flashcards = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: decks, isLoading } = useQuery({
     queryKey: ['flashcard-decks', user?.id],
@@ -24,6 +28,38 @@ const Flashcards = () => {
     },
     enabled: !!user,
   });
+
+  const deleteDeckMutation = useMutation({
+    mutationFn: async (deckId: string) => {
+      const { error } = await supabase
+        .from('flashcard_decks')
+        .delete()
+        .eq('id', deckId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['flashcard-decks'] });
+      toast({
+        title: "Success",
+        description: "Flashcard deck deleted successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    },
+  });
+
+  const handleDelete = async (deckId: string, event: React.MouseEvent) => {
+    event.preventDefault();
+    if (window.confirm('Are you sure you want to delete this deck? All flashcards in this deck will be deleted.')) {
+      deleteDeckMutation.mutate(deckId);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,8 +86,16 @@ const Flashcards = () => {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {decks?.map((deck) => (
               <Link to={`/flashcards/${deck.id}`} key={deck.id}>
-                <Card className="hover:bg-muted/50 transition-colors">
-                  <CardHeader>
+                <Card className="hover:bg-muted/50 transition-colors group">
+                  <CardHeader className="relative">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-4 top-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => handleDelete(deck.id, e)}
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
                     <CardTitle>{deck.title}</CardTitle>
                     <CardDescription>
                       {deck.description || "No description"}
