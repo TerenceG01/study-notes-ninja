@@ -6,7 +6,6 @@ import { Shuffle, ArrowLeft, ArrowRight, Check, X, Brain } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 
@@ -134,14 +133,8 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-4 flex-1">
-          <div className="text-sm text-muted-foreground">
-            Card {currentIndex + 1} of {cards.length}
-          </div>
-          <Progress value={progressPercentage} className="flex-1" />
-          <div className="text-sm text-muted-foreground">
-            {Math.round(progressPercentage)}% Complete
-          </div>
+        <div className="text-sm text-muted-foreground">
+          Card {currentIndex + 1} of {cards.length}
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setShowProgress(!showProgress)}>
