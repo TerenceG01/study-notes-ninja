@@ -1,3 +1,4 @@
+
 import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -5,11 +6,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2, Pencil, X, Check, Trash2 } from "lucide-react";
+import { ArrowLeft, Loader2, Pencil, X, Check, Trash2, BookOpen } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { StudyMode } from "@/components/flashcards/StudyMode";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const FlashcardDeck = () => {
   const { id } = useParams();
@@ -183,81 +186,112 @@ const FlashcardDeck = () => {
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {flashcards?.map((flashcard) => (
-            <Card key={flashcard.id} className="hover:bg-muted/50 transition-colors">
-              <CardContent className="pt-6">
-                {editingId === flashcard.id ? (
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="font-medium mb-2">Question:</h3>
-                      <Input
-                        value={editedQuestion}
-                        onChange={(e) => setEditedQuestion(e.target.value)}
-                        placeholder="Enter question"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-medium mb-2">Answer:</h3>
-                      <Textarea
-                        value={editedAnswer}
-                        onChange={(e) => setEditedAnswer(e.target.value)}
-                        placeholder="Enter answer"
-                      />
-                    </div>
-                    <div className="flex justify-end gap-2 mt-4">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={cancelEditing}
-                      >
-                        <X className="h-4 w-4 mr-2" />
-                        Cancel
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={() => handleSave(flashcard.id)}
-                        disabled={updateFlashcardMutation.isPending}
-                      >
-                        <Check className="h-4 w-4 mr-2" />
-                        Save
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div className="mb-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <h3 className="font-medium">Question:</h3>
-                        <div className="flex gap-2">
+        <Tabs defaultValue="study" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="study">
+              <BookOpen className="h-4 w-4 mr-2" />
+              Study
+            </TabsTrigger>
+            <TabsTrigger value="manage">
+              <Pencil className="h-4 w-4 mr-2" />
+              Manage Cards
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="study" className="space-y-4">
+            {flashcards && flashcards.length > 0 ? (
+              <StudyMode flashcards={flashcards} deckId={id!} />
+            ) : (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <BookOpen className="h-12 w-12 text-muted-foreground mb-4" />
+                  <p className="text-lg font-medium mb-2">No flashcards yet</p>
+                  <p className="text-muted-foreground mb-4">
+                    Add some flashcards to start studying
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="manage">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {flashcards?.map((flashcard) => (
+                <Card key={flashcard.id} className="hover:bg-muted/50 transition-colors">
+                  <CardContent className="pt-6">
+                    {editingId === flashcard.id ? (
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="font-medium mb-2">Question:</h3>
+                          <Input
+                            value={editedQuestion}
+                            onChange={(e) => setEditedQuestion(e.target.value)}
+                            placeholder="Enter question"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="font-medium mb-2">Answer:</h3>
+                          <Textarea
+                            value={editedAnswer}
+                            onChange={(e) => setEditedAnswer(e.target.value)}
+                            placeholder="Enter answer"
+                          />
+                        </div>
+                        <div className="flex justify-end gap-2 mt-4">
                           <Button
                             variant="ghost"
-                            size="icon"
-                            onClick={() => startEditing(flashcard)}
+                            size="sm"
+                            onClick={cancelEditing}
                           >
-                            <Pencil className="h-4 w-4" />
+                            <X className="h-4 w-4 mr-2" />
+                            Cancel
                           </Button>
                           <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDelete(flashcard.id)}
+                            size="sm"
+                            onClick={() => handleSave(flashcard.id)}
+                            disabled={updateFlashcardMutation.isPending}
                           >
-                            <Trash2 className="h-4 w-4 text-destructive" />
+                            <Check className="h-4 w-4 mr-2" />
+                            Save
                           </Button>
                         </div>
                       </div>
-                      <p className="text-muted-foreground">{flashcard.question}</p>
-                    </div>
-                    <div>
-                      <h3 className="font-medium mb-2">Answer:</h3>
-                      <p className="text-muted-foreground">{flashcard.answer}</p>
-                    </div>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                    ) : (
+                      <>
+                        <div className="mb-4">
+                          <div className="flex justify-between items-start mb-2">
+                            <h3 className="font-medium">Question:</h3>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => startEditing(flashcard)}
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleDelete(flashcard.id)}
+                              >
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </div>
+                          </div>
+                          <p className="text-muted-foreground">{flashcard.question}</p>
+                        </div>
+                        <div>
+                          <h3 className="font-medium mb-2">Answer:</h3>
+                          <p className="text-muted-foreground">{flashcard.answer}</p>
+                        </div>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );

@@ -14,6 +14,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          last_used_mode: string | null
           learned_cards: number | null
           tags: string[] | null
           title: string
@@ -25,6 +26,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          last_used_mode?: string | null
           learned_cards?: number | null
           tags?: string[] | null
           title: string
@@ -36,6 +38,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          last_used_mode?: string | null
           learned_cards?: number | null
           tags?: string[] | null
           title?: string
@@ -147,6 +150,7 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          preferred_flashcard_mode: string | null
           updated_at: string
           username: string | null
         }
@@ -155,6 +159,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id: string
+          preferred_flashcard_mode?: string | null
           updated_at?: string
           username?: string | null
         }
@@ -163,6 +168,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          preferred_flashcard_mode?: string | null
           updated_at?: string
           username?: string | null
         }
@@ -176,7 +182,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      flashcard_mode: "standard"
     }
     CompositeTypes: {
       [_ in never]: never
