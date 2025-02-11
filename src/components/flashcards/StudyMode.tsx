@@ -118,7 +118,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
           disabled={currentIndex === 0}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Previous
+          Previous Card
         </Button>
 
         <div className="flex gap-2">
@@ -145,7 +145,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
           onClick={() => navigateCards('next')}
           disabled={currentIndex === cards.length - 1}
         >
-          Next
+          Next Card
           <ArrowRight className="h-4 w-4 ml-2" />
         </Button>
       </div>
