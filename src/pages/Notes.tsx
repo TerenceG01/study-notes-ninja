@@ -370,10 +370,10 @@ const Notes = () => {
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Summary Level" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="brief">Brief (30%)</SelectItem>
-                <SelectItem value="medium">Medium (50%)</SelectItem>
-                <SelectItem value="detailed">Detailed (70%)</SelectItem>
+              <SelectContent className="bg-white">
+                <SelectItem value="brief" className="bg-white hover:bg-gray-100">Brief (30%)</SelectItem>
+                <SelectItem value="medium" className="bg-white hover:bg-gray-100">Medium (50%)</SelectItem>
+                <SelectItem value="detailed" className="bg-white hover:bg-gray-100">Detailed (70%)</SelectItem>
               </SelectContent>
             </Select>
             
