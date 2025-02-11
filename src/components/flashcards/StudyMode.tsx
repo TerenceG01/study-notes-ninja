@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -215,7 +216,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
                   <h3 className="text-lg font-semibold">Progress Tracking</h3>
                   <Button 
                     variant="outline" 
-                    onClick={handleResetProgress}
+                    onClick={() => resetProgressMutation.mutate()}
                     className="text-destructive hover:text-destructive"
                   >
                     <RotateCcw className="h-4 w-4 mr-2" />
@@ -226,14 +227,14 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div 
                       className="bg-secondary/50 p-4 rounded-lg cursor-pointer hover:bg-secondary/70 transition-colors"
-                      onClick={toggleTableVisibility}
+                      onClick={() => setShowTable(!showTable)}
                     >
                       <div className="text-2xl font-bold">{learnedCount}</div>
                       <div className="text-sm text-muted-foreground">Cards Learned</div>
                     </div>
                     <div 
                       className="bg-secondary/50 p-4 rounded-lg cursor-pointer hover:bg-secondary/70 transition-colors"
-                      onClick={toggleTableVisibility}
+                      onClick={() => setShowTable(!showTable)}
                     >
                       <div className="text-2xl font-bold">{cards.length - learnedCount}</div>
                       <div className="text-sm text-muted-foreground">Need Practice</div>
