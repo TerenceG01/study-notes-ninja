@@ -32,10 +32,6 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['flashcards', deckId] });
-      toast({
-        title: learned ? "Card marked as learned" : "Card marked for practice",
-        description: "Your progress has been saved.",
-      });
     },
     onError: (error) => {
       toast({
@@ -81,6 +77,10 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     updateFlashcardMutation.mutate({ 
       id: currentCard.id, 
       learned 
+    });
+    toast({
+      title: learned ? "Card marked as learned" : "Card marked for practice",
+      description: "Your progress has been saved.",
     });
     if (currentIndex < cards.length - 1) {
       navigateCards('next');
@@ -163,3 +163,4 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     </div>
   );
 };
+
