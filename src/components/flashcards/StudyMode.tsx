@@ -198,60 +198,63 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
           </CardContent>
         </Card>
       ) : (
-        <Card 
-          className="min-h-[300px] cursor-pointer transition-all hover:shadow-lg"
-          onClick={() => setIsFlipped(!isFlipped)}
-        >
-          <CardContent className="flex items-center justify-center p-8 min-h-[300px]">
-            <div className="text-xl font-medium text-center">
-              {isFlipped ? currentCard.answer : currentCard.question}
+        <>
+          <Card 
+            className="min-h-[300px] cursor-pointer transition-all hover:shadow-lg"
+            onClick={() => setIsFlipped(!isFlipped)}
+          >
+            <CardContent className="flex items-center justify-center p-8 min-h-[300px]">
+              <div className="text-xl font-medium text-center">
+                {isFlipped ? currentCard.answer : currentCard.question}
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="flex justify-between items-center mt-6">
+            <Button
+              variant="outline"
+              onClick={() => navigateCards('prev')}
+              disabled={currentIndex === 0}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Previous Card
+            </Button>
+
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="text-red-500 hover:text-red-600"
+                onClick={() => markCard(false)}
+              >
+                <X className="h-4 w-4 mr-2" />
+                Need Practice
+              </Button>
+              <Button
+                variant="outline"
+                className="text-green-500 hover:text-green-600"
+                onClick={() => markCard(true)}
+              >
+                <Check className="h-4 w-4 mr-2" />
+                Learned
+              </Button>
             </div>
-          </CardContent>
-        </Card>
+
+            <Button
+              variant="outline"
+              onClick={() => navigateCards('next')}
+              disabled={currentIndex === cards.length - 1}
+            >
+              Next Card
+              <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+          </div>
+
+          <div className="text-center mt-4 text-sm text-muted-foreground">
+            Press Enter to flip • Arrow keys to navigate
+          </div>
+        </>
       )}
-
-      <div className="flex justify-between items-center mt-6">
-        <Button
-          variant="outline"
-          onClick={() => navigateCards('prev')}
-          disabled={currentIndex === 0}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Previous Card
-        </Button>
-
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="text-red-500 hover:text-red-600"
-            onClick={() => markCard(false)}
-          >
-            <X className="h-4 w-4 mr-2" />
-            Need Practice
-          </Button>
-          <Button
-            variant="outline"
-            className="text-green-500 hover:text-green-600"
-            onClick={() => markCard(true)}
-          >
-            <Check className="h-4 w-4 mr-2" />
-            Learned
-          </Button>
-        </div>
-
-        <Button
-          variant="outline"
-          onClick={() => navigateCards('next')}
-          disabled={currentIndex === cards.length - 1}
-        >
-          Next Card
-          <ArrowRight className="h-4 w-4 ml-2" />
-        </Button>
-      </div>
-
-      <div className="text-center mt-4 text-sm text-muted-foreground">
-        Press Enter to flip • Arrow keys to navigate
-      </div>
     </div>
   );
 };
+
