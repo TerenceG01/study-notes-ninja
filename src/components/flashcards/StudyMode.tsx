@@ -101,9 +101,18 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
 
       if (reviewError) throw reviewError;
     },
-    onSuccess: () => {
+    onSuccess: (_, { id, learned }) => {
+      // Update queries to refresh the UI
       queryClient.invalidateQueries({ queryKey: ['flashcards', deckId] });
       queryClient.invalidateQueries({ queryKey: ['flashcard-reviews', deckId] });
+      queryClient.invalidateQueries({ queryKey: ['flashcard-deck', deckId] });
+      
+      // Update local state
+      setCards(prevCards => 
+        prevCards.map(card => 
+          card.id === id ? { ...card, learned } : card
+        )
+      );
     },
     onError: (error) => {
       toast({
