@@ -59,6 +59,9 @@ export const NavigationBar = () => {
                   <Link to="/notes">My Notes</Link>
                 </Button>
                 <Button variant="ghost" asChild>
+                  <Link to="/flashcards">My Flashcards</Link>
+                </Button>
+                <Button variant="ghost" asChild>
                   <Link to="/profile">My Profile</Link>
                 </Button>
                 <Button variant="ghost" onClick={handleLogout}>
