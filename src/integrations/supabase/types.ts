@@ -9,6 +9,102 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      flashcard_decks: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          learned_cards: number | null
+          tags: string[] | null
+          title: string
+          total_cards: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          learned_cards?: number | null
+          tags?: string[] | null
+          title: string
+          total_cards?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          learned_cards?: number | null
+          tags?: string[] | null
+          title?: string
+          total_cards?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      flashcards: {
+        Row: {
+          answer: string
+          created_at: string
+          deck_id: string
+          difficulty: number | null
+          id: string
+          last_reviewed: string | null
+          learned: boolean | null
+          note_id: string | null
+          question: string
+          tags: string[] | null
+          times_reviewed: number | null
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          deck_id: string
+          difficulty?: number | null
+          id?: string
+          last_reviewed?: string | null
+          learned?: boolean | null
+          note_id?: string | null
+          question: string
+          tags?: string[] | null
+          times_reviewed?: number | null
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          deck_id?: string
+          difficulty?: number | null
+          id?: string
+          last_reviewed?: string | null
+          learned?: boolean | null
+          note_id?: string | null
+          question?: string
+          tags?: string[] | null
+          times_reviewed?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcards_deck_id_fkey"
+            columns: ["deck_id"]
+            isOneToOne: false
+            referencedRelation: "flashcard_decks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flashcards_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notes: {
         Row: {
           content: string
