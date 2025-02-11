@@ -1,4 +1,3 @@
-
 import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -6,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2, Pencil, X, Check } from "lucide-react";
+import { ArrowLeft, Loader2, Pencil, X, Check, Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -79,6 +78,31 @@ const FlashcardDeck = () => {
     },
   });
 
+  const deleteFlashcardMutation = useMutation({
+    mutationFn: async (flashcardId: string) => {
+      const { error } = await supabase
+        .from('flashcards')
+        .delete()
+        .eq('id', flashcardId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['flashcards', id] });
+      toast({
+        title: "Flashcard deleted",
+        description: "The flashcard has been removed successfully.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error deleting flashcard",
+        description: error.message,
+      });
+    },
+  });
+
   const startEditing = (flashcard: any) => {
     setEditingId(flashcard.id);
     setEditedQuestion(flashcard.question);
@@ -106,6 +130,12 @@ const FlashcardDeck = () => {
       question: editedQuestion,
       answer: editedAnswer,
     });
+  };
+
+  const handleDelete = async (flashcardId: string) => {
+    if (window.confirm('Are you sure you want to delete this flashcard?')) {
+      deleteFlashcardMutation.mutate(flashcardId);
+    }
   };
 
   if (isDeckLoading || isFlashcardsLoading) {
@@ -199,13 +229,22 @@ const FlashcardDeck = () => {
                     <div className="mb-4">
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="font-medium">Question:</h3>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => startEditing(flashcard)}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => startEditing(flashcard)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDelete(flashcard.id)}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
                       </div>
                       <p className="text-muted-foreground">{flashcard.question}</p>
                     </div>
