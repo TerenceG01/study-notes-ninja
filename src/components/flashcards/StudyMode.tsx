@@ -45,17 +45,26 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
 
   const resetProgressMutation = useMutation({
     mutationFn: async () => {
-      // Update all flashcards in the deck to be not learned
-      const { error } = await supabase
+      // First update all flashcards in the deck to be not learned
+      const { error: flashcardsError } = await supabase
         .from('flashcards')
         .update({ learned: false })
         .eq('deck_id', deckId);
 
-      if (error) throw error;
+      if (flashcardsError) throw flashcardsError;
+
+      // Update deck stats to reset learned_cards count
+      const { error: deckError } = await supabase
+        .from('flashcard_decks')
+        .update({ learned_cards: 0 })
+        .eq('id', deckId);
+
+      if (deckError) throw deckError;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['flashcards', deckId] });
       queryClient.invalidateQueries({ queryKey: ['flashcard-reviews', deckId] });
+      queryClient.invalidateQueries({ queryKey: ['flashcard-deck', deckId] });
       toast({
         title: "Progress reset",
         description: "All cards have been marked as not learned.",
