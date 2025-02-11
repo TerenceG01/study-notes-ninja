@@ -311,16 +311,16 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
 
             <div className="flex gap-2">
               <Button
-                variant="outline"
-                className="text-red-500 hover:text-red-600"
+                variant={currentCard.learned === false ? "default" : "outline"}
+                className={currentCard.learned === false ? "bg-red-500 hover:bg-red-600" : "text-red-500 hover:text-red-600"}
                 onClick={() => markCard(false)}
               >
                 <X className="h-4 w-4 mr-2" />
                 Need Practice
               </Button>
               <Button
-                variant="outline"
-                className="text-green-500 hover:text-green-600"
+                variant={currentCard.learned ? "default" : "outline"}
+                className={currentCard.learned ? "bg-green-500 hover:bg-green-600" : "text-green-500 hover:text-green-600"}
                 onClick={() => markCard(true)}
               >
                 <Check className="h-4 w-4 mr-2" />
