@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import Notes from "./pages/Notes";
 import Profile from "./pages/Profile";
 import Flashcards from "./pages/Flashcards";
+import FlashcardDeck from "./pages/FlashcardDeck";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "./contexts/AuthContext";
 
@@ -52,6 +53,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Flashcards />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/flashcards/:id"
+              element={
+                <ProtectedRoute>
+                  <FlashcardDeck />
                 </ProtectedRoute>
               }
             />
