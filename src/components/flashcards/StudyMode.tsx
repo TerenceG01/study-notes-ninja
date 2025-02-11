@@ -21,6 +21,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showProgress, setShowProgress] = useState(false);
+  const [showTable, setShowTable] = useState(false);
   const tableRef = useRef<HTMLDivElement>(null);
 
   const currentCard = cards[currentIndex];
@@ -121,13 +122,13 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
   };
 
   const scrollToTable = () => {
+    setShowTable(true);
     if (tableRef.current) {
       tableRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   const learnedCount = cards.filter(card => card.learned).length;
-  const progressPercentage = (learnedCount / cards.length) * 100;
 
   if (!currentCard) {
     return (
@@ -144,7 +145,13 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
           Card {currentIndex + 1} of {cards.length}
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setShowProgress(!showProgress)}>
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              setShowProgress(!showProgress);
+              setShowTable(false);
+            }}
+          >
             <Brain className="h-4 w-4 mr-2" />
             {showProgress ? "Hide Progress" : "Show Progress"}
           </Button>
@@ -177,36 +184,38 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
                 </div>
               </div>
 
-              <div className="border rounded-lg" ref={tableRef}>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Question</TableHead>
-                      <TableHead>Last Review</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {reviewHistory?.slice(0, 5).map((review: any) => (
-                      <TableRow key={review.id}>
-                        <TableCell className="font-medium">{review.flashcard.question}</TableCell>
-                        <TableCell>{format(new Date(review.review_date), 'PPp')}</TableCell>
-                        <TableCell>
-                          {review.is_correct ? (
-                            <span className="text-green-500 flex items-center gap-1">
-                              <Check className="h-4 w-4" /> Learned
-                            </span>
-                          ) : (
-                            <span className="text-red-500 flex items-center gap-1">
-                              <X className="h-4 w-4" /> Needs Practice
-                            </span>
-                          )}
-                        </TableCell>
+              {showTable && (
+                <div className="border rounded-lg" ref={tableRef}>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Question</TableHead>
+                        <TableHead>Last Review</TableHead>
+                        <TableHead>Status</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                    </TableHeader>
+                    <TableBody>
+                      {reviewHistory?.slice(0, 5).map((review: any) => (
+                        <TableRow key={review.id}>
+                          <TableCell className="font-medium">{review.flashcard.question}</TableCell>
+                          <TableCell>{format(new Date(review.review_date), 'PPp')}</TableCell>
+                          <TableCell>
+                            {review.is_correct ? (
+                              <span className="text-green-500 flex items-center gap-1">
+                                <Check className="h-4 w-4" /> Learned
+                              </span>
+                            ) : (
+                              <span className="text-red-500 flex items-center gap-1">
+                                <X className="h-4 w-4" /> Needs Practice
+                              </span>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
