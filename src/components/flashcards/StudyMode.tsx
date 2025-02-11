@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shuffle, ArrowLeft, ArrowRight, Check, X, Brain } from "lucide-react";
+import { Shuffle, ArrowLeft, ArrowRight, Check, X, Brain, RotateCcw } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
@@ -40,6 +40,35 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
 
       if (error) throw error;
       return data;
+    },
+  });
+
+  const resetProgressMutation = useMutation({
+    mutationFn: async () => {
+      // Update all flashcards in the deck to be not learned
+      const { error } = await supabase
+        .from('flashcards')
+        .update({ learned: false })
+        .eq('deck_id', deckId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['flashcards', deckId] });
+      queryClient.invalidateQueries({ queryKey: ['flashcard-reviews', deckId] });
+      toast({
+        title: "Progress reset",
+        description: "All cards have been marked as not learned.",
+      });
+      // Update local state
+      setCards(cards.map(card => ({ ...card, learned: false })));
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error resetting progress",
+        description: error.message,
+      });
     },
   });
 
@@ -132,6 +161,12 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     }
   };
 
+  const handleResetProgress = () => {
+    if (window.confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+      resetProgressMutation.mutate();
+    }
+  };
+
   const learnedCount = cards.filter(card => card.learned).length;
 
   if (!currentCard) {
@@ -169,7 +204,17 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
       {showProgress ? (
         <Card>
           <CardContent className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Progress Tracking</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Progress Tracking</h3>
+              <Button 
+                variant="outline" 
+                onClick={handleResetProgress}
+                className="text-destructive hover:text-destructive"
+              >
+                <RotateCcw className="h-4 w-4 mr-2" />
+                Reset Progress
+              </Button>
+            </div>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div 
