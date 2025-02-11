@@ -143,6 +143,86 @@ export type Database = {
           },
         ]
       }
+      multiple_choice_attempts: {
+        Row: {
+          created_at: string
+          flashcard_id: string
+          id: string
+          is_correct: boolean
+          selected_option_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          flashcard_id: string
+          id?: string
+          is_correct: boolean
+          selected_option_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          flashcard_id?: string
+          id?: string
+          is_correct?: boolean
+          selected_option_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "multiple_choice_attempts_flashcard_id_fkey"
+            columns: ["flashcard_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "multiple_choice_attempts_selected_option_id_fkey"
+            columns: ["selected_option_id"]
+            isOneToOne: false
+            referencedRelation: "multiple_choice_options"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      multiple_choice_options: {
+        Row: {
+          content: string
+          created_at: string
+          explanation: string | null
+          flashcard_id: string
+          id: string
+          is_correct: boolean
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          explanation?: string | null
+          flashcard_id: string
+          id?: string
+          is_correct?: boolean
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          explanation?: string | null
+          flashcard_id?: string
+          id?: string
+          is_correct?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "multiple_choice_options_flashcard_id_fkey"
+            columns: ["flashcard_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notes: {
         Row: {
           content: string
