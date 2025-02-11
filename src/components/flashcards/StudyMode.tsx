@@ -2,10 +2,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shuffle, ArrowLeft, ArrowRight, Check, X } from "lucide-react";
+import { Shuffle, ArrowLeft, ArrowRight, Check, X, Brain } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { Progress } from "@/components/ui/progress";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { format } from "date-fns";
 
 interface StudyModeProps {
   flashcards: any[];
@@ -18,20 +21,50 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
   const [cards, setCards] = useState(flashcards);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [showProgress, setShowProgress] = useState(false);
 
   const currentCard = cards[currentIndex];
 
+  // Fetch review history
+  const { data: reviewHistory } = useQuery({
+    queryKey: ['flashcard-reviews', deckId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('flashcard_reviews')
+        .select(`
+          *,
+          flashcard:flashcards(question, answer)
+        `)
+        .order('review_date', { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const updateFlashcardMutation = useMutation({
     mutationFn: async ({ id, learned }: { id: string; learned: boolean }) => {
-      const { error } = await supabase
+      // Update flashcard learned status
+      const { error: flashcardError } = await supabase
         .from('flashcards')
         .update({ learned })
         .eq('id', id);
 
-      if (error) throw error;
+      if (flashcardError) throw flashcardError;
+
+      // Add review record
+      const { error: reviewError } = await supabase
+        .from('flashcard_reviews')
+        .insert({
+          flashcard_id: id,
+          is_correct: learned,
+        });
+
+      if (reviewError) throw reviewError;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['flashcards', deckId] });
+      queryClient.invalidateQueries({ queryKey: ['flashcard-reviews', deckId] });
     },
     onError: (error) => {
       toast({
@@ -87,6 +120,9 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     }
   };
 
+  const learnedCount = cards.filter(card => card.learned).length;
+  const progressPercentage = (learnedCount / cards.length) * 100;
+
   if (!currentCard) {
     return (
       <div className="text-center py-8">
@@ -98,25 +134,88 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <div className="text-sm text-muted-foreground">
-          Card {currentIndex + 1} of {cards.length}
+        <div className="flex items-center gap-4 flex-1">
+          <div className="text-sm text-muted-foreground">
+            Card {currentIndex + 1} of {cards.length}
+          </div>
+          <Progress value={progressPercentage} className="flex-1" />
+          <div className="text-sm text-muted-foreground">
+            {Math.round(progressPercentage)}% Complete
+          </div>
         </div>
-        <Button variant="outline" onClick={shuffleCards}>
-          <Shuffle className="h-4 w-4 mr-2" />
-          Shuffle
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setShowProgress(!showProgress)}>
+            <Brain className="h-4 w-4 mr-2" />
+            {showProgress ? "Hide Progress" : "Show Progress"}
+          </Button>
+          <Button variant="outline" onClick={shuffleCards}>
+            <Shuffle className="h-4 w-4 mr-2" />
+            Shuffle
+          </Button>
+        </div>
       </div>
 
-      <Card 
-        className="min-h-[300px] cursor-pointer transition-all hover:shadow-lg"
-        onClick={() => setIsFlipped(!isFlipped)}
-      >
-        <CardContent className="flex items-center justify-center p-8 min-h-[300px]">
-          <div className="text-xl font-medium text-center">
-            {isFlipped ? currentCard.answer : currentCard.question}
-          </div>
-        </CardContent>
-      </Card>
+      {showProgress ? (
+        <Card>
+          <CardContent className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Progress Tracking</h3>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="bg-secondary/50 p-4 rounded-lg">
+                  <div className="text-2xl font-bold">{learnedCount}</div>
+                  <div className="text-sm text-muted-foreground">Cards Learned</div>
+                </div>
+                <div className="bg-secondary/50 p-4 rounded-lg">
+                  <div className="text-2xl font-bold">{cards.length - learnedCount}</div>
+                  <div className="text-sm text-muted-foreground">Need Practice</div>
+                </div>
+              </div>
+
+              <div className="border rounded-lg">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Question</TableHead>
+                      <TableHead>Last Review</TableHead>
+                      <TableHead>Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {reviewHistory?.slice(0, 5).map((review: any) => (
+                      <TableRow key={review.id}>
+                        <TableCell className="font-medium">{review.flashcard.question}</TableCell>
+                        <TableCell>{format(new Date(review.review_date), 'PPp')}</TableCell>
+                        <TableCell>
+                          {review.is_correct ? (
+                            <span className="text-green-500 flex items-center gap-1">
+                              <Check className="h-4 w-4" /> Learned
+                            </span>
+                          ) : (
+                            <span className="text-red-500 flex items-center gap-1">
+                              <X className="h-4 w-4" /> Needs Practice
+                            </span>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card 
+          className="min-h-[300px] cursor-pointer transition-all hover:shadow-lg"
+          onClick={() => setIsFlipped(!isFlipped)}
+        >
+          <CardContent className="flex items-center justify-center p-8 min-h-[300px]">
+            <div className="text-xl font-medium text-center">
+              {isFlipped ? currentCard.answer : currentCard.question}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="flex justify-between items-center mt-6">
         <Button
@@ -163,4 +262,3 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     </div>
   );
 };
-
