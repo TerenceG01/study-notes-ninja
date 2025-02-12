@@ -210,7 +210,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
           className="gap-2"
         >
           <Zap className={`h-4 w-4 ${hardMode ? "text-yellow-300" : ""}`} />
-          {hardMode ? "Hard Mode" : "Standard Mode"}
+          {hardMode ? "Hard Mode" : "Switch to Hard Mode"}
         </Button>
       </div>
 
