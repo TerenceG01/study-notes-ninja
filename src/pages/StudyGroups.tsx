@@ -33,6 +33,10 @@ interface StudyGroup {
   created_at: string;
 }
 
+interface GetUserStudyGroupsParams {
+  p_user_id: string;
+}
+
 const StudyGroups = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -44,7 +48,7 @@ const StudyGroups = () => {
       if (!user?.id) throw new Error("User not authenticated");
 
       const { data, error } = await supabase
-        .rpc<StudyGroup[]>('get_user_study_groups', {
+        .rpc<StudyGroup[], GetUserStudyGroupsParams>('get_user_study_groups', {
           p_user_id: user.id
         });
 

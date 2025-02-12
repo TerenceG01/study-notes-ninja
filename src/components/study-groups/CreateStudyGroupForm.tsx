@@ -39,6 +39,19 @@ interface StudyGroup {
   created_at: string;
 }
 
+interface CreateStudyGroupParams {
+  p_name: string;
+  p_subject: string;
+  p_description: string;
+  p_user_id: string;
+}
+
+interface AddGroupMemberParams {
+  p_group_id: string;
+  p_user_id: string;
+  p_role: string;
+}
+
 export const CreateStudyGroupForm = ({ onSuccess }: CreateStudyGroupFormProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -57,7 +70,7 @@ export const CreateStudyGroupForm = ({ onSuccess }: CreateStudyGroupFormProps) =
       if (!user?.id) throw new Error("User not authenticated");
 
       const { data, error: groupError } = await supabase
-        .rpc<StudyGroup>('create_study_group', {
+        .rpc<StudyGroup, CreateStudyGroupParams>('create_study_group', {
           p_name: values.name,
           p_subject: values.subject,
           p_description: values.description || '',
@@ -68,7 +81,7 @@ export const CreateStudyGroupForm = ({ onSuccess }: CreateStudyGroupFormProps) =
       if (!data) throw new Error("Failed to create study group");
 
       const { error: memberError } = await supabase
-        .rpc('add_group_member', {
+        .rpc<null, AddGroupMemberParams>('add_group_member', {
           p_group_id: data.id,
           p_user_id: user.id,
           p_role: 'admin'
