@@ -6,7 +6,7 @@ import { Loader2, FileText } from "lucide-react";
 import { format } from "date-fns";
 
 interface SharedNote {
-  notes: {
+  note: {
     id: string;
     title: string;
     content: string;
@@ -31,7 +31,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
       const { data, error } = await supabase
         .from('study_group_notes')
         .select(`
-          notes (
+          note:notes!study_group_notes_note_id_fkey (
             id,
             title,
             content,
@@ -71,13 +71,13 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   return (
     <div className="space-y-4">
       {notes.map((note) => (
-        <Card key={note.notes.id}>
+        <Card key={note.note.id}>
           <CardHeader>
-            <CardTitle>{note.notes.title}</CardTitle>
+            <CardTitle>{note.note.title}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
-              {note.notes.content.substring(0, 200)}...
+              {note.note.content.substring(0, 200)}...
             </p>
             <div className="text-xs text-muted-foreground">
               Shared by {note.shared_by_profile?.username || note.shared_by_profile?.full_name || 'Unknown'} on{' '}
