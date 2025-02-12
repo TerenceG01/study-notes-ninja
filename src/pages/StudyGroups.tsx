@@ -32,21 +32,15 @@ const StudyGroups = () => {
   const { data: studyGroups, isLoading } = useQuery({
     queryKey: ['study-groups'],
     queryFn: async () => {
-      const { data: memberGroups, error: memberError } = await supabase
-        .from('study_group_members')
-        .select('group_id')
-        .eq('user_id', user?.id);
+      if (!user?.id) throw new Error("User not authenticated");
 
-      if (memberError) throw memberError;
+      // Use a stored procedure to get user's study groups
+      const { data: groups, error } = await supabase
+        .rpc('get_user_study_groups', {
+          p_user_id: user.id
+        });
 
-      const groupIds = memberGroups?.map(m => m.group_id) || [];
-
-      const { data: groups, error: groupsError } = await supabase
-        .from('study_groups')
-        .select('*')
-        .or(`id.in.(${groupIds.join(',')}),created_by.eq.${user?.id}`);
-
-      if (groupsError) throw groupsError;
+      if (error) throw error;
       return groups;
     },
     enabled: !!user,
@@ -109,7 +103,6 @@ const StudyGroups = () => {
                 </p>
                 <div className="flex items-center text-sm text-muted-foreground">
                   <Users className="h-4 w-4 mr-2" />
-                  {/* Member count will be added in the next iteration */}
                   Members
                 </div>
               </CardContent>

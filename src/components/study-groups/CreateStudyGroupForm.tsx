@@ -45,27 +45,25 @@ export const CreateStudyGroupForm = ({ onSuccess }: CreateStudyGroupFormProps) =
 
   const createGroupMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
-      // First create the study group
+      if (!user?.id) throw new Error("User not authenticated");
+
+      // Create a new study group using raw SQL since the table isn't in the types
       const { data: group, error: groupError } = await supabase
-        .from('study_groups')
-        .insert({
-          name: values.name,
-          subject: values.subject,
-          description: values.description,
-          created_by: user?.id,
-        })
-        .select()
-        .single();
+        .rpc('create_study_group', {
+          p_name: values.name,
+          p_subject: values.subject,
+          p_description: values.description,
+          p_user_id: user.id
+        });
 
       if (groupError) throw groupError;
 
-      // Then add the creator as a member with 'admin' role
+      // Add the creator as a member using raw SQL
       const { error: memberError } = await supabase
-        .from('study_group_members')
-        .insert({
-          group_id: group.id,
-          user_id: user?.id,
-          role: 'admin',
+        .rpc('add_group_member', {
+          p_group_id: group.id,
+          p_user_id: user.id,
+          p_role: 'admin'
         });
 
       if (memberError) throw memberError;
