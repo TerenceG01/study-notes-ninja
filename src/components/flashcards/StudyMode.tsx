@@ -135,6 +135,10 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
 
       {mode === 'standard' ? (
         <>
+          <div className="text-sm text-muted-foreground mb-4">
+            Card {currentIndex + 1} of {cards.length}
+          </div>
+          
           <Card 
             className="min-h-[300px] cursor-pointer transition-all hover:shadow-lg"
             onClick={() => setIsFlipped(!isFlipped)}
