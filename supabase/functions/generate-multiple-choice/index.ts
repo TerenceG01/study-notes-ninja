@@ -42,7 +42,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "You are a helpful assistant that generates plausible but incorrect multiple-choice options for flashcards. Generate 3 incorrect options that are similar enough to be challenging but definitely wrong."
+            content: "You are a helpful assistant that generates plausible but incorrect multiple-choice options for flashcards. Generate 3 incorrect options that are similar enough to be challenging but definitely wrong. Return ONLY valid JSON, no markdown formatting or backticks."
           },
           {
             role: "user",
@@ -50,15 +50,21 @@ serve(async (req) => {
             Question: ${flashcard.question}
             Correct Answer: ${flashcard.answer}
             
-            For each incorrect option, also provide a brief explanation of why it's wrong.
-            Format as JSON with this structure:
+            Return a JSON object with this exact structure (no markdown, no backticks):
             {
               "options": [
                 {
                   "content": "incorrect option 1",
                   "explanation": "why this is wrong"
                 },
-                // ... more options
+                {
+                  "content": "incorrect option 2",
+                  "explanation": "why this is wrong"
+                },
+                {
+                  "content": "incorrect option 3",
+                  "explanation": "why this is wrong"
+                }
               ]
             }`
           }
@@ -67,7 +73,19 @@ serve(async (req) => {
     });
 
     const aiResponse = await response.json();
-    const generatedOptions = JSON.parse(aiResponse.choices[0].message.content);
+    
+    // Extract and parse the content, handling potential markdown formatting
+    let generatedOptions;
+    try {
+      const content = aiResponse.choices[0].message.content;
+      // Remove any potential markdown formatting or backticks
+      const cleanContent = content.replace(/```json\n|\n```|`/g, '');
+      generatedOptions = JSON.parse(cleanContent);
+    } catch (error) {
+      console.error('Error parsing AI response:', error);
+      console.error('Raw AI response:', aiResponse.choices[0].message.content);
+      throw new Error('Failed to parse AI response');
+    }
 
     // Insert the correct answer first
     const { error: insertError } = await supabase
