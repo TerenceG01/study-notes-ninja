@@ -48,9 +48,9 @@ const StudyGroups = () => {
       if (!user?.id) throw new Error("User not authenticated");
 
       const { data, error } = await supabase
-        .rpc<StudyGroup[], GetUserStudyGroupsParams>('get_user_study_groups', {
+        .rpc('get_user_study_groups', {
           p_user_id: user.id
-        });
+        }) as { data: StudyGroup[] | null; error: Error | null };
 
       if (error) throw error;
       return data || [];

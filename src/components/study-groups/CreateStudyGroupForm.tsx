@@ -69,27 +69,27 @@ export const CreateStudyGroupForm = ({ onSuccess }: CreateStudyGroupFormProps) =
     mutationFn: async (values: z.infer<typeof formSchema>) => {
       if (!user?.id) throw new Error("User not authenticated");
 
-      const { data, error: groupError } = await supabase
-        .rpc<StudyGroup, CreateStudyGroupParams>('create_study_group', {
+      const { data: groupData, error: groupError } = await supabase
+        .rpc('create_study_group', {
           p_name: values.name,
           p_subject: values.subject,
           p_description: values.description || '',
           p_user_id: user.id
-        });
+        }) as { data: StudyGroup | null; error: Error | null };
 
       if (groupError) throw groupError;
-      if (!data) throw new Error("Failed to create study group");
+      if (!groupData) throw new Error("Failed to create study group");
 
       const { error: memberError } = await supabase
-        .rpc<null, AddGroupMemberParams>('add_group_member', {
-          p_group_id: data.id,
+        .rpc('add_group_member', {
+          p_group_id: groupData.id,
           p_user_id: user.id,
           p_role: 'admin'
         });
 
       if (memberError) throw memberError;
 
-      return data;
+      return groupData;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['study-groups'] });
