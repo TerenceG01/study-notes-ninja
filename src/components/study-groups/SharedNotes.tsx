@@ -14,7 +14,7 @@ interface SharedNote {
   };
   shared_by: string;
   shared_at: string;
-  profiles: {
+  shared_by_profile: {
     username: string | null;
     full_name: string | null;
   } | null;
@@ -39,7 +39,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
           ),
           shared_by,
           shared_at,
-          profiles (
+          shared_by_profile:profiles!shared_by (
             username,
             full_name
           )
@@ -80,7 +80,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
               {note.notes.content.substring(0, 200)}...
             </p>
             <div className="text-xs text-muted-foreground">
-              Shared by {note.profiles?.username || note.profiles?.full_name || 'Unknown'} on{' '}
+              Shared by {note.shared_by_profile?.username || note.shared_by_profile?.full_name || 'Unknown'} on{' '}
               {format(new Date(note.shared_at), 'PPP')}
             </div>
           </CardContent>
