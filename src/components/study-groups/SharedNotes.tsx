@@ -1,9 +1,11 @@
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, FileText } from "lucide-react";
 import { format } from "date-fns";
+import { ViewSharedNote } from "./ViewSharedNote";
 
 interface SharedNote {
   note: {
@@ -25,6 +27,8 @@ interface SharedNotesProps {
 }
 
 export const SharedNotes = ({ groupId }: SharedNotesProps) => {
+  const [selectedNote, setSelectedNote] = useState<SharedNote['note'] | null>(null);
+
   const { data: notes, isLoading } = useQuery({
     queryKey: ['group-shared-notes', groupId],
     queryFn: async () => {
@@ -71,7 +75,11 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   return (
     <div className="space-y-4">
       {notes.map((note) => (
-        <Card key={note.note.id}>
+        <Card 
+          key={note.note.id}
+          className="cursor-pointer hover:bg-accent transition-colors"
+          onClick={() => setSelectedNote(note.note)}
+        >
           <CardHeader>
             <CardTitle>{note.note.title}</CardTitle>
           </CardHeader>
@@ -86,6 +94,14 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
           </CardContent>
         </Card>
       ))}
+      
+      {selectedNote && (
+        <ViewSharedNote
+          note={selectedNote}
+          open={!!selectedNote}
+          onOpenChange={(open) => !open && setSelectedNote(null)}
+        />
+      )}
     </div>
   );
 };
