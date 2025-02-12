@@ -1,7 +1,8 @@
+
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Brain, ArrowLeft, ArrowRight, Check, X, Loader2 } from "lucide-react";
+import { Brain, ArrowLeft, ArrowRight, Check, X, Loader2, Zap } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
@@ -15,6 +16,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
+  const [hardMode, setHardMode] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -39,7 +41,10 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   const generateOptionsMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.functions.invoke('generate-multiple-choice', {
-        body: { flashcardId: currentCard.id },
+        body: { 
+          flashcardId: currentCard.id,
+          hardMode: hardMode 
+        },
       });
       if (error) throw error;
     },
@@ -134,6 +139,20 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         <div className="text-sm text-muted-foreground">
           Card {currentIndex + 1} of {flashcards.length}
         </div>
+        <Button
+          variant={hardMode ? "default" : "outline"}
+          onClick={() => {
+            setHardMode(!hardMode);
+            // Regenerate options for current card when toggling hard mode
+            if (!isAnswered) {
+              generateOptionsMutation.mutate();
+            }
+          }}
+          className="gap-2"
+        >
+          <Zap className={`h-4 w-4 ${hardMode ? "text-yellow-300" : ""}`} />
+          Hard Mode
+        </Button>
       </div>
 
       <Card className="mb-6">

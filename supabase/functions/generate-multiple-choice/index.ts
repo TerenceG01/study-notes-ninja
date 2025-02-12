@@ -1,4 +1,5 @@
 
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.0";
 
@@ -14,7 +15,7 @@ serve(async (req) => {
   }
 
   try {
-    const { flashcardId } = await req.json();
+    const { flashcardId, hardMode = false } = await req.json();
 
     // Initialize Supabase client with service role
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -42,7 +43,9 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "Generate 3 plausible but incorrect multiple-choice options. Be concise and direct."
+            content: hardMode 
+              ? "Generate 3 highly challenging but plausible multiple-choice options. These should be sophisticated distractors that require careful consideration to distinguish from the correct answer. Include subtle differences that test deep understanding."
+              : "Generate 3 plausible but incorrect multiple-choice options. Be concise and direct."
           },
           {
             role: "user",
@@ -59,8 +62,8 @@ serve(async (req) => {
             }`
           }
         ],
-        temperature: 0.3, // Lower temperature for more focused responses
-        max_tokens: 250 // Limit token count for faster responses
+        temperature: hardMode ? 0.7 : 0.3, // Higher temperature for more creative/challenging options
+        max_tokens: 250
       }),
     });
 
