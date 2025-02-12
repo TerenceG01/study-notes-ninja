@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -39,19 +38,6 @@ interface StudyGroup {
   created_at: string;
 }
 
-interface CreateStudyGroupParams {
-  p_name: string;
-  p_subject: string;
-  p_description: string;
-  p_user_id: string;
-}
-
-interface AddGroupMemberParams {
-  p_group_id: string;
-  p_user_id: string;
-  p_role: string;
-}
-
 export const CreateStudyGroupForm = ({ onSuccess }: CreateStudyGroupFormProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -69,23 +55,21 @@ export const CreateStudyGroupForm = ({ onSuccess }: CreateStudyGroupFormProps) =
     mutationFn: async (values: z.infer<typeof formSchema>) => {
       if (!user?.id) throw new Error("User not authenticated");
 
-      const { data: groupData, error: groupError } = await supabase
-        .rpc('create_study_group', {
-          p_name: values.name,
-          p_subject: values.subject,
-          p_description: values.description || '',
-          p_user_id: user.id
-        }) as { data: StudyGroup | null; error: Error | null };
+      const { data: groupData, error: groupError } = await supabase.rpc('create_study_group', {
+        p_name: values.name,
+        p_subject: values.subject,
+        p_description: values.description || '',
+        p_user_id: user.id
+      });
 
       if (groupError) throw groupError;
       if (!groupData) throw new Error("Failed to create study group");
 
-      const { error: memberError } = await supabase
-        .rpc('add_group_member', {
-          p_group_id: groupData.id,
-          p_user_id: user.id,
-          p_role: 'admin'
-        });
+      const { error: memberError } = await supabase.rpc('add_group_member', {
+        p_group_id: groupData.id,
+        p_user_id: user.id,
+        p_role: 'admin'
+      });
 
       if (memberError) throw memberError;
 

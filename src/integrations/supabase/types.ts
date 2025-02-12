@@ -292,12 +292,104 @@ export type Database = {
         }
         Relationships: []
       }
+      study_group_members: {
+        Row: {
+          group_id: string
+          joined_at: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          joined_at?: string | null
+          role: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          joined_at?: string | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "study_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_groups: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+          subject: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+          subject: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+          subject?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      add_group_member: {
+        Args: {
+          p_group_id: string
+          p_user_id: string
+          p_role: string
+        }
+        Returns: undefined
+      }
+      create_study_group: {
+        Args: {
+          p_name: string
+          p_subject: string
+          p_description: string
+          p_user_id: string
+        }
+        Returns: {
+          created_at: string | null
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+          subject: string
+        }
+      }
+      get_user_study_groups: {
+        Args: {
+          p_user_id: string
+        }
+        Returns: {
+          created_at: string | null
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+          subject: string
+        }[]
+      }
     }
     Enums: {
       flashcard_mode: "standard"

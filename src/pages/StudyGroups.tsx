@@ -1,4 +1,3 @@
-
 import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -33,10 +32,6 @@ interface StudyGroup {
   created_at: string;
 }
 
-interface GetUserStudyGroupsParams {
-  p_user_id: string;
-}
-
 const StudyGroups = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -47,13 +42,12 @@ const StudyGroups = () => {
     queryFn: async () => {
       if (!user?.id) throw new Error("User not authenticated");
 
-      const { data, error } = await supabase
-        .rpc('get_user_study_groups', {
-          p_user_id: user.id
-        }) as { data: StudyGroup[] | null; error: Error | null };
+      const { data, error } = await supabase.rpc('get_user_study_groups', {
+        p_user_id: user.id
+      });
 
       if (error) throw error;
-      return data || [];
+      return (data || []) as StudyGroup[];
     },
     enabled: !!user,
   });
