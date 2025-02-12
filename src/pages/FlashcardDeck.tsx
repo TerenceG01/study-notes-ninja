@@ -1,4 +1,3 @@
-
 import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -180,10 +179,6 @@ const FlashcardDeck = () => {
         <div className="mb-8">
           <h1 className="text-4xl font-bold">{deck.title}</h1>
           <p className="text-muted-foreground mt-2">{deck.description || "No description"}</p>
-          <div className="flex gap-4 mt-4 text-sm text-muted-foreground">
-            <span>{deck.total_cards} cards</span>
-            <span>{deck.learned_cards} learned</span>
-          </div>
         </div>
 
         <Tabs defaultValue="study" className="space-y-6">
