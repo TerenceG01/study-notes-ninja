@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Brain, ArrowLeft, ArrowRight, Check, X } from "lucide-react";
+import { Brain, ArrowLeft, ArrowRight, Check, X, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
@@ -22,7 +22,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   const currentCard = flashcards[currentIndex];
 
   // Fetch multiple choice options for the current flashcard
-  const { data: options, isLoading: isOptionsLoading } = useQuery({
+  const { data: options, isLoading: isOptionsLoading, error: optionsError } = useQuery({
     queryKey: ['multiple-choice-options', currentCard?.id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -31,9 +31,40 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         .eq('flashcard_id', currentCard.id);
 
       if (error) throw error;
-      return data || [];
+      
+      // If no options exist, generate them
+      if (!data || data.length === 0) {
+        await generateOptionsMutation.mutateAsync();
+        
+        // Fetch the newly generated options
+        const { data: newOptions, error: newError } = await supabase
+          .from('multiple_choice_options')
+          .select('*')
+          .eq('flashcard_id', currentCard.id);
+          
+        if (newError) throw newError;
+        return newOptions || [];
+      }
+      
+      return data;
     },
     enabled: !!currentCard?.id,
+  });
+
+  const generateOptionsMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.functions.invoke('generate-multiple-choice', {
+        body: { flashcardId: currentCard.id },
+      });
+      if (error) throw error;
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error generating options",
+        description: error.message,
+      });
+    },
   });
 
   const submitAnswerMutation = useMutation({
@@ -96,6 +127,15 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     return (
       <div className="text-center py-8">
         <p className="text-lg font-medium mb-4">No flashcards available</p>
+      </div>
+    );
+  }
+
+  if (isOptionsLoading || generateOptionsMutation.isPending) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin mb-4" />
+        <p className="text-muted-foreground">Generating multiple choice options...</p>
       </div>
     );
   }
