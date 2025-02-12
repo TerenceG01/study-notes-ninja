@@ -188,8 +188,6 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     );
   };
 
-  const correctAnswers = options.filter(option => option.is_correct);
-
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-6">
@@ -249,25 +247,9 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
               </Button>
             ))}
           </div>
-          {isAnswered && (
-            <div className="mt-4 space-y-4">
-              {correctAnswers.length > 1 && (
-                <div className="p-4 bg-muted rounded-lg">
-                  <p className="text-sm font-medium mb-2">All correct answers:</p>
-                  <ul className="list-disc list-inside space-y-2">
-                    {correctAnswers.map(answer => (
-                      <li key={answer.id} className="text-sm text-muted-foreground">
-                        {answer.content}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {selectedOption && options.find(o => o.id === selectedOption)?.explanation && (
-                <div className="p-4 bg-muted rounded-lg">
-                  <p className="text-sm">{options.find(o => o.id === selectedOption)?.explanation}</p>
-                </div>
-              )}
+          {isAnswered && options.find(o => o.id === selectedOption)?.explanation && (
+            <div className="mt-4 p-4 bg-muted rounded-lg">
+              <p className="text-sm">{options.find(o => o.id === selectedOption)?.explanation}</p>
             </div>
           )}
         </CardContent>
