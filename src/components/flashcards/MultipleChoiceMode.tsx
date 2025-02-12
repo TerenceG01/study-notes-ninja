@@ -18,11 +18,12 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   const [hardMode, setHardMode] = useState(false); // Default is standard mode (false)
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [totalAttempted, setTotalAttempted] = useState(0);
+  const [cards, setCards] = useState(flashcards); // Add state for shuffled cards
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const currentCard = flashcards[currentIndex];
-  const isLastCard = currentIndex === flashcards.length - 1;
+  const currentCard = cards[currentIndex];
+  const isLastCard = currentIndex === cards.length - 1;
 
   // Reset to standard mode when component unmounts or when switching cards
   useEffect(() => {
@@ -122,7 +123,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     setSelectedOption(null);
     if (direction === 'prev' && currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
-    } else if (direction === 'next' && currentIndex < flashcards.length - 1) {
+    } else if (direction === 'next' && currentIndex < cards.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
     // Hard mode will be reset by the useEffect when currentIndex changes
@@ -135,6 +136,18 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     setCorrectAnswers(0);
     setTotalAttempted(0);
     setHardMode(false); // Reset to standard mode when restarting quiz
+  };
+
+  const shuffleCards = () => {
+    const shuffled = [...cards].sort(() => Math.random() - 0.5);
+    setCards(shuffled);
+    setCurrentIndex(0);
+    setIsAnswered(false);
+    setSelectedOption(null);
+    toast({
+      title: "Cards Shuffled",
+      description: "The order of cards has been randomized.",
+    });
   };
 
   if (!currentCard || !options) {
@@ -192,7 +205,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     <div className="max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div className="text-sm text-muted-foreground">
-          Card {currentIndex + 1} of {flashcards.length}
+          Card {currentIndex + 1} of {cards.length}
         </div>
         <div className="flex gap-2">
           <Button
@@ -276,7 +289,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         <Button
           variant="outline"
           onClick={() => navigateCards('next')}
-          disabled={currentIndex === flashcards.length - 1}
+          disabled={currentIndex === cards.length - 1}
         >
           Next Card
           <ArrowRight className="h-4 w-4 ml-2" />
