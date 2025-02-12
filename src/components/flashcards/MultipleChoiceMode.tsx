@@ -189,7 +189,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         </CardContent>
       </Card>
 
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mt-6">
         <Button
           variant="outline"
           onClick={() => navigateCards('prev')}
@@ -207,6 +207,10 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
           Next Card
           <ArrowRight className="h-4 w-4 ml-2" />
         </Button>
+      </div>
+
+      <div className="text-center mt-4 text-sm text-muted-foreground">
+        Click an option to answer
       </div>
     </div>
   );
