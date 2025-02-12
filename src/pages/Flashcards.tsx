@@ -102,7 +102,9 @@ const Flashcards = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {/* Removed the cards counter from here */}
+                    <div className="text-sm text-muted-foreground">
+                      {deck.total_cards} cards
+                    </div>
                   </CardContent>
                 </Card>
               </Link>
