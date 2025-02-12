@@ -38,53 +38,59 @@ serve(async (req) => {
     if (flashcardError) throw flashcardError;
 
     // Generate options using OpenAI with a more focused prompt
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "gpt-4-1106-preview",
         messages: [
           {
             role: "system",
-            content: hardMode 
-              ? "Generate exactly 4 highly challenging but plausible multiple-choice options. These should be sophisticated distractors that require careful consideration to distinguish from the correct answer. Include subtle differences that test deep understanding."
-              : "Generate exactly 4 plausible but incorrect multiple-choice options. Be concise and direct."
+            content: "You will generate exactly 4 plausible but incorrect multiple-choice options. Return ONLY a JSON object with no additional text, formatting, or markdown."
           },
           {
             role: "user",
-            content: `Q: ${flashcard.question}
-            A: ${flashcard.answer}
+            content: `Generate 4 incorrect but plausible answer options for this question. The correct answer is: "${flashcard.answer}"
+            Question: "${flashcard.question}"
             
-            Return in this format:
-            {
-              "options": [
-                {"content": "wrong1", "explanation": "brief why wrong"},
-                {"content": "wrong2", "explanation": "brief why wrong"},
-                {"content": "wrong3", "explanation": "brief why wrong"},
-                {"content": "wrong4", "explanation": "brief why wrong"}
-              ]
-            }`
+            Return the options in this exact JSON format (no markdown, no additional text):
+            {"options":[{"content":"wrong1","explanation":"why wrong"},{"content":"wrong2","explanation":"why wrong"},{"content":"wrong3","explanation":"why wrong"},{"content":"wrong4","explanation":"why wrong"}]}`
           }
         ],
-        temperature: hardMode ? 0.7 : 0.3, // Higher temperature for more creative/challenging options
-        max_tokens: 250
+        temperature: hardMode ? 0.7 : 0.3,
+        max_tokens: 500,
+        response_format: { type: "json_object" }  // Force JSON response
       }),
     });
 
-    const aiResponse = await response.json();
-    
+    if (!openAIResponse.ok) {
+      const errorText = await openAIResponse.text();
+      console.error('OpenAI API error:', errorText);
+      throw new Error(`OpenAI API error: ${errorText}`);
+    }
+
+    const aiResponse = await openAIResponse.json();
+    console.log('Raw AI response:', JSON.stringify(aiResponse));
+
+    if (!aiResponse.choices?.[0]?.message?.content) {
+      throw new Error('Unexpected OpenAI response format');
+    }
+
     let generatedOptions;
     try {
-      const content = aiResponse.choices[0].message.content;
-      const cleanContent = content.replace(/```json\n|\n```|`/g, '');
-      generatedOptions = JSON.parse(cleanContent);
+      // Parse the content directly since we're using response_format: json_object
+      generatedOptions = JSON.parse(aiResponse.choices[0].message.content);
+      
+      if (!generatedOptions?.options?.length) {
+        throw new Error('Invalid options format in response');
+      }
     } catch (error) {
       console.error('Error parsing AI response:', error);
-      console.error('Raw AI response:', aiResponse.choices[0].message.content);
-      throw new Error('Failed to parse AI response');
+      console.error('Raw AI response content:', aiResponse.choices[0].message.content);
+      throw new Error(`Failed to parse AI response: ${error.message}`);
     }
 
     // Insert both correct and incorrect options in a single operation
@@ -115,7 +121,10 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ 
+      error: error.message,
+      details: error.stack
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
