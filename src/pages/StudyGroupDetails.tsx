@@ -1,4 +1,3 @@
-
 import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -16,6 +15,8 @@ import { Loader2, ArrowLeft, Users, CalendarDays } from "lucide-react";
 import { format } from "date-fns";
 import { InviteMembers } from "@/components/study-groups/InviteMembers";
 import { Separator } from "@/components/ui/separator";
+import { ShareNote } from "@/components/study-groups/ShareNote";
+import { SharedNotes } from "@/components/study-groups/SharedNotes";
 
 interface StudyGroup {
   id: string;
@@ -130,8 +131,13 @@ const StudyGroupDetails = () => {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Study Groups
           </Button>
-          <h1 className="text-4xl font-bold">{studyGroup.name}</h1>
-          <p className="text-lg text-muted-foreground mt-2">{studyGroup.subject}</p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-4xl font-bold">{studyGroup.name}</h1>
+              <p className="text-lg text-muted-foreground mt-2">{studyGroup.subject}</p>
+            </div>
+            {userRole && <ShareNote groupId={studyGroup.id} />}
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
@@ -148,6 +154,18 @@ const StudyGroupDetails = () => {
                   <CalendarDays className="h-4 w-4 mr-2" />
                   Created {format(new Date(studyGroup.created_at), 'PPP')}
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Shared Notes</CardTitle>
+                <CardDescription>
+                  Notes shared by group members
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <SharedNotes groupId={studyGroup.id} />
               </CardContent>
             </Card>
 

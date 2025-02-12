@@ -369,6 +369,45 @@ export type Database = {
           },
         ]
       }
+      study_group_notes: {
+        Row: {
+          group_id: string
+          id: string
+          note_id: string
+          shared_at: string | null
+          shared_by: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          note_id: string
+          shared_at?: string | null
+          shared_by: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          note_id?: string
+          shared_at?: string | null
+          shared_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_group_notes_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "study_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "study_group_notes_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       study_groups: {
         Row: {
           created_at: string | null
