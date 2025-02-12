@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -134,6 +135,9 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
 
       {mode === 'standard' ? (
         <>
+          <div className="text-sm text-muted-foreground mb-2">
+            Card {currentIndex + 1} of {cards.length}
+          </div>
           <Card 
             className="min-h-[300px] cursor-pointer transition-all hover:shadow-lg"
             onClick={() => setIsFlipped(!isFlipped)}
