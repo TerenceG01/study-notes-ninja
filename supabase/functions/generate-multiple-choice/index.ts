@@ -22,6 +22,12 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    // First, delete any existing options for this flashcard
+    await supabase
+      .from('multiple_choice_options')
+      .delete()
+      .eq('flashcard_id', flashcardId);
+
     // Fetch the flashcard
     const { data: flashcard, error: flashcardError } = await supabase
       .from('flashcards')
@@ -82,7 +88,6 @@ serve(async (req) => {
     }
 
     // Insert both correct and incorrect options in a single operation
-    // First, add the correct answer and then up to 4 incorrect options
     const allOptions = [
       {
         flashcard_id: flashcardId,
@@ -97,12 +102,6 @@ serve(async (req) => {
         explanation: option.explanation,
       }))
     ];
-
-    // Delete any existing options for this flashcard
-    await supabase
-      .from('multiple_choice_options')
-      .delete()
-      .eq('flashcard_id', flashcardId);
 
     // Insert the new options
     const { error: insertError } = await supabase
