@@ -39,7 +39,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
           ),
           shared_by,
           shared_at,
-          shared_by_profile:profiles (
+          shared_by_profile:profiles!study_group_notes_shared_by_profiles_fkey (
             username,
             full_name
           )
@@ -47,7 +47,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
         .eq('group_id', groupId);
 
       if (error) throw error;
-      return data as unknown as SharedNote[];
+      return data as SharedNote[];
     },
   });
 
