@@ -44,8 +44,8 @@ serve(async (req) => {
           {
             role: "system",
             content: hardMode 
-              ? "Generate 3 highly challenging but plausible multiple-choice options. These should be sophisticated distractors that require careful consideration to distinguish from the correct answer. Include subtle differences that test deep understanding."
-              : "Generate 3 plausible but incorrect multiple-choice options. Be concise and direct."
+              ? "Generate exactly 4 highly challenging but plausible multiple-choice options. These should be sophisticated distractors that require careful consideration to distinguish from the correct answer. Include subtle differences that test deep understanding."
+              : "Generate exactly 4 plausible but incorrect multiple-choice options. Be concise and direct."
           },
           {
             role: "user",
@@ -57,7 +57,8 @@ serve(async (req) => {
               "options": [
                 {"content": "wrong1", "explanation": "brief why wrong"},
                 {"content": "wrong2", "explanation": "brief why wrong"},
-                {"content": "wrong3", "explanation": "brief why wrong"}
+                {"content": "wrong3", "explanation": "brief why wrong"},
+                {"content": "wrong4", "explanation": "brief why wrong"}
               ]
             }`
           }
@@ -81,6 +82,7 @@ serve(async (req) => {
     }
 
     // Insert both correct and incorrect options in a single operation
+    // First, add the correct answer and then up to 4 incorrect options
     const allOptions = [
       {
         flashcard_id: flashcardId,
@@ -88,7 +90,7 @@ serve(async (req) => {
         is_correct: true,
         explanation: null,
       },
-      ...generatedOptions.options.map((option: any) => ({
+      ...generatedOptions.options.slice(0, 4).map((option: any) => ({
         flashcard_id: flashcardId,
         content: option.content,
         is_correct: false,
@@ -96,6 +98,13 @@ serve(async (req) => {
       }))
     ];
 
+    // Delete any existing options for this flashcard
+    await supabase
+      .from('multiple_choice_options')
+      .delete()
+      .eq('flashcard_id', flashcardId);
+
+    // Insert the new options
     const { error: insertError } = await supabase
       .from('multiple_choice_options')
       .insert(allOptions);
