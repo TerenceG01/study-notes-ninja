@@ -30,6 +30,15 @@ interface CreateStudyGroupFormProps {
   onSuccess?: () => void;
 }
 
+interface StudyGroup {
+  id: string;
+  name: string;
+  subject: string;
+  description: string | null;
+  created_by: string;
+  created_at: string;
+}
+
 export const CreateStudyGroupForm = ({ onSuccess }: CreateStudyGroupFormProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -47,28 +56,27 @@ export const CreateStudyGroupForm = ({ onSuccess }: CreateStudyGroupFormProps) =
     mutationFn: async (values: z.infer<typeof formSchema>) => {
       if (!user?.id) throw new Error("User not authenticated");
 
-      // Create a new study group using raw SQL since the table isn't in the types
-      const { data: group, error: groupError } = await supabase
-        .rpc('create_study_group', {
+      const { data, error: groupError } = await supabase
+        .rpc<StudyGroup>('create_study_group', {
           p_name: values.name,
           p_subject: values.subject,
-          p_description: values.description,
+          p_description: values.description || '',
           p_user_id: user.id
         });
 
       if (groupError) throw groupError;
+      if (!data) throw new Error("Failed to create study group");
 
-      // Add the creator as a member using raw SQL
       const { error: memberError } = await supabase
         .rpc('add_group_member', {
-          p_group_id: group.id,
+          p_group_id: data.id,
           p_user_id: user.id,
           p_role: 'admin'
         });
 
       if (memberError) throw memberError;
 
-      return group;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['study-groups'] });

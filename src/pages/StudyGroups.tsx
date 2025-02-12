@@ -24,6 +24,15 @@ import {
 import { Loader2, Plus, Users } from "lucide-react";
 import { CreateStudyGroupForm } from "@/components/study-groups/CreateStudyGroupForm";
 
+interface StudyGroup {
+  id: string;
+  name: string;
+  subject: string;
+  description: string | null;
+  created_by: string;
+  created_at: string;
+}
+
 const StudyGroups = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -34,14 +43,13 @@ const StudyGroups = () => {
     queryFn: async () => {
       if (!user?.id) throw new Error("User not authenticated");
 
-      // Use a stored procedure to get user's study groups
-      const { data: groups, error } = await supabase
-        .rpc('get_user_study_groups', {
+      const { data, error } = await supabase
+        .rpc<StudyGroup[]>('get_user_study_groups', {
           p_user_id: user.id
         });
 
       if (error) throw error;
-      return groups;
+      return data || [];
     },
     enabled: !!user,
   });
@@ -87,7 +95,7 @@ const StudyGroups = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {studyGroups?.map((group) => (
+          {studyGroups && studyGroups.map((group) => (
             <Card
               key={group.id}
               className="cursor-pointer hover:bg-muted/50 transition-colors"
@@ -109,7 +117,7 @@ const StudyGroups = () => {
             </Card>
           ))}
 
-          {studyGroups?.length === 0 && (
+          {(!studyGroups || studyGroups.length === 0) && (
             <div className="col-span-full text-center py-12">
               <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium mb-2">No study groups yet</h3>
