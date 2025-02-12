@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import type {
@@ -158,6 +159,7 @@ function toast({ ...props }: Toast) {
       onOpenChange: (open) => {
         if (!open) dismiss()
       },
+      className: "bottom-0 left-1/2 -translate-x-1/2", // Add this line to position toasts in the bottom middle
     },
   })
 
