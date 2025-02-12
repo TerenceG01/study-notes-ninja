@@ -203,101 +203,103 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <div className="text-sm text-muted-foreground">
-          Card {currentIndex + 1} of {cards.length}
-        </div>
-        <div className="flex gap-2">
-          <Button
-            variant={hardMode ? "default" : "outline"}
-            onClick={() => {
-              const newMode = !hardMode;
-              setHardMode(newMode);
-              generateOptionsMutation.mutate();
-              toast({
-                title: newMode ? "Hard Mode Enabled" : "Standard Mode Enabled",
-                description: newMode 
-                  ? "Questions will now be more challenging"
-                  : "Questions will now be standard difficulty",
-              });
-            }}
-            className="gap-2"
-          >
-            <Zap className={`h-4 w-4 ${hardMode ? "text-yellow-300" : ""}`} />
-            {hardMode ? "Switch to Standard Mode" : "Switch to Hard Mode"}
-          </Button>
+      <div className="flex flex-col gap-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-muted-foreground">
+              Card {currentIndex + 1} of {cards.length}
+            </div>
+            <Button
+              variant={hardMode ? "default" : "outline"}
+              onClick={() => {
+                const newMode = !hardMode;
+                setHardMode(newMode);
+                generateOptionsMutation.mutate();
+                toast({
+                  title: newMode ? "Hard Mode Enabled" : "Standard Mode Enabled",
+                  description: newMode 
+                    ? "Questions will now be more challenging"
+                    : "Questions will now be standard difficulty",
+                });
+              }}
+              className="gap-2"
+            >
+              <Zap className={`h-4 w-4 ${hardMode ? "text-yellow-300" : ""}`} />
+              {hardMode ? "Switch to Standard Mode" : "Switch to Hard Mode"}
+            </Button>
+          </div>
           <Button variant="outline" onClick={shuffleCards}>
             <Shuffle className="h-4 w-4 mr-2" />
             Shuffle
           </Button>
         </div>
-      </div>
 
-      <Card className="mb-6">
-        <CardContent className="p-6">
-          <h3 className="text-lg font-medium mb-4">{currentCard.question}</h3>
-          <div className="space-y-3">
-            {options.slice(0, 5).map((option) => (
-              <Button
-                key={option.id}
-                variant={isAnswered 
-                  ? option.is_correct 
-                    ? "default" 
-                    : selectedOption === option.id 
-                      ? "destructive" 
-                      : "outline"
-                  : "outline"
-                }
-                className="w-full justify-start text-left h-auto py-4 px-6 whitespace-normal"
-                onClick={() => handleOptionSelect(option.id, option.is_correct)}
-                disabled={isAnswered}
-              >
-                <div className="flex items-start gap-2">
-                  <div className="flex-shrink-0 mt-1">
-                    {isAnswered && option.is_correct && (
-                      <Check className="h-4 w-4 text-white" />
-                    )}
-                    {isAnswered && selectedOption === option.id && !option.is_correct && (
-                      <X className="h-4 w-4 text-white" />
-                    )}
+        <Card className="mb-6">
+          <CardContent className="p-6">
+            <h3 className="text-lg font-medium mb-4">{currentCard.question}</h3>
+            <div className="space-y-3">
+              {options.slice(0, 5).map((option) => (
+                <Button
+                  key={option.id}
+                  variant={isAnswered 
+                    ? option.is_correct 
+                      ? "default" 
+                      : selectedOption === option.id 
+                        ? "destructive" 
+                        : "outline"
+                    : "outline"
+                  }
+                  className="w-full justify-start text-left h-auto py-4 px-6 whitespace-normal"
+                  onClick={() => handleOptionSelect(option.id, option.is_correct)}
+                  disabled={isAnswered}
+                >
+                  <div className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-1">
+                      {isAnswered && option.is_correct && (
+                        <Check className="h-4 w-4 text-white" />
+                      )}
+                      {isAnswered && selectedOption === option.id && !option.is_correct && (
+                        <X className="h-4 w-4 text-white" />
+                      )}
+                    </div>
+                    <span className="break-words">{option.content}</span>
                   </div>
-                  <span className="break-words">{option.content}</span>
-                </div>
-              </Button>
-            ))}
-          </div>
-          {isAnswered && options.find(o => o.id === selectedOption)?.explanation && (
-            <div className="mt-4 p-4 bg-muted rounded-lg">
-              <p className="text-sm">{options.find(o => o.id === selectedOption)?.explanation}</p>
+                </Button>
+              ))}
             </div>
-          )}
-        </CardContent>
-      </Card>
+            {isAnswered && options.find(o => o.id === selectedOption)?.explanation && (
+              <div className="mt-4 p-4 bg-muted rounded-lg">
+                <p className="text-sm">{options.find(o => o.id === selectedOption)?.explanation}</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-      {renderQuizCompletion()}
+        {renderQuizCompletion()}
 
-      <div className="flex justify-between items-center mt-6">
-        <Button
-          variant="outline"
-          onClick={() => navigateCards('prev')}
-          disabled={currentIndex === 0}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Previous Card
-        </Button>
+        <div className="flex justify-between items-center mt-6">
+          <Button
+            variant="outline"
+            onClick={() => navigateCards('prev')}
+            disabled={currentIndex === 0}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Previous Card
+          </Button>
 
-        <Button
-          variant="outline"
-          onClick={() => navigateCards('next')}
-          disabled={currentIndex === cards.length - 1}
-        >
-          Next Card
-          <ArrowRight className="h-4 w-4 ml-2" />
-        </Button>
-      </div>
+          <Button
+            variant="outline"
+            onClick={() => navigateCards('next')}
+            disabled={currentIndex === cards.length - 1}
+          >
+            Next Card
+            <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
+        </div>
 
-      <div className="text-center mt-4 text-sm text-muted-foreground">
-        Click an option to answer
+        <div className="text-center mt-4 text-sm text-muted-foreground">
+          Click an option to answer
+        </div>
       </div>
     </div>
   );
