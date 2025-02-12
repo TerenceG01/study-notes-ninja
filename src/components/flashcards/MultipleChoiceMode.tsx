@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -142,16 +141,23 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         <Button
           variant={hardMode ? "default" : "outline"}
           onClick={() => {
-            setHardMode(!hardMode);
-            // Regenerate options for current card when toggling hard mode
+            const newMode = !hardMode;
+            setHardMode(newMode);
+            // Regenerate options for current card when toggling mode
             if (!isAnswered) {
               generateOptionsMutation.mutate();
             }
+            toast({
+              title: newMode ? "Hard Mode Enabled" : "Standard Mode Enabled",
+              description: newMode 
+                ? "Questions will now be more challenging"
+                : "Questions will now be standard difficulty",
+            });
           }}
           className="gap-2"
         >
           <Zap className={`h-4 w-4 ${hardMode ? "text-yellow-300" : ""}`} />
-          Hard Mode
+          {hardMode ? "Standard Mode" : "Hard Mode"}
         </Button>
       </div>
 
