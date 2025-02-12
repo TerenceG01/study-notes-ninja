@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Brain, ArrowLeft, ArrowRight, Check, X, Loader2, Zap } from "lucide-react";
+import { Brain, ArrowLeft, ArrowRight, Check, X, Loader2, Zap, Shuffle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
@@ -194,24 +194,30 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         <div className="text-sm text-muted-foreground">
           Card {currentIndex + 1} of {flashcards.length}
         </div>
-        <Button
-          variant={hardMode ? "default" : "outline"}
-          onClick={() => {
-            const newMode = !hardMode;
-            setHardMode(newMode);
-            generateOptionsMutation.mutate();
-            toast({
-              title: newMode ? "Hard Mode Enabled" : "Standard Mode Enabled",
-              description: newMode 
-                ? "Questions will now be more challenging"
-                : "Questions will now be standard difficulty",
-            });
-          }}
-          className="gap-2"
-        >
-          <Zap className={`h-4 w-4 ${hardMode ? "text-yellow-300" : ""}`} />
-          {hardMode ? "Switch to Standard Mode" : "Switch to Hard Mode"}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant={hardMode ? "default" : "outline"}
+            onClick={() => {
+              const newMode = !hardMode;
+              setHardMode(newMode);
+              generateOptionsMutation.mutate();
+              toast({
+                title: newMode ? "Hard Mode Enabled" : "Standard Mode Enabled",
+                description: newMode 
+                  ? "Questions will now be more challenging"
+                  : "Questions will now be standard difficulty",
+              });
+            }}
+            className="gap-2"
+          >
+            <Zap className={`h-4 w-4 ${hardMode ? "text-yellow-300" : ""}`} />
+            {hardMode ? "Switch to Standard Mode" : "Switch to Hard Mode"}
+          </Button>
+          <Button variant="outline" onClick={shuffleCards}>
+            <Shuffle className="h-4 w-4 mr-2" />
+            Shuffle
+          </Button>
+        </div>
       </div>
 
       <Card className="mb-6">
