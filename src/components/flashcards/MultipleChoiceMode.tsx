@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Brain, ArrowLeft, ArrowRight, Check, X, Loader2, Zap } from "lucide-react";
@@ -16,7 +15,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
-  const [hardMode, setHardMode] = useState(false);
+  const [hardMode, setHardMode] = useState(false); // Default is standard mode (false)
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [totalAttempted, setTotalAttempted] = useState(0);
   const { toast } = useToast();
@@ -24,6 +23,11 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
 
   const currentCard = flashcards[currentIndex];
   const isLastCard = currentIndex === flashcards.length - 1;
+
+  // Reset to standard mode when component unmounts or when switching cards
+  useEffect(() => {
+    setHardMode(false);
+  }, [currentIndex]);
 
   // Fetch multiple choice options for the current flashcard
   const { data: options, isLoading: isOptionsLoading, error: optionsError } = useQuery({
@@ -121,6 +125,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     } else if (direction === 'next' && currentIndex < flashcards.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
+    // Hard mode will be reset by the useEffect when currentIndex changes
   };
 
   const resetQuiz = () => {
@@ -129,6 +134,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     setSelectedOption(null);
     setCorrectAnswers(0);
     setTotalAttempted(0);
+    setHardMode(false); // Reset to standard mode when restarting quiz
   };
 
   if (!currentCard || !options) {
