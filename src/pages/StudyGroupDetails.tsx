@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/card";
 import { Loader2, ArrowLeft, Users, CalendarDays } from "lucide-react";
 import { format } from "date-fns";
+import { InviteMembers } from "@/components/study-groups/InviteMembers";
+import { Separator } from "@/components/ui/separator";
 
 interface StudyGroup {
   id: string;
@@ -113,6 +115,8 @@ const StudyGroupDetails = () => {
     );
   }
 
+  const userRole = members?.find(member => member.user_id === user?.id)?.role;
+
   return (
     <div className="min-h-screen bg-background">
       <NavigationBar />
@@ -131,7 +135,7 @@ const StudyGroupDetails = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>About</CardTitle>
@@ -146,6 +150,20 @@ const StudyGroupDetails = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {userRole && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Invite Members</CardTitle>
+                  <CardDescription>
+                    Invite other students to join this study group
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <InviteMembers groupId={studyGroup.id} />
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           <div>

@@ -292,6 +292,47 @@ export type Database = {
         }
         Relationships: []
       }
+      study_group_invites: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          email: string | null
+          expires_at: string | null
+          group_id: string
+          id: string
+          invite_code: string
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          email?: string | null
+          expires_at?: string | null
+          group_id: string
+          id?: string
+          invite_code?: string
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          email?: string | null
+          expires_at?: string | null
+          group_id?: string
+          id?: string
+          invite_code?: string
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_group_invites_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "study_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       study_group_members: {
         Row: {
           group_id: string
@@ -396,6 +437,12 @@ export type Database = {
           name: string
           subject: string
         }[]
+      }
+      join_group_with_invite: {
+        Args: {
+          p_invite_code: string
+        }
+        Returns: string
       }
     }
     Enums: {

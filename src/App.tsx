@@ -13,6 +13,7 @@ import Flashcards from "./pages/Flashcards";
 import FlashcardDeck from "./pages/FlashcardDeck";
 import StudyGroups from "./pages/StudyGroups";
 import StudyGroupDetails from "./pages/StudyGroupDetails";
+import JoinStudyGroup from "./pages/JoinStudyGroup";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "./contexts/AuthContext";
 
@@ -79,6 +80,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <StudyGroupDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/study-groups/join/:code"
+              element={
+                <ProtectedRoute>
+                  <JoinStudyGroup />
                 </ProtectedRoute>
               }
             />
