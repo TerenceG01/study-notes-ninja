@@ -11,6 +11,7 @@ import Notes from "./pages/Notes";
 import Profile from "./pages/Profile";
 import Flashcards from "./pages/Flashcards";
 import FlashcardDeck from "./pages/FlashcardDeck";
+import StudyGroups from "./pages/StudyGroups";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "./contexts/AuthContext";
 
@@ -61,6 +62,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <FlashcardDeck />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/study-groups"
+              element={
+                <ProtectedRoute>
+                  <StudyGroups />
                 </ProtectedRoute>
               }
             />
