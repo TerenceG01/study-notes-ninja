@@ -77,7 +77,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
       {notes.map((note) => (
         <Card 
           key={note.note.id}
-          className="cursor-pointer hover:bg-accent transition-colors"
+          className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg border-2 hover:border-accent"
           onClick={() => setSelectedNote(note.note)}
         >
           <CardHeader>
