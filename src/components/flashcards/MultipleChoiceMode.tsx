@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,7 +37,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     enabled: !!currentCard?.id,
   });
 
-  // Only trigger generation if no options exist
+  // Generate options mutation
   const generateOptionsMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.functions.invoke('generate-multiple-choice', {
@@ -144,9 +145,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
             const newMode = !hardMode;
             setHardMode(newMode);
             // Regenerate options for current card when toggling mode
-            if (!isAnswered) {
-              generateOptionsMutation.mutate();
-            }
+            generateOptionsMutation.mutate();
             toast({
               title: newMode ? "Hard Mode Enabled" : "Standard Mode Enabled",
               description: newMode 
@@ -157,7 +156,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
           className="gap-2"
         >
           <Zap className={`h-4 w-4 ${hardMode ? "text-yellow-300" : ""}`} />
-          {hardMode ? "Standard Mode" : "Hard Mode"}
+          {hardMode ? "Hard Mode" : "Standard Mode"}
         </Button>
       </div>
 
@@ -165,7 +164,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         <CardContent className="p-6">
           <h3 className="text-lg font-medium mb-4">{currentCard.question}</h3>
           <div className="space-y-3">
-            {options.map((option) => (
+            {options.slice(0, 5).map((option) => (
               <Button
                 key={option.id}
                 variant={isAnswered 
