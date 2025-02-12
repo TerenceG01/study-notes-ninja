@@ -67,7 +67,6 @@ serve(async (req) => {
     for (const line of lines) {
       if (line.startsWith('Q:') || line.startsWith('Question:')) {
         if (currentQuestion) {
-          // If we have a previous question without an answer, skip it
           currentQuestion = '';
         }
         currentQuestion = line.replace(/^(Q:|Question:)\s*/, '').trim();
@@ -77,18 +76,32 @@ serve(async (req) => {
           deck_id: deck.id,
           question: currentQuestion,
           answer: answer,
-          note_id: noteId
+          note_id: noteId,
+          has_multiple_choice_options: false // Initialize as false
         });
         currentQuestion = '';
       }
     }
 
     if (flashcards.length > 0) {
-      const { error: flashcardsError } = await supabaseClient
+      const { data: insertedFlashcards, error: flashcardsError } = await supabaseClient
         .from('flashcards')
-        .insert(flashcards);
+        .insert(flashcards)
+        .select();
 
       if (flashcardsError) throw flashcardsError;
+
+      // Generate multiple choice options for each flashcard
+      for (const flashcard of insertedFlashcards) {
+        await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/generate-multiple-choice`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ flashcardId: flashcard.id }),
+        });
+      }
     }
 
     return new Response(

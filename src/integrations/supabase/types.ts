@@ -89,6 +89,7 @@ export type Database = {
           created_at: string
           deck_id: string
           difficulty: number | null
+          has_multiple_choice_options: boolean | null
           id: string
           last_reviewed: string | null
           learned: boolean | null
@@ -103,6 +104,7 @@ export type Database = {
           created_at?: string
           deck_id: string
           difficulty?: number | null
+          has_multiple_choice_options?: boolean | null
           id?: string
           last_reviewed?: string | null
           learned?: boolean | null
@@ -117,6 +119,7 @@ export type Database = {
           created_at?: string
           deck_id?: string
           difficulty?: number | null
+          has_multiple_choice_options?: boolean | null
           id?: string
           last_reviewed?: string | null
           learned?: boolean | null

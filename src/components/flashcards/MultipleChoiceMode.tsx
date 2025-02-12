@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,32 +30,21 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         .eq('flashcard_id', currentCard.id);
 
       if (error) throw error;
-      
-      // If no options exist, generate them
-      if (!data || data.length === 0) {
-        await generateOptionsMutation.mutateAsync();
-        
-        // Fetch the newly generated options
-        const { data: newOptions, error: newError } = await supabase
-          .from('multiple_choice_options')
-          .select('*')
-          .eq('flashcard_id', currentCard.id);
-          
-        if (newError) throw newError;
-        return newOptions || [];
-      }
-      
-      return data;
+      return data || [];
     },
     enabled: !!currentCard?.id,
   });
 
+  // Only trigger generation if no options exist
   const generateOptionsMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.functions.invoke('generate-multiple-choice', {
         body: { flashcardId: currentCard.id },
       });
       if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['multiple-choice-options', currentCard.id] });
     },
     onError: (error) => {
       toast({
@@ -135,7 +123,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     return (
       <div className="flex flex-col items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin mb-4" />
-        <p className="text-muted-foreground">Generating multiple choice options...</p>
+        <p className="text-muted-foreground">Loading multiple choice options...</p>
       </div>
     );
   }
