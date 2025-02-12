@@ -102,10 +102,7 @@ const Flashcards = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>{deck.total_cards} cards</span>
-                      <span>{deck.learned_cards} learned</span>
-                    </div>
+                    {/* Removed the cards counter from here */}
                   </CardContent>
                 </Card>
               </Link>
