@@ -57,9 +57,9 @@ export const ViewSharedNote = ({ note, open, onOpenChange }: ViewSharedNoteProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[800px]">
-        <DialogHeader>
-          <DialogTitle>{note.title}</DialogTitle>
+      <DialogContent className="w-[90vw] max-h-[90vh] p-4 md:p-6 md:w-[80vw] lg:w-[60vw] xl:w-[800px] overflow-y-auto">
+        <DialogHeader className="space-y-4">
+          <DialogTitle className="text-xl md:text-2xl">{note.title}</DialogTitle>
           <div className="flex justify-end space-x-2">
             {!isEditing && (
               <Button onClick={() => setIsEditing(true)}>
@@ -81,15 +81,17 @@ export const ViewSharedNote = ({ note, open, onOpenChange }: ViewSharedNoteProps
             )}
           </div>
         </DialogHeader>
-        {isEditing ? (
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className="min-h-[400px]"
-          />
-        ) : (
-          <div className="whitespace-pre-wrap">{content}</div>
-        )}
+        <div className="mt-4 md:mt-6">
+          {isEditing ? (
+            <Textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              className="min-h-[200px] md:min-h-[300px] lg:min-h-[400px]"
+            />
+          ) : (
+            <div className="whitespace-pre-wrap prose max-w-none">{content}</div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
