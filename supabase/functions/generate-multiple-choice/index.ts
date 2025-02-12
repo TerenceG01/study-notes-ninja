@@ -30,7 +30,7 @@ serve(async (req) => {
 
     if (flashcardError) throw flashcardError;
 
-    // Generate options using OpenAI
+    // Generate options using OpenAI with a more focused prompt
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -42,43 +42,33 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "You are a helpful assistant that generates plausible but incorrect multiple-choice options for flashcards. Generate 3 incorrect options that are similar enough to be challenging but definitely wrong. Return ONLY valid JSON, no markdown formatting or backticks."
+            content: "Generate 3 plausible but incorrect multiple-choice options. Be concise and direct."
           },
           {
             role: "user",
-            content: `Generate 3 plausible but incorrect multiple choice options for this flashcard:
-            Question: ${flashcard.question}
-            Correct Answer: ${flashcard.answer}
+            content: `Q: ${flashcard.question}
+            A: ${flashcard.answer}
             
-            Return a JSON object with this exact structure (no markdown, no backticks):
+            Return in this format:
             {
               "options": [
-                {
-                  "content": "incorrect option 1",
-                  "explanation": "why this is wrong"
-                },
-                {
-                  "content": "incorrect option 2",
-                  "explanation": "why this is wrong"
-                },
-                {
-                  "content": "incorrect option 3",
-                  "explanation": "why this is wrong"
-                }
+                {"content": "wrong1", "explanation": "brief why wrong"},
+                {"content": "wrong2", "explanation": "brief why wrong"},
+                {"content": "wrong3", "explanation": "brief why wrong"}
               ]
             }`
           }
         ],
+        temperature: 0.3, // Lower temperature for more focused responses
+        max_tokens: 250 // Limit token count for faster responses
       }),
     });
 
     const aiResponse = await response.json();
     
-    // Extract and parse the content, handling potential markdown formatting
     let generatedOptions;
     try {
       const content = aiResponse.choices[0].message.content;
-      // Remove any potential markdown formatting or backticks
       const cleanContent = content.replace(/```json\n|\n```|`/g, '');
       generatedOptions = JSON.parse(cleanContent);
     } catch (error) {
@@ -87,31 +77,27 @@ serve(async (req) => {
       throw new Error('Failed to parse AI response');
     }
 
-    // Insert the correct answer first
-    const { error: insertError } = await supabase
-      .from('multiple_choice_options')
-      .insert({
+    // Insert both correct and incorrect options in a single operation
+    const allOptions = [
+      {
         flashcard_id: flashcardId,
         content: flashcard.answer,
         is_correct: true,
         explanation: null,
-      });
+      },
+      ...generatedOptions.options.map((option: any) => ({
+        flashcard_id: flashcardId,
+        content: option.content,
+        is_correct: false,
+        explanation: option.explanation,
+      }))
+    ];
+
+    const { error: insertError } = await supabase
+      .from('multiple_choice_options')
+      .insert(allOptions);
 
     if (insertError) throw insertError;
-
-    // Insert the incorrect options
-    const incorrectOptions = generatedOptions.options.map((option: any) => ({
-      flashcard_id: flashcardId,
-      content: option.content,
-      is_correct: false,
-      explanation: option.explanation,
-    }));
-
-    const { error: incorrectInsertError } = await supabase
-      .from('multiple_choice_options')
-      .insert(incorrectOptions);
-
-    if (incorrectInsertError) throw incorrectInsertError;
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
