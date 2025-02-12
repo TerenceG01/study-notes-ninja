@@ -163,18 +163,20 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
                       : "outline"
                   : "outline"
                 }
-                className="w-full justify-start text-left h-auto py-4 px-6"
+                className="w-full justify-start text-left h-auto py-4 px-6 whitespace-normal"
                 onClick={() => handleOptionSelect(option.id, option.is_correct)}
                 disabled={isAnswered}
               >
-                <div className="flex items-center gap-2">
-                  {isAnswered && option.is_correct && (
-                    <Check className="h-4 w-4 text-white" />
-                  )}
-                  {isAnswered && selectedOption === option.id && !option.is_correct && (
-                    <X className="h-4 w-4 text-white" />
-                  )}
-                  <span>{option.content}</span>
+                <div className="flex items-start gap-2">
+                  <div className="flex-shrink-0 mt-1">
+                    {isAnswered && option.is_correct && (
+                      <Check className="h-4 w-4 text-white" />
+                    )}
+                    {isAnswered && selectedOption === option.id && !option.is_correct && (
+                      <X className="h-4 w-4 text-white" />
+                    )}
+                  </div>
+                  <span className="break-words">{option.content}</span>
                 </div>
               </Button>
             ))}
