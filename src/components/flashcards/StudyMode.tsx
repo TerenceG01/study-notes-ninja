@@ -288,34 +288,36 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
               </CardContent>
             </Card>
           )}
+
+          <div className="flex justify-between items-center mt-6">
+            <Button
+              variant="outline"
+              onClick={() => navigateCards('prev')}
+              disabled={currentIndex === 0}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Previous Card
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => navigateCards('next')}
+              disabled={currentIndex === cards.length - 1}
+            >
+              Next Card
+              <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+          </div>
         </>
       ) : (
         <MultipleChoiceMode flashcards={cards} deckId={deckId} />
       )}
 
-      <div className="flex justify-between items-center mt-6">
-        <Button
-          variant="outline"
-          onClick={() => navigateCards('prev')}
-          disabled={currentIndex === 0}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Previous Card
-        </Button>
-
-        <Button
-          variant="outline"
-          onClick={() => navigateCards('next')}
-          disabled={currentIndex === cards.length - 1}
-        >
-          Next Card
-          <ArrowRight className="h-4 w-4 ml-2" />
-        </Button>
-      </div>
-
-      <div className="text-center mt-4 text-sm text-muted-foreground">
-        Press Enter to flip • Arrow keys to navigate
-      </div>
+      {mode === 'standard' && (
+        <div className="text-center mt-4 text-sm text-muted-foreground">
+          Press Enter to flip • Arrow keys to navigate
+        </div>
+      )}
     </div>
   );
 };
