@@ -17,10 +17,13 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [hardMode, setHardMode] = useState(false);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [totalAttempted, setTotalAttempted] = useState(0);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const currentCard = flashcards[currentIndex];
+  const isLastCard = currentIndex === flashcards.length - 1;
 
   // Fetch multiple choice options for the current flashcard
   const { data: options, isLoading: isOptionsLoading, error: optionsError } = useQuery({
@@ -90,6 +93,10 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     
     setSelectedOption(optionId);
     setIsAnswered(true);
+    setTotalAttempted(prev => prev + 1);
+    if (isCorrect) {
+      setCorrectAnswers(prev => prev + 1);
+    }
 
     submitAnswerMutation.mutate({
       flashcardId: currentCard.id,
@@ -116,6 +123,14 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     }
   };
 
+  const resetQuiz = () => {
+    setCurrentIndex(0);
+    setIsAnswered(false);
+    setSelectedOption(null);
+    setCorrectAnswers(0);
+    setTotalAttempted(0);
+  };
+
   if (!currentCard || !options) {
     return (
       <div className="text-center py-8">
@@ -133,6 +148,40 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     );
   }
 
+  const renderQuizCompletion = () => {
+    if (!isLastCard || !isAnswered) return null;
+    
+    const percentageScore = Math.round((correctAnswers / totalAttempted) * 100);
+    const scoreMessage = 
+      percentageScore >= 90 ? "Excellent!" :
+      percentageScore >= 70 ? "Good job!" :
+      percentageScore >= 50 ? "Keep practicing!" :
+      "Don't give up!";
+
+    return (
+      <Card className="mt-6">
+        <CardContent className="p-6">
+          <h3 className="text-xl font-semibold mb-4 text-center">Quiz Complete!</h3>
+          <div className="space-y-4">
+            <div className="text-center">
+              <p className="text-3xl font-bold text-primary">{percentageScore}%</p>
+              <p className="text-lg text-muted-foreground mt-2">{scoreMessage}</p>
+            </div>
+            <div className="text-sm text-muted-foreground text-center">
+              Correct answers: {correctAnswers} out of {totalAttempted}
+            </div>
+            <Button 
+              className="w-full mt-4"
+              onClick={resetQuiz}
+            >
+              Restart Quiz
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-6">
@@ -144,7 +193,6 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
           onClick={() => {
             const newMode = !hardMode;
             setHardMode(newMode);
-            // Regenerate options for current card when toggling mode
             generateOptionsMutation.mutate();
             toast({
               title: newMode ? "Hard Mode Enabled" : "Standard Mode Enabled",
@@ -200,6 +248,8 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
           )}
         </CardContent>
       </Card>
+
+      {renderQuizCompletion()}
 
       <div className="flex justify-between items-center mt-6">
         <Button
