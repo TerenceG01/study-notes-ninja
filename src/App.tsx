@@ -19,6 +19,7 @@ import { useAuth } from "./contexts/AuthContext";
 import { NavigationBar } from "./components/navigation/NavigationBar";
 import { NotesSidebar } from "./components/notes/NotesSidebar";
 import { SidebarProvider } from "./components/ui/sidebar";
+import { ThemeProvider } from "next-themes";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -64,93 +65,95 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <AuthProvider>
-        <TooltipProvider>
-          <SidebarProvider>
-            <Toaster />
-            <Sonner />
-            <Routes>
-              <Route path="/" element={<MainLayout><Index /></MainLayout>} />
-              <Route path="/auth" element={<MainLayout><Auth /></MainLayout>} />
-              <Route
-                path="/notes"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <Notes />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/flashcards"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <Flashcards />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/flashcards/:id"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <FlashcardDeck />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/study-groups"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <StudyGroups />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/study-groups/:id"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <StudyGroupDetails />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/study-groups/join/:code"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <JoinStudyGroup />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <Profile />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </SidebarProvider>
-        </TooltipProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
+  <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <TooltipProvider>
+            <SidebarProvider>
+              <Toaster />
+              <Sonner />
+              <Routes>
+                <Route path="/" element={<MainLayout><Index /></MainLayout>} />
+                <Route path="/auth" element={<MainLayout><Auth /></MainLayout>} />
+                <Route
+                  path="/notes"
+                  element={
+                    <ProtectedRoute>
+                      <AppLayout>
+                        <Notes />
+                      </AppLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/flashcards"
+                  element={
+                    <ProtectedRoute>
+                      <AppLayout>
+                        <Flashcards />
+                      </AppLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/flashcards/:id"
+                  element={
+                    <ProtectedRoute>
+                      <AppLayout>
+                        <FlashcardDeck />
+                      </AppLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/study-groups"
+                  element={
+                    <ProtectedRoute>
+                      <AppLayout>
+                        <StudyGroups />
+                      </AppLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/study-groups/:id"
+                  element={
+                    <ProtectedRoute>
+                      <AppLayout>
+                        <StudyGroupDetails />
+                      </AppLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/study-groups/join/:code"
+                  element={
+                    <ProtectedRoute>
+                      <AppLayout>
+                        <JoinStudyGroup />
+                      </AppLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <AppLayout>
+                        <Profile />
+                      </AppLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </SidebarProvider>
+          </TooltipProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;

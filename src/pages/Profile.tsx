@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, User, Mail, PenLine } from "lucide-react";
+import { Loader2, User, Mail, PenLine, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
 const Profile = () => {
@@ -18,10 +17,9 @@ const Profile = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Wait for component to mount to access theme
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -84,7 +82,7 @@ const Profile = () => {
   };
 
   const toggleTheme = async () => {
-    const newTheme = theme === "light" ? "dark" : "light";
+    const newTheme = resolvedTheme === "light" ? "dark" : "light";
     
     if (user) {
       const { error } = await supabase
@@ -193,13 +191,25 @@ const Profile = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button
-                  variant="outline"
-                  onClick={toggleTheme}
-                  className="w-full"
-                >
-                  {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-                </Button>
+                <div className="flex items-center justify-between p-4 rounded-lg border">
+                  <div className="flex items-center gap-2">
+                    {resolvedTheme === 'light' ? (
+                      <Sun className="h-5 w-5" />
+                    ) : (
+                      <Moon className="h-5 w-5" />
+                    )}
+                    <span className="font-medium">
+                      {resolvedTheme === 'light' ? 'Light' : 'Dark'} Mode
+                    </span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={toggleTheme}
+                    className="min-w-[100px]"
+                  >
+                    {resolvedTheme === 'light' ? 'Dark Mode' : 'Light Mode'}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
