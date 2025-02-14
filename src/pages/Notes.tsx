@@ -44,7 +44,6 @@ const Notes = () => {
   const [newTag, setNewTag] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
   const [generatingFlashcardsForNote, setGeneratingFlashcardsForNote] = useState<string | null>(null);
-  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
   // List of common subjects
   const commonSubjects = [
@@ -256,11 +255,6 @@ const Notes = () => {
     }
   };
 
-  // Filter notes based on selected subject
-  const filteredNotes = selectedSubject
-    ? notes.filter(note => note.subject === selectedSubject)
-    : notes;
-
   if (!user) return null;
 
   return (
@@ -268,16 +262,10 @@ const Notes = () => {
       <NavigationBar />
       <SidebarProvider>
         <div className="flex min-h-screen pt-16">
-          <NotesSidebar
-            subjects={[...new Set(notes.map(note => note.subject || "General"))]}
-            selectedSubject={selectedSubject}
-            onSubjectSelect={(subject) => setSelectedSubject(subject === selectedSubject ? null : subject)}
-          />
+          <NotesSidebar />
           <div className="flex-1 container py-8 px-4">
             <div className="flex justify-between items-center mb-8">
-              <h1 className="text-3xl font-bold">
-                {selectedSubject ? `${selectedSubject} Notes` : "All Notes"}
-              </h1>
+              <h1 className="text-3xl font-bold">My Notes</h1>
             </div>
 
             <div className="grid gap-6 mb-8">
@@ -395,14 +383,14 @@ const Notes = () => {
                           Loading...
                         </TableCell>
                       </TableRow>
-                    ) : filteredNotes.length === 0 ? (
+                    ) : notes.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={5} className="text-center">
                           No notes found. Create your first note above!
                         </TableCell>
                       </TableRow>
                     ) : (
-                      filteredNotes.map((note) => (
+                      notes.map((note) => (
                         <TableRow 
                           key={note.id}
                           className="cursor-pointer hover:bg-muted/50"
