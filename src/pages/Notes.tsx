@@ -292,9 +292,13 @@ const Notes = () => {
                   <SelectTrigger>
                     <SelectValue placeholder="Select subject" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white border rounded-md shadow-md">
                     {commonSubjects.map((subject) => (
-                      <SelectItem key={subject} value={subject}>
+                      <SelectItem 
+                        key={subject} 
+                        value={subject}
+                        className="hover:bg-muted focus:bg-muted"
+                      >
                         {subject}
                       </SelectItem>
                     ))}
@@ -468,9 +472,13 @@ const Notes = () => {
               <SelectTrigger>
                 <SelectValue placeholder="Select subject" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white border rounded-md shadow-md">
                 {commonSubjects.map((subject) => (
-                  <SelectItem key={subject} value={subject}>
+                  <SelectItem 
+                    key={subject} 
+                    value={subject}
+                    className="hover:bg-muted focus:bg-muted"
+                  >
                     {subject}
                   </SelectItem>
                 ))}
