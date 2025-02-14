@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Loader2, User, Mail, PenLine } from "lucide-react";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -72,34 +74,110 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <NavigationBar />
-      <div className="container mx-auto px-4 pt-16">
-        <Card className="max-w-md mx-auto">
-          <CardHeader>
-            <CardTitle>My Profile</CardTitle>
-            <CardDescription>Update your profile information</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleUpdateProfile} className="space-y-4">
-              <div>
-                <label htmlFor="username" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Username
-                </label>
-                <Input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Enter your username"
-                  className="mt-2"
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Updating..." : "Update Profile"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+      <div className="container mx-auto px-4 pt-20 pb-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-primary">My Profile</h1>
+            <p className="text-muted-foreground mt-2">Manage your personal information</p>
+          </div>
+
+          <div className="space-y-6">
+            <Card>
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl">Profile Information</CardTitle>
+                <CardDescription>Update your profile details and manage your account</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-6 mb-8">
+                  <Avatar className="h-20 w-20">
+                    <AvatarImage src={user?.user_metadata?.avatar_url} />
+                    <AvatarFallback className="bg-primary/10">
+                      <User className="h-8 w-8 text-primary" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">{user?.email}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <PenLine className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        {username ? `@${username}` : "No username set"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <form onSubmit={handleUpdateProfile} className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="username">Username</Label>
+                    <div className="relative">
+                      <Input
+                        id="username"
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Enter your username"
+                        className="pl-8"
+                      />
+                      <User className="h-4 w-4 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      This is your public display name
+                    </p>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button 
+                      type="submit" 
+                      disabled={loading}
+                      className="min-w-[120px]"
+                    >
+                      {loading ? (
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Saving...
+                        </div>
+                      ) : (
+                        "Save Changes"
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl text-destructive">Danger Zone</CardTitle>
+                <CardDescription>
+                  Manage your account settings and preferences
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button 
+                  variant="destructive" 
+                  className="w-full sm:w-auto"
+                  onClick={async () => {
+                    const { error } = await supabase.auth.signOut();
+                    if (error) {
+                      toast({
+                        variant: "destructive",
+                        title: "Error signing out",
+                        description: error.message,
+                      });
+                    } else {
+                      navigate("/auth");
+                    }
+                  }}
+                >
+                  Sign Out
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
