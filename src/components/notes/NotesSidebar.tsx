@@ -49,59 +49,42 @@ export function NotesSidebar() {
 
   return (
     <Sidebar className={cn(
-      "border-r bg-background/80 backdrop-blur-sm transition-all duration-300 h-full flex flex-col relative",
-      isOpen ? "w-64" : "w-16",
-      isMobile && "fixed inset-y-0 left-0 z-50"
+      "border-r bg-background/80 backdrop-blur-sm transition-all duration-300 h-full flex flex-col",
+      isOpen ? "w-64" : "w-16"
     )}>
-      <SidebarHeader className="p-4">
+      <SidebarHeader className="p-4 border-b">
         {isOpen && <h2 className="font-semibold">Navigation</h2>}
       </SidebarHeader>
-      <SidebarContent>
-        <div className="space-y-1 p-2 flex flex-col items-center">
+      <SidebarContent className="flex-1">
+        <div className="space-y-2 p-2">
           {navigationItems.map((item) => (
             <Button
               key={item.path}
               variant={location.pathname === item.path ? "secondary" : "ghost"}
               className={cn(
-                "flex group relative",
-                isOpen ? "w-full justify-start" : "w-12 h-12 p-0"
+                "w-full flex items-center gap-2",
+                isOpen ? "justify-start" : "justify-center",
+                location.pathname === item.path && "bg-secondary"
               )}
               asChild
             >
-              <Link to={item.path} className="flex items-center">
-                <item.icon className={cn(
-                  "h-4 w-4",
-                  !isOpen && "mx-auto"
-                )} />
-                {isOpen ? (
-                  <span className="ml-2">{item.label}</span>
-                ) : (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-2 bg-secondary text-secondary-foreground text-sm invisible opacity-0 translate-x-1 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all">
-                    {item.label}
-                  </span>
-                )}
+              <Link to={item.path}>
+                <item.icon className="h-4 w-4 shrink-0" />
+                {isOpen && <span>{item.label}</span>}
               </Link>
             </Button>
           ))}
+
           <Button
             variant="ghost"
             className={cn(
-              "flex group relative text-destructive hover:text-destructive",
-              isOpen ? "w-full justify-start" : "w-12 h-12 p-0"
+              "w-full flex items-center gap-2 text-destructive hover:text-destructive",
+              isOpen ? "justify-start" : "justify-center"
             )}
             onClick={handleLogout}
           >
-            <LogOut className={cn(
-              "h-4 w-4",
-              !isOpen && "mx-auto"
-            )} />
-            {isOpen ? (
-              <span className="ml-2">Logout</span>
-            ) : (
-              <span className="absolute left-full rounded-md px-2 py-1 ml-2 bg-secondary text-secondary-foreground text-sm invisible opacity-0 translate-x-1 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all">
-                Logout
-              </span>
-            )}
+            <LogOut className="h-4 w-4 shrink-0" />
+            {isOpen && <span>Logout</span>}
           </Button>
         </div>
       </SidebarContent>
