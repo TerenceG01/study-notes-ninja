@@ -4,6 +4,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
+  useSidebarContext,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,7 @@ import { useToast } from "@/components/ui/use-toast";
 export function NotesSidebar() {
   const location = useLocation();
   const { toast } = useToast();
+  const { isOpen } = useSidebarContext();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -41,7 +43,7 @@ export function NotesSidebar() {
   return (
     <Sidebar className="border-r bg-background transition-all duration-300 h-full">
       <SidebarHeader className="p-4">
-        <h2 className="font-semibold">Navigation</h2>
+        {isOpen && <h2 className="font-semibold">Navigation</h2>}
       </SidebarHeader>
       <SidebarContent>
         <div className="space-y-1 p-2">
@@ -49,22 +51,28 @@ export function NotesSidebar() {
             <Button
               key={item.path}
               variant={location.pathname === item.path ? "secondary" : "ghost"}
-              className="w-full justify-start"
+              className={cn(
+                "w-full",
+                isOpen ? "justify-start" : "justify-center"
+              )}
               asChild
             >
               <Link to={item.path}>
-                <item.icon className="h-4 w-4 mr-2" />
-                {item.label}
+                <item.icon className="h-4 w-4" />
+                {isOpen && <span className="ml-2">{item.label}</span>}
               </Link>
             </Button>
           ))}
           <Button
             variant="ghost"
-            className="w-full justify-start text-destructive hover:text-destructive"
+            className={cn(
+              "w-full text-destructive hover:text-destructive",
+              isOpen ? "justify-start" : "justify-center"
+            )}
             onClick={handleLogout}
           >
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
+            <LogOut className="h-4 w-4" />
+            {isOpen && <span className="ml-2">Logout</span>}
           </Button>
         </div>
       </SidebarContent>
