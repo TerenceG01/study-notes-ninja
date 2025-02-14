@@ -31,7 +31,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="flex min-h-screen pt-16">
           <NotesSidebar />
           <main className={`flex-1 transition-all duration-300
-            ${isMobile ? 'ml-[60px]' : 'ml-[270px]'}`}>
+            ${isMobile ? 'ml-[50px]' : 'ml-[250px]'}`}>
             <div className="p-4">
               {children}
             </div>
