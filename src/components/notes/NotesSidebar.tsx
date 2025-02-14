@@ -43,7 +43,7 @@ export function NotesSidebar() {
   return (
     <Sidebar
       className={cn(
-        "border-r bg-background transition-all duration-300 fixed top-16 h-[calc(100vh-4rem)]",
+        "border-r bg-background transition-all duration-300 h-full",
         collapsed ? "w-[50px]" : "w-[250px]"
       )}
     >
