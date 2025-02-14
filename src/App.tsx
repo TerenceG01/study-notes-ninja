@@ -16,6 +16,25 @@ import StudyGroupDetails from "./pages/StudyGroupDetails";
 import JoinStudyGroup from "./pages/JoinStudyGroup";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "./contexts/AuthContext";
+import { NavigationBar } from "./components/navigation/NavigationBar";
+import { NotesSidebar } from "./components/notes/NotesSidebar";
+import { SidebarProvider } from "./components/ui/sidebar";
+
+const AppLayout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="min-h-screen bg-background">
+      <NavigationBar />
+      <SidebarProvider>
+        <div className="flex min-h-screen pt-16">
+          <NotesSidebar />
+          <div className="flex-1 container py-8 px-4 ml-[250px] transition-all duration-300">
+            {children}
+          </div>
+        </div>
+      </SidebarProvider>
+    </div>
+  );
+};
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -28,7 +47,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/auth" />;
   }
 
-  return <>{children}</>;
+  return <AppLayout>{children}</AppLayout>;
 };
 
 const queryClient = new QueryClient();
