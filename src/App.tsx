@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import { useAuth } from "./contexts/AuthContext";
 import { NavigationBar } from "./components/navigation/NavigationBar";
 import { NotesSidebar } from "./components/notes/NotesSidebar";
+import { SidebarProvider } from "./components/ui/sidebar";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -37,12 +38,14 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen">
       <NavigationBar />
-      <div className="flex min-h-[calc(100vh-4rem)] pt-16">
-        <NotesSidebar />
-        <main className="flex-1 p-4 transition-all duration-300">
-          {children}
-        </main>
-      </div>
+      <SidebarProvider defaultOpen>
+        <div className="flex min-h-[calc(100vh-4rem)] pt-16">
+          <NotesSidebar />
+          <main className="flex-1 p-4 transition-all duration-300">
+            {children}
+          </main>
+        </div>
+      </SidebarProvider>
     </div>
   );
 };
