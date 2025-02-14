@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,11 +16,6 @@ import StudyGroupDetails from "./pages/StudyGroupDetails";
 import JoinStudyGroup from "./pages/JoinStudyGroup";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "./contexts/AuthContext";
-import { NavigationBar } from "./components/navigation/NavigationBar";
-import { NotesSidebar } from "./components/notes/NotesSidebar";
-import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar";
-import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -35,24 +31,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-const AppLayout = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div className="min-h-screen">
-      <NavigationBar />
-      <SidebarProvider defaultState="expanded">
-        <div className="flex min-h-[calc(100vh-4rem)] pt-16 w-full">
-          <NotesSidebar />
-          <div className="flex-1">
-            <main className="p-4 transition-all duration-300">
-              {children}
-            </main>
-          </div>
-        </div>
-      </SidebarProvider>
-    </div>
-  );
-};
-
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -60,85 +38,69 @@ const App = () => (
     <BrowserRouter>
       <AuthProvider>
         <TooltipProvider>
-          <div className="min-h-screen">
-            <Toaster />
-            <Sonner />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route
-                path="/notes"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <Notes />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/flashcards"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <Flashcards />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/flashcards/:id"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <FlashcardDeck />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/study-groups"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <StudyGroups />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/study-groups/:id"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <StudyGroupDetails />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/study-groups/join/:code"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <JoinStudyGroup />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <Profile />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
+          <Toaster />
+          <Sonner />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route
+              path="/notes"
+              element={
+                <ProtectedRoute>
+                  <Notes />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/flashcards"
+              element={
+                <ProtectedRoute>
+                  <Flashcards />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/flashcards/:id"
+              element={
+                <ProtectedRoute>
+                  <FlashcardDeck />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/study-groups"
+              element={
+                <ProtectedRoute>
+                  <StudyGroups />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/study-groups/:id"
+              element={
+                <ProtectedRoute>
+                  <StudyGroupDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/study-groups/join/:code"
+              element={
+                <ProtectedRoute>
+                  <JoinStudyGroup />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </TooltipProvider>
       </AuthProvider>
     </BrowserRouter>

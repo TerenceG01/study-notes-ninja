@@ -12,8 +12,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Loader2, Hash, BookOpen } from "lucide-react";
-import { NotesSidebar } from "@/components/notes/NotesSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
 
 type Note = {
   id: string;
@@ -260,196 +258,189 @@ const Notes = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationBar />
-      <SidebarProvider>
-        <div className="flex min-h-screen pt-16">
-          <NotesSidebar />
-          <div className="flex-1 container py-8 px-4">
-            <div className="flex justify-between items-center mb-8">
-              <h1 className="text-3xl font-bold">My Notes</h1>
-            </div>
+      <div className="container mx-auto py-8 px-4 pt-16">
+        <h1 className="text-3xl font-bold mb-8">My Notes</h1>
 
-            <div className="grid gap-6 mb-8">
-              <div 
-                ref={editorRef}
-                className={`space-y-4 p-6 bg-card rounded-lg border transition-all duration-300 ${
-                  isEditorExpanded ? 'shadow-lg' : ''
-                }`}
+        <div className="grid gap-6 mb-8">
+          <div 
+            ref={editorRef}
+            className={`space-y-4 p-6 bg-card rounded-lg border transition-all duration-300 ${
+              isEditorExpanded ? 'shadow-lg' : ''
+            }`}
+          >
+            {!isEditorExpanded ? (
+              <Button 
+                onClick={() => setIsEditorExpanded(true)}
+                className="w-full py-8 text-lg hover:bg-accent hover:text-accent-foreground transition-colors"
               >
-                {!isEditorExpanded ? (
-                  <Button 
-                    onClick={() => setIsEditorExpanded(true)}
-                    className="w-full py-8 text-lg hover:bg-accent hover:text-accent-foreground transition-colors"
-                  >
-                    Add a New Note
-                  </Button>
-                ) : (
-                  <div className="space-y-4 animate-fade-in">
-                    <Input
-                      placeholder="Note Title"
-                      value={newNote.title}
-                      onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
-                      className="text-lg font-semibold"
-                      style={{ textTransform: 'capitalize' }}
-                    />
+                Add a New Note
+              </Button>
+            ) : (
+              <div className="space-y-4 animate-fade-in">
+                <Input
+                  placeholder="Note Title"
+                  value={newNote.title}
+                  onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
+                  className="text-lg font-semibold"
+                  style={{ textTransform: 'capitalize' }}
+                />
 
-                    <Select
-                      value={newNote.subject}
-                      onValueChange={(value) => setNewNote({ ...newNote, subject: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select subject" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white border rounded-md shadow-md">
-                        {commonSubjects.map((subject) => (
-                          <SelectItem 
-                            key={subject} 
-                            value={subject}
-                            className="hover:bg-muted focus:bg-muted"
-                          >
-                            {subject}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Textarea
-                      id="new-note-content"
-                      placeholder="Write your note here..."
-                      value={newNote.content}
-                      onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
-                      className="min-h-[200px] resize-y"
-                    />
-
-                    <div className="flex flex-wrap gap-2 items-center">
-                      <Hash className="h-4 w-4 text-muted-foreground" />
-                      {newNote.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2 py-1 bg-secondary text-secondary-foreground rounded-full text-sm flex items-center gap-1"
-                        >
-                          {tag}
-                          <button
-                            onClick={() => removeTag(tag)}
-                            className="hover:text-destructive"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      ))}
-                      <Input
-                        placeholder="Add tag..."
-                        value={newTag}
-                        onChange={(e) => setNewTag(e.target.value)}
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter' && newTag) {
-                            addTag();
-                          }
-                        }}
-                        className="!mt-0 w-24 h-7 text-sm"
-                      />
-                    </div>
-
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setIsEditorExpanded(false);
-                          setNewNote({ title: "", content: "", tags: [], subject: "General" });
-                        }}
+                <Select
+                  value={newNote.subject}
+                  onValueChange={(value) => setNewNote({ ...newNote, subject: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select subject" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border rounded-md shadow-md">
+                    {commonSubjects.map((subject) => (
+                      <SelectItem 
+                        key={subject} 
+                        value={subject}
+                        className="hover:bg-muted focus:bg-muted"
                       >
-                        Cancel
-                      </Button>
-                      <Button onClick={createNote}>Save Note</Button>
-                    </div>
-                  </div>
-                )}
-              </div>
+                        {subject}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-              <div className="bg-card rounded-lg border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Subject</TableHead>
-                      <TableHead>Content</TableHead>
-                      <TableHead>Created At</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {loading ? (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center">
-                          Loading...
-                        </TableCell>
-                      </TableRow>
-                    ) : notes.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center">
-                          No notes found. Create your first note above!
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      notes.map((note) => (
-                        <TableRow 
-                          key={note.id}
-                          className="cursor-pointer hover:bg-muted/50"
-                        >
-                          <TableCell onClick={() => {
-                            setSelectedNote(note);
-                            setEditingNote(note);
-                            setShowSummary(false);
-                          }}>{note.title}</TableCell>
-                          <TableCell onClick={() => {
-                            setSelectedNote(note);
-                            setEditingNote(note);
-                            setShowSummary(false);
-                          }}>{note.subject || 'General'}</TableCell>
-                          <TableCell className="max-w-md truncate" onClick={() => {
-                            setSelectedNote(note);
-                            setEditingNote(note);
-                            setShowSummary(false);
-                          }}>
-                            {note.content}
-                          </TableCell>
-                          <TableCell onClick={() => {
-                            setSelectedNote(note);
-                            setEditingNote(note);
-                            setShowSummary(false);
-                          }}>
-                            {new Date(note.created_at).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => generateFlashcards(note)}
-                              disabled={!!generatingFlashcardsForNote}
-                              className="flex items-center gap-2"
-                            >
-                              {generatingFlashcardsForNote === note.id ? (
-                                <>
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                  Generating...
-                                </>
-                              ) : (
-                                <>
-                                  <BookOpen className="h-4 w-4" />
-                                  Create Flashcards
-                                </>
-                              )}
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
+                <Textarea
+                  id="new-note-content"
+                  placeholder="Write your note here..."
+                  value={newNote.content}
+                  onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
+                  className="min-h-[200px] resize-y"
+                />
+
+                <div className="flex flex-wrap gap-2 items-center">
+                  <Hash className="h-4 w-4 text-muted-foreground" />
+                  {newNote.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2 py-1 bg-secondary text-secondary-foreground rounded-full text-sm flex items-center gap-1"
+                    >
+                      {tag}
+                      <button
+                        onClick={() => removeTag(tag)}
+                        className="hover:text-destructive"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                  <Input
+                    placeholder="Add tag..."
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && newTag) {
+                        addTag();
+                      }
+                    }}
+                    className="!mt-0 w-24 h-7 text-sm"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditorExpanded(false);
+                      setNewNote({ title: "", content: "", tags: [], subject: "General" });
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button onClick={createNote}>Save Note</Button>
+                </div>
               </div>
-            </div>
+            )}
+          </div>
+
+          <div className="bg-card rounded-lg border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Subject</TableHead>
+                  <TableHead>Content</TableHead>
+                  <TableHead>Created At</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center">
+                      Loading...
+                    </TableCell>
+                  </TableRow>
+                ) : notes.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center">
+                      No notes found. Create your first note above!
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  notes.map((note) => (
+                    <TableRow 
+                      key={note.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                    >
+                      <TableCell onClick={() => {
+                        setSelectedNote(note);
+                        setEditingNote(note);
+                        setShowSummary(false);
+                      }}>{note.title}</TableCell>
+                      <TableCell onClick={() => {
+                        setSelectedNote(note);
+                        setEditingNote(note);
+                        setShowSummary(false);
+                      }}>{note.subject || 'General'}</TableCell>
+                      <TableCell className="max-w-md truncate" onClick={() => {
+                        setSelectedNote(note);
+                        setEditingNote(note);
+                        setShowSummary(false);
+                      }}>
+                        {note.content}
+                      </TableCell>
+                      <TableCell onClick={() => {
+                        setSelectedNote(note);
+                        setEditingNote(note);
+                        setShowSummary(false);
+                      }}>
+                        {new Date(note.created_at).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => generateFlashcards(note)}
+                          disabled={!!generatingFlashcardsForNote}
+                          className="flex items-center gap-2"
+                        >
+                          {generatingFlashcardsForNote === note.id ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              Generating...
+                            </>
+                          ) : (
+                            <>
+                              <BookOpen className="h-4 w-4" />
+                              Create Flashcards
+                            </>
+                          )}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
           </div>
         </div>
-      </SidebarProvider>
+      </div>
 
       <Dialog 
         open={!!selectedNote} 
