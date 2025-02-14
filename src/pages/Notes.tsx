@@ -263,7 +263,7 @@ const Notes = () => {
       <SidebarProvider>
         <div className="flex min-h-screen pt-16">
           <NotesSidebar />
-          <div className={`flex-1 container py-8 px-4 ml-[250px] transition-all duration-300`}>
+          <div className="flex-1 container py-8 px-4">
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-3xl font-bold">My Notes</h1>
             </div>
