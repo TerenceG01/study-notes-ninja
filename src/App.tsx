@@ -27,7 +27,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <SidebarProvider>
         <div className="flex min-h-screen pt-16">
           <NotesSidebar />
-          <div className="flex-1 container py-8 px-4 ml-[250px] transition-all duration-300">
+          <div className="flex-1 container py-4 px-2 ml-[250px] transition-all duration-300">
             {children}
           </div>
         </div>
