@@ -28,44 +28,25 @@
   }
 
   .dark {
-    /* Softer dark background that's easier on the eyes */
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    
-    /* Slightly elevated card background for better hierarchy */
-    --card: 222 47% 13%;
-    --card-foreground: 210 40% 98%;
-    
-    /* Popover with subtle difference from card */
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
-    
-    /* Vibrant but not harsh primary color */
-    --primary: 263 70% 50%;
-    --primary-foreground: 210 40% 98%;
-    
-    /* Subtle secondary color */
-    --secondary: 222 47% 16%;
-    --secondary-foreground: 210 40% 98%;
-    
-    /* Muted elements that don't strain eyes */
-    --muted: 223 47% 15%;
-    --muted-foreground: 215 20% 65%;
-    
-    /* Accent color that complements the theme */
-    --accent: 263 70% 50%;
-    --accent-foreground: 210 40% 98%;
-    
-    /* Less harsh destructive color */
-    --destructive: 0 60% 40%;
-    --destructive-foreground: 210 40% 98%;
-    
-    /* Subtle borders that provide structure without harshness */
-    --border: 222 47% 18%;
-    --input: 222 47% 16%;
-    
-    /* Ring color that matches primary */
-    --ring: 263 70% 50%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 271 81% 56%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 271 91% 65%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
   }
 }
  
@@ -79,20 +60,9 @@
 }
 
 .glass-morphism {
-  @apply bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border-white/20 dark:border-white/10;
+  @apply bg-white/80 dark:bg-black/80 backdrop-blur-sm;
 }
 
 .hover-lift {
-  @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-primary/5;
-}
-
-/* Additional dark mode utilities */
-@layer utilities {
-  .dark-card {
-    @apply dark:bg-card dark:border-border/50 dark:shadow-none;
-  }
-  
-  .dark-hover {
-    @apply hover:bg-secondary/80 dark:hover:bg-secondary/20;
-  }
+  @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
 }
