@@ -16,7 +16,7 @@ import { useToast } from "@/components/ui/use-toast";
 export function NotesSidebar() {
   const location = useLocation();
   const { toast } = useToast();
-  const { state, setState } = useSidebar();
+  const { state, toggle } = useSidebar();
   const isOpen = state === "expanded";
 
   const handleLogout = async () => {
@@ -32,10 +32,6 @@ export function NotesSidebar() {
         title: "Signed out successfully",
       });
     }
-  };
-
-  const toggleSidebar = () => {
-    setState(isOpen ? "collapsed" : "expanded");
   };
 
   const navigationItems = [
@@ -94,7 +90,7 @@ export function NotesSidebar() {
         variant="ghost"
         size="icon"
         className="absolute -right-4 top-6 rounded-full bg-background border shadow-sm"
-        onClick={toggleSidebar}
+        onClick={toggle}
       >
         {isOpen ? (
           <ChevronLeft className="h-4 w-4" />
