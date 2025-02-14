@@ -42,7 +42,6 @@ const Notes = () => {
   const [newTag, setNewTag] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
   const [generatingFlashcardsForNote, setGeneratingFlashcardsForNote] = useState<string | null>(null);
-  const [customSubject, setCustomSubject] = useState("");
 
   // List of common subjects
   const commonSubjects = [
@@ -286,19 +285,12 @@ const Notes = () => {
                   style={{ textTransform: 'capitalize' }}
                 />
 
-              <div className="flex gap-2 items-center">
-                <Input
-                  placeholder="Enter subject"
-                  value={newNote.subject}
-                  onChange={(e) => setNewNote({ ...newNote, subject: e.target.value })}
-                  className="flex-1"
-                />
                 <Select
                   value={newNote.subject}
                   onValueChange={(value) => setNewNote({ ...newNote, subject: value })}
                 >
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select from common subjects" />
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select subject" />
                   </SelectTrigger>
                   <SelectContent className="bg-white border rounded-md shadow-md">
                     {commonSubjects.map((subject) => (
@@ -312,7 +304,6 @@ const Notes = () => {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
 
                 <Textarea
                   id="new-note-content"
@@ -474,33 +465,25 @@ const Notes = () => {
           </DialogHeader>
 
           <div className="mt-4">
-            <div className="flex gap-2 items-center">
-              <Input
-                placeholder="Enter subject"
-                value={editingNote?.subject || ""}
-                onChange={(e) => setEditingNote(editingNote ? { ...editingNote, subject: e.target.value } : null)}
-                className="flex-1"
-              />
-              <Select
-                value={editingNote?.subject || ""}
-                onValueChange={(value) => setEditingNote(editingNote ? { ...editingNote, subject: value } : null)}
-              >
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Select from common subjects" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border rounded-md shadow-md">
-                  {commonSubjects.map((subject) => (
-                    <SelectItem 
-                      key={subject} 
-                      value={subject}
-                      className="hover:bg-muted focus:bg-muted"
-                    >
-                      {subject}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <Select
+              value={editingNote?.subject || "General"}
+              onValueChange={(value) => setEditingNote(editingNote ? { ...editingNote, subject: value } : null)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select subject" />
+              </SelectTrigger>
+              <SelectContent className="bg-white border rounded-md shadow-md">
+                {commonSubjects.map((subject) => (
+                  <SelectItem 
+                    key={subject} 
+                    value={subject}
+                    className="hover:bg-muted focus:bg-muted"
+                  >
+                    {subject}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex gap-4 items-center mt-4">
