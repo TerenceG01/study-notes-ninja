@@ -42,26 +42,30 @@ export function NotesSidebar() {
   ];
 
   return (
-    <Sidebar className={cn("border-r bg-background transition-all duration-300 h-full", 
+    <Sidebar className={cn(
+      "border-r bg-background transition-all duration-300 h-full flex flex-col",
       isOpen ? "w-64" : "w-16"
     )}>
       <SidebarHeader className="p-4">
         {isOpen && <h2 className="font-semibold">Navigation</h2>}
       </SidebarHeader>
       <SidebarContent>
-        <div className="space-y-1 p-2">
+        <div className="space-y-1 p-2 flex flex-col items-center">
           {navigationItems.map((item) => (
             <Button
               key={item.path}
               variant={location.pathname === item.path ? "secondary" : "ghost"}
               className={cn(
-                "w-full",
-                isOpen ? "justify-start" : "justify-center"
+                "flex",
+                isOpen ? "w-full justify-start" : "w-12 h-12 p-0"
               )}
               asChild
             >
-              <Link to={item.path}>
-                <item.icon className="h-4 w-4" />
+              <Link to={item.path} className="flex items-center">
+                <item.icon className={cn(
+                  "h-4 w-4",
+                  !isOpen && "mx-auto"
+                )} />
                 {isOpen && <span className="ml-2">{item.label}</span>}
               </Link>
             </Button>
@@ -69,12 +73,15 @@ export function NotesSidebar() {
           <Button
             variant="ghost"
             className={cn(
-              "w-full text-destructive hover:text-destructive",
-              isOpen ? "justify-start" : "justify-center"
+              "flex text-destructive hover:text-destructive",
+              isOpen ? "w-full justify-start" : "w-12 h-12 p-0"
             )}
             onClick={handleLogout}
           >
-            <LogOut className="h-4 w-4" />
+            <LogOut className={cn(
+              "h-4 w-4",
+              !isOpen && "mx-auto"
+            )} />
             {isOpen && <span className="ml-2">Logout</span>}
           </Button>
         </div>
