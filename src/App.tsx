@@ -36,19 +36,28 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SidebarProvider>
-      <div className="min-h-screen">
-        <NavigationBar />
-        <div className="flex min-h-[calc(100vh-4rem)] pt-16">
-          <NotesSidebar />
-          <div className="flex-1">
-            <main className="p-4 transition-all duration-300">
-              {children}
-            </main>
-          </div>
+    <div className="min-h-screen">
+      <NavigationBar />
+      <div className="flex min-h-[calc(100vh-4rem)] pt-16">
+        <NotesSidebar />
+        <div className="flex-1">
+          <main className="p-4 transition-all duration-300">
+            {children}
+          </main>
         </div>
       </div>
-    </SidebarProvider>
+    </div>
+  );
+};
+
+const MainLayout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="min-h-screen">
+      <NavigationBar />
+      <main className="p-4">
+        {children}
+      </main>
+    </div>
   );
 };
 
@@ -59,83 +68,85 @@ const App = () => (
     <BrowserRouter>
       <AuthProvider>
         <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route
-              path="/notes"
-              element={
-                <ProtectedRoute>
-                  <AppLayout>
-                    <Notes />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/flashcards"
-              element={
-                <ProtectedRoute>
-                  <AppLayout>
-                    <Flashcards />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/flashcards/:id"
-              element={
-                <ProtectedRoute>
-                  <AppLayout>
-                    <FlashcardDeck />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/study-groups"
-              element={
-                <ProtectedRoute>
-                  <AppLayout>
-                    <StudyGroups />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/study-groups/:id"
-              element={
-                <ProtectedRoute>
-                  <AppLayout>
-                    <StudyGroupDetails />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/study-groups/join/:code"
-              element={
-                <ProtectedRoute>
-                  <AppLayout>
-                    <JoinStudyGroup />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <AppLayout>
-                    <Profile />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <SidebarProvider>
+            <Toaster />
+            <Sonner />
+            <Routes>
+              <Route path="/" element={<MainLayout><Index /></MainLayout>} />
+              <Route path="/auth" element={<MainLayout><Auth /></MainLayout>} />
+              <Route
+                path="/notes"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <Notes />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/flashcards"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <Flashcards />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/flashcards/:id"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <FlashcardDeck />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/study-groups"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <StudyGroups />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/study-groups/:id"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <StudyGroupDetails />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/study-groups/join/:code"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <JoinStudyGroup />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <Profile />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </SidebarProvider>
         </TooltipProvider>
       </AuthProvider>
     </BrowserRouter>
