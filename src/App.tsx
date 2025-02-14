@@ -16,31 +16,6 @@ import StudyGroupDetails from "./pages/StudyGroupDetails";
 import JoinStudyGroup from "./pages/JoinStudyGroup";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "./contexts/AuthContext";
-import { NavigationBar } from "./components/navigation/NavigationBar";
-import { NotesSidebar } from "./components/notes/NotesSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { useIsMobile } from "./hooks/use-mobile";
-
-const AppLayout = ({ children }: { children: React.ReactNode }) => {
-  const isMobile = useIsMobile();
-
-  return (
-    <div className="min-h-screen bg-background">
-      <NavigationBar />
-      <SidebarProvider>
-        <div className="flex min-h-screen pt-16">
-          <NotesSidebar />
-          <main className={`flex-1 transition-all duration-300
-            ${isMobile ? 'ml-[50px]' : 'ml-[250px]'}`}>
-            <div className="p-4">
-              {children}
-            </div>
-          </main>
-        </div>
-      </SidebarProvider>
-    </div>
-  );
-};
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -53,7 +28,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/auth" />;
   }
 
-  return <AppLayout>{children}</AppLayout>;
+  return <>{children}</>;
 };
 
 const queryClient = new QueryClient();
