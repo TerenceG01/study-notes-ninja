@@ -4,7 +4,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
-  useSidebarContext,
+  SidebarContext,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -12,11 +12,12 @@ import { FileText, BookOpen, Users, User, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { useContext } from "react";
 
 export function NotesSidebar() {
   const location = useLocation();
   const { toast } = useToast();
-  const { isOpen } = useSidebarContext();
+  const { isOpen } = useContext(SidebarContext);
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -41,7 +42,9 @@ export function NotesSidebar() {
   ];
 
   return (
-    <Sidebar className="border-r bg-background transition-all duration-300 h-full">
+    <Sidebar className={cn("border-r bg-background transition-all duration-300 h-full", 
+      isOpen ? "w-64" : "w-16"
+    )}>
       <SidebarHeader className="p-4">
         {isOpen && <h2 className="font-semibold">Navigation</h2>}
       </SidebarHeader>
