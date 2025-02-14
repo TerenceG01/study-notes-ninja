@@ -9,9 +9,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, User, Mail, PenLine, Moon, Sun } from "lucide-react";
+import { Loader2, User, Mail, PenLine } from "lucide-react";
 import { useTheme } from "next-themes";
-import { Switch } from "@/components/ui/switch";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -19,9 +18,10 @@ const Profile = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
-  const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
+  // Wait for component to mount to access theme
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -83,9 +83,8 @@ const Profile = () => {
     setLoading(false);
   };
 
-  const handleThemeChange = async (checked: boolean) => {
-    const newTheme = checked ? "dark" : "light";
-    setTheme(newTheme);
+  const toggleTheme = async () => {
+    const newTheme = theme === "light" ? "dark" : "light";
     
     if (user) {
       const { error } = await supabase
@@ -99,11 +98,13 @@ const Profile = () => {
           title: "Error updating theme preference",
           description: error.message,
         });
+        return;
       }
     }
+    
+    setTheme(newTheme);
   };
 
-  // Prevent hydration mismatch
   if (!mounted) {
     return null;
   }
@@ -192,21 +193,13 @@ const Profile = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="relative w-4 h-4">
-                      <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 absolute" />
-                      <Moon className="h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 absolute" />
-                    </div>
-                    <span className="font-medium">Dark Mode</span>
-                  </div>
-                  <Switch
-                    id="dark-mode"
-                    checked={theme === "dark"}
-                    onCheckedChange={handleThemeChange}
-                    aria-label="Toggle dark mode"
-                  />
-                </div>
+                <Button
+                  variant="outline"
+                  onClick={toggleTheme}
+                  className="w-full"
+                >
+                  {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+                </Button>
               </CardContent>
             </Card>
 
