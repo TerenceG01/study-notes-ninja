@@ -272,6 +272,7 @@ export type Database = {
           full_name: string | null
           id: string
           preferred_flashcard_mode: string | null
+          theme_preference: string | null
           updated_at: string
           username: string | null
         }
@@ -281,6 +282,7 @@ export type Database = {
           full_name?: string | null
           id: string
           preferred_flashcard_mode?: string | null
+          theme_preference?: string | null
           updated_at?: string
           username?: string | null
         }
@@ -290,6 +292,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           preferred_flashcard_mode?: string | null
+          theme_preference?: string | null
           updated_at?: string
           username?: string | null
         }

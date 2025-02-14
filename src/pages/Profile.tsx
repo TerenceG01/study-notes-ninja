@@ -30,7 +30,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("username")
+        .select("username, theme_preference")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -45,11 +45,14 @@ const Profile = () => {
 
       if (data) {
         setUsername(data.username || "");
+        if (data.theme_preference) {
+          setTheme(data.theme_preference);
+        }
       }
     };
 
     fetchProfile();
-  }, [user, navigate, toast]);
+  }, [user, navigate, toast, setTheme]);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,6 +76,26 @@ const Profile = () => {
       });
     }
     setLoading(false);
+  };
+
+  const handleThemeChange = async (checked: boolean) => {
+    const newTheme = checked ? "dark" : "light";
+    setTheme(newTheme);
+    
+    if (user) {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ theme_preference: newTheme })
+        .eq("id", user.id);
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Error updating theme preference",
+          description: error.message,
+        });
+      }
+    }
   };
 
   return (
@@ -167,7 +190,7 @@ const Profile = () => {
                   </div>
                   <Switch
                     checked={theme === "dark"}
-                    onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+                    onCheckedChange={handleThemeChange}
                   />
                 </div>
               </CardContent>
