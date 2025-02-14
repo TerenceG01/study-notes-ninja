@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,10 +30,12 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <SidebarProvider>
         <div className="flex min-h-screen pt-16">
           <NotesSidebar />
-          <div className={`flex-1 py-4 px-4 transition-all duration-300
-            ${isMobile ? 'pl-[60px]' : 'pl-[270px]'}`}>
-            {children}
-          </div>
+          <main className={`flex-1 transition-all duration-300
+            ${isMobile ? 'ml-[60px]' : 'ml-[270px]'}`}>
+            <div className="p-4">
+              {children}
+            </div>
+          </main>
         </div>
       </SidebarProvider>
     </div>
