@@ -60,33 +60,26 @@ export function NotesSidebar() {
       onMouseLeave={() => !isOpen && setIsHovered(false)}
     >
       <SidebarHeader className="p-4 border-b">
-        {(isOpen || isHovered) && <h2 className="font-semibold">Navigation</h2>}
+        {(isOpen || isHovered) && (
+          <h2 className="font-semibold text-left">Navigation</h2>
+        )}
       </SidebarHeader>
-      <SidebarContent>
-        <div className="space-y-1 p-2">
+      <SidebarContent className="p-2">
+        <nav className="space-y-1">
           {navigationItems.map((item) => (
             <Button
               key={item.path}
               variant={location.pathname === item.path ? "secondary" : "ghost"}
               className={cn(
-                "w-full flex items-center gap-2 group relative",
-                (isOpen || isHovered) ? "justify-start" : "justify-center",
-                location.pathname === item.path && "bg-secondary"
+                "w-full flex items-center gap-2 relative px-3 py-2",
+                (isOpen || isHovered) ? "justify-start" : "justify-center"
               )}
               asChild
             >
               <Link to={item.path}>
-                <item.icon className={cn(
-                  "h-4 w-4 shrink-0",
-                  !(isOpen || isHovered) && "mx-auto"
-                )} />
+                <item.icon className="h-5 w-5 shrink-0" />
                 {(isOpen || isHovered) && (
-                  <span className={cn(
-                    "transition-all duration-200",
-                    !isOpen && "opacity-0 group-hover:opacity-100"
-                  )}>
-                    {item.label}
-                  </span>
+                  <span className="ml-2">{item.label}</span>
                 )}
               </Link>
             </Button>
@@ -95,25 +88,17 @@ export function NotesSidebar() {
           <Button
             variant="ghost"
             className={cn(
-              "w-full flex items-center gap-2 group relative text-destructive hover:text-destructive",
+              "w-full flex items-center gap-2 relative px-3 py-2 text-destructive hover:text-destructive",
               (isOpen || isHovered) ? "justify-start" : "justify-center"
             )}
             onClick={handleLogout}
           >
-            <LogOut className={cn(
-              "h-4 w-4 shrink-0",
-              !(isOpen || isHovered) && "mx-auto"
-            )} />
+            <LogOut className="h-5 w-5 shrink-0" />
             {(isOpen || isHovered) && (
-              <span className={cn(
-                "transition-all duration-200",
-                !isOpen && "opacity-0 group-hover:opacity-100"
-              )}>
-                Logout
-              </span>
+              <span className="ml-2">Logout</span>
             )}
           </Button>
-        </div>
+        </nav>
       </SidebarContent>
       {!isMobile && (
         <Button
