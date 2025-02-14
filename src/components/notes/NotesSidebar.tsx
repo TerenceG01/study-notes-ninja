@@ -56,30 +56,33 @@ export function NotesSidebar() {
               key={item.path}
               variant={location.pathname === item.path ? "secondary" : "ghost"}
               className={cn(
-                "flex w-full",
-                isOpen ? "justify-start" : "justify-center"
+                "flex",
+                isOpen ? "w-full justify-start" : "w-12 h-12 p-0"
               )}
               asChild
             >
               <Link to={item.path} className="flex items-center">
                 <item.icon className={cn(
-                  "h-6 w-6 stroke-[1.5]",
-                  location.pathname === item.path ? "text-primary" : "text-muted-foreground"
+                  "h-4 w-4",
+                  !isOpen && "mx-auto"
                 )} />
-                {isOpen && <span className="ml-3">{item.label}</span>}
+                {isOpen && <span className="ml-2">{item.label}</span>}
               </Link>
             </Button>
           ))}
           <Button
             variant="ghost"
             className={cn(
-              "flex w-full text-destructive hover:text-destructive",
-              isOpen ? "justify-start" : "justify-center"
+              "flex text-destructive hover:text-destructive",
+              isOpen ? "w-full justify-start" : "w-12 h-12 p-0"
             )}
             onClick={handleLogout}
           >
-            <LogOut className="h-6 w-6 stroke-[1.5]" />
-            {isOpen && <span className="ml-3">Logout</span>}
+            <LogOut className={cn(
+              "h-4 w-4",
+              !isOpen && "mx-auto"
+            )} />
+            {isOpen && <span className="ml-2">Logout</span>}
           </Button>
         </div>
       </SidebarContent>
