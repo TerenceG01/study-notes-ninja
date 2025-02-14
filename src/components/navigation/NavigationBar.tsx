@@ -53,25 +53,7 @@ export const NavigationBar = () => {
           </Link>
           
           <div className="flex gap-4">
-            {user ? (
-              <>
-                <Button variant="ghost" asChild>
-                  <Link to="/notes">My Notes</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link to="/flashcards">My Flashcards</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link to="/study-groups">Study Groups</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link to="/profile">My Profile</Link>
-                </Button>
-                <Button variant="ghost" onClick={handleLogout}>
-                  Logout
-                </Button>
-              </>
-            ) : (
+            {!user ? (
               <>
                 <Button variant="ghost" asChild>
                   <Link to="/auth">Sign In</Link>
@@ -80,10 +62,10 @@ export const NavigationBar = () => {
                   <Link to="/auth?tab=sign-up">Get Started</Link>
                 </Button>
               </>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
     </nav>
   );
-};
+}
