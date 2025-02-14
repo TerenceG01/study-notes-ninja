@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { FileText, BookOpen, Users, User, LogOut } from "lucide-react";
+import { FileText, BookOpen, Users, User, LogOut, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -16,7 +16,7 @@ import { useToast } from "@/components/ui/use-toast";
 export function NotesSidebar() {
   const location = useLocation();
   const { toast } = useToast();
-  const { state } = useSidebar();
+  const { state, setState } = useSidebar();
   const isOpen = state === "expanded";
 
   const handleLogout = async () => {
@@ -34,6 +34,10 @@ export function NotesSidebar() {
     }
   };
 
+  const toggleSidebar = () => {
+    setState(isOpen ? "collapsed" : "expanded");
+  };
+
   const navigationItems = [
     { label: "My Notes", icon: FileText, path: "/notes" },
     { label: "My Flashcards", icon: BookOpen, path: "/flashcards" },
@@ -43,7 +47,7 @@ export function NotesSidebar() {
 
   return (
     <Sidebar className={cn(
-      "border-r bg-background transition-all duration-300 h-full flex flex-col",
+      "border-r bg-background transition-all duration-300 h-full flex flex-col relative",
       isOpen ? "w-64" : "w-16"
     )}>
       <SidebarHeader className="p-4">
@@ -86,6 +90,18 @@ export function NotesSidebar() {
           </Button>
         </div>
       </SidebarContent>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute -right-4 top-6 rounded-full bg-background border shadow-sm"
+        onClick={toggleSidebar}
+      >
+        {isOpen ? (
+          <ChevronLeft className="h-4 w-4" />
+        ) : (
+          <ChevronRight className="h-4 w-4" />
+        )}
+      </Button>
     </Sidebar>
   );
 }
