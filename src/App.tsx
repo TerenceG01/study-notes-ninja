@@ -18,7 +18,9 @@ import NotFound from "./pages/NotFound";
 import { useAuth } from "./contexts/AuthContext";
 import { NavigationBar } from "./components/navigation/NavigationBar";
 import { NotesSidebar } from "./components/notes/NotesSidebar";
-import { SidebarProvider } from "./components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar";
+import { Button } from "./components/ui/button";
+import { ChevronRight } from "lucide-react";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -41,9 +43,16 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <SidebarProvider defaultOpen>
         <div className="flex min-h-[calc(100vh-4rem)] pt-16">
           <NotesSidebar />
-          <main className="flex-1 p-4 transition-all duration-300">
-            {children}
-          </main>
+          <div className="flex-1">
+            <SidebarTrigger asChild>
+              <Button variant="ghost" size="icon" className="m-2">
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </SidebarTrigger>
+            <main className="p-4 transition-all duration-300">
+              {children}
+            </main>
+          </div>
         </div>
       </SidebarProvider>
     </div>

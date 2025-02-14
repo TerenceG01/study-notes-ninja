@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -8,13 +7,12 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ChevronRight, FileText, BookOpen, Users, User, LogOut } from "lucide-react";
+import { FileText, BookOpen, Users, User, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
 export function NotesSidebar() {
-  const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const { toast } = useToast();
 
@@ -41,25 +39,9 @@ export function NotesSidebar() {
   ];
 
   return (
-    <Sidebar
-      className={cn(
-        "border-r bg-background transition-all duration-300 h-full",
-        collapsed ? "w-[50px]" : "w-[250px]"
-      )}
-    >
-      <SidebarHeader className="p-4 flex justify-between items-center">
-        <h2 className={cn("font-semibold", collapsed && "hidden")}>Navigation</h2>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setCollapsed(!collapsed)}
-          className="h-6 w-6"
-        >
-          <ChevronRight className={cn(
-            "h-4 w-4 transition-transform",
-            !collapsed && "rotate-180"
-          )} />
-        </Button>
+    <Sidebar className="border-r bg-background transition-all duration-300 h-full">
+      <SidebarHeader className="p-4">
+        <h2 className="font-semibold">Navigation</h2>
       </SidebarHeader>
       <SidebarContent>
         <div className="space-y-1 p-2">
@@ -67,28 +49,22 @@ export function NotesSidebar() {
             <Button
               key={item.path}
               variant={location.pathname === item.path ? "secondary" : "ghost"}
-              className={cn(
-                "w-full justify-start",
-                collapsed && "justify-center px-2"
-              )}
+              className="w-full justify-start"
               asChild
             >
               <Link to={item.path}>
                 <item.icon className="h-4 w-4 mr-2" />
-                {!collapsed && item.label}
+                {item.label}
               </Link>
             </Button>
           ))}
           <Button
             variant="ghost"
-            className={cn(
-              "w-full justify-start text-destructive hover:text-destructive",
-              collapsed && "justify-center px-2"
-            )}
+            className="w-full justify-start text-destructive hover:text-destructive"
             onClick={handleLogout}
           >
             <LogOut className="h-4 w-4 mr-2" />
-            {!collapsed && "Logout"}
+            Logout
           </Button>
         </div>
       </SidebarContent>
