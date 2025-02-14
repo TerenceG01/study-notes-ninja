@@ -232,6 +232,7 @@ export type Database = {
           created_at: string
           folder: string | null
           id: string
+          subject: string | null
           summary: string | null
           tags: string[] | null
           title: string
@@ -243,6 +244,7 @@ export type Database = {
           created_at?: string
           folder?: string | null
           id?: string
+          subject?: string | null
           summary?: string | null
           tags?: string[] | null
           title?: string
@@ -254,6 +256,7 @@ export type Database = {
           created_at?: string
           folder?: string | null
           id?: string
+          subject?: string | null
           summary?: string | null
           tags?: string[] | null
           title?: string

@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,6 +21,7 @@ type Note = {
   folder: string;
   summary?: string;
   tags?: string[];
+  subject?: string;
 };
 
 type SummaryLevel = 'brief' | 'medium' | 'detailed';
@@ -31,7 +31,7 @@ const Notes = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [notes, setNotes] = useState<Note[]>([]);
-  const [newNote, setNewNote] = useState({ title: "", content: "", tags: [] as string[] });
+  const [newNote, setNewNote] = useState({ title: "", content: "", tags: [] as string[], subject: "General" });
   const [loading, setLoading] = useState(true);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
@@ -42,6 +42,25 @@ const Notes = () => {
   const [newTag, setNewTag] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
   const [generatingFlashcardsForNote, setGeneratingFlashcardsForNote] = useState<string | null>(null);
+
+  // List of common subjects
+  const commonSubjects = [
+    "General",
+    "Mathematics",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "History",
+    "Geography",
+    "Literature",
+    "Computer Science",
+    "Economics",
+    "Psychology",
+    "Philosophy",
+    "Art",
+    "Music",
+    "Languages",
+  ];
 
   useEffect(() => {
     if (!user) {
@@ -98,6 +117,7 @@ const Notes = () => {
           title: newNote.title,
           content: newNote.content,
           tags: newNote.tags,
+          subject: newNote.subject,
           user_id: user?.id,
         },
       ]);
@@ -109,7 +129,7 @@ const Notes = () => {
         description: "Note created successfully!",
       });
 
-      setNewNote({ title: "", content: "", tags: [] });
+      setNewNote({ title: "", content: "", tags: [], subject: "General" });
       setIsEditorExpanded(false);
       fetchNotes();
     } catch (error) {
@@ -178,6 +198,7 @@ const Notes = () => {
           content: editingNote.content,
           summary: editingNote.summary,
           tags: editingNote.tags || [],
+          subject: editingNote.subject,
         })
         .eq("id", editingNote.id);
 
@@ -264,6 +285,22 @@ const Notes = () => {
                   style={{ textTransform: 'capitalize' }}
                 />
 
+                <Select
+                  value={newNote.subject}
+                  onValueChange={(value) => setNewNote({ ...newNote, subject: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select subject" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {commonSubjects.map((subject) => (
+                      <SelectItem key={subject} value={subject}>
+                        {subject}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
                 <Textarea
                   id="new-note-content"
                   placeholder="Write your note here..."
@@ -293,12 +330,8 @@ const Notes = () => {
                     value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
                     onKeyPress={(e) => {
-                      if (e.key === 'Enter' && newTag && editingNote) {
-                        setEditingNote({
-                          ...editingNote,
-                          tags: [...(editingNote.tags || []), newTag]
-                        });
-                        setNewTag("");
+                      if (e.key === 'Enter' && newTag) {
+                        addTag();
                       }
                     }}
                     className="!mt-0 w-24 h-7 text-sm"
@@ -310,7 +343,7 @@ const Notes = () => {
                     variant="outline"
                     onClick={() => {
                       setIsEditorExpanded(false);
-                      setNewNote({ title: "", content: "", tags: [] });
+                      setNewNote({ title: "", content: "", tags: [], subject: "General" });
                     }}
                   >
                     Cancel
@@ -326,9 +359,9 @@ const Notes = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Title</TableHead>
+                  <TableHead>Subject</TableHead>
                   <TableHead>Content</TableHead>
                   <TableHead>Created At</TableHead>
-                  <TableHead>Folder</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -356,6 +389,11 @@ const Notes = () => {
                         setEditingNote(note);
                         setShowSummary(false);
                       }}>{note.title}</TableCell>
+                      <TableCell onClick={() => {
+                        setSelectedNote(note);
+                        setEditingNote(note);
+                        setShowSummary(false);
+                      }}>{note.subject || 'General'}</TableCell>
                       <TableCell className="max-w-md truncate" onClick={() => {
                         setSelectedNote(note);
                         setEditingNote(note);
@@ -370,11 +408,6 @@ const Notes = () => {
                       }}>
                         {new Date(note.created_at).toLocaleDateString()}
                       </TableCell>
-                      <TableCell onClick={() => {
-                        setSelectedNote(note);
-                        setEditingNote(note);
-                        setShowSummary(false);
-                      }}>{note.folder}</TableCell>
                       <TableCell>
                         <Button
                           variant="outline"
@@ -427,6 +460,24 @@ const Notes = () => {
             </DialogTitle>
           </DialogHeader>
 
+          <div className="mt-4">
+            <Select
+              value={editingNote?.subject || "General"}
+              onValueChange={(value) => setEditingNote(editingNote ? { ...editingNote, subject: value } : null)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select subject" />
+              </SelectTrigger>
+              <SelectContent>
+                {commonSubjects.map((subject) => (
+                  <SelectItem key={subject} value={subject}>
+                    {subject}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex gap-4 items-center mt-4">
             <Select
               value={summaryLevel}
@@ -435,10 +486,10 @@ const Notes = () => {
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Summary Level" />
               </SelectTrigger>
-              <SelectContent className="bg-white">
-                <SelectItem value="brief" className="bg-white hover:bg-gray-100">Brief (30%)</SelectItem>
-                <SelectItem value="medium" className="bg-white hover:bg-gray-100">Medium (50%)</SelectItem>
-                <SelectItem value="detailed" className="bg-white hover:bg-gray-100">Detailed (70%)</SelectItem>
+              <SelectContent>
+                <SelectItem value="brief">Brief (30%)</SelectItem>
+                <SelectItem value="medium">Medium (50%)</SelectItem>
+                <SelectItem value="detailed">Detailed (70%)</SelectItem>
               </SelectContent>
             </Select>
             
