@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -40,7 +41,7 @@ const Notes = () => {
   const [isEditorExpanded, setIsEditorExpanded] = useState(false);
   const [newTag, setNewTag] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
-  const [generatingFlashcards, setGeneratingFlashcards] = useState(false);
+  const [generatingFlashcardsForNote, setGeneratingFlashcardsForNote] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -49,7 +50,6 @@ const Notes = () => {
     }
     fetchNotes();
 
-    // Handle clicks outside the editor
     const handleClickOutside = (event: MouseEvent) => {
       if (editorRef.current && !editorRef.current.contains(event.target as Node)) {
         if (!newNote.title && !newNote.content) {
@@ -203,7 +203,7 @@ const Notes = () => {
 
   const generateFlashcards = async (note: Note) => {
     try {
-      setGeneratingFlashcards(true);
+      setGeneratingFlashcardsForNote(note.id);
       const { data, error } = await supabase.functions.invoke('generate-flashcards', {
         body: {
           noteId: note.id,
@@ -228,7 +228,7 @@ const Notes = () => {
         description: "Failed to generate flashcards. Please try again.",
       });
     } finally {
-      setGeneratingFlashcards(false);
+      setGeneratingFlashcardsForNote(null);
     }
   };
 
@@ -380,10 +380,10 @@ const Notes = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => generateFlashcards(note)}
-                          disabled={generatingFlashcards}
+                          disabled={!!generatingFlashcardsForNote}
                           className="flex items-center gap-2"
                         >
-                          {generatingFlashcards ? (
+                          {generatingFlashcardsForNote === note.id ? (
                             <>
                               <Loader2 className="h-4 w-4 animate-spin" />
                               Generating...
