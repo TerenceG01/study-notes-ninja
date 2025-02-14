@@ -4,7 +4,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
-  SidebarContext,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -12,12 +12,12 @@ import { FileText, BookOpen, Users, User, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { useContext } from "react";
 
 export function NotesSidebar() {
   const location = useLocation();
   const { toast } = useToast();
-  const { isOpen } = useContext(SidebarContext);
+  const { state } = useSidebar();
+  const isOpen = state === "expanded";
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
