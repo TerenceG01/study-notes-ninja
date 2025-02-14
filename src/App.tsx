@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,7 +17,7 @@ import NotFound from "./pages/NotFound";
 import { useAuth } from "./contexts/AuthContext";
 import { NavigationBar } from "./components/navigation/NavigationBar";
 import { NotesSidebar } from "./components/notes/NotesSidebar";
-import { SidebarProvider } from "./components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { useIsMobile } from "./hooks/use-mobile";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
@@ -30,9 +29,8 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <SidebarProvider>
         <div className="flex min-h-screen pt-16">
           <NotesSidebar />
-          <div className={`flex-1 container transition-all duration-300 py-4 
-            ${isMobile ? 'px-2' : 'px-4'} 
-            ${isMobile ? 'ml-[50px]' : 'ml-[250px]'}`}>
+          <div className={`flex-1 py-4 px-4 transition-all duration-300
+            ${isMobile ? 'pl-[60px]' : 'pl-[270px]'}`}>
             {children}
           </div>
         </div>
