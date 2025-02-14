@@ -44,10 +44,12 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="flex min-h-[calc(100vh-4rem)] pt-16">
           <NotesSidebar />
           <div className="flex-1">
-            <SidebarTrigger asChild>
-              <Button variant="ghost" size="icon" className="m-2">
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+            <SidebarTrigger>
+              <div>
+                <Button variant="ghost" size="icon" className="m-2">
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
             </SidebarTrigger>
             <main className="p-4 transition-all duration-300">
               {children}
