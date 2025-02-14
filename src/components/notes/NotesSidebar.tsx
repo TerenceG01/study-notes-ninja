@@ -43,59 +43,46 @@ export function NotesSidebar() {
 
   return (
     <Sidebar className={cn(
-      "border-r bg-background transition-all duration-300 h-full",
+      "border-r bg-background transition-all duration-300 h-full flex flex-col",
       isOpen ? "w-64" : "w-16"
     )}>
       <SidebarHeader className="p-4">
         {isOpen && <h2 className="font-semibold">Navigation</h2>}
       </SidebarHeader>
       <SidebarContent>
-        <div className="space-y-2 p-2">
+        <div className="space-y-1 p-2 flex flex-col items-center">
           {navigationItems.map((item) => (
             <Button
               key={item.path}
               variant={location.pathname === item.path ? "secondary" : "ghost"}
-              asChild
               className={cn(
-                "relative min-w-0 w-full",
-                !isOpen && "h-10 px-0"
+                "flex",
+                isOpen ? "w-full justify-start" : "w-12 h-12 p-0"
               )}
+              asChild
             >
-              <Link 
-                to={item.path}
-                className={cn(
-                  "flex items-center w-full",
-                  isOpen ? "justify-start px-3" : "justify-center"
-                )}
-              >
-                <div className="flex-shrink-0">
-                  <item.icon className="h-5 w-5" />
-                </div>
-                {isOpen && (
-                  <span className="ml-3 truncate">{item.label}</span>
-                )}
+              <Link to={item.path} className="flex items-center">
+                <item.icon className={cn(
+                  "h-4 w-4",
+                  !isOpen && "mx-auto"
+                )} />
+                {isOpen && <span className="ml-2">{item.label}</span>}
               </Link>
             </Button>
           ))}
           <Button
             variant="ghost"
-            onClick={handleLogout}
             className={cn(
-              "relative min-w-0 w-full text-destructive hover:text-destructive",
-              !isOpen && "h-10 px-0"
+              "flex text-destructive hover:text-destructive",
+              isOpen ? "w-full justify-start" : "w-12 h-12 p-0"
             )}
+            onClick={handleLogout}
           >
-            <div className={cn(
-              "flex items-center w-full",
-              isOpen ? "justify-start px-3" : "justify-center"
-            )}>
-              <div className="flex-shrink-0">
-                <LogOut className="h-5 w-5" />
-              </div>
-              {isOpen && (
-                <span className="ml-3 truncate">Logout</span>
-              )}
-            </div>
+            <LogOut className={cn(
+              "h-4 w-4",
+              !isOpen && "mx-auto"
+            )} />
+            {isOpen && <span className="ml-2">Logout</span>}
           </Button>
         </div>
       </SidebarContent>
