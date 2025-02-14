@@ -38,69 +38,71 @@ const App = () => (
     <BrowserRouter>
       <AuthProvider>
         <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route
-              path="/notes"
-              element={
-                <ProtectedRoute>
-                  <Notes />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/flashcards"
-              element={
-                <ProtectedRoute>
-                  <Flashcards />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/flashcards/:id"
-              element={
-                <ProtectedRoute>
-                  <FlashcardDeck />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/study-groups"
-              element={
-                <ProtectedRoute>
-                  <StudyGroups />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/study-groups/:id"
-              element={
-                <ProtectedRoute>
-                  <StudyGroupDetails />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/study-groups/join/:code"
-              element={
-                <ProtectedRoute>
-                  <JoinStudyGroup />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <div className="min-h-screen">
+            <Toaster />
+            <Sonner />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route
+                path="/notes"
+                element={
+                  <ProtectedRoute>
+                    <Notes />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/flashcards"
+                element={
+                  <ProtectedRoute>
+                    <Flashcards />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/flashcards/:id"
+                element={
+                  <ProtectedRoute>
+                    <FlashcardDeck />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/study-groups"
+                element={
+                  <ProtectedRoute>
+                    <StudyGroups />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/study-groups/:id"
+                element={
+                  <ProtectedRoute>
+                    <StudyGroupDetails />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/study-groups/join/:code"
+                element={
+                  <ProtectedRoute>
+                    <JoinStudyGroup />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
         </TooltipProvider>
       </AuthProvider>
     </BrowserRouter>
