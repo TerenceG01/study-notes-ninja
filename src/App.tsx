@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,7 +18,7 @@ import { useAuth } from "./contexts/AuthContext";
 import { NavigationBar } from "./components/navigation/NavigationBar";
 import { NotesSidebar } from "./components/notes/NotesSidebar";
 import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar";
-import { Button } from "./components/ui/button";
+import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -40,17 +39,10 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen">
       <NavigationBar />
-      <SidebarProvider defaultOpen>
-        <div className="flex min-h-[calc(100vh-4rem)] pt-16">
+      <SidebarProvider defaultState="expanded">
+        <div className="flex min-h-[calc(100vh-4rem)] pt-16 w-full">
           <NotesSidebar />
           <div className="flex-1">
-            <SidebarTrigger>
-              <div>
-                <Button variant="ghost" size="icon" className="m-2">
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
-            </SidebarTrigger>
             <main className="p-4 transition-all duration-300">
               {children}
             </main>
