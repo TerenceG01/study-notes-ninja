@@ -36,19 +36,19 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="min-h-screen">
-      <NavigationBar />
-      <div className="flex min-h-[calc(100vh-4rem)] pt-16 w-full">
-        <SidebarProvider>
+    <SidebarProvider>
+      <div className="min-h-screen">
+        <NavigationBar />
+        <div className="flex min-h-[calc(100vh-4rem)] pt-16 w-full">
           <NotesSidebar />
           <div className="flex-1">
             <main className="p-4 transition-all duration-300">
               {children}
             </main>
           </div>
-        </SidebarProvider>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
