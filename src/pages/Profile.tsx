@@ -9,7 +9,9 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, User, Mail, PenLine } from "lucide-react";
+import { Loader2, User, Mail, PenLine, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Switch } from "@/components/ui/switch";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -17,6 +19,7 @@ const Profile = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     if (!user) {
@@ -145,6 +148,28 @@ const Profile = () => {
                     </Button>
                   </div>
                 </form>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">Appearance</CardTitle>
+                <CardDescription>
+                  Customize your app appearance
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <span className="font-medium">Dark Mode</span>
+                  </div>
+                  <Switch
+                    checked={theme === "dark"}
+                    onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+                  />
+                </div>
               </CardContent>
             </Card>
 
