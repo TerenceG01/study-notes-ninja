@@ -13,7 +13,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState } from "react";
 
 export function NotesSidebar() {
   const location = useLocation();
@@ -21,7 +20,6 @@ export function NotesSidebar() {
   const { state, toggleSidebar } = useSidebar();
   const isOpen = state === "expanded";
   const isMobile = useIsMobile();
-  const [isHovered, setIsHovered] = useState(false);
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -50,37 +48,29 @@ export function NotesSidebar() {
   }
 
   return (
-    <Sidebar 
-      className={cn(
-        "border-r bg-background/80 backdrop-blur-sm transition-all duration-300 h-full flex flex-col relative",
-        isOpen ? "w-64" : "w-16 hover:w-64",
-        isMobile && "fixed inset-y-0 left-0 z-50"
-      )}
-      onMouseEnter={() => !isOpen && setIsHovered(true)}
-      onMouseLeave={() => !isOpen && setIsHovered(false)}
-    >
+    <Sidebar className={cn(
+      "border-r bg-background/80 backdrop-blur-sm transition-all duration-300 h-full flex flex-col",
+      isOpen ? "w-64" : "w-16"
+    )}>
       <SidebarHeader className="p-4 border-b">
-        {(isOpen || isHovered) && (
-          <h2 className="font-semibold text-left">Navigation</h2>
-        )}
+        {isOpen && <h2 className="font-semibold">Navigation</h2>}
       </SidebarHeader>
-      <SidebarContent className="p-2">
-        <nav className="space-y-1">
+      <SidebarContent className="flex-1">
+        <div className="space-y-2 p-2">
           {navigationItems.map((item) => (
             <Button
               key={item.path}
               variant={location.pathname === item.path ? "secondary" : "ghost"}
               className={cn(
-                "w-full flex items-center gap-2 relative px-3 py-2",
-                (isOpen || isHovered) ? "justify-start" : "justify-center"
+                "w-full flex items-center gap-2",
+                isOpen ? "justify-start" : "justify-center",
+                location.pathname === item.path && "bg-secondary"
               )}
               asChild
             >
               <Link to={item.path}>
-                <item.icon className="h-5 w-5 shrink-0" />
-                {(isOpen || isHovered) && (
-                  <span className="ml-2">{item.label}</span>
-                )}
+                <item.icon className="h-4 w-4 shrink-0" />
+                {isOpen && <span>{item.label}</span>}
               </Link>
             </Button>
           ))}
@@ -88,17 +78,15 @@ export function NotesSidebar() {
           <Button
             variant="ghost"
             className={cn(
-              "w-full flex items-center gap-2 relative px-3 py-2 text-destructive hover:text-destructive",
-              (isOpen || isHovered) ? "justify-start" : "justify-center"
+              "w-full flex items-center gap-2 text-destructive hover:text-destructive",
+              isOpen ? "justify-start" : "justify-center"
             )}
             onClick={handleLogout}
           >
-            <LogOut className="h-5 w-5 shrink-0" />
-            {(isOpen || isHovered) && (
-              <span className="ml-2">Logout</span>
-            )}
+            <LogOut className="h-4 w-4 shrink-0" />
+            {isOpen && <span>Logout</span>}
           </Button>
-        </nav>
+        </div>
       </SidebarContent>
       {!isMobile && (
         <Button
