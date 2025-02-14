@@ -5,10 +5,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
+import { Menu } from "lucide-react";
+import { useSidebar } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const NavigationBar = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { toggleSidebar } = useSidebar();
+  const isMobile = useIsMobile();
 
   const { data: profile } = useQuery({
     queryKey: ['profile', user?.id],
@@ -45,28 +50,39 @@ export const NavigationBar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b">
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
-          <Link to="/" className="text-xl font-bold text-primary flex items-center gap-2">
-            {user && profile?.username && (
-              <span className="text-muted-foreground">{profile.username}</span>
+          <div className="flex items-center gap-4">
+            {isMobile && user && (
+              <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+                <Menu className="h-5 w-5" />
+              </Button>
             )}
-            StudyNotes
-          </Link>
+            <Link to="/" className="text-xl font-bold text-primary flex items-center gap-2">
+              {user && profile?.username && (
+                <span className="text-muted-foreground">{profile.username}</span>
+              )}
+              StudyNotes
+            </Link>
+          </div>
           
           <div className="flex gap-4">
             {user ? (
               <>
-                <Button variant="ghost" asChild>
-                  <Link to="/notes">My Notes</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link to="/flashcards">My Flashcards</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link to="/study-groups">Study Groups</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link to="/profile">My Profile</Link>
-                </Button>
+                {!isMobile && (
+                  <>
+                    <Button variant="ghost" asChild>
+                      <Link to="/notes">My Notes</Link>
+                    </Button>
+                    <Button variant="ghost" asChild>
+                      <Link to="/flashcards">My Flashcards</Link>
+                    </Button>
+                    <Button variant="ghost" asChild>
+                      <Link to="/study-groups">Study Groups</Link>
+                    </Button>
+                    <Button variant="ghost" asChild>
+                      <Link to="/profile">My Profile</Link>
+                    </Button>
+                  </>
+                )}
                 <Button variant="ghost" onClick={handleLogout}>
                   Logout
                 </Button>

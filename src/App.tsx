@@ -16,6 +16,9 @@ import StudyGroupDetails from "./pages/StudyGroupDetails";
 import JoinStudyGroup from "./pages/JoinStudyGroup";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "./contexts/AuthContext";
+import { NavigationBar } from "./components/navigation/NavigationBar";
+import { NotesSidebar } from "./components/notes/NotesSidebar";
+import { SidebarProvider } from "./components/ui/sidebar";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -29,6 +32,24 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   return <>{children}</>;
+};
+
+const AppLayout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="min-h-screen">
+      <NavigationBar />
+      <div className="flex min-h-[calc(100vh-4rem)] pt-16 w-full">
+        <SidebarProvider>
+          <NotesSidebar />
+          <div className="flex-1">
+            <main className="p-4 transition-all duration-300">
+              {children}
+            </main>
+          </div>
+        </SidebarProvider>
+      </div>
+    </div>
+  );
 };
 
 const queryClient = new QueryClient();
@@ -47,7 +68,9 @@ const App = () => (
               path="/notes"
               element={
                 <ProtectedRoute>
-                  <Notes />
+                  <AppLayout>
+                    <Notes />
+                  </AppLayout>
                 </ProtectedRoute>
               }
             />
@@ -55,7 +78,9 @@ const App = () => (
               path="/flashcards"
               element={
                 <ProtectedRoute>
-                  <Flashcards />
+                  <AppLayout>
+                    <Flashcards />
+                  </AppLayout>
                 </ProtectedRoute>
               }
             />
@@ -63,7 +88,9 @@ const App = () => (
               path="/flashcards/:id"
               element={
                 <ProtectedRoute>
-                  <FlashcardDeck />
+                  <AppLayout>
+                    <FlashcardDeck />
+                  </AppLayout>
                 </ProtectedRoute>
               }
             />
@@ -71,7 +98,9 @@ const App = () => (
               path="/study-groups"
               element={
                 <ProtectedRoute>
-                  <StudyGroups />
+                  <AppLayout>
+                    <StudyGroups />
+                  </AppLayout>
                 </ProtectedRoute>
               }
             />
@@ -79,7 +108,9 @@ const App = () => (
               path="/study-groups/:id"
               element={
                 <ProtectedRoute>
-                  <StudyGroupDetails />
+                  <AppLayout>
+                    <StudyGroupDetails />
+                  </AppLayout>
                 </ProtectedRoute>
               }
             />
@@ -87,7 +118,9 @@ const App = () => (
               path="/study-groups/join/:code"
               element={
                 <ProtectedRoute>
-                  <JoinStudyGroup />
+                  <AppLayout>
+                    <JoinStudyGroup />
+                  </AppLayout>
                 </ProtectedRoute>
               }
             />
@@ -95,7 +128,9 @@ const App = () => (
               path="/profile"
               element={
                 <ProtectedRoute>
-                  <Profile />
+                  <AppLayout>
+                    <Profile />
+                  </AppLayout>
                 </ProtectedRoute>
               }
             />
