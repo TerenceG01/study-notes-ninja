@@ -5,51 +5,53 @@
  
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 271 81% 56%;
+    --background: 220 20% 98%; /* #F9FAFB */
+    --foreground: 0 0% 20%; /* #333333 */
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 0 0% 20%; /* #333333 */
+    --popover: 0 0% 100%; /* #FFFFFF */
+    --popover-foreground: 0 0% 20%; /* #333333 */
+    --primary: 271 81% 50%; /* #6D28D9 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 271 91% 65%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
+    --secondary: 220 14% 96%; /* #F3F4F6 */
+    --secondary-foreground: 0 0% 20%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 220 13% 91%; /* #E5E7EB */
+    --accent-foreground: 0 0% 20%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 271 81% 56%;
+    --border: 220 13% 91%; /* #E5E7EB */
+    --input: 220 13% 91%; /* #E5E7EB */
+    --ring: 271 81% 50%; /* #6D28D9 */
+    --link: 220 100% 53%; /* #2563EB */
     --radius: 0.75rem;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 271 81% 56%;
+    --background: 0 0% 7%; /* #121212 */
+    --foreground: 0 0% 93%; /* #EDEDED */
+    --card: 0 0% 14%; /* #232323 */
+    --card-foreground: 0 0% 93%; /* #EDEDED */
+    --popover: 0 0% 14%; /* #232323 */
+    --popover-foreground: 0 0% 93%; /* #EDEDED */
+    --primary: 240 84% 67%; /* #6366F1 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
+    --secondary: 240 54% 60%; /* #4F46E5 */
+    --secondary-foreground: 0 0% 93%;
+    --muted: 0 0% 12%; /* #1F1F1F */
     --muted-foreground: 240 5% 64.9%;
-    --accent: 271 91% 65%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 240 54% 60%; /* #4F46E5 */
+    --accent-foreground: 0 0% 93%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --destructive-foreground: 0 0% 93%;
+    --border: 0 0% 25%; /* #3F3F3F */
+    --input: 0 0% 25%; /* #3F3F3F */
+    --ring: 240 84% 67%; /* #6366F1 */
+    --link: 198 93% 60%; /* #38BDF8 */
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
@@ -57,12 +59,59 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+  
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-secondary/50 rounded-full;
+  }
+  
+  .dark ::-webkit-scrollbar-thumb {
+    @apply bg-muted/30;
+  }
+
+  a {
+    @apply text-link hover:underline;
+  }
 }
 
 .glass-morphism {
-  @apply bg-white/80 dark:bg-black/80 backdrop-blur-sm;
+  @apply bg-white/80 dark:bg-black/80 backdrop-blur-sm border-accent dark:border-border;
 }
 
 .hover-lift {
-  @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+  @apply transition-all duration-300 hover:-translate-y-1;
+  @apply hover:shadow-lg dark:hover:shadow-secondary/5;
+  @apply hover:bg-secondary dark:hover:bg-secondary;
+}
+
+/* Shadow utilities */
+.shadow-card {
+  @apply shadow-md dark:shadow-none;
+}
+
+/* Additional utilities for consistent styling */
+@layer utilities {
+  .sidebar-bg {
+    @apply bg-white dark:bg-[#1F1F1F];
+  }
+  
+  .card-bg {
+    @apply bg-white dark:bg-[#232323];
+  }
+  
+  .hover-effect {
+    @apply hover:bg-[#F3F4F6] dark:hover:bg-[#4F46E5];
+  }
+  
+  .border-color {
+    @apply border-[#E5E7EB] dark:border-[#3F3F3F];
+  }
 }
