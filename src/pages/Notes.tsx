@@ -265,7 +265,7 @@ const Notes = () => {
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full bg-background border shadow-sm shrink-0 -ml-14 mr-4"
+          className="rounded-full bg-background border shadow-sm shrink-0 -ml-14 mr-4 relative z-50"
           onClick={toggleSidebar}
         >
           {isOpen ? (
