@@ -62,7 +62,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
               <ChevronRight className="h-4 w-4" />
             )}
           </Button>
-          <main className="p-4 transition-all duration-300">
+          <main className={`p-4 transition-all duration-300 ${isOpen ? '-ml-12' : ''}`}>
             {children}
           </main>
         </div>
