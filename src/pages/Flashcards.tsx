@@ -140,10 +140,10 @@ const Flashcards = () => {
           </div>
         ) : decks?.length === 0 ? (
           <Card className="bg-muted/50">
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <BookOpen className="h-12 w-12 text-muted-foreground mb-4" />
-              <p className="text-lg font-medium mb-2">No flashcard decks yet</p>
-              <p className="text-muted-foreground mb-4">
+            <CardContent className="flex flex-col items-center justify-center py-16">
+              <BookOpen className="h-16 w-16 text-muted-foreground mb-6" />
+              <p className="text-xl font-medium mb-3">No flashcard decks yet</p>
+              <p className="text-muted-foreground mb-6 text-center max-w-md">
                 Create flashcards from your notes to start studying
               </p>
               <Button
@@ -156,11 +156,11 @@ const Flashcards = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {decks?.map((deck) => (
               <Link to={`/flashcards/${deck.id}`} key={deck.id}>
                 <Card className="h-full hover:bg-muted/50 transition-colors group">
-                  <CardHeader className="relative">
+                  <CardHeader className="relative p-6">
                     <Button
                       variant="ghost"
                       size="icon"
@@ -169,14 +169,14 @@ const Flashcards = () => {
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
-                    <CardTitle className="line-clamp-1">{deck.title}</CardTitle>
-                    <CardDescription className="line-clamp-2">
+                    <CardTitle className="text-2xl mb-2 line-clamp-1">{deck.title}</CardTitle>
+                    <CardDescription className="text-base line-clamp-2">
                       {deck.description || "No description"}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <BookOpen className="h-4 w-4" />
+                  <CardContent className="p-6 pt-0">
+                    <div className="flex items-center gap-2 text-base text-muted-foreground">
+                      <BookOpen className="h-5 w-5" />
                       <span>{deck.total_cards || 0} cards</span>
                     </div>
                   </CardContent>
@@ -187,7 +187,7 @@ const Flashcards = () => {
         )}
 
         <Dialog open={isCreatingDeck} onOpenChange={setIsCreatingDeck}>
-          <DialogContent>
+          <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Create New Flashcard Deck</DialogTitle>
             </DialogHeader>
