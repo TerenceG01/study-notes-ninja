@@ -62,16 +62,14 @@ export function NotesSidebar() {
               key={item.path}
               variant={location.pathname === item.path ? "secondary" : "ghost"}
               className={cn(
-                "w-full",
-                isOpen ? "px-3" : "px-0",
+                "w-full flex items-center",
+                isOpen ? "justify-start px-3 gap-3" : "justify-center",
                 location.pathname === item.path && "bg-secondary"
               )}
               asChild
             >
               <Link to={item.path} className="flex items-center gap-3">
-                <div className="w-4 h-4 flex items-center justify-center">
-                  <item.icon className="h-4 w-4" />
-                </div>
+                <item.icon className="h-4 w-4 shrink-0" />
                 {isOpen && <span className="truncate">{item.label}</span>}
               </Link>
             </Button>
@@ -80,15 +78,13 @@ export function NotesSidebar() {
           <Button
             variant="ghost"
             className={cn(
-              "w-full",
-              isOpen ? "px-3" : "px-0",
+              "w-full flex items-center",
+              isOpen ? "justify-start px-3 gap-3" : "justify-center",
               "text-destructive hover:text-destructive"
             )}
             onClick={handleLogout}
           >
-            <div className="w-4 h-4 flex items-center justify-center">
-              <LogOut className="h-4 w-4" />
-            </div>
+            <LogOut className="h-4 w-4 shrink-0" />
             {isOpen && <span className="truncate">Logout</span>}
           </Button>
         </div>
