@@ -49,11 +49,27 @@ export function NotesSidebar() {
 
   return (
     <Sidebar className={cn(
-      "border-r bg-background/80 backdrop-blur-sm transition-all duration-300 h-full flex flex-col relative",
+      "border-r bg-background/80 backdrop-blur-sm transition-all duration-300 h-full flex flex-col",
       isOpen ? "w-64" : "w-16"
     )}>
       <SidebarHeader className="p-4 border-b flex items-center justify-between">
-        {isOpen && <h2 className="font-semibold">Navigation</h2>}
+        <div className="flex items-center w-full gap-2">
+          {!isMobile && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full bg-background border shadow-sm shrink-0"
+              onClick={toggleSidebar}
+            >
+              {isOpen ? (
+                <ChevronLeft className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+            </Button>
+          )}
+          {isOpen && <h2 className="font-semibold">Navigation</h2>}
+        </div>
       </SidebarHeader>
       <SidebarContent className="flex-1">
         <div className="space-y-2 p-2">
@@ -92,21 +108,6 @@ export function NotesSidebar() {
           </Button>
         </div>
       </SidebarContent>
-      
-      {!isMobile && (
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleSidebar}
-          className="absolute -right-4 top-6 rounded-full bg-background border shadow-sm h-8 w-8 z-50 hover:bg-accent"
-        >
-          {isOpen ? (
-            <ChevronLeft className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
-        </Button>
-      )}
     </Sidebar>
   );
 }
