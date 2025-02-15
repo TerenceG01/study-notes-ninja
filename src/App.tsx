@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -50,7 +51,9 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full bg-background border shadow-sm absolute -left-6 top-6 z-50"
+            className={`rounded-full bg-background border shadow-md absolute top-6 z-50 transition-all duration-300 ${
+              isOpen ? '-left-6 hover:bg-accent' : 'left-0 hover:bg-accent translate-x-1/2'
+            }`}
             onClick={toggleSidebar}
           >
             {isOpen ? (
