@@ -48,7 +48,10 @@ export function NotesSidebar() {
   }
 
   return (
-    <Sidebar className="border-r bg-background/80 backdrop-blur-sm h-full">
+    <Sidebar className={cn(
+      "border-r bg-background/80 backdrop-blur-sm h-full transition-all duration-300",
+      isOpen ? "w-64" : "w-16"
+    )}>
       <SidebarHeader className="p-4 border-b flex items-center justify-between">
         <div className="flex items-center w-full gap-2">
           {!isMobile && (
@@ -68,7 +71,7 @@ export function NotesSidebar() {
           {isOpen && <h2 className="font-semibold">Navigation</h2>}
         </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="flex-1">
         <div className="space-y-2 p-2">
           {navigationItems.map((item) => (
             <Button
