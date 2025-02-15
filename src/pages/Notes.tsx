@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -260,11 +261,11 @@ const Notes = () => {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <div className="mb-8 flex items-center gap-4">
+      <div className="mb-8 flex items-center">
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full bg-background border shadow-sm shrink-0"
+          className="rounded-full bg-background border shadow-sm shrink-0 -ml-14 mr-4"
           onClick={toggleSidebar}
         >
           {isOpen ? (
