@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import { useSidebar } from "@/components/ui/sidebar";
 
 const Flashcards = () => {
   const { user } = useAuth();
@@ -19,6 +20,8 @@ const Flashcards = () => {
   const queryClient = useQueryClient();
   const [isCreatingDeck, setIsCreatingDeck] = useState(false);
   const [newDeck, setNewDeck] = useState({ title: "", description: "" });
+  const { state } = useSidebar();
+  const isExpanded = state === "expanded";
 
   const { data: decks, isLoading } = useQuery({
     queryKey: ['flashcard-decks', user?.id],
@@ -118,7 +121,7 @@ const Flashcards = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="px-0 py-6 -ml-8">
+      <main className={`px-0 py-6 ${isExpanded ? "-ml-12" : ""}`}>
         <div className="flex justify-between items-start mb-8 px-4">
           <div>
             <h1 className="text-4xl font-bold text-primary">My Flashcards</h1>
