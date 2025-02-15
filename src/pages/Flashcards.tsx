@@ -119,7 +119,7 @@ const Flashcards = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="container mx-auto px-4 py-6">
+      <main className="px-2 py-6">
         <div className="flex justify-between items-start mb-8">
           <div>
             <h1 className="text-4xl font-bold text-primary">My Flashcards</h1>
