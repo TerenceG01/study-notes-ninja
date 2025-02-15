@@ -256,43 +256,39 @@ const Notes = () => {
   if (!user) return null;
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="mb-8 flex items-center">
-        <div>
-          <h1 className="text-4xl font-bold mb-2 text-primary">My Notes</h1>
-          <p className="text-muted-foreground">Organize and manage your study materials</p>
-        </div>
+    <div className="container mx-auto px-4">
+      <div className="mb-4">
+        <h1 className="text-2xl font-bold mb-1 text-primary">My Notes</h1>
+        <p className="text-sm text-muted-foreground">Organize and manage your study materials</p>
       </div>
 
-      <div className="grid gap-6">
-        <Card className="overflow-hidden">
-          <CardHeader className="bg-muted/50">
-            <CardTitle className="text-lg font-medium">Create New Note</CardTitle>
-            <CardDescription>Add a new note to your collection</CardDescription>
+      <div className="space-y-4">
+        <Card>
+          <CardHeader className="py-3 px-4">
+            <CardTitle className="text-base">Create New Note</CardTitle>
           </CardHeader>
-          <CardContent className="p-6">
+          <CardContent className="py-3 px-4">
             {!isEditorExpanded ? (
               <Button 
                 onClick={() => setIsEditorExpanded(true)}
-                className="w-full py-8 text-lg hover:bg-accent hover:text-accent-foreground transition-colors flex items-center justify-center gap-2"
+                className="w-full py-4 text-base hover:bg-accent hover:text-accent-foreground transition-colors flex items-center justify-center gap-2"
               >
-                <Plus className="h-5 w-5" />
+                <Plus className="h-4 w-4" />
                 Create a New Note
               </Button>
             ) : (
-              <div className="space-y-4 animate-fade-in">
+              <div className="space-y-3 animate-fade-in">
                 <Input
                   placeholder="Note Title"
                   value={newNote.title}
                   onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
-                  className="text-lg font-medium"
                 />
 
                 <Select
                   value={newNote.subject}
                   onValueChange={(value) => setNewNote({ ...newNote, subject: value })}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger>
                     <SelectValue placeholder="Select subject" />
                   </SelectTrigger>
                   <SelectContent>
@@ -312,7 +308,7 @@ const Notes = () => {
                   placeholder="Write your note here..."
                   value={newNote.content}
                   onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
-                  className="min-h-[200px] resize-y"
+                  className="min-h-[120px] resize-y"
                 />
 
                 <div className="flex flex-wrap gap-2 items-center">
@@ -320,7 +316,7 @@ const Notes = () => {
                   {newNote.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm flex items-center gap-1 hover:bg-secondary/80 transition-colors"
+                      className="px-2 py-0.5 bg-secondary text-secondary-foreground rounded-full text-xs flex items-center gap-1"
                     >
                       {tag}
                       <button
@@ -341,13 +337,14 @@ const Notes = () => {
                         addTag();
                       }
                     }}
-                    className="!mt-0 w-32 h-8 text-sm"
+                    className="!mt-0 w-24 h-7 text-xs"
                   />
                 </div>
 
-                <div className="flex justify-end gap-2 pt-4">
+                <div className="flex justify-end gap-2 pt-2">
                   <Button
                     variant="outline"
+                    size="sm"
                     onClick={() => {
                       setIsEditorExpanded(false);
                       setNewNote({ title: "", content: "", tags: [], subject: "General" });
@@ -356,10 +353,11 @@ const Notes = () => {
                     Cancel
                   </Button>
                   <Button 
+                    size="sm"
                     onClick={createNote}
                     className="gap-2"
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className="h-3 w-3" />
                     Save Note
                   </Button>
                 </div>
@@ -369,9 +367,8 @@ const Notes = () => {
         </Card>
 
         <Card>
-          <CardHeader className="bg-muted/50">
-            <CardTitle className="text-lg font-medium">Your Notes</CardTitle>
-            <CardDescription>Browse and manage your existing notes</CardDescription>
+          <CardHeader className="py-3 px-4">
+            <CardTitle className="text-base">Your Notes</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <Table>
@@ -387,17 +384,17 @@ const Notes = () => {
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8">
+                    <TableCell colSpan={5} className="text-center py-4">
                       <div className="flex items-center justify-center gap-2">
-                        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                        <span className="text-muted-foreground">Loading notes...</span>
+                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Loading notes...</span>
                       </div>
                     </TableCell>
                   </TableRow>
                 ) : notes.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8">
-                      <p className="text-muted-foreground">No notes found. Create your first note above!</p>
+                    <TableCell colSpan={5} className="text-center py-4">
+                      <p className="text-sm text-muted-foreground">No notes found. Create your first note above!</p>
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -407,7 +404,7 @@ const Notes = () => {
                       className="group hover:bg-muted/50 cursor-pointer transition-colors"
                     >
                       <TableCell 
-                        className="font-medium"
+                        className="font-medium py-2"
                         onClick={() => {
                           setSelectedNote(note);
                           setEditingNote(note);
@@ -417,6 +414,7 @@ const Notes = () => {
                         {note.title}
                       </TableCell>
                       <TableCell
+                        className="py-2"
                         onClick={() => {
                           setSelectedNote(note);
                           setEditingNote(note);
@@ -426,7 +424,7 @@ const Notes = () => {
                         {note.subject || 'General'}
                       </TableCell>
                       <TableCell 
-                        className="max-w-md truncate hidden md:table-cell"
+                        className="max-w-md truncate hidden md:table-cell py-2"
                         onClick={() => {
                           setSelectedNote(note);
                           setEditingNote(note);
@@ -436,7 +434,7 @@ const Notes = () => {
                         {note.content}
                       </TableCell>
                       <TableCell 
-                        className="hidden sm:table-cell"
+                        className="hidden sm:table-cell py-2"
                         onClick={() => {
                           setSelectedNote(note);
                           setEditingNote(note);
@@ -445,22 +443,22 @@ const Notes = () => {
                       >
                         {new Date(note.created_at).toLocaleDateString()}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="py-2">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => generateFlashcards(note)}
                           disabled={!!generatingFlashcardsForNote}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 h-7 text-xs"
                         >
                           {generatingFlashcardsForNote === note.id ? (
                             <>
-                              <Loader2 className="h-4 w-4 animate-spin" />
+                              <Loader2 className="h-3 w-3 animate-spin" />
                               Generating...
                             </>
                           ) : (
                             <>
-                              <BookOpen className="h-4 w-4" />
+                              <BookOpen className="h-3 w-3" />
                               Create Flashcards
                             </>
                           )}
@@ -581,7 +579,7 @@ const Notes = () => {
             {editingNote?.tags?.map((tag) => (
               <span
                 key={tag}
-                className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm flex items-center gap-1 hover:bg-secondary/80 transition-colors"
+                className="px-2 py-0.5 bg-secondary text-secondary-foreground rounded-full text-xs flex items-center gap-1"
               >
                 {tag}
                 <button
@@ -608,7 +606,7 @@ const Notes = () => {
                   setNewTag("");
                 }
               }}
-              className="!mt-0 w-32 h-8 text-sm"
+              className="!mt-0 w-24 h-7 text-xs"
             />
           </div>
 
