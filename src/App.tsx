@@ -51,8 +51,8 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
           <Button
             variant="ghost"
             size="icon"
-            className={`rounded-full bg-background border shadow-md absolute top-2 z-50 transition-all duration-300 ${
-              isOpen ? '-left-20' : 'left-0 translate-x-1/2'
+            className={`rounded-full bg-background border shadow-md fixed top-20 z-50 transition-all duration-300 ${
+              isOpen ? 'left-[15.5rem]' : 'left-4'
             }`}
             onClick={toggleSidebar}
           >
