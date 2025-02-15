@@ -1,4 +1,3 @@
-
 import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -119,7 +118,7 @@ const Flashcards = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="px-2 py-6">
+      <main className="px-0 py-6">
         <div className="flex justify-between items-start mb-8">
           <div>
             <h1 className="text-4xl font-bold text-primary">My Flashcards</h1>
