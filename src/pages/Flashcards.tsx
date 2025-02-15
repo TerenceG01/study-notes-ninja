@@ -118,8 +118,8 @@ const Flashcards = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="px-0 py-6">
-        <div className="flex justify-between items-start mb-8">
+      <main className="px-0 py-6 -ml-8">
+        <div className="flex justify-between items-start mb-8 px-4">
           <div>
             <h1 className="text-4xl font-bold text-primary">My Flashcards</h1>
             <p className="text-muted-foreground mt-2">Review and manage your flashcard decks</p>
