@@ -79,12 +79,12 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <NavigationBar />
-      <div className="pt-16 flex items-center justify-center">
-        <Card className="w-[400px]">
-          <CardHeader>
-            <CardTitle>Welcome</CardTitle>
+      <div className="flex-1 flex items-center justify-center px-4">
+        <Card className="w-full max-w-[400px]">
+          <CardHeader className="space-y-1 text-center">
+            <CardTitle className="text-2xl">Welcome</CardTitle>
             <CardDescription>Sign in or create a new account</CardDescription>
           </CardHeader>
           <CardContent>
