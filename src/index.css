@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -24,7 +23,7 @@
     --border: 220 13% 91%; /* #E5E7EB */
     --input: 220 13% 91%; /* #E5E7EB */
     --ring: 271 81% 50%; /* #6D28D9 */
-    --link: 220 100% 53%; /* #2563EB */
+    --link: 220 9% 46%; /* #757575 - Medium gray for better contrast */
     --radius: 0.75rem;
   }
 
@@ -48,7 +47,7 @@
     --border: 0 0% 25%; /* #3F3F3F */
     --input: 0 0% 25%; /* #3F3F3F */
     --ring: 240 84% 67%; /* #6366F1 */
-    --link: 198 93% 60%; /* #38BDF8 */
+    --link: 0 0% 80%; /* #CCCCCC - Light gray for dark mode */
   }
 }
 
