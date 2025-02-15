@@ -63,7 +63,7 @@ export function NotesSidebar() {
               variant={location.pathname === item.path ? "secondary" : "ghost"}
               className={cn(
                 "w-full flex items-center gap-3",
-                isOpen ? "justify-start px-3" : "justify-center",
+                isOpen ? "justify-start px-3" : "justify-center px-0",
                 location.pathname === item.path && "bg-secondary"
               )}
               asChild
@@ -81,7 +81,7 @@ export function NotesSidebar() {
             variant="ghost"
             className={cn(
               "w-full flex items-center gap-3 text-destructive hover:text-destructive",
-              isOpen ? "justify-start px-3" : "justify-center"
+              isOpen ? "justify-start px-3" : "justify-center px-0"
             )}
             onClick={handleLogout}
           >
