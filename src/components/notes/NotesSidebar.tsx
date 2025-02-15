@@ -8,21 +8,18 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { FileText, BookOpen, Users, User, LogOut } from "lucide-react";
+import { FileText, BookOpen, Users, User, LogOut, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { useState } from "react";
 
 export function NotesSidebar() {
   const location = useLocation();
   const { toast } = useToast();
-  const { state } = useSidebar();
+  const { state, toggleSidebar } = useSidebar();
   const isOpen = state === "expanded";
   const isMobile = useIsMobile();
-  const [sidebarWidth, setSidebarWidth] = useState(20);
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -51,61 +48,66 @@ export function NotesSidebar() {
   }
 
   return (
-    <div className="h-full w-full">
-      <PanelGroup 
-        direction="horizontal" 
-        id="sidebar-panels"
-      >
-        <Panel 
-          id="sidebar"
-          defaultSize={20}
-          minSize={15}
-          maxSize={30}
-        >
-          <Sidebar className="border-r bg-background/80 backdrop-blur-sm h-full flex flex-col">
-            <SidebarHeader className="p-4 border-b flex items-center justify-between">
-              <h2 className="font-semibold">Navigation</h2>
-            </SidebarHeader>
-            <SidebarContent className="flex-1">
-              <div className="space-y-2 p-2">
-                {navigationItems.map((item) => (
-                  <Button
-                    key={item.path}
-                    variant={location.pathname === item.path ? "secondary" : "ghost"}
-                    className={cn(
-                      "w-full flex items-center gap-3 justify-start px-3",
-                      location.pathname === item.path && "bg-secondary"
-                    )}
-                    asChild
-                  >
-                    <Link to={item.path}>
-                      <div className="w-4 h-4 shrink-0">
-                        <item.icon className="h-4 w-4" />
-                      </div>
-                      <span className="truncate">{item.label}</span>
-                    </Link>
-                  </Button>
-                ))}
+    <Sidebar className={cn(
+      "border-r bg-background/80 backdrop-blur-sm transition-all duration-300 h-full flex flex-col",
+      isOpen ? "w-64" : "w-16"
+    )}>
+      <SidebarHeader className="p-4 border-b flex items-center justify-between">
+        <div className="flex items-center w-full gap-2">
+          {!isMobile && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full bg-background border shadow-sm shrink-0"
+              onClick={toggleSidebar}
+            >
+              {isOpen ? (
+                <ChevronLeft className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+            </Button>
+          )}
+          {isOpen && <h2 className="font-semibold">Navigation</h2>}
+        </div>
+      </SidebarHeader>
+      <SidebarContent className="flex-1">
+        <div className="space-y-2 p-2">
+          {navigationItems.map((item) => (
+            <Button
+              key={item.path}
+              variant={location.pathname === item.path ? "secondary" : "ghost"}
+              className={cn(
+                "w-full flex items-center gap-3",
+                isOpen ? "justify-start px-3" : "justify-center",
+                location.pathname === item.path && "bg-secondary"
+              )}
+              asChild
+            >
+              <Link to={item.path}>
+                <div className="w-4 h-4 shrink-0">
+                  <item.icon className="h-4 w-4" />
+                </div>
+                {isOpen && <span className="truncate">{item.label}</span>}
+              </Link>
+            </Button>
+          ))}
 
-                <Button
-                  variant="ghost"
-                  className="w-full flex items-center gap-3 justify-start px-3 text-destructive hover:text-destructive"
-                  onClick={handleLogout}
-                >
-                  <div className="w-4 h-4 shrink-0">
-                    <LogOut className="h-4 w-4" />
-                  </div>
-                  <span className="truncate">Logout</span>
-                </Button>
-              </div>
-            </SidebarContent>
-          </Sidebar>
-        </Panel>
-        <PanelResizeHandle className="w-2 bg-transparent hover:bg-accent/10 cursor-col-resize transition-colors" />
-        <Panel id="content" defaultSize={80}>
-          <div className="h-full" />
-        </Panel>
-      </PanelGroup>
-    </div>
+          <Button
+            variant="ghost"
+            className={cn(
+              "w-full flex items-center gap-3 text-destructive hover:text-destructive",
+              isOpen ? "justify-start px-3" : "justify-center"
+            )}
+            onClick={handleLogout}
+          >
+            <div className="w-4 h-4 shrink-0">
+              <LogOut className="h-4 w-4" />
+            </div>
+            {isOpen && <span className="truncate">Logout</span>}
+          </Button>
+        </div>
+      </SidebarContent>
+    </Sidebar>
   );
 }
