@@ -50,7 +50,7 @@ export function NotesSidebar() {
   return (
     <Sidebar className={cn(
       "border-r bg-background/80 backdrop-blur-sm h-full transition-all duration-300",
-      isOpen ? "w-64" : "w-16"
+      isOpen ? "w-48" : "w-16"
     )}>
       <SidebarHeader className="p-4 border-b">
         {isOpen && <h2 className="font-semibold">Navigation</h2>}
