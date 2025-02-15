@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -47,23 +46,21 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <NavigationBar />
       <div className="flex min-h-[calc(100vh-4rem)] pt-16">
         <NotesSidebar />
-        <div className="flex-1">
+        <div className="flex-1 relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full bg-background border shadow-sm absolute -left-6 top-6 z-50"
+            onClick={toggleSidebar}
+          >
+            {isOpen ? (
+              <ChevronLeft className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
+          </Button>
           <main className="p-4 transition-all duration-300">
-            <div className="mb-8 flex items-center">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full bg-background border shadow-sm shrink-0 -ml-14 mr-4 relative z-50"
-                onClick={toggleSidebar}
-              >
-                {isOpen ? (
-                  <ChevronLeft className="h-4 w-4" />
-                ) : (
-                  <ChevronRight className="h-4 w-4" />
-                )}
-              </Button>
-              {children}
-            </div>
+            {children}
           </main>
         </div>
       </div>
