@@ -20,6 +20,9 @@ import { NavigationBar } from "./components/navigation/NavigationBar";
 import { NotesSidebar } from "./components/notes/NotesSidebar";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { ThemeProvider } from "next-themes";
+import { Button } from "./components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useSidebar } from "./components/ui/sidebar";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -36,6 +39,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
+  const { state, toggleSidebar } = useSidebar();
+  const isOpen = state === "expanded";
+
   return (
     <div className="min-h-screen">
       <NavigationBar />
@@ -43,7 +49,21 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
         <NotesSidebar />
         <div className="flex-1">
           <main className="p-4 transition-all duration-300">
-            {children}
+            <div className="mb-8 flex items-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full bg-background border shadow-sm shrink-0 -ml-14 mr-4 relative z-50"
+                onClick={toggleSidebar}
+              >
+                {isOpen ? (
+                  <ChevronLeft className="h-4 w-4" />
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+              </Button>
+              {children}
+            </div>
           </main>
         </div>
       </div>

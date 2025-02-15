@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,8 +11,7 @@ import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Loader2, Hash, BookOpen, Plus, ChevronLeft, ChevronRight } from "lucide-react";
-import { useSidebar } from "@/components/ui/sidebar";
+import { Loader2, Hash, BookOpen, Plus } from "lucide-react";
 
 type Note = {
   id: string;
@@ -256,24 +254,10 @@ const Notes = () => {
   };
 
   if (!user) return null;
-  const { state, toggleSidebar } = useSidebar();
-  const isOpen = state === "expanded";
 
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="mb-8 flex items-center">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full bg-background border shadow-sm shrink-0 -ml-14 mr-4 relative z-50"
-          onClick={toggleSidebar}
-        >
-          {isOpen ? (
-            <ChevronLeft className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
-        </Button>
         <div>
           <h1 className="text-4xl font-bold mb-2 text-primary">My Notes</h1>
           <p className="text-muted-foreground">Organize and manage your study materials</p>
