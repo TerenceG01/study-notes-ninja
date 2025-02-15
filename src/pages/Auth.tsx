@@ -79,9 +79,9 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <NavigationBar />
-      <main className="h-[calc(100vh-4rem)] flex items-center justify-center p-4">
+      <main className="flex-1 grid place-items-center p-4">
         <Card className="w-full max-w-[400px]">
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-2xl">Welcome</CardTitle>
