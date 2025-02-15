@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,7 +23,6 @@ import { ThemeProvider } from "next-themes";
 import { Button } from "./components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSidebar } from "./components/ui/sidebar";
-import { cn } from "@/lib/utils";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -62,13 +62,8 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
               <ChevronRight className="h-4 w-4" />
             )}
           </Button>
-          <main className={cn(
-            "p-4 transition-all duration-300",
-            isOpen ? "ml-48" : "ml-16"
-          )}>
-            <div className="max-w-6xl mx-auto">
-              {children}
-            </div>
+          <main className="p-4 transition-all duration-300">
+            {children}
           </main>
         </div>
       </div>
