@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils";
 import { NotesHeader } from "@/components/notes/NotesHeader";
 import { NotesActionCards } from "@/components/notes/NotesActionCards";
 import { useNotes, type Note } from "@/hooks/useNotes";
+import { supabase } from "@/integrations/supabase/client"; // Add this import
+import { useToast } from "@/hooks/use-toast"; // Add this import
 
 type SummaryLevel = 'brief' | 'medium' | 'detailed';
 
@@ -18,6 +20,7 @@ const Notes = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { state } = useSidebar();
+  const { toast } = useToast(); // Add this hook
   const isOpen = state === "expanded";
   const { notes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards } = useNotes();
   
