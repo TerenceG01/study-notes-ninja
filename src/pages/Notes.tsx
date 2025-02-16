@@ -124,11 +124,11 @@ const Notes = () => {
 
   return (
     <div className={cn(
-      "px-2 py-6",
+      "px-0 py-6",
       "transition-all duration-300",
-      isOpen ? "ml-40" : "ml-20",
-      "w-[calc(100vw-theme(spacing.40))]",
-      !isOpen && "w-[calc(100vw-theme(spacing.20))]",
+      isOpen ? "ml-[10px]" : "ml-[2px]",
+      "w-[calc(100vw-theme(spacing.40)-10px)]",
+      !isOpen && "w-[calc(100vw-theme(spacing.20)-2px)]",
     )}>
       <div className="mx-auto max-w-[min(100%,64rem)] space-y-4">
         <NotesHeader onSearch={(query) => console.log('Search:', query)} />
