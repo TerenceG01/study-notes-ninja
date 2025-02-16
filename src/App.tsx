@@ -52,7 +52,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
             variant="ghost"
             size="icon"
             className={`rounded-full bg-background border shadow-md fixed top-20 z-50 transition-all duration-300 ${
-              isOpen ? 'left-44' : 'left-0'
+              isOpen ? 'left-36' : 'left-16'
             }`}
             onClick={toggleSidebar}
           >
@@ -62,7 +62,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
               <ChevronRight className="h-4 w-4" />
             )}
           </Button>
-          <main className={`p-4 transition-all duration-300 ${isOpen ? '-ml-12' : ''}`}>
+          <main className={`transition-all duration-300 ${isOpen ? '-ml-12' : ''}`}>
             {children}
           </main>
         </div>
