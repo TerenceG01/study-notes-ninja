@@ -1,8 +1,7 @@
-import { useState, useRef, useEffect } from "react"; // Add useEffect import
-import { useNavigate } from "react-router-dom";
+
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { NoteEditor } from "@/components/notes/NoteEditor";
 import { NotesTable } from "@/components/notes/NotesTable";
 import { EditNoteDialog } from "@/components/notes/EditNoteDialog";
 import { useSidebar } from "@/components/ui/sidebar";
@@ -10,110 +9,79 @@ import { cn } from "@/lib/utils";
 import { NotesHeader } from "@/components/notes/NotesHeader";
 import { NotesActionCards } from "@/components/notes/NotesActionCards";
 import { useNotes, type Note } from "@/hooks/useNotes";
+import { useNoteEditor } from "@/hooks/useNoteEditor";
+import { useNoteSummary } from "@/hooks/useNoteSummary";
+import { CreateNoteContainer } from "@/components/notes/CreateNoteContainer";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-type SummaryLevel = 'brief' | 'medium' | 'detailed';
+const commonSubjects = [
+  "General",
+  "Mathematics",
+  "Physics",
+  "Chemistry",
+  "Biology",
+  "History",
+  "Geography",
+  "Literature",
+  "Computer Science",
+  "Economics",
+  "Psychology",
+  "Philosophy",
+  "Art",
+  "Music",
+  "Languages",
+];
 
 const Notes = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const { state } = useSidebar();
   const { toast } = useToast();
   const isOpen = state === "expanded";
   const { notes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards } = useNotes();
+  const { 
+    newNote, 
+    newTag, 
+    isEditorExpanded, 
+    setNewTag, 
+    setIsEditorExpanded, 
+    handleNoteChange, 
+    addTag, 
+    removeTag, 
+    resetEditor 
+  } = useNoteEditor();
+  const {
+    summarizing,
+    summaryLevel,
+    showSummary,
+    setSummaryLevel,
+    setShowSummary,
+    generateSummary,
+  } = useNoteSummary();
   
-  const [newNote, setNewNote] = useState({ title: "", content: "", tags: [] as string[], subject: "General" });
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
-  const [summarizing, setSummarizing] = useState(false);
-  const [summaryLevel, setSummaryLevel] = useState<SummaryLevel>('medium');
-  const [showSummary, setShowSummary] = useState(false);
-  const [isEditorExpanded, setIsEditorExpanded] = useState(false);
-  const [newTag, setNewTag] = useState("");
-  const editorRef = useRef<HTMLDivElement>(null);
 
-  // Add useEffect to fetch notes when component mounts
   useEffect(() => {
     if (user) {
       fetchNotes();
     }
   }, [user, fetchNotes]);
 
-  const commonSubjects = [
-    "General",
-    "Mathematics",
-    "Physics",
-    "Chemistry",
-    "Biology",
-    "History",
-    "Geography",
-    "Literature",
-    "Computer Science",
-    "Economics",
-    "Psychology",
-    "Philosophy",
-    "Art",
-    "Music",
-    "Languages",
-  ];
-
-  const handleNoteChange = (field: string, value: string | string[]) => {
-    setNewNote(prev => ({ ...prev, [field]: value }));
-  };
-
-  const addTag = () => {
-    if (newTag && !newNote.tags.includes(newTag)) {
-      setNewNote({
-        ...newNote,
-        tags: [...newNote.tags, newTag]
-      });
-      setNewTag("");
-    }
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    setNewNote({
-      ...newNote,
-      tags: newNote.tags.filter(tag => tag !== tagToRemove)
-    });
-  };
-
   const handleCreateNote = async () => {
     if (!user) return;
     const success = await createNote(newNote, user.id);
     if (success) {
-      setNewNote({ title: "", content: "", tags: [], subject: "General" });
-      setIsEditorExpanded(false);
+      resetEditor();
     }
   };
 
-  const generateSummary = async () => {
-    if (!selectedNote) return;
-
-    try {
-      setSummarizing(true);
-      const { data, error } = await supabase.functions.invoke('summarize-note', {
-        body: {
-          content: selectedNote.content,
-          level: summaryLevel,
-        },
-      });
-
-      if (error) throw error;
-
-      if (data?.summary) {
-        setEditingNote(prev => prev ? { ...prev, summary: data.summary } : null);
-        setShowSummary(true);
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error generating summary",
-        description: "Failed to generate summary. Please try again.",
-      });
-    } finally {
-      setSummarizing(false);
+  const handleGenerateSummary = async () => {
+    if (!selectedNote || !editingNote) return;
+    const summary = await generateSummary(selectedNote);
+    if (summary) {
+      setEditingNote(prev => prev ? { ...prev, summary } : null);
+      setShowSummary(true);
     }
   };
 
@@ -167,30 +135,18 @@ const Notes = () => {
         <NotesActionCards onCreateNote={() => setIsEditorExpanded(true)} />
       </div>
 
-      {isEditorExpanded && (
-        <Card className="mb-6 border-primary/20 animate-fade-in max-w-5xl mx-auto">
-          <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
-            <CardTitle className="text-lg font-medium">Create New Note</CardTitle>
-            <CardDescription>Add a new note to your collection</CardDescription>
-          </CardHeader>
-          <CardContent className="p-6" ref={editorRef}>
-            <NoteEditor
-              note={newNote}
-              newTag={newTag}
-              commonSubjects={commonSubjects}
-              onNoteChange={handleNoteChange}
-              onTagChange={setNewTag}
-              onAddTag={addTag}
-              onRemoveTag={removeTag}
-              onCancel={() => {
-                setIsEditorExpanded(false);
-                setNewNote({ title: "", content: "", tags: [], subject: "General" });
-              }}
-              onSave={handleCreateNote}
-            />
-          </CardContent>
-        </Card>
-      )}
+      <CreateNoteContainer
+        isExpanded={isEditorExpanded}
+        note={newNote}
+        newTag={newTag}
+        commonSubjects={commonSubjects}
+        onNoteChange={handleNoteChange}
+        onTagChange={setNewTag}
+        onAddTag={addTag}
+        onRemoveTag={removeTag}
+        onCancel={resetEditor}
+        onSave={handleCreateNote}
+      />
 
       <Card className="shadow-sm border-muted/20 max-w-5xl mx-auto">
         <CardHeader className="bg-gradient-to-r from-muted/50 to-transparent">
@@ -230,7 +186,7 @@ const Notes = () => {
         commonSubjects={commonSubjects}
         onNoteChange={setEditingNote}
         onSummaryLevelChange={setSummaryLevel}
-        onGenerateSummary={generateSummary}
+        onGenerateSummary={handleGenerateSummary}
         onToggleSummary={() => setShowSummary(!showSummary)}
         onNewTagChange={setNewTag}
         onSave={updateNote}
