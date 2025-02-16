@@ -12,6 +12,7 @@ interface Note {
   summary?: string;
   tags?: string[];
   subject?: string;
+  workbook: string;
 }
 
 interface NotesTableProps {
@@ -35,6 +36,7 @@ export const NotesTable = ({
         <TableRow>
           <TableHead>Title</TableHead>
           <TableHead>Subject</TableHead>
+          <TableHead>Workbook</TableHead>
           <TableHead className="hidden md:table-cell">Content</TableHead>
           <TableHead className="hidden sm:table-cell">Created At</TableHead>
           <TableHead>Actions</TableHead>
@@ -43,7 +45,7 @@ export const NotesTable = ({
       <TableBody>
         {loading ? (
           <TableRow>
-            <TableCell colSpan={5} className="text-center py-8">
+            <TableCell colSpan={6} className="text-center py-8">
               <div className="flex items-center justify-center gap-2">
                 <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                 <span className="text-muted-foreground">Loading notes...</span>
@@ -52,7 +54,7 @@ export const NotesTable = ({
           </TableRow>
         ) : notes.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={5} className="text-center py-8">
+            <TableCell colSpan={6} className="text-center py-8">
               <p className="text-muted-foreground">No notes found. Create your first note above!</p>
             </TableCell>
           </TableRow>
@@ -72,6 +74,11 @@ export const NotesTable = ({
                 onClick={() => onNoteClick(note)}
               >
                 {note.subject || 'General'}
+              </TableCell>
+              <TableCell
+                onClick={() => onNoteClick(note)}
+              >
+                {note.workbook}
               </TableCell>
               <TableCell 
                 className="max-w-md truncate hidden md:table-cell"

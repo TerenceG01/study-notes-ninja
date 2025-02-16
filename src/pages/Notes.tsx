@@ -97,6 +97,7 @@ const Notes = () => {
           summary: editingNote.summary,
           tags: editingNote.tags || [],
           subject: editingNote.subject,
+          workbook: editingNote.workbook,
         })
         .eq("id", editingNote.id);
 
