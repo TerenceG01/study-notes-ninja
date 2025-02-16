@@ -238,7 +238,6 @@ export type Database = {
           title: string
           updated_at: string
           user_id: string
-          workbook: string | null
         }
         Insert: {
           content?: string
@@ -251,7 +250,6 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id: string
-          workbook?: string | null
         }
         Update: {
           content?: string
@@ -264,7 +262,6 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
-          workbook?: string | null
         }
         Relationships: []
       }
