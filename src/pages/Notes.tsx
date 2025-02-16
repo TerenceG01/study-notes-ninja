@@ -265,8 +265,8 @@ const Notes = () => {
     <div className={cn(
       "container px-1 py-6",
       "transition-all duration-300",
-      isOpen ? "ml-28" : "ml-16", // Dramatically reduced from ml-36 to ml-28 when expanded
-      "w-[calc(100%-1rem)]" // Minimal spacing with just 1rem
+      isOpen ? "ml-15" : "ml-16", // Further reduced from ml-28 to ml-15 when expanded
+      "w-[calc(100%-1rem)]"
     )}>
       <div className="mb-8 space-y-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
