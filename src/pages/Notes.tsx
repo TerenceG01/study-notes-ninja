@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -123,6 +122,10 @@ const Notes = () => {
 
   if (!user) return null;
 
+  const handleEditingNoteChange = (note: Note | null) => {
+    setEditingNote(note);
+  };
+
   return (
     <div className={cn(
       "px-0 py-6",
@@ -187,7 +190,7 @@ const Notes = () => {
         summarizing={summarizing}
         newTag={newTag}
         commonSubjects={commonSubjects}
-        onNoteChange={setEditingNote}
+        onNoteChange={handleEditingNoteChange}
         onSummaryLevelChange={setSummaryLevel}
         onGenerateSummary={handleGenerateSummary}
         onToggleSummary={() => setShowSummary(!showSummary)}

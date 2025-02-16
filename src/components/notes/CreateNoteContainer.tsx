@@ -10,6 +10,7 @@ interface CreateNoteContainerProps {
     content: string;
     tags: string[];
     subject: string;
+    workbook: string;  // Added workbook property
   };
   newTag: string;
   commonSubjects: string[];
