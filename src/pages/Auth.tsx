@@ -81,8 +81,8 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <NavigationBar />
-      <main className="flex-1 grid place-items-center p-4">
-        <Card className="w-full max-w-[400px]">
+      <main className="flex-1 flex items-center justify-center py-8">
+        <Card className="w-full max-w-[400px] mx-4">
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-2xl">Welcome</CardTitle>
             <CardDescription>Sign in or create a new account</CardDescription>
