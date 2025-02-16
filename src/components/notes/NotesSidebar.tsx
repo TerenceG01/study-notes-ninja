@@ -44,7 +44,7 @@ export function NotesSidebar() {
   return (
     <Sidebar className={cn(
       "border-r bg-background/80 backdrop-blur-sm h-full transition-all duration-300",
-      isOpen ? "w-40" : "w-16" // Reduced from w-48 to w-40 when expanded
+      isOpen ? "w-40" : "w-20" // Increased collapsed width from w-16 to w-20 for better icon visibility
     )}>
       <SidebarHeader className="p-4 border-b">
         {isOpen && <h2 className="font-semibold">Navigation</h2>}
