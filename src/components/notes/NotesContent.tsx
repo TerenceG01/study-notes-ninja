@@ -11,11 +11,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { CommonSubjects } from "./CommonSubjects";
+import { useSearchParams } from "react-router-dom";
 
 export const NotesContent = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { notes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards } = useNotes();
+  const [searchParams] = useSearchParams();
+  const currentSubject = searchParams.get("subject");
+  
+  const { notes: allNotes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards } = useNotes();
   const { 
     newNote, 
     newTag, 
@@ -44,6 +48,11 @@ export const NotesContent = () => {
       fetchNotes();
     }
   }, [user, fetchNotes]);
+
+  // Filter notes based on selected subject
+  const filteredNotes = currentSubject
+    ? allNotes.filter(note => note.subject === currentSubject)
+    : allNotes;
 
   const handleCreateNote = async () => {
     if (!user) return;
@@ -119,7 +128,7 @@ export const NotesContent = () => {
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto">
           <NotesTable
-            notes={notes}
+            notes={filteredNotes}
             loading={loading}
             generatingFlashcardsForNote={generatingFlashcardsForNote}
             onNoteClick={(note) => {

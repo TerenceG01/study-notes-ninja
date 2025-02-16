@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -8,12 +7,14 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { LogOut } from "lucide-react";
+import { LogOut, Tag } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { navigationItems } from "@/components/navigation/NavigationItems";
+import { CommonSubjects } from "./CommonSubjects";
+import { useSearchParams } from "react-router-dom";
 
 export function NotesSidebar() {
   const location = useLocation();
@@ -21,6 +22,8 @@ export function NotesSidebar() {
   const { state } = useSidebar();
   const isOpen = state === "expanded";
   const isMobile = useIsMobile();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentSubject = searchParams.get("subject");
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -35,6 +38,17 @@ export function NotesSidebar() {
         title: "Signed out successfully",
       });
     }
+  };
+
+  const handleSubjectClick = (subject: string) => {
+    if (currentSubject === subject) {
+      // If clicking the current subject, remove the filter
+      searchParams.delete("subject");
+    } else {
+      // Otherwise, set the new subject filter
+      searchParams.set("subject", subject);
+    }
+    setSearchParams(searchParams);
   };
 
   if (isMobile && !isOpen) {
@@ -57,7 +71,7 @@ export function NotesSidebar() {
           {isOpen && <h2 className="font-semibold">Navigation</h2>}
         </SidebarHeader>
         <SidebarContent className="flex flex-col h-full">
-          <div className="space-y-2 p-2 flex-1">
+          <div className="space-y-2 p-2">
             {navigationItems.map((item) => (
               <Button
                 key={item.path}
@@ -76,6 +90,32 @@ export function NotesSidebar() {
               </Button>
             ))}
           </div>
+
+          {location.pathname === '/notes' && (
+            <div className="border-t mt-2">
+              <div className="p-4">
+                {isOpen && <h3 className="text-sm font-medium mb-2">Subjects</h3>}
+                <div className="space-y-1">
+                  {CommonSubjects.map((subject) => (
+                    <Button
+                      key={subject}
+                      variant={currentSubject === subject ? "secondary" : "ghost"}
+                      size="sm"
+                      className={cn(
+                        "w-full flex items-center",
+                        isOpen ? "justify-start px-3" : "justify-center px-0",
+                        currentSubject === subject && "bg-accent/60"
+                      )}
+                      onClick={() => handleSubjectClick(subject)}
+                    >
+                      <Tag className="h-4 w-4" />
+                      {isOpen && <span className="ml-3 truncate">{subject}</span>}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="p-2 mt-auto">
             <Button
