@@ -126,47 +126,49 @@ const Notes = () => {
     <div className={cn(
       "px-4 py-6",
       "transition-all duration-300",
-      isOpen ? "ml-20" : "ml-20",
-      "max-w-[calc(100vw-5rem)]",
-      "w-full"
+      isOpen ? "ml-40" : "ml-20",
+      "w-[calc(100vw-theme(spacing.40))]",
+      !isOpen && "w-[calc(100vw-theme(spacing.20))]",
     )}>
-      <div className="mb-8 space-y-4 max-w-5xl mx-auto">
+      <div className="mx-auto max-w-[min(100%,64rem)] space-y-4">
         <NotesHeader onSearch={(query) => console.log('Search:', query)} />
         <NotesActionCards onCreateNote={() => setIsEditorExpanded(true)} />
       </div>
 
-      <CreateNoteContainer
-        isExpanded={isEditorExpanded}
-        note={newNote}
-        newTag={newTag}
-        commonSubjects={commonSubjects}
-        onNoteChange={handleNoteChange}
-        onTagChange={setNewTag}
-        onAddTag={addTag}
-        onRemoveTag={removeTag}
-        onCancel={resetEditor}
-        onSave={handleCreateNote}
-      />
+      <div className="mx-auto max-w-[min(100%,64rem)]">
+        <CreateNoteContainer
+          isExpanded={isEditorExpanded}
+          note={newNote}
+          newTag={newTag}
+          commonSubjects={commonSubjects}
+          onNoteChange={handleNoteChange}
+          onTagChange={setNewTag}
+          onAddTag={addTag}
+          onRemoveTag={removeTag}
+          onCancel={resetEditor}
+          onSave={handleCreateNote}
+        />
 
-      <Card className="shadow-sm border-muted/20 max-w-5xl mx-auto">
-        <CardHeader className="bg-gradient-to-r from-muted/50 to-transparent">
-          <CardTitle className="text-lg font-medium">Your Notes</CardTitle>
-          <CardDescription>Browse and manage your existing notes</CardDescription>
-        </CardHeader>
-        <CardContent className="p-0 overflow-x-auto">
-          <NotesTable
-            notes={notes}
-            loading={loading}
-            generatingFlashcardsForNote={generatingFlashcardsForNote}
-            onNoteClick={(note) => {
-              setSelectedNote(note);
-              setEditingNote(note);
-              setShowSummary(false);
-            }}
-            onGenerateFlashcards={generateFlashcards}
-          />
-        </CardContent>
-      </Card>
+        <Card className="shadow-sm border-muted/20">
+          <CardHeader className="bg-gradient-to-r from-muted/50 to-transparent">
+            <CardTitle className="text-lg font-medium">Your Notes</CardTitle>
+            <CardDescription>Browse and manage your existing notes</CardDescription>
+          </CardHeader>
+          <CardContent className="p-0 overflow-x-auto">
+            <NotesTable
+              notes={notes}
+              loading={loading}
+              generatingFlashcardsForNote={generatingFlashcardsForNote}
+              onNoteClick={(note) => {
+                setSelectedNote(note);
+                setEditingNote(note);
+                setShowSummary(false);
+              }}
+              onGenerateFlashcards={generateFlashcards}
+            />
+          </CardContent>
+        </Card>
+      </div>
 
       <EditNoteDialog
         open={!!selectedNote}
