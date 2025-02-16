@@ -46,7 +46,7 @@ export function NotesSidebar() {
       {/* Background Element */}
       <div className={cn(
         "fixed top-0 left-0 h-full bg-background/50 backdrop-blur-sm transition-all duration-300 z-0",
-        isOpen ? "w-40" : "w-20"
+        isOpen ? "w-60" : "w-20"
       )} />
       
       <Sidebar className={cn(
