@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -13,8 +14,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { navigationItems } from "@/components/navigation/NavigationItems";
-import { CommonSubjects } from "./CommonSubjects";
 import { useSearchParams } from "react-router-dom";
+import { useNotes } from "@/hooks/useNotes";
+import { useEffect, useState } from "react";
 
 export function NotesSidebar() {
   const location = useLocation();
@@ -24,6 +26,16 @@ export function NotesSidebar() {
   const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSubject = searchParams.get("subject");
+  const { notes } = useNotes();
+  const [uniqueSubjects, setUniqueSubjects] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Extract unique subjects from notes and sort them alphabetically
+    const subjects = Array.from(new Set(notes.map(note => note.subject || "General")))
+      .filter(Boolean)
+      .sort();
+    setUniqueSubjects(subjects);
+  }, [notes]);
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -91,12 +103,12 @@ export function NotesSidebar() {
             ))}
           </div>
 
-          {location.pathname === '/notes' && (
+          {location.pathname === '/notes' && uniqueSubjects.length > 0 && (
             <div className="border-t mt-2">
               <div className="p-4">
                 {isOpen && <h3 className="text-sm font-medium mb-2">Subjects</h3>}
                 <div className="space-y-1">
-                  {CommonSubjects.map((subject) => (
+                  {uniqueSubjects.map((subject) => (
                     <Button
                       key={subject}
                       variant={currentSubject === subject ? "secondary" : "ghost"}
