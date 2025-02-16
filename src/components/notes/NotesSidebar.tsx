@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -16,7 +15,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { navigationItems } from "@/components/navigation/NavigationItems";
 import { useSearchParams } from "react-router-dom";
 import { useNotes } from "@/hooks/useNotes";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 export function NotesSidebar() {
   const location = useLocation();
@@ -27,14 +26,13 @@ export function NotesSidebar() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSubject = searchParams.get("subject");
   const { notes } = useNotes();
-  const [uniqueSubjects, setUniqueSubjects] = useState<string[]>([]);
-
-  useEffect(() => {
-    // Extract unique subjects from notes and sort them alphabetically
+  
+  // Use useMemo instead of useState + useEffect for derived state
+  const uniqueSubjects = useMemo(() => {
     const subjects = Array.from(new Set(notes.map(note => note.subject || "General")))
       .filter(Boolean)
       .sort();
-    setUniqueSubjects(subjects);
+    return subjects;
   }, [notes]);
 
   const handleLogout = async () => {
