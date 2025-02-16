@@ -1,3 +1,4 @@
+<lov-codelov-code>
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -263,10 +264,10 @@ const Notes = () => {
 
   return (
     <div className={cn(
-      "container px-2 py-6",
+      "container px-1 py-6",
       "transition-all duration-300",
-      isOpen ? "ml-36" : "ml-16", // Significantly reduced from ml-44 to ml-36 when expanded
-      "w-[calc(100%-2rem)]" // Reduced from 3rem to 2rem for even tighter spacing
+      isOpen ? "ml-28" : "ml-16", // Dramatically reduced from ml-36 to ml-28 when expanded
+      "w-[calc(100%-1rem)]" // Minimal spacing with just 1rem
     )}>
       <div className="mb-8 space-y-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -397,3 +398,4 @@ const Notes = () => {
 };
 
 export default Notes;
+</lov-code>
