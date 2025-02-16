@@ -43,7 +43,7 @@ export function NotesSidebar() {
 
   return (
     <Sidebar className={cn(
-      "border-r bg-secondary/40 backdrop-blur-sm h-full transition-all duration-300",
+      "border-r bg-primary/5 backdrop-blur-sm h-full transition-all duration-300",
       isOpen ? "w-40" : "w-20"
     )}>
       <SidebarHeader className="p-4 border-b">
