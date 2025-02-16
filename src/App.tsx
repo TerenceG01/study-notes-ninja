@@ -63,7 +63,11 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
             )}
           </Button>
           <main className={`transition-all duration-300 ${isOpen ? '-ml-12' : ''}`}>
-            {children}
+            <div className="px-[10px] mx-[50px] py-[10px] my-[55px]">
+              <div className="mx-auto max-w-[min(100%,64rem)]">
+                {children}
+              </div>
+            </div>
           </main>
         </div>
       </div>
