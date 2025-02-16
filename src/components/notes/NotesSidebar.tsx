@@ -56,8 +56,8 @@ export function NotesSidebar() {
         <SidebarHeader className="p-4 border-b">
           {isOpen && <h2 className="font-semibold">Navigation</h2>}
         </SidebarHeader>
-        <SidebarContent className="flex-1">
-          <div className="space-y-2 p-2">
+        <SidebarContent className="flex flex-col h-full">
+          <div className="space-y-2 p-2 flex-1">
             {navigationItems.map((item) => (
               <Button
                 key={item.path}
@@ -75,7 +75,9 @@ export function NotesSidebar() {
                 </Link>
               </Button>
             ))}
+          </div>
 
+          <div className="p-2 mt-auto">
             <Button
               variant="ghost"
               className={cn(
