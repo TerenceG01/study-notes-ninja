@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { NoteEditor } from "@/components/notes/NoteEditor";
 import { NotesTable } from "@/components/notes/NotesTable";
 import { EditNoteDialog } from "@/components/notes/EditNoteDialog";
+import { useSidebar } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 type Note = {
   id: string;
@@ -30,6 +31,8 @@ const Notes = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { state } = useSidebar();
+  const isOpen = state === "expanded";
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState({ title: "", content: "", tags: [] as string[], subject: "General" });
   const [loading, setLoading] = useState(true);
@@ -260,19 +263,24 @@ const Notes = () => {
   if (!user) return null;
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-7xl">
+    <div className={cn(
+      "container px-4 py-6",
+      "transition-all duration-300",
+      isOpen ? "ml-48" : "ml-16",
+      "w-[calc(100%-4rem)]"
+    )}>
       <div className="mb-8 space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-bold mb-2 text-primary bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-primary bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               My Notes
             </h1>
             <p className="text-muted-foreground">
               Organize and manage your study materials
             </p>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="relative w-64">
+          <div className="flex items-center gap-4 w-full sm:w-auto">
+            <div className="relative flex-1 sm:flex-initial sm:w-64">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input 
                 placeholder="Search notes..." 
@@ -289,7 +297,7 @@ const Notes = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
           <Card className="bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/20 transition-colors cursor-pointer group">
             <CardContent className="p-6 flex flex-col items-center justify-center min-h-[200px] text-center"
               onClick={() => setIsEditorExpanded(true)}
@@ -347,7 +355,7 @@ const Notes = () => {
           <CardTitle className="text-lg font-medium">Your Notes</CardTitle>
           <CardDescription>Browse and manage your existing notes</CardDescription>
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent className="p-0 overflow-x-auto">
           <NotesTable
             notes={notes}
             loading={loading}
