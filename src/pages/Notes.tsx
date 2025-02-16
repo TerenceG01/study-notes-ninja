@@ -18,7 +18,7 @@ const Notes = () => {
       "px-6 py-6",
       "transition-all duration-300",
       "w-full",
-      isOpen ? "ml-0" : "ml-0"
+      isOpen ? "ml-4" : "ml-0"
     )}>
       <div className="mx-auto max-w-[min(100%,64rem)] space-y-4">
         <NotesHeader onSearch={(query) => console.log('Search:', query)} />
