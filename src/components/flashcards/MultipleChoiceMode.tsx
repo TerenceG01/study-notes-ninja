@@ -1,10 +1,13 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Brain, ArrowLeft, ArrowRight, Check, X, Loader2, Zap } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Zap } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { QuizCompletionCard } from "./QuizCompletionCard";
+import { MultipleChoiceOptions } from "./MultipleChoiceOptions";
 
 interface MultipleChoiceModeProps {
   flashcards: any[];
@@ -15,7 +18,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
-  const [hardMode, setHardMode] = useState(false); // Default is standard mode (false)
+  const [hardMode, setHardMode] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [totalAttempted, setTotalAttempted] = useState(0);
   const { toast } = useToast();
@@ -24,13 +27,11 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   const currentCard = flashcards[currentIndex];
   const isLastCard = currentIndex === flashcards.length - 1;
 
-  // Reset to standard mode when component unmounts or when switching cards
   useEffect(() => {
     setHardMode(false);
   }, [currentIndex]);
 
-  // Fetch multiple choice options for the current flashcard
-  const { data: options, isLoading: isOptionsLoading, error: optionsError } = useQuery({
+  const { data: options, isLoading: isOptionsLoading } = useQuery({
     queryKey: ['multiple-choice-options', currentCard?.id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -44,7 +45,6 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     enabled: !!currentCard?.id,
   });
 
-  // Generate options mutation
   const generateOptionsMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.functions.invoke('generate-multiple-choice', {
@@ -125,7 +125,6 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     } else if (direction === 'next' && currentIndex < flashcards.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
-    // Hard mode will be reset by the useEffect when currentIndex changes
   };
 
   const resetQuiz = () => {
@@ -134,7 +133,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     setSelectedOption(null);
     setCorrectAnswers(0);
     setTotalAttempted(0);
-    setHardMode(false); // Reset to standard mode when restarting quiz
+    setHardMode(false);
   };
 
   if (!currentCard || !options) {
@@ -153,40 +152,6 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
       </div>
     );
   }
-
-  const renderQuizCompletion = () => {
-    if (!isLastCard || !isAnswered) return null;
-    
-    const percentageScore = Math.round((correctAnswers / totalAttempted) * 100);
-    const scoreMessage = 
-      percentageScore >= 90 ? "Excellent!" :
-      percentageScore >= 70 ? "Good job!" :
-      percentageScore >= 50 ? "Keep practicing!" :
-      "Don't give up!";
-
-    return (
-      <Card className="mt-6">
-        <CardContent className="p-6">
-          <h3 className="text-xl font-semibold mb-4 text-center">Quiz Complete!</h3>
-          <div className="space-y-4">
-            <div className="text-center">
-              <p className="text-3xl font-bold text-primary">{percentageScore}%</p>
-              <p className="text-lg text-muted-foreground mt-2">{scoreMessage}</p>
-            </div>
-            <div className="text-sm text-muted-foreground text-center">
-              Correct answers: {correctAnswers} out of {totalAttempted}
-            </div>
-            <Button 
-              className="w-full mt-4"
-              onClick={resetQuiz}
-            >
-              Restart Quiz
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -217,45 +182,22 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
       <Card className="mb-6">
         <CardContent className="p-6">
           <h3 className="text-lg font-medium mb-4">{currentCard.question}</h3>
-          <div className="space-y-3">
-            {options.slice(0, 5).map((option) => (
-              <Button
-                key={option.id}
-                variant={isAnswered 
-                  ? option.is_correct 
-                    ? "default" 
-                    : selectedOption === option.id 
-                      ? "destructive" 
-                      : "outline"
-                  : "outline"
-                }
-                className="w-full justify-start text-left h-auto py-4 px-6 whitespace-normal"
-                onClick={() => handleOptionSelect(option.id, option.is_correct)}
-                disabled={isAnswered}
-              >
-                <div className="flex items-start gap-2">
-                  <div className="flex-shrink-0 mt-1">
-                    {isAnswered && option.is_correct && (
-                      <Check className="h-4 w-4 text-white" />
-                    )}
-                    {isAnswered && selectedOption === option.id && !option.is_correct && (
-                      <X className="h-4 w-4 text-white" />
-                    )}
-                  </div>
-                  <span className="break-words">{option.content}</span>
-                </div>
-              </Button>
-            ))}
-          </div>
-          {isAnswered && options.find(o => o.id === selectedOption)?.explanation && (
-            <div className="mt-4 p-4 bg-muted rounded-lg">
-              <p className="text-sm">{options.find(o => o.id === selectedOption)?.explanation}</p>
-            </div>
-          )}
+          <MultipleChoiceOptions
+            options={options}
+            isAnswered={isAnswered}
+            selectedOption={selectedOption}
+            onSelect={handleOptionSelect}
+          />
         </CardContent>
       </Card>
 
-      {renderQuizCompletion()}
+      {isLastCard && isAnswered && (
+        <QuizCompletionCard
+          correctAnswers={correctAnswers}
+          totalAttempted={totalAttempted}
+          onRestart={resetQuiz}
+        />
+      )}
 
       <div className="flex justify-between items-center mt-6">
         <Button
