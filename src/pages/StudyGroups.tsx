@@ -46,7 +46,7 @@ const StudyGroups = () => {
       <NavigationBar />
       <main className="container px-[10px] my-[55px] py-[10px] mx-[50px]">
         <div className="flex justify-between items-start mb-8">
-          <div>
+          <div className="px-[16px]">
             <h1 className="text-4xl font-bold text-primary">Study Groups</h1>
             <p className="text-muted-foreground mt-2">
               Collaborate with other students in study groups
