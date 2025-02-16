@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { FileText, BookOpen, Users, User, LogOut } from "lucide-react";
+import { FileText, BookOpen, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -39,8 +39,6 @@ export function NotesSidebar() {
   const navigationItems = [
     { label: "My Notes", icon: FileText, path: "/notes" },
     { label: "My Flashcards", icon: BookOpen, path: "/flashcards" },
-    { label: "Study Groups", icon: Users, path: "/study-groups" },
-    { label: "My Profile", icon: User, path: "/profile" },
   ];
 
   if (isMobile && !isOpen) {
@@ -52,9 +50,6 @@ export function NotesSidebar() {
       "border-r bg-background/80 backdrop-blur-sm h-full transition-all duration-300",
       isOpen ? "w-48" : "w-16"
     )}>
-      <SidebarHeader className="p-4 border-b">
-        {isOpen && <h2 className="font-semibold">Navigation</h2>}
-      </SidebarHeader>
       <SidebarContent className="flex-1">
         <div className="space-y-2 p-2">
           {navigationItems.map((item) => (
