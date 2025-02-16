@@ -263,10 +263,10 @@ const Notes = () => {
 
   return (
     <div className={cn(
-      "container px-4 py-6",
+      "container px-2 py-6",
       "transition-all duration-300",
-      isOpen ? "ml-44" : "ml-16", // Reduced from ml-48 to ml-44 when expanded
-      "w-[calc(100%-3rem)]" // Adjusted from 4rem to 3rem for better spacing
+      isOpen ? "ml-36" : "ml-16", // Significantly reduced from ml-44 to ml-36 when expanded
+      "w-[calc(100%-2rem)]" // Reduced from 3rem to 2rem for even tighter spacing
     )}>
       <div className="mb-8 space-y-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
