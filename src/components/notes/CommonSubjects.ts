@@ -1,5 +1,5 @@
 
-export const CommonSubjects = [
+export const CommonSubjectsReadonly = [
   "General",
   "Mathematics",
   "Physics",
@@ -16,3 +16,21 @@ export const CommonSubjects = [
   "Music",
   "Languages",
 ] as const;
+
+export const CommonSubjects = [
+  "General",
+  "Mathematics",
+  "Physics",
+  "Chemistry",
+  "Biology",
+  "History",
+  "Geography",
+  "Literature",
+  "Computer Science",
+  "Economics",
+  "Psychology",
+  "Philosophy",
+  "Art",
+  "Music",
+  "Languages",
+];
