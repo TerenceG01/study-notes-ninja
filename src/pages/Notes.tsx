@@ -1,4 +1,3 @@
-<lov-codelov-code>
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -398,4 +397,3 @@ const Notes = () => {
 };
 
 export default Notes;
-</lov-code>
