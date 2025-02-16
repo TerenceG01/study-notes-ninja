@@ -124,11 +124,11 @@ const Notes = () => {
 
   return (
     <div className={cn(
-      "px-0 py-6",
+      "px-6 py-6",  // Changed from px-0 to px-6 for better padding
       "transition-all duration-300",
-      isOpen ? "ml-[10px]" : "ml-[2px]",
+      isOpen ? "ml-[10px]" : "ml-[24px]",  // Increased left margin when sidebar is collapsed
       "w-[calc(100vw-theme(spacing.40)-10px)]",
-      !isOpen && "w-[calc(100vw-theme(spacing.20)-2px)]",
+      !isOpen && "w-[calc(100vw-theme(spacing.20)-24px)]",  // Adjusted width calculation
     )}>
       <div className="mx-auto max-w-[min(100%,64rem)] space-y-4">
         <NotesHeader onSearch={(query) => console.log('Search:', query)} />
