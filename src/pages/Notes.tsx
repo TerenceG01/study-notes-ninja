@@ -1,5 +1,4 @@
-
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react"; // Add useEffect import
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -11,8 +10,8 @@ import { cn } from "@/lib/utils";
 import { NotesHeader } from "@/components/notes/NotesHeader";
 import { NotesActionCards } from "@/components/notes/NotesActionCards";
 import { useNotes, type Note } from "@/hooks/useNotes";
-import { supabase } from "@/integrations/supabase/client"; // Add this import
-import { useToast } from "@/hooks/use-toast"; // Add this import
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 type SummaryLevel = 'brief' | 'medium' | 'detailed';
 
@@ -20,7 +19,7 @@ const Notes = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { state } = useSidebar();
-  const { toast } = useToast(); // Add this hook
+  const { toast } = useToast();
   const isOpen = state === "expanded";
   const { notes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards } = useNotes();
   
@@ -33,6 +32,13 @@ const Notes = () => {
   const [isEditorExpanded, setIsEditorExpanded] = useState(false);
   const [newTag, setNewTag] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
+
+  // Add useEffect to fetch notes when component mounts
+  useEffect(() => {
+    if (user) {
+      fetchNotes();
+    }
+  }, [user, fetchNotes]);
 
   const commonSubjects = [
     "General",
