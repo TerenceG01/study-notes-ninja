@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -266,8 +265,8 @@ const Notes = () => {
     <div className={cn(
       "container px-4 py-6",
       "transition-all duration-300",
-      isOpen ? "ml-48" : "ml-16",
-      "w-[calc(100%-4rem)]"
+      isOpen ? "ml-44" : "ml-16", // Reduced from ml-48 to ml-44 when expanded
+      "w-[calc(100%-3rem)]" // Adjusted from 4rem to 3rem for better spacing
     )}>
       <div className="mb-8 space-y-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
