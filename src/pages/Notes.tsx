@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -6,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { Plus, BookOpen, Search, Filter } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { NoteEditor } from "@/components/notes/NoteEditor";
 import { NotesTable } from "@/components/notes/NotesTable";
 import { EditNoteDialog } from "@/components/notes/EditNoteDialog";
@@ -258,70 +260,104 @@ const Notes = () => {
   if (!user) return null;
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="mb-8 flex items-center">
-        <div>
-          <h1 className="text-4xl font-bold mb-2 text-primary">My Notes</h1>
-          <p className="text-muted-foreground">Organize and manage your study materials</p>
+    <div className="container mx-auto px-4 py-6 max-w-7xl">
+      <div className="mb-8 space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2 text-primary bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              My Notes
+            </h1>
+            <p className="text-muted-foreground">
+              Organize and manage your study materials
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="relative w-64">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search notes..." 
+                className="pl-10"
+                onChange={(e) => {
+                  // Search functionality can be implemented here
+                  console.log('Search:', e.target.value);
+                }}
+              />
+            </div>
+            <Button variant="outline" size="icon">
+              <Filter className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+          <Card className="bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/20 transition-colors cursor-pointer group">
+            <CardContent className="p-6 flex flex-col items-center justify-center min-h-[200px] text-center"
+              onClick={() => setIsEditorExpanded(true)}
+            >
+              <div className="rounded-full bg-primary/10 p-4 mb-4 group-hover:bg-primary/20 transition-colors">
+                <Plus className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle className="mb-2">Create New Note</CardTitle>
+              <CardDescription>Add a new note to your collection</CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-blue-500/5 to-blue-500/10 hover:from-blue-500/10 hover:to-blue-500/20 transition-colors cursor-pointer">
+            <CardContent className="p-6 flex flex-col items-center justify-center min-h-[200px] text-center">
+              <div className="rounded-full bg-blue-500/10 p-4 mb-4">
+                <BookOpen className="h-6 w-6 text-blue-500" />
+              </div>
+              <CardTitle className="mb-2">Recent Flashcards</CardTitle>
+              <CardDescription>12 cards generated today</CardDescription>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
-      <div className="grid gap-6">
-        <Card className="overflow-hidden">
-          <CardHeader className="bg-muted/50">
+      {isEditorExpanded && (
+        <Card className="mb-6 border-primary/20 animate-fade-in">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
             <CardTitle className="text-lg font-medium">Create New Note</CardTitle>
             <CardDescription>Add a new note to your collection</CardDescription>
           </CardHeader>
-          <CardContent className="p-6">
-            {!isEditorExpanded ? (
-              <Button 
-                onClick={() => setIsEditorExpanded(true)}
-                className="w-full py-8 text-lg hover:bg-accent hover:text-accent-foreground transition-colors flex items-center justify-center gap-2"
-              >
-                <Plus className="h-5 w-5" />
-                Create a New Note
-              </Button>
-            ) : (
-              <div ref={editorRef}>
-                <NoteEditor
-                  note={newNote}
-                  newTag={newTag}
-                  commonSubjects={commonSubjects}
-                  onNoteChange={handleNoteChange}
-                  onTagChange={setNewTag}
-                  onAddTag={addTag}
-                  onRemoveTag={removeTag}
-                  onCancel={() => {
-                    setIsEditorExpanded(false);
-                    setNewNote({ title: "", content: "", tags: [], subject: "General" });
-                  }}
-                  onSave={createNote}
-                />
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="bg-muted/50">
-            <CardTitle className="text-lg font-medium">Your Notes</CardTitle>
-            <CardDescription>Browse and manage your existing notes</CardDescription>
-          </CardHeader>
-          <CardContent className="p-0">
-            <NotesTable
-              notes={notes}
-              loading={loading}
-              generatingFlashcardsForNote={generatingFlashcardsForNote}
-              onNoteClick={(note) => {
-                setSelectedNote(note);
-                setEditingNote(note);
-                setShowSummary(false);
+          <CardContent className="p-6" ref={editorRef}>
+            <NoteEditor
+              note={newNote}
+              newTag={newTag}
+              commonSubjects={commonSubjects}
+              onNoteChange={handleNoteChange}
+              onTagChange={setNewTag}
+              onAddTag={addTag}
+              onRemoveTag={removeTag}
+              onCancel={() => {
+                setIsEditorExpanded(false);
+                setNewNote({ title: "", content: "", tags: [], subject: "General" });
               }}
-              onGenerateFlashcards={generateFlashcards}
+              onSave={createNote}
             />
           </CardContent>
         </Card>
-      </div>
+      )}
+
+      <Card className="shadow-sm border-muted/20">
+        <CardHeader className="bg-gradient-to-r from-muted/50 to-transparent">
+          <CardTitle className="text-lg font-medium">Your Notes</CardTitle>
+          <CardDescription>Browse and manage your existing notes</CardDescription>
+        </CardHeader>
+        <CardContent className="p-0">
+          <NotesTable
+            notes={notes}
+            loading={loading}
+            generatingFlashcardsForNote={generatingFlashcardsForNote}
+            onNoteClick={(note) => {
+              setSelectedNote(note);
+              setEditingNote(note);
+              setShowSummary(false);
+            }}
+            onGenerateFlashcards={generateFlashcards}
+          />
+        </CardContent>
+      </Card>
 
       <EditNoteDialog
         open={!!selectedNote}
