@@ -8,11 +8,12 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { FileText, BookOpen, Users, User, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { navigationItems } from "@/components/navigation/NavigationItems";
 
 export function NotesSidebar() {
   const location = useLocation();
@@ -35,13 +36,6 @@ export function NotesSidebar() {
       });
     }
   };
-
-  const navigationItems = [
-    { label: "My Notes", icon: FileText, path: "/notes" },
-    { label: "My Flashcards", icon: BookOpen, path: "/flashcards" },
-    { label: "Study Groups", icon: Users, path: "/study-groups" },
-    { label: "My Profile", icon: User, path: "/profile" },
-  ];
 
   if (isMobile && !isOpen) {
     return null;
