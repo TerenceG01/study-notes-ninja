@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -46,7 +47,6 @@ const Notes = () => {
   const editorRef = useRef<HTMLDivElement>(null);
   const [generatingFlashcardsForNote, setGeneratingFlashcardsForNote] = useState<string | null>(null);
 
-  // List of common subjects
   const commonSubjects = [
     "General",
     "Mathematics",
