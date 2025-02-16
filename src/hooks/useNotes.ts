@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -48,6 +48,11 @@ export const useNotes = () => {
       setLoading(false);
     }
   };
+
+  // Fetch notes when the hook is initialized
+  useEffect(() => {
+    fetchNotes();
+  }, []);
 
   const createNote = async (newNote: NewNote, userId: string) => {
     if (!newNote.title || !newNote.content) {
