@@ -124,7 +124,7 @@ const Notes = () => {
 
   return (
     <div className={cn(
-      "px-4 py-6",
+      "px-2 py-6",
       "transition-all duration-300",
       isOpen ? "ml-40" : "ml-20",
       "w-[calc(100vw-theme(spacing.40))]",
