@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -109,14 +110,14 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-6">
+      <div className="max-w-3xl mx-auto px-4 py-6">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-primary">My Profile</h1>
           <p className="text-muted-foreground mt-2">Manage your personal information</p>
         </div>
 
-        <div className="space-y-6">
-          <Card>
+        <div className="grid gap-6">
+          <Card className="w-full">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl">Profile Information</CardTitle>
               <CardDescription>Update your profile details and manage your account</CardDescription>
@@ -182,7 +183,7 @@ const Profile = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="w-full">
             <CardHeader>
               <CardTitle className="text-xl">Appearance</CardTitle>
               <CardDescription>
@@ -212,7 +213,7 @@ const Profile = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="w-full">
             <CardHeader>
               <CardTitle className="text-xl text-destructive">Danger Zone</CardTitle>
               <CardDescription>
