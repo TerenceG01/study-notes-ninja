@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { FileText, BookOpen, LogOut } from "lucide-react";
+import { FileText, BookOpen, Users, User, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -39,6 +39,8 @@ export function NotesSidebar() {
   const navigationItems = [
     { label: "My Notes", icon: FileText, path: "/notes" },
     { label: "My Flashcards", icon: BookOpen, path: "/flashcards" },
+    { label: "Study Groups", icon: Users, path: "/study-groups" },
+    { label: "My Profile", icon: User, path: "/profile" },
   ];
 
   if (isMobile && !isOpen) {
@@ -50,6 +52,9 @@ export function NotesSidebar() {
       "border-r bg-background/80 backdrop-blur-sm h-full transition-all duration-300",
       isOpen ? "w-48" : "w-16"
     )}>
+      <SidebarHeader className="p-4 border-b">
+        {isOpen && <h2 className="font-semibold">Navigation</h2>}
+      </SidebarHeader>
       <SidebarContent className="flex-1">
         <div className="space-y-2 p-2">
           {navigationItems.map((item) => (
@@ -58,16 +63,14 @@ export function NotesSidebar() {
               variant={location.pathname === item.path ? "secondary" : "ghost"}
               className={cn(
                 "w-full flex items-center",
-                isOpen ? "justify-start px-3 gap-3" : "justify-center",
+                isOpen ? "justify-start px-3" : "justify-center px-0",
                 location.pathname === item.path && "bg-secondary"
               )}
               asChild
             >
-              <Link to={item.path} className="flex items-center gap-3">
-                <div className="flex-shrink-0 w-4 h-4">
-                  <item.icon className="w-full h-full" />
-                </div>
-                {isOpen && <span className="truncate">{item.label}</span>}
+              <Link to={item.path}>
+                <item.icon className="h-4 w-4" />
+                {isOpen && <span className="ml-3">{item.label}</span>}
               </Link>
             </Button>
           ))}
@@ -76,15 +79,13 @@ export function NotesSidebar() {
             variant="ghost"
             className={cn(
               "w-full flex items-center",
-              isOpen ? "justify-start px-3 gap-3" : "justify-center",
+              isOpen ? "justify-start px-3" : "justify-center px-0",
               "text-destructive hover:text-destructive"
             )}
             onClick={handleLogout}
           >
-            <div className="flex-shrink-0 w-4 h-4">
-              <LogOut className="w-full h-full" />
-            </div>
-            {isOpen && <span className="truncate">Logout</span>}
+            <LogOut className="h-4 w-4" />
+            {isOpen && <span className="ml-3">Logout</span>}
           </Button>
         </div>
       </SidebarContent>
