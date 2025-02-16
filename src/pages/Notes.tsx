@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -264,13 +263,14 @@ const Notes = () => {
 
   return (
     <div className={cn(
-      "px-1 py-6", // Removed container class to have more control over width
+      "px-1 py-6",
       "transition-all duration-300",
-      isOpen ? "ml-15" : "ml-16",
-      "max-w-[calc(100vw-4rem)]", // Set maximum width relative to viewport
-      "w-full" // Take full available width
+      isOpen ? "ml-48" : "ml-16", // Increased margin when sidebar is expanded to match sidebar width
+      "max-w-[calc(100vw-theme(spacing.16))]", // Base maximum width
+      isOpen && "max-w-[calc(100vw-theme(spacing.48))]", // Adjust maximum width when sidebar is expanded
+      "w-full"
     )}>
-      <div className="mb-8 space-y-4 max-w-6xl mx-auto"> {/* Added max-width and center alignment */}
+      <div className="mb-8 space-y-4 max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-primary bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
@@ -297,7 +297,7 @@ const Notes = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4"> {/* Adjusted grid columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           <Card className="bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/20 transition-colors cursor-pointer group">
             <CardContent className="p-6 flex flex-col items-center justify-center min-h-[200px] text-center"
               onClick={() => setIsEditorExpanded(true)}
@@ -326,7 +326,7 @@ const Notes = () => {
       </div>
 
       {isEditorExpanded && (
-        <Card className="mb-6 border-primary/20 animate-fade-in max-w-6xl mx-auto"> {/* Added max-width and center alignment */}
+        <Card className="mb-6 border-primary/20 animate-fade-in max-w-6xl mx-auto">
           <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
             <CardTitle className="text-lg font-medium">Create New Note</CardTitle>
             <CardDescription>Add a new note to your collection</CardDescription>
@@ -350,7 +350,7 @@ const Notes = () => {
         </Card>
       )}
 
-      <Card className="shadow-sm border-muted/20 max-w-6xl mx-auto"> {/* Added max-width and center alignment */}
+      <Card className="shadow-sm border-muted/20 max-w-6xl mx-auto">
         <CardHeader className="bg-gradient-to-r from-muted/50 to-transparent">
           <CardTitle className="text-lg font-medium">Your Notes</CardTitle>
           <CardDescription>Browse and manage your existing notes</CardDescription>
