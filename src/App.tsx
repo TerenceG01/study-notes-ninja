@@ -52,7 +52,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
             variant="ghost"
             size="icon"
             className={`rounded-full bg-background border shadow-md fixed top-20 z-50 transition-all duration-300 ${
-              isOpen ? 'left-44' : 'left-3'
+              isOpen ? 'left-44' : 'left-0'
             }`}
             onClick={toggleSidebar}
           >
