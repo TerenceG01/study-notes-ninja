@@ -42,47 +42,55 @@ export function NotesSidebar() {
   }
 
   return (
-    <Sidebar className={cn(
-      "border-r bg-primary/5 backdrop-blur-sm h-full transition-all duration-300",
-      isOpen ? "w-40" : "w-20"
-    )}>
-      <SidebarHeader className="p-4 border-b">
-        {isOpen && <h2 className="font-semibold">Navigation</h2>}
-      </SidebarHeader>
-      <SidebarContent className="flex-1">
-        <div className="space-y-2 p-2">
-          {navigationItems.map((item) => (
+    <>
+      {/* Background Element */}
+      <div className={cn(
+        "fixed top-0 left-0 h-full bg-background/50 backdrop-blur-sm transition-all duration-300 z-0",
+        isOpen ? "w-40" : "w-20"
+      )} />
+      
+      <Sidebar className={cn(
+        "border-r bg-primary/5 backdrop-blur-sm h-full transition-all duration-300 relative z-10",
+        isOpen ? "w-40" : "w-20"
+      )}>
+        <SidebarHeader className="p-4 border-b">
+          {isOpen && <h2 className="font-semibold">Navigation</h2>}
+        </SidebarHeader>
+        <SidebarContent className="flex-1">
+          <div className="space-y-2 p-2">
+            {navigationItems.map((item) => (
+              <Button
+                key={item.path}
+                variant={location.pathname === item.path ? "secondary" : "ghost"}
+                className={cn(
+                  "w-full flex items-center",
+                  isOpen ? "justify-start px-3" : "justify-center px-0",
+                  location.pathname === item.path && "bg-accent/60"
+                )}
+                asChild
+              >
+                <Link to={item.path}>
+                  <item.icon className="h-4 w-4" />
+                  {isOpen && <span className="ml-3">{item.label}</span>}
+                </Link>
+              </Button>
+            ))}
+
             <Button
-              key={item.path}
-              variant={location.pathname === item.path ? "secondary" : "ghost"}
+              variant="ghost"
               className={cn(
                 "w-full flex items-center",
                 isOpen ? "justify-start px-3" : "justify-center px-0",
-                location.pathname === item.path && "bg-accent/60"
+                "text-destructive hover:text-destructive"
               )}
-              asChild
+              onClick={handleLogout}
             >
-              <Link to={item.path}>
-                <item.icon className="h-4 w-4" />
-                {isOpen && <span className="ml-3">{item.label}</span>}
-              </Link>
+              <LogOut className="h-4 w-4" />
+              {isOpen && <span className="ml-3">Logout</span>}
             </Button>
-          ))}
-
-          <Button
-            variant="ghost"
-            className={cn(
-              "w-full flex items-center",
-              isOpen ? "justify-start px-3" : "justify-center px-0",
-              "text-destructive hover:text-destructive"
-            )}
-            onClick={handleLogout}
-          >
-            <LogOut className="h-4 w-4" />
-            {isOpen && <span className="ml-3">Logout</span>}
-          </Button>
-        </div>
-      </SidebarContent>
-    </Sidebar>
+          </div>
+        </SidebarContent>
+      </Sidebar>
+    </>
   );
 }
