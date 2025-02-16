@@ -17,15 +17,14 @@ const Notes = () => {
     <div className={cn(
       "px-6 py-6",
       "transition-all duration-300",
-      isOpen ? "ml-[10px]" : "ml-[24px]",
-      "w-[calc(100vw-theme(spacing.40)-10px)]",
-      !isOpen && "w-[calc(100vw-theme(spacing.20)-24px)]",
+      "w-full",
+      isOpen ? "ml-0" : "ml-0"
     )}>
       <div className="mx-auto max-w-[min(100%,64rem)] space-y-4">
         <NotesHeader onSearch={(query) => console.log('Search:', query)} />
         <NotesActionCards onCreateNote={() => {}} />
+        <NotesContent />
       </div>
-      <NotesContent />
     </div>
   );
 };
