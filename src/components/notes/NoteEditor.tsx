@@ -11,7 +11,6 @@ interface NoteEditorProps {
     content: string;
     tags: string[];
     subject: string;
-    workbook: string;
   };
   newTag: string;
   commonSubjects: string[];
@@ -43,44 +42,25 @@ export const NoteEditor = ({
         className="text-lg font-medium"
       />
 
-      <div className="grid grid-cols-2 gap-4">
-        <Select
-          value={note.subject}
-          onValueChange={(value) => onNoteChange('subject', value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select subject" />
-          </SelectTrigger>
-          <SelectContent>
-            {commonSubjects.map((subject) => (
-              <SelectItem 
-                key={subject} 
-                value={subject}
-                className="hover:bg-muted cursor-pointer"
-              >
-                {subject}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={note.workbook}
-          onValueChange={(value) => onNoteChange('workbook', value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select workbook" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="General">General</SelectItem>
-            <SelectItem value="Homework">Homework</SelectItem>
-            <SelectItem value="Lab">Lab</SelectItem>
-            <SelectItem value="Research">Research</SelectItem>
-            <SelectItem value="Projects">Projects</SelectItem>
-            <SelectItem value="Exams">Exams</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <Select
+        value={note.subject}
+        onValueChange={(value) => onNoteChange('subject', value)}
+      >
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Select subject" />
+        </SelectTrigger>
+        <SelectContent>
+          {commonSubjects.map((subject) => (
+            <SelectItem 
+              key={subject} 
+              value={subject}
+              className="hover:bg-muted cursor-pointer"
+            >
+              {subject}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
       <Textarea
         placeholder="Write your note here..."

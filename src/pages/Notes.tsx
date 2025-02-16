@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -96,7 +97,6 @@ const Notes = () => {
           summary: editingNote.summary,
           tags: editingNote.tags || [],
           subject: editingNote.subject,
-          workbook: editingNote.workbook,
         })
         .eq("id", editingNote.id);
 
@@ -121,10 +121,6 @@ const Notes = () => {
   };
 
   if (!user) return null;
-
-  const handleEditingNoteChange = (note: Note | null) => {
-    setEditingNote(note);
-  };
 
   return (
     <div className={cn(
@@ -190,7 +186,7 @@ const Notes = () => {
         summarizing={summarizing}
         newTag={newTag}
         commonSubjects={commonSubjects}
-        onNoteChange={handleEditingNoteChange}
+        onNoteChange={setEditingNote}
         onSummaryLevelChange={setSummaryLevel}
         onGenerateSummary={handleGenerateSummary}
         onToggleSummary={() => setShowSummary(!showSummary)}

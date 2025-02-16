@@ -7,8 +7,7 @@ export const useNoteEditor = (initialSubject = "General") => {
     title: "", 
     content: "", 
     tags: [] as string[], 
-    subject: initialSubject,
-    workbook: "General"
+    subject: initialSubject 
   });
   const [newTag, setNewTag] = useState("");
   const [isEditorExpanded, setIsEditorExpanded] = useState(false);
@@ -35,7 +34,7 @@ export const useNoteEditor = (initialSubject = "General") => {
   };
 
   const resetEditor = () => {
-    setNewNote({ title: "", content: "", tags: [], subject: initialSubject, workbook: "General" });
+    setNewNote({ title: "", content: "", tags: [], subject: initialSubject });
     setIsEditorExpanded(false);
   };
 

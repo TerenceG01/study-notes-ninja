@@ -13,7 +13,6 @@ export type Note = {
   summary?: string;
   tags?: string[];
   subject?: string;
-  workbook: string;
 };
 
 export type NewNote = {
@@ -21,7 +20,6 @@ export type NewNote = {
   content: string;
   tags: string[];
   subject: string;
-  workbook: string;
 };
 
 export const useNotes = () => {
@@ -68,7 +66,6 @@ export const useNotes = () => {
           content: newNote.content,
           tags: newNote.tags,
           subject: newNote.subject,
-          workbook: newNote.workbook,
           user_id: userId,
         },
       ]);
