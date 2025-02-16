@@ -302,13 +302,16 @@ const Notes = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-blue-500/5 to-blue-500/10 hover:from-blue-500/10 hover:to-blue-500/20 transition-colors cursor-pointer">
+          <Card 
+            className="bg-gradient-to-br from-blue-500/5 to-blue-500/10 hover:from-blue-500/10 hover:to-blue-500/20 transition-colors cursor-pointer"
+            onClick={() => navigate('/flashcards')}
+          >
             <CardContent className="p-6 flex flex-col items-center justify-center min-h-[200px] text-center">
               <div className="rounded-full bg-blue-500/10 p-4 mb-4">
                 <BookOpen className="h-6 w-6 text-blue-500" />
               </div>
               <CardTitle className="mb-2">Recent Flashcards</CardTitle>
-              <CardDescription>12 cards generated today</CardDescription>
+              <CardDescription>View your flashcard decks</CardDescription>
             </CardContent>
           </Card>
         </div>
