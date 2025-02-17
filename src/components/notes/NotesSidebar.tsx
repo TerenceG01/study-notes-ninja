@@ -1,4 +1,3 @@
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar,
@@ -95,7 +94,7 @@ export function NotesSidebar() {
         .from('notes')
         .update({
           subject_color: color,
-        } as any) // Using type assertion temporarily to fix build
+        })
         .eq('subject', subject);
 
       if (error) throw error;
@@ -134,14 +133,16 @@ export function NotesSidebar() {
   const handleShareSubject = async (subject: string) => {
     try {
       const notesWithSubject = notes.filter(note => note.subject === subject);
-      
+      const user = (await supabase.auth.getUser()).data.user;
+      if (!user) throw new Error("User not found");
+
       // Create a study group with this subject
       const { data: group, error: groupError } = await supabase
         .rpc('create_study_group', {
           p_name: `${subject} Study Group`,
           p_subject: subject,
           p_description: `Study group for ${subject}`,
-          p_user_id: (await supabase.auth.getUser()).data.user?.id
+          p_user_id: user.id
         });
 
       if (groupError) throw groupError;
@@ -153,7 +154,7 @@ export function NotesSidebar() {
           .insert({
             note_id: note.id,
             group_id: group.id,
-            shared_by: (await supabase.auth.getUser()).data.user?.id
+            shared_by: user.id
           });
       }
 
@@ -271,6 +272,7 @@ export function NotesSidebar() {
                               variant="ghost" 
                               size="sm"
                               className="h-8 w-8 p-0"
+                              onClick={(e) => e.stopPropagation()}
                             >
                               <MoreVertical className="h-4 w-4" />
                             </Button>
@@ -289,35 +291,50 @@ export function NotesSidebar() {
                                     "h-6 w-6 p-0 rounded-full",
                                     color.class
                                   )}
-                                  onClick={() => handleColorChange(subject, color.value)}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleColorChange(subject, color.value);
+                                  }}
                                 />
                               ))}
                             </div>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem 
                               className="gap-2"
-                              onClick={() => moveSubject(subject, 'up')}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                moveSubject(subject, 'up');
+                              }}
                             >
                               <ChevronUp className="h-4 w-4" />
                               Move Up
                             </DropdownMenuItem>
                             <DropdownMenuItem 
                               className="gap-2"
-                              onClick={() => moveSubject(subject, 'down')}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                moveSubject(subject, 'down');
+                              }}
                             >
                               <ChevronDown className="h-4 w-4" />
                               Move Down
                             </DropdownMenuItem>
                             <DropdownMenuItem 
                               className="gap-2"
-                              onClick={() => handleShareSubject(subject)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleShareSubject(subject);
+                              }}
                             >
                               <Share className="h-4 w-4" />
                               Share Subject
                             </DropdownMenuItem>
                             <DropdownMenuItem 
                               className="gap-2 text-destructive"
-                              onClick={() => handleRemoveSubject(subject)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveSubject(subject);
+                              }}
                             >
                               <Trash2 className="h-4 w-4" />
                               Remove Subject
