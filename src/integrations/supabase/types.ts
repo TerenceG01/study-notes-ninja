@@ -233,6 +233,7 @@ export type Database = {
           folder: string | null
           id: string
           subject: string | null
+          subject_color: string | null
           summary: string | null
           tags: string[] | null
           title: string
@@ -245,6 +246,7 @@ export type Database = {
           folder?: string | null
           id?: string
           subject?: string | null
+          subject_color?: string | null
           summary?: string | null
           tags?: string[] | null
           title?: string
@@ -257,6 +259,7 @@ export type Database = {
           folder?: string | null
           id?: string
           subject?: string | null
+          subject_color?: string | null
           summary?: string | null
           tags?: string[] | null
           title?: string

@@ -93,7 +93,9 @@ export function NotesSidebar() {
     try {
       const { error } = await supabase
         .from('notes')
-        .update({ subject_color: color })
+        .update({
+          subject_color: color,
+        } as any) // Using type assertion temporarily to fix build
         .eq('subject', subject);
 
       if (error) throw error;
