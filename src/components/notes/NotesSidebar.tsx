@@ -16,7 +16,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { navigationItems } from "@/components/navigation/NavigationItems";
 import { useSearchParams } from "react-router-dom";
 import { useNotes } from "@/hooks/useNotes";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 
 export function NotesSidebar() {
   const location = useLocation();
@@ -31,8 +31,6 @@ export function NotesSidebar() {
   const [draggedSubject, setDraggedSubject] = useState<string | null>(null);
   const [dragOverSubject, setDragOverSubject] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [startY, setStartY] = useState(0);
-  const [currentY, setCurrentY] = useState(0);
 
   const uniqueSubjects = useMemo(() => {
     return Array.from(new Set(notes.map(note => note.subject || "General")))
@@ -115,33 +113,48 @@ export function NotesSidebar() {
     }
   };
 
-  const handleMouseDown = (e: React.MouseEvent, subject: string) => {
+  const handleDragStart = (e: React.MouseEvent, subject: string) => {
+    e.preventDefault(); // Prevent default drag ghost image
     setDraggedSubject(subject);
     setIsDragging(true);
-    setStartY(e.clientY);
-    setCurrentY(e.clientY);
+    
+    // Add event listeners to the document for drag movement
+    document.addEventListener('mousemove', handleDragMove);
+    document.addEventListener('mouseup', handleDragEnd);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (isDragging && draggedSubject) {
-      setCurrentY(e.clientY);
-      const elements = document.elementsFromPoint(e.clientX, e.clientY);
-      const subjectElement = elements.find(el => el.getAttribute('data-subject'));
-      const hoverSubject = subjectElement?.getAttribute('data-subject') || null;
+  const handleDragMove = useCallback((e: MouseEvent) => {
+    if (!isDragging || !draggedSubject) return;
+
+    const elements = document.elementsFromPoint(e.clientX, e.clientY);
+    const subjectElement = elements.find(el => el.hasAttribute('data-subject'));
+    if (subjectElement) {
+      const hoverSubject = subjectElement.getAttribute('data-subject');
       setDragOverSubject(hoverSubject);
     }
-  };
+  }, [isDragging, draggedSubject]);
 
-  const handleMouseUp = async () => {
+  const handleDragEnd = useCallback(async () => {
+    // Remove event listeners
+    document.removeEventListener('mousemove', handleDragMove);
+    document.removeEventListener('mouseup', handleDragEnd);
+
     if (isDragging && draggedSubject && dragOverSubject && draggedSubject !== dragOverSubject) {
       await handleMoveSubject(draggedSubject, dragOverSubject);
     }
+
     setIsDragging(false);
     setDraggedSubject(null);
     setDragOverSubject(null);
-    setStartY(0);
-    setCurrentY(0);
-  };
+  }, [isDragging, draggedSubject, dragOverSubject, handleMoveSubject]);
+
+  // Clean up event listeners when component unmounts
+  React.useEffect(() => {
+    return () => {
+      document.removeEventListener('mousemove', handleDragMove);
+      document.removeEventListener('mouseup', handleDragEnd);
+    };
+  }, [handleDragMove, handleDragEnd]);
 
   if (isMobile && !isOpen) {
     return null;
@@ -161,12 +174,7 @@ export function NotesSidebar() {
         <SidebarHeader className="p-4 border-b">
           {isOpen && <h2 className="font-semibold">Navigation</h2>}
         </SidebarHeader>
-        <SidebarContent 
-          className="flex flex-col h-full"
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-        >
+        <SidebarContent className="flex flex-col h-full">
           <div className="space-y-2 p-2">
             {navigationItems.map((item) => (
               <Button
@@ -214,7 +222,7 @@ export function NotesSidebar() {
                         )}
                         onMouseDown={(e) => {
                           e.stopPropagation();
-                          handleMouseDown(e, subject);
+                          handleDragStart(e, subject);
                         }}
                       />
                       {isOpen && <span className="ml-3 truncate">{subject}</span>}
