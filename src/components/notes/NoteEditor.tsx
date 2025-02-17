@@ -11,7 +11,6 @@ interface NoteEditorProps {
     content: string;
     tags: string[];
     subject: string;
-    subject_color?: string;
   };
   newTag: string;
   commonSubjects: string[];
@@ -22,14 +21,6 @@ interface NoteEditorProps {
   onCancel: () => void;
   onSave: () => void;
 }
-
-const SUBJECT_COLORS = [
-  { name: 'Blue', value: 'blue' },
-  { name: 'Green', value: 'green' },
-  { name: 'Purple', value: 'purple' },
-  { name: 'Red', value: 'red' },
-  { name: 'Orange', value: 'orange' },
-];
 
 export const NoteEditor = ({
   note,
@@ -51,48 +42,25 @@ export const NoteEditor = ({
         className="text-lg font-medium"
       />
 
-      <div className="flex gap-4">
-        <Select
-          value={note.subject}
-          onValueChange={(value) => onNoteChange('subject', value)}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select subject" />
-          </SelectTrigger>
-          <SelectContent>
-            {commonSubjects.map((subject) => (
-              <SelectItem 
-                key={subject} 
-                value={subject}
-                className="hover:bg-muted cursor-pointer"
-              >
-                {subject}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={note.subject_color || 'blue'}
-          onValueChange={(value) => onNoteChange('subject_color', value)}
-        >
-          <SelectTrigger className="w-[140px]">
-            <SelectValue placeholder="Subject color" />
-          </SelectTrigger>
-          <SelectContent>
-            {SUBJECT_COLORS.map((color) => (
-              <SelectItem 
-                key={color.value} 
-                value={color.value}
-                className="flex items-center gap-2"
-              >
-                <div className={`w-4 h-4 rounded-full bg-${color.value}-500`} />
-                {color.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <Select
+        value={note.subject}
+        onValueChange={(value) => onNoteChange('subject', value)}
+      >
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Select subject" />
+        </SelectTrigger>
+        <SelectContent>
+          {commonSubjects.map((subject) => (
+            <SelectItem 
+              key={subject} 
+              value={subject}
+              className="hover:bg-muted cursor-pointer"
+            >
+              {subject}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
       <Textarea
         placeholder="Write your note here..."
