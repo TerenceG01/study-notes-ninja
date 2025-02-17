@@ -52,7 +52,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
             variant="ghost"
             size="icon"
             className={`rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-primary/20 shadow-lg hover:shadow-primary/20 hover:border-primary/40 fixed top-20 z-50 transition-all duration-300 w-8 h-8 ${
-              isOpen ? 'left-36 hover:-translate-x-0.5' : 'left-16 hover:translate-x-0.5'
+              isOpen ? 'left-36 hover:-translate-x-0.5' : 'left-12 hover:translate-x-0.5'
             }`}
             onClick={toggleSidebar}
           >
