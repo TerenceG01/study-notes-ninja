@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -101,7 +102,7 @@ export function NotesSidebar() {
             ))}
           </div>
 
-          {location.pathname === '/notes' && uniqueSubjects.length > 0 && (
+          {uniqueSubjects.length > 0 && (
             <div className="border-t mt-2">
               <div className="p-4">
                 {isOpen && <h3 className="text-sm font-medium mb-2">Subjects</h3>}
