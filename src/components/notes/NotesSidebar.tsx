@@ -16,7 +16,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { navigationItems } from "@/components/navigation/NavigationItems";
 import { useSearchParams } from "react-router-dom";
 import { useNotes } from "@/hooks/useNotes";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export function NotesSidebar() {
   const location = useLocation();
@@ -27,7 +27,12 @@ export function NotesSidebar() {
   const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSubject = searchParams.get("subject");
-  const { notes } = useNotes();
+  const { notes, fetchNotes } = useNotes();
+  const [draggedSubject, setDraggedSubject] = useState<string | null>(null);
+  const [dragOverSubject, setDragOverSubject] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const [currentY, setCurrentY] = useState(0);
 
   const uniqueSubjects = useMemo(() => {
     return Array.from(new Set(notes.map(note => note.subject || "General")))
@@ -65,6 +70,79 @@ export function NotesSidebar() {
     }
   };
 
+  const handleMoveSubject = async (fromSubject: string, toSubject: string) => {
+    const fromIndex = uniqueSubjects.indexOf(fromSubject);
+    const toIndex = uniqueSubjects.indexOf(toSubject);
+    
+    if (fromIndex === toIndex) return;
+    
+    const notesWithFromSubject = notes.filter(n => n.subject === fromSubject);
+    
+    try {
+      // Update all notes with the current subject
+      for (const note of notesWithFromSubject) {
+        const { error } = await supabase
+          .from('notes')
+          .update({ subject: toSubject })
+          .eq('id', note.id);
+
+        if (error) throw error;
+      }
+      
+      // Update all notes with the target subject
+      const targetNotes = notes.filter(n => n.subject === toSubject);
+      for (const note of targetNotes) {
+        const { error } = await supabase
+          .from('notes')
+          .update({ subject: fromSubject })
+          .eq('id', note.id);
+
+        if (error) throw error;
+      }
+
+      await fetchNotes();
+      
+      toast({
+        title: "Success",
+        description: `Moved ${fromSubject}`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error moving subject",
+        description: "Failed to move subject. Please try again.",
+      });
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent, subject: string) => {
+    setDraggedSubject(subject);
+    setIsDragging(true);
+    setStartY(e.clientY);
+    setCurrentY(e.clientY);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && draggedSubject) {
+      setCurrentY(e.clientY);
+      const elements = document.elementsFromPoint(e.clientX, e.clientY);
+      const subjectElement = elements.find(el => el.getAttribute('data-subject'));
+      const hoverSubject = subjectElement?.getAttribute('data-subject') || null;
+      setDragOverSubject(hoverSubject);
+    }
+  };
+
+  const handleMouseUp = async () => {
+    if (isDragging && draggedSubject && dragOverSubject && draggedSubject !== dragOverSubject) {
+      await handleMoveSubject(draggedSubject, dragOverSubject);
+    }
+    setIsDragging(false);
+    setDraggedSubject(null);
+    setDragOverSubject(null);
+    setStartY(0);
+    setCurrentY(0);
+  };
+
   if (isMobile && !isOpen) {
     return null;
   }
@@ -83,7 +161,12 @@ export function NotesSidebar() {
         <SidebarHeader className="p-4 border-b">
           {isOpen && <h2 className="font-semibold">Navigation</h2>}
         </SidebarHeader>
-        <SidebarContent className="flex flex-col h-full">
+        <SidebarContent 
+          className="flex flex-col h-full"
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
           <div className="space-y-2 p-2">
             {navigationItems.map((item) => (
               <Button
@@ -112,16 +195,28 @@ export function NotesSidebar() {
                   {uniqueSubjects.map((subject) => (
                     <Button
                       key={subject}
+                      data-subject={subject}
                       variant={currentSubject === subject ? "secondary" : "ghost"}
                       size="sm"
                       className={cn(
-                        "w-full flex items-center",
+                        "w-full flex items-center relative",
                         isOpen ? "justify-start px-3" : "justify-center px-0",
-                        currentSubject === subject && "bg-accent/60"
+                        currentSubject === subject && "bg-accent/60",
+                        dragOverSubject === subject && "border-2 border-primary",
+                        draggedSubject === subject && "opacity-50"
                       )}
                       onClick={() => handleSubjectClick(subject)}
                     >
-                      <Tag className="h-4 w-4" />
+                      <Tag 
+                        className={cn(
+                          "h-4 w-4 cursor-move",
+                          isDragging && "cursor-grabbing"
+                        )}
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                          handleMouseDown(e, subject);
+                        }}
+                      />
                       {isOpen && <span className="ml-3 truncate">{subject}</span>}
                     </Button>
                   ))}
