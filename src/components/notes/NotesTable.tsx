@@ -215,7 +215,12 @@ export const NotesTable = ({
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuContent 
+                    align="end" 
+                    side="top" 
+                    sideOffset={5}
+                    className="w-48"
+                  >
                     <div className="px-2 py-1.5 text-sm font-medium text-muted-foreground">
                       Subject Color
                     </div>
