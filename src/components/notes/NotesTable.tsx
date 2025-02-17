@@ -13,6 +13,7 @@ interface Note {
   summary?: string;
   tags?: string[];
   subject?: string;
+  subject_color?: string;
 }
 
 interface NotesTableProps {
@@ -22,6 +23,22 @@ interface NotesTableProps {
   onNoteClick: (note: Note) => void;
   onGenerateFlashcards: (note: Note) => void;
 }
+
+const getSubjectStyles = (color?: string) => {
+  const baseStyles = "font-medium transition-colors";
+  const colorMap: Record<string, string> = {
+    blue: "bg-blue-50 text-blue-600 group-hover:bg-blue-100",
+    green: "bg-green-50 text-green-600 group-hover:bg-green-100",
+    purple: "bg-purple-50 text-purple-600 group-hover:bg-purple-100",
+    red: "bg-red-50 text-red-600 group-hover:bg-red-100",
+    orange: "bg-orange-50 text-orange-600 group-hover:bg-orange-100",
+  };
+
+  return cn(
+    baseStyles,
+    color ? colorMap[color] : "bg-primary/5 text-primary group-hover:bg-primary/10"
+  );
+};
 
 export const NotesTable = ({
   notes,
@@ -65,11 +82,7 @@ export const NotesTable = ({
             >
               <TableCell
                 onClick={() => onNoteClick(note)}
-                className={cn(
-                  "font-medium transition-colors",
-                  "bg-primary/5 text-primary",
-                  "group-hover:bg-primary/10"
-                )}
+                className={getSubjectStyles(note.subject_color)}
               >
                 {note.subject || 'General'}
               </TableCell>

@@ -55,6 +55,14 @@ export const EditNoteDialog = ({
   onNewTagChange,
   onSave,
 }: EditNoteDialogProps) => {
+  const SUBJECT_COLORS = [
+    { name: 'Blue', value: 'blue' },
+    { name: 'Green', value: 'green' },
+    { name: 'Purple', value: 'purple' },
+    { name: 'Red', value: 'red' },
+    { name: 'Orange', value: 'orange' },
+  ];
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[800px]">
@@ -68,12 +76,12 @@ export const EditNoteDialog = ({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="mt-4">
+        <div className="mt-4 flex gap-4">
           <Select
             value={editingNote?.subject || "General"}
             onValueChange={(value) => onNoteChange(editingNote ? { ...editingNote, subject: value } : null)}
           >
-            <SelectTrigger>
+            <SelectTrigger className="flex-1">
               <SelectValue placeholder="Select subject" />
             </SelectTrigger>
             <SelectContent>
@@ -84,6 +92,27 @@ export const EditNoteDialog = ({
                   className="hover:bg-muted cursor-pointer"
                 >
                   {subject}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={editingNote?.subject_color || "blue"}
+            onValueChange={(value) => onNoteChange(editingNote ? { ...editingNote, subject_color: value } : null)}
+          >
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Subject color" />
+            </SelectTrigger>
+            <SelectContent>
+              {SUBJECT_COLORS.map((color) => (
+                <SelectItem 
+                  key={color.value} 
+                  value={color.value}
+                  className="flex items-center gap-2"
+                >
+                  <div className={`w-4 h-4 rounded-full bg-${color.value}-500`} />
+                  {color.name}
                 </SelectItem>
               ))}
             </SelectContent>
