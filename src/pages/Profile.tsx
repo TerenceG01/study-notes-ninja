@@ -102,7 +102,7 @@ const Profile = () => {
   }
   return <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-[50px] my-[55px] px-[10px] py-[10px]">
-        <div className="mb-8">
+        <div className="mb-8 px-[16px]">
           <h1 className="text-4xl font-bold text-primary">My Profile</h1>
           <p className="text-muted-foreground mt-2">Manage your personal information</p>
         </div>
