@@ -33,8 +33,8 @@ export const NotesTable = ({
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Title</TableHead>
           <TableHead>Subject</TableHead>
+          <TableHead>Title</TableHead>
           <TableHead className="hidden md:table-cell">Content</TableHead>
           <TableHead className="hidden sm:table-cell">Created At</TableHead>
           <TableHead>Actions</TableHead>
@@ -62,16 +62,16 @@ export const NotesTable = ({
               key={note.id}
               className="group hover:bg-muted/50 cursor-pointer transition-colors"
             >
+              <TableCell
+                onClick={() => onNoteClick(note)}
+              >
+                {note.subject || 'General'}
+              </TableCell>
               <TableCell 
                 className="font-medium"
                 onClick={() => onNoteClick(note)}
               >
                 {note.title}
-              </TableCell>
-              <TableCell
-                onClick={() => onNoteClick(note)}
-              >
-                {note.subject || 'General'}
               </TableCell>
               <TableCell 
                 className="max-w-md truncate hidden md:table-cell"
