@@ -95,18 +95,21 @@ export function NotesSidebar() {
     <>
       <div className={cn(
         "fixed top-0 left-0 h-full bg-background/50 backdrop-blur-sm transition-all duration-300 z-0",
-        isOpen ? "w-60" : "w-20"
+        isOpen ? "w-60" : "w-16"
       )} />
       
       <Sidebar className={cn(
         "border-r bg-primary/5 backdrop-blur-sm h-full transition-all duration-300 relative z-10",
-        isOpen ? "w-40" : "w-20"
+        isOpen ? "w-40" : "w-16"
       )}>
         <SidebarHeader className="p-4 border-b">
           {isOpen && <h2 className="font-semibold">Navigation</h2>}
         </SidebarHeader>
         <SidebarContent 
-          className="flex flex-col h-full"
+          className={cn(
+            "flex flex-col h-full",
+            !isOpen && "px-1"
+          )}
         >
           <NavigationSection isOpen={isOpen} />
 
@@ -122,7 +125,10 @@ export function NotesSidebar() {
             onDragEnd={handleDragEnd}
           />
 
-          <div className="p-2 mt-auto">
+          <div className={cn(
+            "mt-auto",
+            isOpen ? "p-2" : "p-1"
+          )}>
             <Button
               variant="ghost"
               className={cn(
