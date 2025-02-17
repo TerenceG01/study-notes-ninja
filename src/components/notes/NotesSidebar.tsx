@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { LogOut, Tag } from "lucide-react";
+import { LogOut, Tag, ChevronUp, ChevronDown } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -27,7 +27,7 @@ export function NotesSidebar() {
   const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSubject = searchParams.get("subject");
-  const { notes } = useNotes();
+  const { notes, fetchNotes } = useNotes();
 
   const uniqueSubjects = useMemo(() => {
     return Array.from(new Set(notes.map(note => note.subject || "General")))
@@ -62,6 +62,53 @@ export function NotesSidebar() {
       setSearchParams(searchParams);
     } else {
       navigate(`/notes?subject=${subject}`);
+    }
+  };
+
+  const handleMoveSubject = async (subject: string, direction: 'up' | 'down') => {
+    const currentIndex = uniqueSubjects.indexOf(subject);
+    const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    
+    // Check if move is possible
+    if (newIndex < 0 || newIndex >= uniqueSubjects.length) return;
+    
+    const notesWithSubject = notes.filter(n => n.subject === subject);
+    const targetSubject = uniqueSubjects[newIndex];
+    
+    try {
+      // Update all notes with the current subject
+      for (const note of notesWithSubject) {
+        const { error } = await supabase
+          .from('notes')
+          .update({ subject: targetSubject })
+          .eq('id', note.id);
+
+        if (error) throw error;
+      }
+      
+      // Update all notes with the target subject
+      const targetNotes = notes.filter(n => n.subject === targetSubject);
+      for (const note of targetNotes) {
+        const { error } = await supabase
+          .from('notes')
+          .update({ subject: subject })
+          .eq('id', note.id);
+
+        if (error) throw error;
+      }
+
+      await fetchNotes();
+      
+      toast({
+        title: "Success",
+        description: `Moved ${subject} ${direction}`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error moving subject",
+        description: "Failed to move subject. Please try again.",
+      });
     }
   };
 
@@ -109,21 +156,44 @@ export function NotesSidebar() {
               <div className="p-4">
                 {isOpen && <h3 className="text-sm font-medium mb-2">Subjects</h3>}
                 <div className="space-y-1">
-                  {uniqueSubjects.map((subject) => (
-                    <Button
-                      key={subject}
-                      variant={currentSubject === subject ? "secondary" : "ghost"}
-                      size="sm"
-                      className={cn(
-                        "w-full flex items-center",
-                        isOpen ? "justify-start px-3" : "justify-center px-0",
-                        currentSubject === subject && "bg-accent/60"
+                  {uniqueSubjects.map((subject, index) => (
+                    <div key={subject} className="flex items-center gap-1">
+                      <Button
+                        variant={currentSubject === subject ? "secondary" : "ghost"}
+                        size="sm"
+                        className={cn(
+                          "flex-1 flex items-center",
+                          isOpen ? "justify-start px-3" : "justify-center px-0",
+                          currentSubject === subject && "bg-accent/60"
+                        )}
+                        onClick={() => handleSubjectClick(subject)}
+                      >
+                        <Tag className="h-4 w-4" />
+                        {isOpen && <span className="ml-3 truncate">{subject}</span>}
+                      </Button>
+                      {isOpen && (
+                        <div className="flex flex-col">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-4 w-4 p-0 hover:bg-accent"
+                            onClick={() => handleMoveSubject(subject, 'up')}
+                            disabled={index === 0}
+                          >
+                            <ChevronUp className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-4 w-4 p-0 hover:bg-accent"
+                            onClick={() => handleMoveSubject(subject, 'down')}
+                            disabled={index === uniqueSubjects.length - 1}
+                          >
+                            <ChevronDown className="h-3 w-3" />
+                          </Button>
+                        </div>
                       )}
-                      onClick={() => handleSubjectClick(subject)}
-                    >
-                      <Tag className="h-4 w-4" />
-                      {isOpen && <span className="ml-3 truncate">{subject}</span>}
-                    </Button>
+                    </div>
                   ))}
                 </div>
               </div>
