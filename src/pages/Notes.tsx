@@ -15,7 +15,7 @@ const Notes = () => {
 
   return (
     <div className="px-[10px] mx-[50px] py-[10px] my-[55px]">
-      <div className="mx-auto max-w-[min(100%,64rem)] space-y-4">
+      <div className="mx-auto max-w-[min(100%,72rem)] space-y-4">
         <NotesHeader onSearch={query => console.log('Search:', query)} />
         <NotesActionCards onCreateNote={() => {}} />
         <NotesContent />
