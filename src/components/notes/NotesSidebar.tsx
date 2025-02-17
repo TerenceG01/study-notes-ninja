@@ -1,5 +1,5 @@
 
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -20,6 +20,7 @@ import { useMemo } from "react";
 
 export function NotesSidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { state } = useSidebar();
   const isOpen = state === "expanded";
@@ -52,14 +53,20 @@ export function NotesSidebar() {
   };
 
   const handleSubjectClick = (subject: string) => {
-    if (currentSubject === subject) {
-      // If clicking the current subject, remove the filter
-      searchParams.delete("subject");
+    const isNotesPage = location.pathname === '/notes';
+    
+    if (isNotesPage) {
+      // On notes page, just update the filter
+      if (currentSubject === subject) {
+        searchParams.delete("subject");
+      } else {
+        searchParams.set("subject", subject);
+      }
+      setSearchParams(searchParams);
     } else {
-      // Otherwise, set the new subject filter
-      searchParams.set("subject", subject);
+      // On other pages, navigate to notes with the subject filter
+      navigate(`/notes?subject=${subject}`);
     }
-    setSearchParams(searchParams);
   };
 
   if (isMobile && !isOpen) {
