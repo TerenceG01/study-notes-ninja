@@ -1,3 +1,4 @@
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar,
@@ -300,59 +301,60 @@ export function NotesSidebar() {
                                     color.class
                                   )}
                                   onClick={(e) => handleColorChange(e, subject, color.value)}
-                              />
-                            ))}
-                          </div>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem 
-                            onSelect={(e) => moveSubject(e as any, subject, 'up')}
-                          >
-                            <ChevronUp className="h-4 w-4 mr-2" />
-                            Move Up
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onSelect={(e) => moveSubject(e as any, subject, 'down')}
-                          >
-                            <ChevronDown className="h-4 w-4 mr-2" />
-                            Move Down
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onSelect={(e) => handleShareSubject(e as any, subject)}
-                          >
-                            <Share className="h-4 w-4 mr-2" />
-                            Share Subject
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            className="text-destructive"
-                            onSelect={(e) => handleRemoveSubject(e as any, subject)}
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Remove Subject
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )}
-                  </div>
-                ))}
+                                />
+                              ))}
+                            </div>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem 
+                              onSelect={(e) => moveSubject(e as any, subject, 'up')}
+                            >
+                              <ChevronUp className="h-4 w-4 mr-2" />
+                              Move Up
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onSelect={(e) => moveSubject(e as any, subject, 'down')}
+                            >
+                              <ChevronDown className="h-4 w-4 mr-2" />
+                              Move Down
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onSelect={(e) => handleShareSubject(e as any, subject)}
+                            >
+                              <Share className="h-4 w-4 mr-2" />
+                              Share Subject
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              className="text-destructive"
+                              onSelect={(e) => handleRemoveSubject(e as any, subject)}
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Remove Subject
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <div className="p-2 mt-auto">
-          <Button
-            variant="ghost"
-            className={cn(
-              "w-full flex items-center",
-              isOpen ? "justify-start px-3" : "justify-center px-0",
-              "text-destructive hover:text-destructive"
-            )}
-            onClick={handleLogout}
-          >
-            <LogOut className="h-4 w-4" />
-            {isOpen && <span className="ml-3">Logout</span>}
-          </Button>
-        </div>
+          <div className="p-2 mt-auto">
+            <Button
+              variant="ghost"
+              className={cn(
+                "w-full flex items-center",
+                isOpen ? "justify-start px-3" : "justify-center px-0",
+                "text-destructive hover:text-destructive"
+              )}
+              onClick={handleLogout}
+            >
+              <LogOut className="h-4 w-4" />
+              {isOpen && <span className="ml-3">Logout</span>}
+            </Button>
+          </div>
+        </SidebarContent>
       </Sidebar>
     </>
   );
