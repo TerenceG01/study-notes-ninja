@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { LogOut } from "lucide-react";
+import { LogOut, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -22,7 +22,7 @@ export function NotesSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { state } = useSidebar();
+  const { state, toggleSidebar } = useSidebar();
   const isOpen = state === "expanded";
   const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -102,8 +102,19 @@ export function NotesSidebar() {
         "border-r bg-primary/5 backdrop-blur-sm h-full transition-all duration-300 relative z-10",
         isOpen ? "w-40" : "w-16"
       )}>
-        <SidebarHeader className="p-4 border-b">
+        <SidebarHeader className="p-4 border-b flex items-center justify-between">
           {isOpen && <h2 className="font-semibold">Navigation</h2>}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleSidebar}
+            className="h-6 w-6"
+          >
+            {isOpen ? 
+              <ChevronLeft className="h-4 w-4 text-primary/80" /> : 
+              <ChevronRight className="h-4 w-4 text-primary/80" />
+            }
+          </Button>
         </SidebarHeader>
         <SidebarContent 
           className={cn(
