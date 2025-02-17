@@ -98,7 +98,7 @@ const StudyGroupDetails = () => {
   const userRole = members?.find(member => member.user_id === user?.id)?.role;
   return <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="container px-4 pt-20 py-0 mx-[50px] my-[10px]">
+      <main className="container pt-20 mx-[50px] my-[10px] py-0 px-[10px]">
         <GroupHeader name={studyGroup.name} subject={studyGroup.subject} userRole={userRole} groupId={studyGroup.id} />
 
         <div className="grid gap-6 md:grid-cols-3">
