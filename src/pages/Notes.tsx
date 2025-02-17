@@ -16,7 +16,7 @@ const Notes = () => {
   return (
     <div className={cn(
       "px-[10px] py-[10px] my-[55px]",
-      isOpen ? "mx-[50px]" : "mx-[20px]"
+      isOpen ? "mx-[50px] ml-[50px]" : "mx-[20px] ml-[10px]"
     )}>
       <div className="mx-auto max-w-[min(100%,64rem)] space-y-4">
         <NotesHeader onSearch={query => console.log('Search:', query)} />
