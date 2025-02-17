@@ -171,7 +171,7 @@ const FlashcardDeck = () => {
   return <div className="min-h-screen bg-background">
       <NavigationBar />
       <main className="container mx-[50px] px-0 py-[10px]">
-        <Button variant="ghost" className="mb-6" onClick={() => navigate('/flashcards')}>
+        <Button variant="ghost" onClick={() => navigate('/flashcards')} className="mb-6 px-[20px]">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Decks
         </Button>
