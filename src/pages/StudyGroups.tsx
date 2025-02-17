@@ -44,7 +44,7 @@ const StudyGroups = () => {
   });
   return <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="container px-[10px] py-[10px] mx-[50px] my-[55px]">
+      <main className="container px-[10px] my-[55px] py-[10px] mx-[50px]">
         <div className="flex justify-between items-start mb-8">
           <div className="px-[16px]">
             <h1 className="text-4xl font-bold text-primary">Study Groups</h1>
