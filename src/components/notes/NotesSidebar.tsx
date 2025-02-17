@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { LogOut, ChevronLeft, ChevronRight } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -22,7 +22,7 @@ export function NotesSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { state, toggleSidebar } = useSidebar();
+  const { state } = useSidebar();
   const isOpen = state === "expanded";
   const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -95,32 +95,18 @@ export function NotesSidebar() {
     <>
       <div className={cn(
         "fixed top-0 left-0 h-full bg-background/50 backdrop-blur-sm transition-all duration-300 z-0",
-        isOpen ? "w-60" : "w-16"
+        isOpen ? "w-60" : "w-20"
       )} />
       
       <Sidebar className={cn(
         "border-r bg-primary/5 backdrop-blur-sm h-full transition-all duration-300 relative z-10",
-        isOpen ? "w-40" : "w-16"
+        isOpen ? "w-40" : "w-20"
       )}>
-        <SidebarHeader className="p-4 border-b flex items-center justify-between">
+        <SidebarHeader className="p-4 border-b">
           {isOpen && <h2 className="font-semibold">Navigation</h2>}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={toggleSidebar}
-            className="h-6 w-6"
-          >
-            {isOpen ? 
-              <ChevronLeft className="h-4 w-4 text-primary/80" /> : 
-              <ChevronRight className="h-4 w-4 text-primary/80" />
-            }
-          </Button>
         </SidebarHeader>
         <SidebarContent 
-          className={cn(
-            "flex flex-col h-full",
-            !isOpen && "px-1"
-          )}
+          className="flex flex-col h-full"
         >
           <NavigationSection isOpen={isOpen} />
 
@@ -136,10 +122,7 @@ export function NotesSidebar() {
             onDragEnd={handleDragEnd}
           />
 
-          <div className={cn(
-            "mt-auto",
-            isOpen ? "p-2" : "p-1"
-          )}>
+          <div className="p-2 mt-auto">
             <Button
               variant="ghost"
               className={cn(
