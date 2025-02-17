@@ -12,7 +12,7 @@ interface NoteCardProps {
 
 export const NoteCard = ({ note, refetch }: NoteCardProps) => {
   return (
-    <Card className="flex flex-col justify-between h-full">
+    <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
       <CardHeader className="pb-4">
         <h3 className="text-lg font-semibold">{note.title}</h3>
         <p className="text-sm text-muted-foreground">
@@ -23,10 +23,10 @@ export const NoteCard = ({ note, refetch }: NoteCardProps) => {
         <p className="text-sm line-clamp-3">{note.content}</p>
       </CardContent>
       <CardFooter className="pt-4 flex justify-end gap-2">
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" className="hover:bg-primary/10">
           <Edit className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" className="hover:bg-destructive/10">
           <Delete className="h-4 w-4" />
         </Button>
       </CardFooter>

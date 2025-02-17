@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { NoteCard } from "@/components/notes/NoteCard";
@@ -40,14 +41,10 @@ export const NotesContent = () => {
 
   if (isLoading) {
     return (
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="space-y-3">
-            <Skeleton className="h-[150px] w-full" />
-            <div className="space-y-1.5">
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
-            </div>
+      <div className="flex gap-4 overflow-x-auto pb-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="flex-none w-[300px]">
+            <Skeleton className="h-[200px] w-full rounded-lg" />
           </div>
         ))}
       </div>
@@ -61,9 +58,11 @@ export const NotesContent = () => {
   return (
     <div className="mx-auto max-w-[min(100%,72rem)]">
       {notes.length > 0 ? (
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="flex gap-4 overflow-x-auto pb-4 snap-x">
           {notes.map((note) => (
-            <NoteCard key={note.id} note={note} refetch={refetch} />
+            <div key={note.id} className="flex-none w-[300px] snap-start">
+              <NoteCard note={note} refetch={refetch} />
+            </div>
           ))}
         </div>
       ) : (
