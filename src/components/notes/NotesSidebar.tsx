@@ -41,7 +41,7 @@ export function NotesSidebar() {
   const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSubject = searchParams.get("subject");
-  const { notes } = useNotes();
+  const { notes, fetchNotes } = useNotes();
   const [subjectOrder, setSubjectOrder] = useState<string[]>([]);
 
   const uniqueSubjects = useMemo(() => {
@@ -88,7 +88,10 @@ export function NotesSidebar() {
     }
   };
 
-  const handleColorChange = async (subject: string, color: string) => {
+  const handleColorChange = async (e: React.MouseEvent, subject: string, color: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     try {
       const { error } = await supabase
         .from('notes')
@@ -99,6 +102,8 @@ export function NotesSidebar() {
 
       if (error) throw error;
 
+      await fetchNotes();
+      
       toast({
         title: "Success",
         description: `Updated color for ${subject}`,
@@ -112,7 +117,10 @@ export function NotesSidebar() {
     }
   };
 
-  const moveSubject = (subject: string, direction: 'up' | 'down') => {
+  const moveSubject = async (e: React.MouseEvent, subject: string, direction: 'up' | 'down') => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     const currentIndex = subjectOrder.indexOf(subject);
     if (
       (direction === 'up' && currentIndex > 0) ||
@@ -130,13 +138,15 @@ export function NotesSidebar() {
     }
   };
 
-  const handleShareSubject = async (subject: string) => {
+  const handleShareSubject = async (e: React.MouseEvent, subject: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     try {
       const notesWithSubject = notes.filter(note => note.subject === subject);
       const user = (await supabase.auth.getUser()).data.user;
       if (!user) throw new Error("User not found");
 
-      // Create a study group with this subject
       const { data: group, error: groupError } = await supabase
         .rpc('create_study_group', {
           p_name: `${subject} Study Group`,
@@ -147,7 +157,6 @@ export function NotesSidebar() {
 
       if (groupError) throw groupError;
 
-      // Share all notes with this subject to the group
       for (const note of notesWithSubject) {
         await supabase
           .from('study_group_notes')
@@ -163,7 +172,6 @@ export function NotesSidebar() {
         description: `Created study group for ${subject} and shared ${notesWithSubject.length} notes`,
       });
 
-      // Navigate to the new study group
       navigate(`/study-groups/${group.id}`);
     } catch (error) {
       toast({
@@ -174,9 +182,11 @@ export function NotesSidebar() {
     }
   };
 
-  const handleRemoveSubject = async (subject: string) => {
+  const handleRemoveSubject = async (e: React.MouseEvent, subject: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     try {
-      // Set subject to null for all notes with this subject
       const { error } = await supabase
         .from('notes')
         .update({ subject: null })
@@ -184,15 +194,15 @@ export function NotesSidebar() {
 
       if (error) throw error;
 
-      // Remove from subject order
       setSubjectOrder(current => current.filter(s => s !== subject));
 
-      // Clear subject from URL if it was selected
       if (currentSubject === subject) {
         searchParams.delete("subject");
         setSearchParams(searchParams);
       }
 
+      await fetchNotes();
+      
       toast({
         title: "Success",
         description: `Removed subject ${subject}`,
@@ -272,98 +282,77 @@ export function NotesSidebar() {
                               variant="ghost" 
                               size="sm"
                               className="h-8 w-8 p-0"
-                              onClick={(e) => e.stopPropagation()}
                             >
                               <MoreVertical className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuContent align="end" className="w-48 bg-background">
                             <div className="px-2 py-1.5 text-sm font-medium text-muted-foreground">
                               Subject Color
                             </div>
                             <div className="grid grid-cols-5 gap-1 p-2">
                               {SUBJECT_COLORS.map((color) => (
-                                <Button
+                                <button
                                   key={color.value}
-                                  variant="ghost"
-                                  size="sm"
+                                  type="button"
                                   className={cn(
-                                    "h-6 w-6 p-0 rounded-full",
+                                    "h-6 w-6 rounded-full",
                                     color.class
                                   )}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleColorChange(subject, color.value);
-                                  }}
-                                />
-                              ))}
-                            </div>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem 
-                              className="gap-2"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                moveSubject(subject, 'up');
-                              }}
-                            >
-                              <ChevronUp className="h-4 w-4" />
-                              Move Up
-                            </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              className="gap-2"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                moveSubject(subject, 'down');
-                              }}
-                            >
-                              <ChevronDown className="h-4 w-4" />
-                              Move Down
-                            </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              className="gap-2"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleShareSubject(subject);
-                              }}
-                            >
-                              <Share className="h-4 w-4" />
-                              Share Subject
-                            </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              className="gap-2 text-destructive"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleRemoveSubject(subject);
-                              }}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                              Remove Subject
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                                  onClick={(e) => handleColorChange(e, subject, color.value)}
+                              />
+                            ))}
+                          </div>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem 
+                            onSelect={(e) => moveSubject(e as any, subject, 'up')}
+                          >
+                            <ChevronUp className="h-4 w-4 mr-2" />
+                            Move Up
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onSelect={(e) => moveSubject(e as any, subject, 'down')}
+                          >
+                            <ChevronDown className="h-4 w-4 mr-2" />
+                            Move Down
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onSelect={(e) => handleShareSubject(e as any, subject)}
+                          >
+                            <Share className="h-4 w-4 mr-2" />
+                            Share Subject
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            className="text-destructive"
+                            onSelect={(e) => handleRemoveSubject(e as any, subject)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Remove Subject
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
-          )}
-
-          <div className="p-2 mt-auto">
-            <Button
-              variant="ghost"
-              className={cn(
-                "w-full flex items-center",
-                isOpen ? "justify-start px-3" : "justify-center px-0",
-                "text-destructive hover:text-destructive"
-              )}
-              onClick={handleLogout}
-            >
-              <LogOut className="h-4 w-4" />
-              {isOpen && <span className="ml-3">Logout</span>}
-            </Button>
           </div>
-        </SidebarContent>
+        )}
+
+        <div className="p-2 mt-auto">
+          <Button
+            variant="ghost"
+            className={cn(
+              "w-full flex items-center",
+              isOpen ? "justify-start px-3" : "justify-center px-0",
+              "text-destructive hover:text-destructive"
+            )}
+            onClick={handleLogout}
+          >
+            <LogOut className="h-4 w-4" />
+            {isOpen && <span className="ml-3">Logout</span>}
+          </Button>
+        </div>
       </Sidebar>
     </>
   );
