@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -69,32 +70,27 @@ export function NotesSidebar() {
   };
 
   const handleMoveSubject = async (fromSubject: string, toSubject: string) => {
-    const fromIndex = uniqueSubjects.indexOf(fromSubject);
-    const toIndex = uniqueSubjects.indexOf(toSubject);
-    
-    if (fromIndex === toIndex) return;
-    
-    const notesWithFromSubject = notes.filter(n => n.subject === fromSubject);
+    if (!fromSubject || !toSubject || fromSubject === toSubject) return;
     
     try {
-      // Update all notes with the current subject
+      const notesWithFromSubject = notes.filter(n => n.subject === fromSubject);
+      const notesWithToSubject = notes.filter(n => n.subject === toSubject);
+      
+      // Update all notes with fromSubject to have toSubject
       for (const note of notesWithFromSubject) {
         const { error } = await supabase
           .from('notes')
           .update({ subject: toSubject })
           .eq('id', note.id);
-
         if (error) throw error;
       }
       
-      // Update all notes with the target subject
-      const targetNotes = notes.filter(n => n.subject === toSubject);
-      for (const note of targetNotes) {
+      // Update all notes with toSubject to have fromSubject
+      for (const note of notesWithToSubject) {
         const { error } = await supabase
           .from('notes')
           .update({ subject: fromSubject })
           .eq('id', note.id);
-
         if (error) throw error;
       }
 
@@ -102,7 +98,7 @@ export function NotesSidebar() {
       
       toast({
         title: "Success",
-        description: `Moved ${fromSubject}`,
+        description: `Swapped ${fromSubject} with ${toSubject}`,
       });
     } catch (error) {
       toast({
@@ -113,48 +109,27 @@ export function NotesSidebar() {
     }
   };
 
-  const handleDragStart = (e: React.MouseEvent, subject: string) => {
-    e.preventDefault(); // Prevent default drag ghost image
+  const handleTagMouseDown = (e: React.MouseEvent, subject: string) => {
+    e.preventDefault();
+    e.stopPropagation();
     setDraggedSubject(subject);
     setIsDragging(true);
-    
-    // Add event listeners to the document for drag movement
-    document.addEventListener('mousemove', handleDragMove);
-    document.addEventListener('mouseup', handleDragEnd);
   };
 
-  const handleDragMove = useCallback((e: MouseEvent) => {
-    if (!isDragging || !draggedSubject) return;
-
-    const elements = document.elementsFromPoint(e.clientX, e.clientY);
-    const subjectElement = elements.find(el => el.hasAttribute('data-subject'));
-    if (subjectElement) {
-      const hoverSubject = subjectElement.getAttribute('data-subject');
-      setDragOverSubject(hoverSubject);
+  const handleTagMouseEnter = (subject: string) => {
+    if (isDragging && draggedSubject && draggedSubject !== subject) {
+      setDragOverSubject(subject);
     }
-  }, [isDragging, draggedSubject]);
+  };
 
-  const handleDragEnd = useCallback(async () => {
-    // Remove event listeners
-    document.removeEventListener('mousemove', handleDragMove);
-    document.removeEventListener('mouseup', handleDragEnd);
-
+  const handleTagMouseUp = async () => {
     if (isDragging && draggedSubject && dragOverSubject && draggedSubject !== dragOverSubject) {
       await handleMoveSubject(draggedSubject, dragOverSubject);
     }
-
     setIsDragging(false);
     setDraggedSubject(null);
     setDragOverSubject(null);
-  }, [isDragging, draggedSubject, dragOverSubject, handleMoveSubject]);
-
-  // Clean up event listeners when component unmounts
-  React.useEffect(() => {
-    return () => {
-      document.removeEventListener('mousemove', handleDragMove);
-      document.removeEventListener('mouseup', handleDragEnd);
-    };
-  }, [handleDragMove, handleDragEnd]);
+  };
 
   if (isMobile && !isOpen) {
     return null;
@@ -174,7 +149,11 @@ export function NotesSidebar() {
         <SidebarHeader className="p-4 border-b">
           {isOpen && <h2 className="font-semibold">Navigation</h2>}
         </SidebarHeader>
-        <SidebarContent className="flex flex-col h-full">
+        <SidebarContent 
+          className="flex flex-col h-full"
+          onMouseUp={handleTagMouseUp}
+          onMouseLeave={handleTagMouseUp}
+        >
           <div className="space-y-2 p-2">
             {navigationItems.map((item) => (
               <Button
@@ -211,19 +190,18 @@ export function NotesSidebar() {
                         isOpen ? "justify-start px-3" : "justify-center px-0",
                         currentSubject === subject && "bg-accent/60",
                         dragOverSubject === subject && "border-2 border-primary",
-                        draggedSubject === subject && "opacity-50"
+                        draggedSubject === subject && "opacity-50",
+                        isDragging && "transition-transform duration-150"
                       )}
                       onClick={() => handleSubjectClick(subject)}
+                      onMouseEnter={() => handleTagMouseEnter(subject)}
                     >
                       <Tag 
                         className={cn(
-                          "h-4 w-4 cursor-move",
+                          "h-4 w-4 cursor-move select-none",
                           isDragging && "cursor-grabbing"
                         )}
-                        onMouseDown={(e) => {
-                          e.stopPropagation();
-                          handleDragStart(e, subject);
-                        }}
+                        onMouseDown={(e) => handleTagMouseDown(e, subject)}
                       />
                       {isOpen && <span className="ml-3 truncate">{subject}</span>}
                     </Button>
