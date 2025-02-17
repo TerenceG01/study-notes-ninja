@@ -13,6 +13,7 @@ export type Note = {
   summary?: string;
   tags?: string[];
   subject?: string;
+  subject_color?: string;
 };
 
 export type NewNote = {
