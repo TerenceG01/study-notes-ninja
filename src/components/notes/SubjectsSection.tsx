@@ -13,8 +13,9 @@ interface SubjectsSectionProps {
   dragOverSubject: string | null;
   isDragging: boolean;
   onSubjectClick: (subject: string) => void;
-  onTagMouseDown: (e: React.MouseEvent, subject: string) => void;
-  onTagMouseEnter: (subject: string) => void;
+  onDragStart: (subject: string) => void;
+  onDragEnter: (subject: string) => void;
+  onDragEnd: () => void;
 }
 
 export function SubjectsSection({
@@ -24,8 +25,9 @@ export function SubjectsSection({
   dragOverSubject,
   isDragging,
   onSubjectClick,
-  onTagMouseDown,
-  onTagMouseEnter,
+  onDragStart,
+  onDragEnter,
+  onDragEnd,
 }: SubjectsSectionProps) {
   const [searchParams] = useSearchParams();
   const currentSubject = searchParams.get("subject");
@@ -52,14 +54,17 @@ export function SubjectsSection({
                 isDragging && "transition-transform duration-150"
               )}
               onClick={() => onSubjectClick(subject)}
-              onMouseEnter={() => onTagMouseEnter(subject)}
+              draggable
+              onDragStart={() => onDragStart(subject)}
+              onDragEnter={() => onDragEnter(subject)}
+              onDragEnd={onDragEnd}
+              onDragOver={(e) => e.preventDefault()}
             >
               <Tag 
                 className={cn(
-                  "h-4 w-4 cursor-move select-none",
+                  "h-4 w-4 cursor-grab select-none",
                   isDragging && "cursor-grabbing"
                 )}
-                onMouseDown={(e) => onTagMouseDown(e, subject)}
               />
               {isOpen && <span className="ml-3 truncate">{subject}</span>}
             </Button>

@@ -67,21 +67,19 @@ export function NotesSidebar() {
     }
   };
 
-  const handleTagMouseDown = (e: React.MouseEvent, subject: string) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleDragStart = (subject: string) => {
     setDraggedSubject(subject);
     setIsDragging(true);
   };
 
-  const handleTagMouseEnter = (subject: string) => {
-    if (isDragging && draggedSubject && draggedSubject !== subject) {
+  const handleDragEnter = (subject: string) => {
+    if (draggedSubject && draggedSubject !== subject) {
       setDragOverSubject(subject);
     }
   };
 
-  const handleTagMouseUp = async () => {
-    if (isDragging && draggedSubject && dragOverSubject && draggedSubject !== dragOverSubject) {
+  const handleDragEnd = async () => {
+    if (draggedSubject && dragOverSubject && draggedSubject !== dragOverSubject) {
       await handleMoveSubject(draggedSubject, dragOverSubject);
     }
     setIsDragging(false);
@@ -109,8 +107,6 @@ export function NotesSidebar() {
         </SidebarHeader>
         <SidebarContent 
           className="flex flex-col h-full"
-          onMouseUp={handleTagMouseUp}
-          onMouseLeave={handleTagMouseUp}
         >
           <NavigationSection isOpen={isOpen} />
 
@@ -121,8 +117,9 @@ export function NotesSidebar() {
             dragOverSubject={dragOverSubject}
             isDragging={isDragging}
             onSubjectClick={handleSubjectClick}
-            onTagMouseDown={handleTagMouseDown}
-            onTagMouseEnter={handleTagMouseEnter}
+            onDragStart={handleDragStart}
+            onDragEnter={handleDragEnter}
+            onDragEnd={handleDragEnd}
           />
 
           <div className="p-2 mt-auto">
