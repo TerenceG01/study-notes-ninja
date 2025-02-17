@@ -137,6 +137,7 @@ export const NotesContent = () => {
               setShowSummary(false);
             }}
             onGenerateFlashcards={generateFlashcards}
+            onNotesChanged={fetchNotes}
           />
         </CardContent>
       </Card>

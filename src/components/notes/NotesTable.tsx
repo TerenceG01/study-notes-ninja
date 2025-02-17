@@ -10,6 +10,10 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useSearchParams } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 interface Note {
   id: string;
@@ -29,6 +33,7 @@ interface NotesTableProps {
   generatingFlashcardsForNote: string | null;
   onNoteClick: (note: Note) => void;
   onGenerateFlashcards: (note: Note) => void;
+  onNotesChanged: () => void;
 }
 
 const SUBJECT_COLORS = [
@@ -45,7 +50,116 @@ export const NotesTable = ({
   generatingFlashcardsForNote,
   onNoteClick,
   onGenerateFlashcards,
+  onNotesChanged,
 }: NotesTableProps) => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleColorChange = async (e: React.MouseEvent, note: Note, color: string) => {
+    e.stopPropagation();
+    
+    try {
+      const { error } = await supabase
+        .from('notes')
+        .update({
+          subject_color: color,
+        })
+        .eq('id', note.id);
+
+      if (error) throw error;
+
+      onNotesChanged();
+      
+      toast({
+        title: "Success",
+        description: `Updated color for ${note.subject || 'note'}`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update note color",
+      });
+    }
+  };
+
+  const handleShareSubject = async (e: React.MouseEvent, note: Note) => {
+    e.stopPropagation();
+    if (!note.subject) return;
+    
+    try {
+      const notesWithSubject = notes.filter(n => n.subject === note.subject);
+      const user = (await supabase.auth.getUser()).data.user;
+      if (!user) throw new Error("User not found");
+
+      const { data: group, error: groupError } = await supabase
+        .rpc('create_study_group', {
+          p_name: `${note.subject} Study Group`,
+          p_subject: note.subject,
+          p_description: `Study group for ${note.subject}`,
+          p_user_id: user.id
+        });
+
+      if (groupError) throw groupError;
+
+      for (const n of notesWithSubject) {
+        await supabase
+          .from('study_group_notes')
+          .insert({
+            note_id: n.id,
+            group_id: group.id,
+            shared_by: user.id
+          });
+      }
+
+      toast({
+        title: "Success",
+        description: `Created study group for ${note.subject} and shared ${notesWithSubject.length} notes`,
+      });
+
+      navigate(`/study-groups/${group.id}`);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to share subject",
+      });
+    }
+  };
+
+  const handleRemoveSubject = async (e: React.MouseEvent, note: Note) => {
+    e.stopPropagation();
+    if (!note.subject) return;
+    
+    try {
+      const { error } = await supabase
+        .from('notes')
+        .update({ subject: null })
+        .eq('subject', note.subject);
+
+      if (error) throw error;
+
+      if (searchParams.get("subject") === note.subject) {
+        searchParams.delete("subject");
+        setSearchParams(searchParams);
+      }
+
+      onNotesChanged();
+      
+      toast({
+        title: "Success",
+        description: `Removed subject ${note.subject}`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to remove subject",
+      });
+    }
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -115,30 +229,28 @@ export const NotesTable = ({
                             "h-6 w-6 p-0 rounded-full",
                             color.class
                           )}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // TODO: Add color change handler
-                          }}
+                          onClick={(e) => handleColorChange(e, note, color.value)}
                         />
                       ))}
                     </div>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="gap-2">
-                      <ChevronUp className="h-4 w-4" />
-                      Move Up
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="gap-2">
-                      <ChevronDown className="h-4 w-4" />
-                      Move Down
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="gap-2">
-                      <Share className="h-4 w-4" />
-                      Share Subject
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="gap-2 text-destructive">
-                      <Trash2 className="h-4 w-4" />
-                      Remove Subject
-                    </DropdownMenuItem>
+                    {note.subject && (
+                      <>
+                        <DropdownMenuItem 
+                          onClick={(e) => handleShareSubject(e, note)}
+                        >
+                          <Share className="h-4 w-4 mr-2" />
+                          Share Subject
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          className="text-destructive"
+                          onClick={(e) => handleRemoveSubject(e, note)}
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Remove Subject
+                        </DropdownMenuItem>
+                      </>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
@@ -164,7 +276,10 @@ export const NotesTable = ({
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => onGenerateFlashcards(note)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onGenerateFlashcards(note);
+                  }}
                   disabled={!!generatingFlashcardsForNote}
                   className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2"
                 >
