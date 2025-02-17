@@ -2,6 +2,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Note {
   id: string;
@@ -33,7 +34,7 @@ export const NotesTable = ({
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Subject</TableHead>
+          <TableHead className="font-semibold text-primary">Subject</TableHead>
           <TableHead>Title</TableHead>
           <TableHead className="hidden md:table-cell">Content</TableHead>
           <TableHead className="hidden sm:table-cell">Created At</TableHead>
@@ -64,6 +65,11 @@ export const NotesTable = ({
             >
               <TableCell
                 onClick={() => onNoteClick(note)}
+                className={cn(
+                  "font-medium transition-colors",
+                  "bg-primary/5 text-primary",
+                  "group-hover:bg-primary/10"
+                )}
               >
                 {note.subject || 'General'}
               </TableCell>
