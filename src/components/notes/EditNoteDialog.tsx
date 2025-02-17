@@ -16,6 +16,7 @@ type Note = {
   summary?: string;
   tags?: string[];
   subject?: string;
+  subject_color?: string;
 };
 
 type SummaryLevel = 'brief' | 'medium' | 'detailed';
