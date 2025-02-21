@@ -7,6 +7,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { NoteEditor } from "./NoteEditor";
 import { CommonSubjects } from "./CommonSubjects";
+import { useNotes } from "@/hooks/useNotes";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface NotesHeaderProps {
   onSearch: (query: string) => void;
@@ -15,6 +17,8 @@ interface NotesHeaderProps {
 export const NotesHeader = ({
   onSearch
 }: NotesHeaderProps) => {
+  const { user } = useAuth();
+  const { createNote } = useNotes();
   const { 
     isEditorExpanded, 
     setIsEditorExpanded, 
@@ -37,14 +41,17 @@ export const NotesHeader = ({
     });
   };
 
-  const handleSave = () => {
-    // Here you would implement the save functionality
-    console.log("Saving note:", newNote);
-    resetEditor();
-    toast({
-      title: "Success",
-      description: "Note created successfully!",
-    });
+  const handleSave = async () => {
+    if (!user) return;
+    
+    const success = await createNote(newNote, user.id);
+    if (success) {
+      resetEditor();
+      toast({
+        title: "Success",
+        description: "Note created successfully!",
+      });
+    }
   };
 
   return (
