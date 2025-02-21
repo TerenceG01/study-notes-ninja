@@ -42,6 +42,30 @@ export function useSubjects() {
     };
   }, [fetchNotes]);
 
+  const handleRemoveSubject = async (subject: string) => {
+    try {
+      const { error } = await supabase
+        .from('notes')
+        .update({ subject: null })
+        .eq('subject', subject);
+
+      if (error) throw error;
+
+      await fetchNotes();
+      
+      toast({
+        title: "Success",
+        description: `Removed subject: ${subject}`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error removing subject",
+        description: "Failed to remove subject. Please try again.",
+      });
+    }
+  };
+
   const handleMoveSubject = async (fromSubject: string, toSubject: string) => {
     if (!fromSubject || !toSubject || fromSubject === toSubject) return;
     
@@ -88,6 +112,7 @@ export function useSubjects() {
     setDragOverSubject,
     isDragging,
     setIsDragging,
-    handleMoveSubject
+    handleMoveSubject,
+    handleRemoveSubject
   };
 }

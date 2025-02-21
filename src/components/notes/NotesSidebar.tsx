@@ -34,7 +34,8 @@ export function NotesSidebar() {
     setDragOverSubject,
     isDragging,
     setIsDragging,
-    handleMoveSubject
+    handleMoveSubject,
+    handleRemoveSubject
   } = useSubjects();
 
   const handleLogout = async () => {
@@ -120,6 +121,7 @@ export function NotesSidebar() {
             onDragStart={handleDragStart}
             onDragEnter={handleDragEnter}
             onDragEnd={handleDragEnd}
+            onRemoveSubject={handleRemoveSubject}
           />
 
           <div className="p-2 mt-auto">
