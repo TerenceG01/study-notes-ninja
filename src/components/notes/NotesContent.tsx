@@ -23,7 +23,8 @@ export const NotesContent = () => {
   const { 
     newNote, 
     newTag, 
-    isEditorExpanded, 
+    isEditorExpanded,
+    setIsEditorExpanded, 
     setNewTag, 
     handleNoteChange, 
     addTag, 
