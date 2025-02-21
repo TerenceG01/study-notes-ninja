@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNotes } from "./useNotes";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 
 export function useSubjects() {
   const { notes, fetchNotes } = useNotes();
@@ -11,6 +11,29 @@ export function useSubjects() {
   const [draggedSubject, setDraggedSubject] = useState<string | null>(null);
   const [dragOverSubject, setDragOverSubject] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel('subjects_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'notes'
+        },
+        (payload) => {
+          console.log("Subjects realtime update received:", payload);
+          fetchNotes(); // Refresh notes when changes occur
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchNotes]);
 
   const uniqueSubjects = useMemo(() => {
     return Array.from(new Set(notes.map(note => note.subject || "General")))
