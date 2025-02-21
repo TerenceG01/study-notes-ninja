@@ -32,14 +32,17 @@ export const useNotes = () => {
 
   const fetchNotes = async () => {
     try {
+      console.log("Fetching notes..."); // Debug log
       const { data, error } = await supabase
         .from("notes")
         .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
+      console.log("Fetched notes:", data); // Debug log
       setNotes(data || []);
     } catch (error) {
+      console.error("Error fetching notes:", error); // Debug log
       toast({
         variant: "destructive",
         title: "Error fetching notes",
@@ -50,7 +53,6 @@ export const useNotes = () => {
     }
   };
 
-  // Fetch notes when the hook is initialized
   useEffect(() => {
     fetchNotes();
   }, []);
@@ -66,6 +68,7 @@ export const useNotes = () => {
     }
 
     try {
+      console.log("Creating note:", { ...newNote, user_id: userId }); // Debug log
       const { error } = await supabase.from("notes").insert([
         {
           title: newNote.title,
@@ -78,13 +81,16 @@ export const useNotes = () => {
 
       if (error) throw error;
 
+      console.log("Note created successfully"); // Debug log
+      await fetchNotes(); // Immediately fetch updated notes
+
       toast({
         title: "Success",
         description: "Note created successfully!",
       });
-      await fetchNotes();
       return true;
     } catch (error) {
+      console.error("Error creating note:", error); // Debug log
       toast({
         variant: "destructive",
         title: "Error creating note",
