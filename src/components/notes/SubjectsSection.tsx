@@ -41,7 +41,7 @@ export function SubjectsSection({
         {isOpen && <h3 className="text-sm font-medium mb-2">Subjects</h3>}
         <div className="space-y-1">
           {subjects.map((subject) => (
-            <div key={subject} className="group flex items-center">
+            <div key={subject} className="group flex items-center gap-1">
               <Button
                 data-subject={subject}
                 variant={currentSubject === subject ? "secondary" : "ghost"}
@@ -73,7 +73,11 @@ export function SubjectsSection({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className={cn(
+                    "h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity shrink-0",
+                    "hover:bg-destructive/10 hover:text-destructive",
+                    "focus-visible:opacity-100"
+                  )}
                   onClick={() => onRemoveSubject(subject)}
                 >
                   <X className="h-4 w-4" />
