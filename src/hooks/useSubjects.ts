@@ -1,19 +1,26 @@
 
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNotes } from "./useNotes";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { useMemo, useEffect } from "react";
 
 export function useSubjects() {
+  // Group all hooks at the top to maintain consistent order
   const { notes, fetchNotes } = useNotes();
   const { toast } = useToast();
   const [draggedSubject, setDraggedSubject] = useState<string | null>(null);
   const [dragOverSubject, setDragOverSubject] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
+  // useMemo hook
+  const uniqueSubjects = useMemo(() => {
+    return Array.from(new Set(notes.map(note => note.subject || "General")))
+      .filter(Boolean)
+      .sort();
+  }, [notes]);
+
+  // useEffect hook
   useEffect(() => {
-    // Subscribe to real-time changes
     const channel = supabase
       .channel('subjects_changes')
       .on(
@@ -34,12 +41,6 @@ export function useSubjects() {
       supabase.removeChannel(channel);
     };
   }, [fetchNotes]);
-
-  const uniqueSubjects = useMemo(() => {
-    return Array.from(new Set(notes.map(note => note.subject || "General")))
-      .filter(Boolean)
-      .sort();
-  }, [notes]);
 
   const handleMoveSubject = async (fromSubject: string, toSubject: string) => {
     if (!fromSubject || !toSubject || fromSubject === toSubject) return;
