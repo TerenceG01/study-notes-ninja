@@ -37,8 +37,8 @@ export function SubjectsSection({
 
   return (
     <div className="border-t mt-2">
-      <div className="p-4">
-        {isOpen && <h3 className="text-sm font-medium mb-2">Subjects</h3>}
+      <div className="p-2">
+        {isOpen && <h3 className="text-sm font-medium mb-2 px-2">Subjects</h3>}
         <div className="space-y-1">
           {subjects.map((subject) => (
             <div key={subject} className="group flex items-center gap-1">
@@ -48,7 +48,7 @@ export function SubjectsSection({
                 size="sm"
                 className={cn(
                   "w-full flex items-center relative",
-                  isOpen ? "justify-start px-3" : "justify-center px-0",
+                  isOpen ? "justify-start px-2" : "justify-center px-0",
                   currentSubject === subject && "bg-accent/60",
                   dragOverSubject === subject && "border-2 border-primary",
                   draggedSubject === subject && "opacity-50",
@@ -67,7 +67,7 @@ export function SubjectsSection({
                     isDragging && "cursor-grabbing"
                   )}
                 />
-                {isOpen && <span className="ml-3 truncate">{subject}</span>}
+                {isOpen && <span className="ml-2 truncate">{subject}</span>}
               </Button>
               {isOpen && (
                 <Button
