@@ -16,6 +16,7 @@ const Notes = () => {
   if (!user) return null;
 
   const handleCreateNote = () => {
+    console.log("Creating new note..."); // Debug log
     setIsEditorExpanded(true);
   };
 

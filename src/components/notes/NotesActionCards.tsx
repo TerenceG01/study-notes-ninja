@@ -12,10 +12,11 @@ export const NotesActionCards = ({ onCreateNote }: NotesActionCardsProps) => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/20 transition-colors cursor-pointer group">
-        <CardContent className="p-6 flex flex-col items-center justify-center min-h-[200px] text-center"
-          onClick={onCreateNote}
-        >
+      <Card 
+        className="bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/20 transition-colors cursor-pointer group"
+        onClick={onCreateNote}
+      >
+        <CardContent className="p-6 flex flex-col items-center justify-center min-h-[200px] text-center">
           <div className="rounded-full bg-primary/10 p-4 mb-4 group-hover:bg-primary/20 transition-colors">
             <Plus className="h-6 w-6 text-primary" />
           </div>
