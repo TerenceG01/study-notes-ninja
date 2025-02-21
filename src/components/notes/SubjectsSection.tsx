@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Tag, X } from "lucide-react";
+import { Tag, Trash2 } from "lucide-react";
 import { useLocation, useSearchParams } from "react-router-dom";
 
 interface SubjectsSectionProps {
@@ -80,7 +80,7 @@ export function SubjectsSection({
                   )}
                   onClick={() => onRemoveSubject(subject)}
                 >
-                  <X className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" />
                   <span className="sr-only">Remove subject</span>
                 </Button>
               )}
