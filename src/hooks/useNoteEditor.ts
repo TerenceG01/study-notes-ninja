@@ -35,6 +35,7 @@ export const useNoteEditor = (initialSubject = "General") => {
 
   const resetEditor = () => {
     setNewNote({ title: "", content: "", tags: [], subject: initialSubject });
+    setNewTag("");
     setIsEditorExpanded(false);
   };
 
@@ -42,8 +43,8 @@ export const useNoteEditor = (initialSubject = "General") => {
     newNote,
     newTag,
     isEditorExpanded,
-    setNewTag,
     setIsEditorExpanded,
+    setNewTag,
     handleNoteChange,
     addTag,
     removeTag,
