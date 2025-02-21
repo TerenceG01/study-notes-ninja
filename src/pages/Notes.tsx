@@ -5,13 +5,19 @@ import { cn } from "@/lib/utils";
 import { NotesContent } from "@/components/notes/NotesContent";
 import { NotesHeader } from "@/components/notes/NotesHeader";
 import { NotesActionCards } from "@/components/notes/NotesActionCards";
+import { useNoteEditor } from "@/hooks/useNoteEditor";
 
 const Notes = () => {
   const { user } = useAuth();
   const { state } = useSidebar();
+  const { setIsEditorExpanded } = useNoteEditor();
   const isOpen = state === "expanded";
 
   if (!user) return null;
+
+  const handleCreateNote = () => {
+    setIsEditorExpanded(true);
+  };
 
   return (
     <div className={cn(
@@ -20,7 +26,7 @@ const Notes = () => {
     )}>
       <div className="mx-auto max-w-[min(100%,64rem)] space-y-4">
         <NotesHeader onSearch={query => console.log('Search:', query)} />
-        <NotesActionCards onCreateNote={() => {}} />
+        <NotesActionCards onCreateNote={handleCreateNote} />
         <NotesContent />
       </div>
     </div>
