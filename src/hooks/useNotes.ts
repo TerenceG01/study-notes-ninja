@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 
 export type Note = {
   id: string;
@@ -55,6 +56,27 @@ export const useNotes = () => {
 
   useEffect(() => {
     fetchNotes();
+
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel('notes_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'notes'
+        },
+        (payload) => {
+          console.log("Realtime update received:", payload);
+          fetchNotes(); // Refresh notes when changes occur
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const createNote = async (newNote: NewNote, userId: string) => {
@@ -82,7 +104,6 @@ export const useNotes = () => {
       if (error) throw error;
 
       console.log("Note created successfully"); // Debug log
-      await fetchNotes(); // Immediately fetch updated notes
 
       toast({
         title: "Success",
