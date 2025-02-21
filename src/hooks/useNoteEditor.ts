@@ -1,53 +1,62 @@
 
-import { useState } from "react";
-import type { Note } from "@/hooks/useNotes";
+import { create } from "zustand";
 
-export const useNoteEditor = (initialSubject = "General") => {
-  const [newNote, setNewNote] = useState({ 
-    title: "", 
-    content: "", 
-    tags: [] as string[], 
-    subject: initialSubject 
-  });
-  const [newTag, setNewTag] = useState("");
-  const [isEditorExpanded, setIsEditorExpanded] = useState(false);
-
-  const handleNoteChange = (field: string, value: string | string[]) => {
-    setNewNote(prev => ({ ...prev, [field]: value }));
+interface NoteEditorStore {
+  isEditorExpanded: boolean;
+  setIsEditorExpanded: (value: boolean) => void;
+  newNote: {
+    title: string;
+    content: string;
+    tags: string[];
+    subject: string;
   };
+  newTag: string;
+  setNewTag: (value: string) => void;
+  handleNoteChange: (field: string, value: string | string[]) => void;
+  addTag: () => void;
+  removeTag: (tag: string) => void;
+  resetEditor: () => void;
+}
 
-  const addTag = () => {
-    if (newTag && !newNote.tags.includes(newTag)) {
-      setNewNote({
-        ...newNote,
-        tags: [...newNote.tags, newTag]
-      });
-      setNewTag("");
-    }
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    setNewNote({
-      ...newNote,
-      tags: newNote.tags.filter(tag => tag !== tagToRemove)
-    });
-  };
-
-  const resetEditor = () => {
-    setNewNote({ title: "", content: "", tags: [], subject: initialSubject });
-    setNewTag("");
-    setIsEditorExpanded(false);
-  };
-
-  return {
-    newNote,
-    newTag,
-    isEditorExpanded,
-    setIsEditorExpanded,
-    setNewTag,
-    handleNoteChange,
-    addTag,
-    removeTag,
-    resetEditor,
-  };
-};
+export const useNoteEditor = create<NoteEditorStore>((set) => ({
+  isEditorExpanded: false,
+  setIsEditorExpanded: (value) => set({ isEditorExpanded: value }),
+  newNote: {
+    title: "",
+    content: "",
+    tags: [],
+    subject: "General"
+  },
+  newTag: "",
+  setNewTag: (value) => set({ newTag: value }),
+  handleNoteChange: (field, value) =>
+    set((state) => ({
+      newNote: { ...state.newNote, [field]: value }
+    })),
+  addTag: () =>
+    set((state) => {
+      if (state.newTag && !state.newNote.tags.includes(state.newTag)) {
+        return {
+          newNote: {
+            ...state.newNote,
+            tags: [...state.newNote.tags, state.newTag]
+          },
+          newTag: ""
+        };
+      }
+      return state;
+    }),
+  removeTag: (tagToRemove) =>
+    set((state) => ({
+      newNote: {
+        ...state.newNote,
+        tags: state.newNote.tags.filter((tag) => tag !== tagToRemove)
+      }
+    })),
+  resetEditor: () =>
+    set({
+      newNote: { title: "", content: "", tags: [], subject: "General" },
+      newTag: "",
+      isEditorExpanded: false
+    })
+}));

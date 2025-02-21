@@ -3,6 +3,7 @@ import { Search, Filter, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
+import { useToast } from "@/hooks/use-toast";
 
 interface NotesHeaderProps {
   onSearch: (query: string) => void;
@@ -12,9 +13,15 @@ export const NotesHeader = ({
   onSearch
 }: NotesHeaderProps) => {
   const { setIsEditorExpanded } = useNoteEditor();
+  const { toast } = useToast();
 
   const handleCreateNote = () => {
+    console.log("Creating new note..."); // Debug log
     setIsEditorExpanded(true);
+    toast({
+      title: "Create Note",
+      description: "Opening note editor...",
+    });
   };
 
   return (
