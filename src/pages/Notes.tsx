@@ -4,7 +4,6 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { NotesContent } from "@/components/notes/NotesContent";
 import { NotesHeader } from "@/components/notes/NotesHeader";
-import { NotesActionCards } from "@/components/notes/NotesActionCards";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
 
 const Notes = () => {
@@ -15,11 +14,6 @@ const Notes = () => {
 
   if (!user) return null;
 
-  const handleCreateNote = () => {
-    console.log("Creating new note..."); // Debug log
-    setIsEditorExpanded(true);
-  };
-
   return (
     <div className={cn(
       "px-[10px] py-[10px] my-[55px]",
@@ -27,7 +21,6 @@ const Notes = () => {
     )}>
       <div className="mx-auto max-w-[min(100%,64rem)] space-y-4">
         <NotesHeader onSearch={query => console.log('Search:', query)} />
-        <NotesActionCards onCreateNote={handleCreateNote} />
         <NotesContent />
       </div>
     </div>
