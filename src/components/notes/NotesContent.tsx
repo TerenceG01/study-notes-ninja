@@ -25,7 +25,6 @@ export const NotesContent = () => {
     newTag, 
     isEditorExpanded, 
     setNewTag, 
-    setIsEditorExpanded, 
     handleNoteChange, 
     addTag, 
     removeTag, 
@@ -59,6 +58,10 @@ export const NotesContent = () => {
     const success = await createNote(newNote, user.id);
     if (success) {
       resetEditor();
+      toast({
+        title: "Success",
+        description: "Note created successfully!",
+      });
     }
   };
 
