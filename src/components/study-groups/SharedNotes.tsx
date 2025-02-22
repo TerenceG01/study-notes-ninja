@@ -7,7 +7,7 @@ import { Loader2, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { ViewSharedNote } from "./ViewSharedNote";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface SharedNote {
   note: {
@@ -75,8 +75,8 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   }
 
   return (
-    <ScrollArea className="w-full whitespace-nowrap rounded-md">
-      <div className="flex space-x-4 pb-4">
+    <ScrollArea className="h-[400px]">
+      <div className="space-y-3">
         {notes.map((note) => {
           const sharedByName = note.shared_by_profile?.username || 
                              note.shared_by_profile?.full_name || 
@@ -90,17 +90,16 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
           return (
             <Card 
               key={note.note.id}
-              className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg border hover:border-accent inline-block"
-              style={{ width: '300px' }}
+              className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg border hover:border-accent"
               onClick={() => setSelectedNote(note.note)}
             >
               <CardHeader className="space-y-0 pb-2">
                 <div className="flex items-start justify-between">
-                  <CardTitle className="text-lg line-clamp-1 whitespace-normal">{note.note.title}</CardTitle>
+                  <CardTitle className="text-lg line-clamp-1">{note.note.title}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground mb-4 line-clamp-2 whitespace-normal">
+                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                   {note.note.content}
                 </p>
                 <div className="flex items-center justify-between">
@@ -120,7 +119,6 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
           );
         })}
       </div>
-      <ScrollBar orientation="horizontal" />
       
       {selectedNote && (
         <ViewSharedNote
