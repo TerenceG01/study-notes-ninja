@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { NotesTable } from "./NotesTable";
 import { NoteFilters } from "./filters/NoteFilters";
 import { Note } from "@/hooks/useNotes";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface NotesContainerProps {
   notes: Note[];
@@ -61,15 +62,17 @@ export const NotesContainer = ({
           />
         </div>
       </CardHeader>
-      <CardContent className="p-0 overflow-x-auto">
-        <NotesTable
-          notes={notes}
-          loading={loading}
-          generatingFlashcardsForNote={generatingFlashcardsForNote}
-          onNoteClick={onNoteClick}
-          onGenerateFlashcards={onGenerateFlashcards}
-          onNotesChanged={onNotesChanged}
-        />
+      <CardContent className="p-0">
+        <ScrollArea className="h-[calc(5*56px+56px)]"> {/* 56px per row + header row */}
+          <NotesTable
+            notes={notes}
+            loading={loading}
+            generatingFlashcardsForNote={generatingFlashcardsForNote}
+            onNoteClick={onNoteClick}
+            onGenerateFlashcards={onGenerateFlashcards}
+            onNotesChanged={onNotesChanged}
+          />
+        </ScrollArea>
       </CardContent>
     </Card>
   );
