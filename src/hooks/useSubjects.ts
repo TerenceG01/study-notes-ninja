@@ -14,8 +14,8 @@ export function useSubjects() {
   const [isDragging, setIsDragging] = useState(false);
 
   const uniqueSubjects = useMemo(() => {
-    return Array.from(new Set(notes.map(note => note.subject || "General")))
-      .filter(Boolean)
+    return Array.from(new Set(notes.map(note => note.subject)))
+      .filter(subject => subject && subject !== "General")
       .sort();
   }, [notes]);
 
