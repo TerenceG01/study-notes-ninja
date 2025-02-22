@@ -66,6 +66,21 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
     },
   });
 
+  const { data: maxOrder } = useQuery({
+    queryKey: ['max-note-order', groupId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('study_group_notes')
+        .select('display_order')
+        .eq('group_id', groupId)
+        .order('display_order', { ascending: false })
+        .limit(1);
+
+      if (error) throw error;
+      return data.length > 0 ? data[0].display_order : 0;
+    },
+  });
+
   const shareNoteMutation = useMutation({
     mutationFn: async (noteId: string) => {
       const { error } = await supabase
@@ -74,12 +89,14 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
           group_id: groupId,
           note_id: noteId,
           shared_by: user?.id,
+          display_order: (maxOrder || 0) + 1,
         });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shared-notes', groupId] });
+      queryClient.invalidateQueries({ queryKey: ['group-shared-notes', groupId] });
       toast({
         title: "Note shared",
         description: "The note has been shared with the group.",
@@ -106,6 +123,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shared-notes', groupId] });
+      queryClient.invalidateQueries({ queryKey: ['group-shared-notes', groupId] });
       toast({
         title: "Note unshared",
         description: "The note has been removed from the group.",

@@ -103,13 +103,24 @@ export const NotesTable = ({
 
       if (groupError) throw groupError;
 
-      for (const n of notesWithSubject) {
+      // Get the count of existing notes in the group
+      const { data: existingNotes } = await supabase
+        .from('study_group_notes')
+        .select('id')
+        .eq('group_id', group.id);
+
+      const startOrder = (existingNotes?.length || 0) + 1;
+
+      // Share all notes with sequential display_order
+      for (let i = 0; i < notesWithSubject.length; i++) {
+        const n = notesWithSubject[i];
         await supabase
           .from('study_group_notes')
           .insert({
             note_id: n.id,
             group_id: group.id,
-            shared_by: user.id
+            shared_by: user.id,
+            display_order: startOrder + i
           });
       }
 
