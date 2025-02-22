@@ -41,7 +41,7 @@ export const NotesContainer = ({
   const uniqueColors = Array.from(new Set(notes.map(note => note.subject_color).filter(Boolean)));
 
   return (
-    <Card className="shadow-sm border-muted/20 hover:shadow-md transition-shadow">
+    <Card className="shadow-sm border-muted/20">
       <CardHeader className="bg-gradient-to-r from-muted/50 to-transparent">
         <div className="flex items-center justify-between">
           <div>
