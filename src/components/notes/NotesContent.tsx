@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { NotesTable } from "./NotesTable";
@@ -16,6 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Filter, Palette, Tag, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
