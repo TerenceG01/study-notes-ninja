@@ -5,15 +5,31 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useSearchParams } from "react-router-dom";
 
+interface SubjectWithOrder {
+  subject: string;
+  order: number;
+}
+
 export function useSubjects() {
   const { notes, fetchNotes } = useNotes();
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const uniqueSubjects = useMemo(() => {
-    return Array.from(new Set(notes.map(note => note.subject)))
-      .filter(subject => subject && subject !== "General")
-      .sort();
+  const uniqueSubjectsWithOrder = useMemo(() => {
+    const subjectsMap = new Map<string, number>();
+    
+    notes.forEach(note => {
+      if (note.subject && note.subject !== "General") {
+        // If we haven't seen this subject yet, add it with its order
+        if (!subjectsMap.has(note.subject)) {
+          subjectsMap.set(note.subject, note.subject_order || 0);
+        }
+      }
+    });
+
+    return Array.from(subjectsMap.entries())
+      .map(([subject, order]) => ({ subject, order }))
+      .sort((a, b) => a.order - b.order);
   }, [notes]);
 
   useEffect(() => {
@@ -71,8 +87,31 @@ export function useSubjects() {
     }
   };
 
+  const reorderSubject = async (subjects: SubjectWithOrder[]) => {
+    try {
+      // Update all notes for each subject with new order
+      for (const { subject, order } of subjects) {
+        const { error } = await supabase
+          .from('notes')
+          .update({ subject_order: order })
+          .eq('subject', subject);
+        
+        if (error) throw error;
+      }
+
+      await fetchNotes();
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error reordering subjects",
+        description: "Failed to update subject order. Please try again.",
+      });
+    }
+  };
+
   return {
-    uniqueSubjects,
-    handleRemoveSubject
+    subjects: uniqueSubjectsWithOrder,
+    handleRemoveSubject,
+    reorderSubject
   };
 }
