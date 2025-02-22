@@ -131,8 +131,8 @@ export const NotesContent = () => {
   };
 
   return (
-    <div className="mx-auto max-w-[min(100%,64rem)] flex flex-col h-[calc(100vh-8rem)]">
-      <div className="flex-none mb-4">
+    <div className="mx-auto max-w-[min(100%,64rem)] flex flex-col space-y-4 h-full">
+      <div className="flex-none">
         <CreateNoteContainer
           isExpanded={isEditorExpanded}
           note={newNote}
@@ -147,27 +147,29 @@ export const NotesContent = () => {
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto min-h-0 pr-1">
-        <NotesContainer
-          notes={filteredNotes}
-          loading={loading}
-          generatingFlashcardsForNote={generatingFlashcardsForNote}
-          selectedColor={selectedColor}
-          selectedSubject={currentSubject}
-          selectedDate={selectedDate}
-          uniqueSubjects={uniqueSubjects}
-          onColorChange={setSelectedColor}
-          onSubjectChange={() => {}}
-          onDateChange={setSelectedDate}
-          onClearFilters={clearFilters}
-          onNoteClick={(note) => {
-            setSelectedNote(note);
-            setEditingNote(note);
-            setShowSummary(false);
-          }}
-          onGenerateFlashcards={generateFlashcards}
-          onNotesChanged={fetchNotes}
-        />
+      <div className="flex-1 overflow-y-auto scrollbar-thin min-h-0 relative border rounded-lg">
+        <div className="absolute inset-0 overflow-y-auto">
+          <NotesContainer
+            notes={filteredNotes}
+            loading={loading}
+            generatingFlashcardsForNote={generatingFlashcardsForNote}
+            selectedColor={selectedColor}
+            selectedSubject={currentSubject}
+            selectedDate={selectedDate}
+            uniqueSubjects={uniqueSubjects}
+            onColorChange={setSelectedColor}
+            onSubjectChange={() => {}}
+            onDateChange={setSelectedDate}
+            onClearFilters={clearFilters}
+            onNoteClick={(note) => {
+              setSelectedNote(note);
+              setEditingNote(note);
+              setShowSummary(false);
+            }}
+            onGenerateFlashcards={generateFlashcards}
+            onNotesChanged={fetchNotes}
+          />
+        </div>
       </div>
 
       <EditNoteDialog
