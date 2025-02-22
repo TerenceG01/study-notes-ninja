@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNotes, type Note } from "@/hooks/useNotes";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
@@ -130,40 +131,44 @@ export const NotesContent = () => {
   };
 
   return (
-    <div className="mx-auto max-w-[min(100%,64rem)]">
-      <CreateNoteContainer
-        isExpanded={isEditorExpanded}
-        note={newNote}
-        newTag={newTag}
-        commonSubjects={CommonSubjects}
-        onNoteChange={handleNoteChange}
-        onTagChange={setNewTag}
-        onAddTag={addTag}
-        onRemoveTag={removeTag}
-        onCancel={resetEditor}
-        onSave={handleCreateNote}
-      />
+    <div className="mx-auto max-w-[min(100%,64rem)] flex flex-col h-[calc(100vh-4rem)]">
+      <div className="flex-none">
+        <CreateNoteContainer
+          isExpanded={isEditorExpanded}
+          note={newNote}
+          newTag={newTag}
+          commonSubjects={CommonSubjects}
+          onNoteChange={handleNoteChange}
+          onTagChange={setNewTag}
+          onAddTag={addTag}
+          onRemoveTag={removeTag}
+          onCancel={resetEditor}
+          onSave={handleCreateNote}
+        />
+      </div>
 
-      <NotesContainer
-        notes={filteredNotes}
-        loading={loading}
-        generatingFlashcardsForNote={generatingFlashcardsForNote}
-        selectedColor={selectedColor}
-        selectedSubject={currentSubject}
-        selectedDate={selectedDate}
-        uniqueSubjects={uniqueSubjects}
-        onColorChange={setSelectedColor}
-        onSubjectChange={() => {}} // This is now handled by the sidebar
-        onDateChange={setSelectedDate}
-        onClearFilters={clearFilters}
-        onNoteClick={(note) => {
-          setSelectedNote(note);
-          setEditingNote(note);
-          setShowSummary(false);
-        }}
-        onGenerateFlashcards={generateFlashcards}
-        onNotesChanged={fetchNotes}
-      />
+      <div className="flex-1 overflow-y-auto min-h-0">
+        <NotesContainer
+          notes={filteredNotes}
+          loading={loading}
+          generatingFlashcardsForNote={generatingFlashcardsForNote}
+          selectedColor={selectedColor}
+          selectedSubject={currentSubject}
+          selectedDate={selectedDate}
+          uniqueSubjects={uniqueSubjects}
+          onColorChange={setSelectedColor}
+          onSubjectChange={() => {}}
+          onDateChange={setSelectedDate}
+          onClearFilters={clearFilters}
+          onNoteClick={(note) => {
+            setSelectedNote(note);
+            setEditingNote(note);
+            setShowSummary(false);
+          }}
+          onGenerateFlashcards={generateFlashcards}
+          onNotesChanged={fetchNotes}
+        />
+      </div>
 
       <EditNoteDialog
         open={!!selectedNote}
