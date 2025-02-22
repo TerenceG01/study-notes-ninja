@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { GripVertical, Tag, Trash2 } from "lucide-react";
+import { GripVertical, Trash2 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import {
   DndContext,
@@ -97,8 +97,7 @@ function SortableSubjectItem({
         >
           <GripVertical className="h-4 w-4 text-muted-foreground" />
         </div>
-        <Tag className={cn("h-4 w-4 shrink-0", isOpen && "ml-6")} />
-        {isOpen && <span className="ml-2 truncate">{subject.subject}</span>}
+        <span className={cn("truncate", isOpen && "ml-6")}>{subject.subject}</span>
       </Button>
       {isOpen && (
         <AlertDialog>
