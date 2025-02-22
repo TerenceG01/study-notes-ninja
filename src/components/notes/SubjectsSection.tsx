@@ -4,6 +4,17 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Tag, Trash2 } from "lucide-react";
 import { useLocation, useSearchParams } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface SubjectsSectionProps {
   isOpen: boolean;
@@ -70,19 +81,40 @@ export function SubjectsSection({
                 {isOpen && <span className="ml-2 truncate">{subject}</span>}
               </Button>
               {isOpen && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={cn(
-                    "h-6 w-6 p-0 opacity-0 group-hover:opacity-70 transition-opacity shrink-0",
-                    "hover:bg-destructive/10 hover:text-destructive hover:opacity-100",
-                    "focus-visible:opacity-100"
-                  )}
-                  onClick={() => onRemoveSubject(subject)}
-                >
-                  <Trash2 className="h-3 w-3" />
-                  <span className="sr-only">Remove subject</span>
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className={cn(
+                        "h-6 w-6 p-0 opacity-0 group-hover:opacity-70 transition-opacity shrink-0",
+                        "hover:bg-destructive/10 hover:text-destructive hover:opacity-100",
+                        "focus-visible:opacity-100"
+                      )}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                      <span className="sr-only">Remove subject</span>
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will remove the subject "{subject}" from all related notes. 
+                        The notes will still exist but won't be categorized under this subject anymore.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="bg-destructive hover:bg-destructive/90"
+                        onClick={() => onRemoveSubject(subject)}
+                      >
+                        Remove Subject
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
             </div>
           ))}
