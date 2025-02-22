@@ -13,7 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const SUBJECT_COLORS = [
+// Base color definitions for reference
+const SUBJECT_COLORS = [
   { name: 'Blue', value: 'blue', class: 'bg-blue-50 text-blue-600 hover:bg-blue-100' },
   { name: 'Green', value: 'green', class: 'bg-green-50 text-green-600 hover:bg-green-100' },
   { name: 'Purple', value: 'purple', class: 'bg-purple-50 text-purple-600 hover:bg-purple-100' },
@@ -26,6 +27,7 @@ interface NoteFiltersProps {
   selectedSubject: string | null;
   selectedDate: Date | null;
   uniqueSubjects: string[];
+  uniqueColors: string[]; // New prop for available colors
   onColorChange: (color: string) => void;
   onSubjectChange: (subject: string) => void;
   onDateChange: (date: Date | null) => void;
@@ -37,11 +39,17 @@ export const NoteFilters = ({
   selectedSubject,
   selectedDate,
   uniqueSubjects,
+  uniqueColors, // New prop
   onColorChange,
   onSubjectChange,
   onDateChange,
   onClearFilters,
 }: NoteFiltersProps) => {
+  // Get only the color definitions for colors that are actually in use
+  const availableColors = SUBJECT_COLORS.filter(color => 
+    uniqueColors.includes(color.value)
+  );
+
   return (
     <>
       <div className="flex items-center gap-2">
@@ -55,14 +63,15 @@ export const NoteFilters = ({
                 "flex items-center gap-2",
                 selectedColor && "border-primary"
               )}
+              disabled={availableColors.length === 0}
             >
               <Palette className="h-4 w-4" />
-              Color
+              Color {availableColors.length === 0 && "(None)"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-48 p-2">
             <div className="grid grid-cols-2 gap-1">
-              {SUBJECT_COLORS.map(color => (
+              {availableColors.map(color => (
                 <Button
                   key={color.value}
                   variant="ghost"
