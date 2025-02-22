@@ -1,4 +1,3 @@
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Loader2, MoreVertical, ChevronUp, ChevronDown, Share, Trash2 } from "lucide-react";
@@ -14,6 +13,7 @@ import { useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { useNotes } from "@/hooks/useNotes";
 
 interface Note {
   id: string;
@@ -36,14 +36,6 @@ interface NotesTableProps {
   onNotesChanged: () => void;
 }
 
-const SUBJECT_COLORS = [
-  { name: 'Blue', value: 'blue', class: 'bg-blue-50 text-blue-600 hover:bg-blue-100' },
-  { name: 'Green', value: 'green', class: 'bg-green-50 text-green-600 hover:bg-green-100' },
-  { name: 'Purple', value: 'purple', class: 'bg-purple-50 text-purple-600 hover:bg-purple-100' },
-  { name: 'Red', value: 'red', class: 'bg-red-50 text-red-600 hover:bg-red-100' },
-  { name: 'Orange', value: 'orange', class: 'bg-orange-50 text-orange-600 hover:bg-orange-100' },
-];
-
 export const NotesTable = ({
   notes,
   loading,
@@ -55,6 +47,7 @@ export const NotesTable = ({
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { deleteNotesForSubject } = useNotes();  // Add this line to get the function
 
   const handleColorChange = async (e: React.MouseEvent, note: Note, color: string) => {
     e.stopPropagation();
@@ -131,34 +124,55 @@ export const NotesTable = ({
   const handleRemoveSubject = async (e: React.MouseEvent, note: Note) => {
     e.stopPropagation();
     if (!note.subject) return;
-    
-    try {
-      const { error } = await supabase
-        .from('notes')
-        .update({ subject: null })
-        .eq('subject', note.subject);
 
-      if (error) throw error;
-
-      if (searchParams.get("subject") === note.subject) {
-        searchParams.delete("subject");
-        setSearchParams(searchParams);
+    if (note.subject === 'General') {
+      try {
+        await deleteNotesForSubject('General');
+        onNotesChanged();
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to delete General notes",
+        });
       }
-
-      onNotesChanged();
-      
-      toast({
-        title: "Success",
-        description: `Removed subject ${note.subject}`,
-      });
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to remove subject",
-      });
+    } else {
+      try {
+        const { error } = await supabase
+          .from('notes')
+          .update({ subject: null })
+          .eq('subject', note.subject);
+  
+        if (error) throw error;
+  
+        if (searchParams.get("subject") === note.subject) {
+          searchParams.delete("subject");
+          setSearchParams(searchParams);
+        }
+  
+        onNotesChanged();
+        
+        toast({
+          title: "Success",
+          description: `Removed subject ${note.subject}`,
+        });
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to remove subject",
+        });
+      }
     }
   };
+
+  const SUBJECT_COLORS = [
+    { name: 'Blue', value: 'blue', class: 'bg-blue-50 text-blue-600 hover:bg-blue-100' },
+    { name: 'Green', value: 'green', class: 'bg-green-50 text-green-600 hover:bg-green-100' },
+    { name: 'Purple', value: 'purple', class: 'bg-purple-50 text-purple-600 hover:bg-purple-100' },
+    { name: 'Red', value: 'red', class: 'bg-red-50 text-red-600 hover:bg-red-100' },
+    { name: 'Orange', value: 'orange', class: 'bg-orange-50 text-orange-600 hover:bg-orange-100' },
+  ];
 
   return (
     <Table>
