@@ -1,3 +1,4 @@
+
 import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -10,6 +11,8 @@ import { SharedNotes } from "@/components/study-groups/SharedNotes";
 import { GroupHeader } from "@/components/study-groups/GroupHeader";
 import { GroupAbout } from "@/components/study-groups/GroupAbout";
 import { GroupMembersList } from "@/components/study-groups/GroupMembersList";
+import { GroupReminders } from "@/components/study-groups/GroupReminders";
+
 interface StudyGroup {
   id: string;
   name: string;
@@ -18,6 +21,7 @@ interface StudyGroup {
   created_by: string;
   created_at: string;
 }
+
 interface StudyGroupMember {
   user_id: string;
   role: string;
@@ -27,39 +31,33 @@ interface StudyGroupMember {
     full_name: string | null;
   } | null;
 }
+
 const StudyGroupDetails = () => {
-  const {
-    id
-  } = useParams();
-  const {
-    user
-  } = useAuth();
-  const {
-    data: studyGroup,
-    isLoading: isLoadingGroup
-  } = useQuery({
+  const { id } = useParams();
+  const { user } = useAuth();
+
+  const { data: studyGroup, isLoading: isLoadingGroup } = useQuery({
     queryKey: ['study-group', id],
     queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.from('study_groups').select('*').eq('id', id).maybeSingle();
+      const { data, error } = await supabase
+        .from('study_groups')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+
       if (error) throw error;
       if (!data) throw new Error('Study group not found');
       return data as StudyGroup;
     },
     enabled: !!id
   });
-  const {
-    data: members,
-    isLoading: isLoadingMembers
-  } = useQuery({
+
+  const { data: members, isLoading: isLoadingMembers } = useQuery({
     queryKey: ['study-group-members', id],
     queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.from('study_group_members').select(`
+      const { data, error } = await supabase
+        .from('study_group_members')
+        .select(`
           user_id,
           role,
           joined_at,
@@ -67,24 +65,31 @@ const StudyGroupDetails = () => {
             username,
             full_name
           )
-        `).eq('group_id', id);
+        `)
+        .eq('group_id', id);
+
       if (error) throw error;
       return data as StudyGroupMember[];
     },
     enabled: !!id && !!studyGroup
   });
+
   if (isLoadingGroup || isLoadingMembers) {
-    return <div className="min-h-screen bg-background">
+    return (
+      <div className="min-h-screen bg-background">
         <NavigationBar />
         <main className="container mx-auto px-4 pt-20">
           <div className="flex justify-center items-center py-12">
             <Loader2 className="h-8 w-8 animate-spin" />
           </div>
         </main>
-      </div>;
+      </div>
+    );
   }
+
   if (!studyGroup) {
-    return <div className="min-h-screen bg-background">
+    return (
+      <div className="min-h-screen bg-background">
         <NavigationBar />
         <main className="container mx-auto px-4 pt-20">
           <div className="text-center py-12">
@@ -94,17 +99,29 @@ const StudyGroupDetails = () => {
             </p>
           </div>
         </main>
-      </div>;
+      </div>
+    );
   }
+
   const userRole = members?.find(member => member.user_id === user?.id)?.role;
-  return <div className="min-h-screen bg-background">
+
+  return (
+    <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="container pt-0 mx-0 my-0 px-[10px] py-[10px]">
-        <GroupHeader name={studyGroup.name} subject={studyGroup.subject} userRole={userRole} groupId={studyGroup.id} />
+      <main className="container pt-0 mx-auto my-0 px-4 py-6">
+        <GroupHeader 
+          name={studyGroup.name} 
+          subject={studyGroup.subject} 
+          userRole={userRole} 
+          groupId={studyGroup.id} 
+        />
 
         <div className="grid gap-6 md:grid-cols-3">
           <div className="md:col-span-2 space-y-6">
-            <GroupAbout description={studyGroup.description} createdAt={studyGroup.created_at} />
+            <GroupAbout 
+              description={studyGroup.description} 
+              createdAt={studyGroup.created_at} 
+            />
 
             <Card>
               <CardHeader>
@@ -118,7 +135,8 @@ const StudyGroupDetails = () => {
               </CardContent>
             </Card>
 
-            {userRole && <Card>
+            {userRole && (
+              <Card>
                 <CardHeader>
                   <CardTitle>Invite Members</CardTitle>
                   <CardDescription>
@@ -128,14 +146,18 @@ const StudyGroupDetails = () => {
                 <CardContent>
                   <InviteMembers groupId={studyGroup.id} />
                 </CardContent>
-              </Card>}
+              </Card>
+            )}
           </div>
 
-          <div>
+          <div className="space-y-6">
             <GroupMembersList members={members || []} />
+            <GroupReminders groupId={studyGroup.id} userRole={userRole} />
           </div>
         </div>
       </main>
-    </div>;
+    </div>
+  );
 };
+
 export default StudyGroupDetails;

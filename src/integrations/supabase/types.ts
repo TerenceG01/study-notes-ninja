@@ -430,6 +430,47 @@ export type Database = {
           },
         ]
       }
+      study_group_reminders: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          description: string | null
+          due_date: string
+          group_id: string
+          id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          due_date: string
+          group_id: string
+          id?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          due_date?: string
+          group_id?: string
+          id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_group_reminders_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "study_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       study_groups: {
         Row: {
           created_at: string | null
