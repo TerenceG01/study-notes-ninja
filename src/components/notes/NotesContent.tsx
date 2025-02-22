@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNotes, type Note } from "@/hooks/useNotes";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
@@ -146,7 +147,7 @@ export const NotesContent = () => {
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto min-h-0 border rounded-lg">
+      <div className="flex-1 overflow-y-auto min-h-0 border rounded-lg bg-card shadow-lg">
         <NotesContainer
           notes={filteredNotes}
           loading={loading}
