@@ -380,6 +380,7 @@ export type Database = {
       }
       study_group_notes: {
         Row: {
+          display_order: number
           group_id: string
           id: string
           note_id: string
@@ -387,6 +388,7 @@ export type Database = {
           shared_by: string
         }
         Insert: {
+          display_order: number
           group_id: string
           id?: string
           note_id: string
@@ -394,6 +396,7 @@ export type Database = {
           shared_by: string
         }
         Update: {
+          display_order?: number
           group_id?: string
           id?: string
           note_id?: string
