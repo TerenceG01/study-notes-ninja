@@ -286,7 +286,7 @@ export const NotesTable = ({
                     onGenerateFlashcards(note);
                   }}
                   disabled={!!generatingFlashcardsForNote}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2"
+                  className="flex items-center gap-2" // Removed opacity and transition classes
                 >
                   {generatingFlashcardsForNote === note.id ? (
                     <>
