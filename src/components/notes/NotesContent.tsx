@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNotes, type Note } from "@/hooks/useNotes";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
@@ -16,7 +15,7 @@ import { EditNoteDialog } from "./EditNoteDialog";
 export const NotesContent = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const currentSubject = searchParams.get("subject");
   
   // Filter states
@@ -68,7 +67,10 @@ export const NotesContent = () => {
   const clearFilters = () => {
     setSelectedColor(null);
     setSelectedDate(null);
-    // We don't clear currentSubject here as it's controlled by the URL
+    // Clear the subject from URL params
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.delete("subject");
+    setSearchParams(newSearchParams);
   };
 
   const handleCreateNote = async () => {
