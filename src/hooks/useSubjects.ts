@@ -3,23 +3,22 @@ import { useState, useMemo, useEffect } from "react";
 import { useNotes } from "./useNotes";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { useSearchParams } from "react-router-dom";
 
 export function useSubjects() {
-  // Group all hooks at the top to maintain consistent order
   const { notes, fetchNotes } = useNotes();
   const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [draggedSubject, setDraggedSubject] = useState<string | null>(null);
   const [dragOverSubject, setDragOverSubject] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  // useMemo hook
   const uniqueSubjects = useMemo(() => {
     return Array.from(new Set(notes.map(note => note.subject || "General")))
       .filter(Boolean)
       .sort();
   }, [notes]);
 
-  // useEffect hook
   useEffect(() => {
     const channel = supabase
       .channel('subjects_changes')
@@ -32,7 +31,7 @@ export function useSubjects() {
         },
         (payload) => {
           console.log("Subjects realtime update received:", payload);
-          fetchNotes(); // Refresh notes when changes occur
+          fetchNotes();
         }
       )
       .subscribe();
@@ -51,6 +50,15 @@ export function useSubjects() {
 
       if (error) throw error;
 
+      // Clear the subject from URL params if it's the current subject
+      const currentSubject = searchParams.get("subject");
+      if (currentSubject === subject) {
+        const newSearchParams = new URLSearchParams(searchParams);
+        newSearchParams.delete("subject");
+        setSearchParams(newSearchParams);
+      }
+
+      // Refresh the notes list
       await fetchNotes();
       
       toast({
