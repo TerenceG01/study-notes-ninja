@@ -4,11 +4,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Calendar as CalendarIcon, Trash2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/components/ui/use-toast";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface Reminder {
   id: string;
@@ -26,7 +29,7 @@ interface GroupRemindersProps {
 
 export function GroupReminders({ groupId, userRole }: GroupRemindersProps) {
   const [title, setTitle] = useState("");
-  const [date, setDate] = useState<Date>(new Date());
+  const [date, setDate] = useState<Date>();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -47,8 +50,8 @@ export function GroupReminders({ groupId, userRole }: GroupRemindersProps) {
 
   const createReminder = useMutation({
     mutationFn: async () => {
-      if (!title.trim() || !user) {
-        throw new Error("Please provide a title");
+      if (!date || !title.trim() || !user) {
+        throw new Error("Please provide both title and date");
       }
 
       const { error } = await supabase
@@ -67,6 +70,7 @@ export function GroupReminders({ groupId, userRole }: GroupRemindersProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['group-reminders'] });
       setTitle("");
+      setDate(undefined);
       toast({
         title: "Reminder created",
         description: "Your reminder has been added to the group.",
@@ -129,6 +133,28 @@ export function GroupReminders({ groupId, userRole }: GroupRemindersProps) {
               onChange={(e) => setTitle(e.target.value)}
               className="flex-1"
             />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "justify-start text-left font-normal w-[120px]",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "MMM d") : <span>Pick date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
             <Button type="submit" size="icon">
               <Plus className="h-4 w-4" />
             </Button>
