@@ -93,7 +93,9 @@ export function useSubjects() {
       for (const { subject, order } of subjects) {
         const { error } = await supabase
           .from('notes')
-          .update({ subject_order: order })
+          .update({ 
+            subject_order: order 
+          })
           .eq('subject', subject);
         
         if (error) throw error;

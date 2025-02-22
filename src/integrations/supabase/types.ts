@@ -234,6 +234,7 @@ export type Database = {
           id: string
           subject: string | null
           subject_color: string | null
+          subject_order: number | null
           summary: string | null
           tags: string[] | null
           title: string
@@ -247,6 +248,7 @@ export type Database = {
           id?: string
           subject?: string | null
           subject_color?: string | null
+          subject_order?: number | null
           summary?: string | null
           tags?: string[] | null
           title?: string
@@ -260,6 +262,7 @@ export type Database = {
           id?: string
           subject?: string | null
           subject_color?: string | null
+          subject_order?: number | null
           summary?: string | null
           tags?: string[] | null
           title?: string

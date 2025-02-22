@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -15,6 +14,7 @@ export type Note = {
   tags?: string[];
   subject?: string;
   subject_color?: string;
+  subject_order?: number;
 };
 
 export type NewNote = {
