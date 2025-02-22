@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNotes, type Note } from "@/hooks/useNotes";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
@@ -131,66 +130,64 @@ export const NotesContent = () => {
   };
 
   return (
-    <div className="flex-1 h-full overflow-y-auto">
-      <div className="container mx-auto p-6 max-w-[min(100%,64rem)] space-y-6">
-        <CreateNoteContainer
-          isExpanded={isEditorExpanded}
-          note={newNote}
-          newTag={newTag}
-          commonSubjects={CommonSubjects}
-          onNoteChange={handleNoteChange}
-          onTagChange={setNewTag}
-          onAddTag={addTag}
-          onRemoveTag={removeTag}
-          onCancel={resetEditor}
-          onSave={handleCreateNote}
-        />
+    <div className="mx-auto max-w-[min(100%,64rem)]">
+      <CreateNoteContainer
+        isExpanded={isEditorExpanded}
+        note={newNote}
+        newTag={newTag}
+        commonSubjects={CommonSubjects}
+        onNoteChange={handleNoteChange}
+        onTagChange={setNewTag}
+        onAddTag={addTag}
+        onRemoveTag={removeTag}
+        onCancel={resetEditor}
+        onSave={handleCreateNote}
+      />
 
-        <NotesContainer
-          notes={filteredNotes}
-          loading={loading}
-          generatingFlashcardsForNote={generatingFlashcardsForNote}
-          selectedColor={selectedColor}
-          selectedSubject={currentSubject}
-          selectedDate={selectedDate}
-          uniqueSubjects={uniqueSubjects}
-          onColorChange={setSelectedColor}
-          onSubjectChange={() => {}}
-          onDateChange={setSelectedDate}
-          onClearFilters={clearFilters}
-          onNoteClick={(note) => {
-            setSelectedNote(note);
-            setEditingNote(note);
+      <NotesContainer
+        notes={filteredNotes}
+        loading={loading}
+        generatingFlashcardsForNote={generatingFlashcardsForNote}
+        selectedColor={selectedColor}
+        selectedSubject={currentSubject}
+        selectedDate={selectedDate}
+        uniqueSubjects={uniqueSubjects}
+        onColorChange={setSelectedColor}
+        onSubjectChange={() => {}} // This is now handled by the sidebar
+        onDateChange={setSelectedDate}
+        onClearFilters={clearFilters}
+        onNoteClick={(note) => {
+          setSelectedNote(note);
+          setEditingNote(note);
+          setShowSummary(false);
+        }}
+        onGenerateFlashcards={generateFlashcards}
+        onNotesChanged={fetchNotes}
+      />
+
+      <EditNoteDialog
+        open={!!selectedNote}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedNote(null);
+            setEditingNote(null);
             setShowSummary(false);
-          }}
-          onGenerateFlashcards={generateFlashcards}
-          onNotesChanged={fetchNotes}
-        />
-
-        <EditNoteDialog
-          open={!!selectedNote}
-          onOpenChange={(open) => {
-            if (!open) {
-              setSelectedNote(null);
-              setEditingNote(null);
-              setShowSummary(false);
-            }
-          }}
-          selectedNote={selectedNote}
-          editingNote={editingNote}
-          showSummary={showSummary}
-          summaryLevel={summaryLevel}
-          summarizing={summarizing}
-          newTag={newTag}
-          commonSubjects={CommonSubjects}
-          onNoteChange={setEditingNote}
-          onSummaryLevelChange={setSummaryLevel}
-          onGenerateSummary={handleGenerateSummary}
-          onToggleSummary={() => setShowSummary(!showSummary)}
-          onNewTagChange={setNewTag}
-          onSave={updateNote}
-        />
-      </div>
+          }
+        }}
+        selectedNote={selectedNote}
+        editingNote={editingNote}
+        showSummary={showSummary}
+        summaryLevel={summaryLevel}
+        summarizing={summarizing}
+        newTag={newTag}
+        commonSubjects={CommonSubjects}
+        onNoteChange={setEditingNote}
+        onSummaryLevelChange={setSummaryLevel}
+        onGenerateSummary={handleGenerateSummary}
+        onToggleSummary={() => setShowSummary(!showSummary)}
+        onNewTagChange={setNewTag}
+        onSave={updateNote}
+      />
     </div>
   );
 };
