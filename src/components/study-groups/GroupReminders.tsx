@@ -125,39 +125,43 @@ export function GroupReminders({ groupId, userRole }: GroupRemindersProps) {
               e.preventDefault();
               createReminder.mutate();
             }}
-            className="flex gap-2 mb-4"
+            className="flex flex-col sm:flex-row gap-2 mb-4"
           >
-            <Input
-              placeholder="Add a new reminder..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="flex-1"
-            />
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "justify-start text-left font-normal w-[120px]",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "MMM d") : <span>Pick date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-            <Button type="submit" size="icon">
-              <Plus className="h-4 w-4" />
-            </Button>
+            <div className="flex-1">
+              <Input
+                placeholder="Add a new reminder..."
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full"
+              />
+            </div>
+            <div className="flex gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "justify-start text-left font-normal w-[100px] sm:w-[90px]",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-1 h-4 w-4" />
+                    {date ? format(date, "MMM d") : <span>Date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <Button type="submit" size="icon" className="shrink-0">
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </form>
         )}
 
