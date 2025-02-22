@@ -21,7 +21,6 @@ export const NotesContent = () => {
   
   // Filter states
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   
   const { notes: allNotes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards } = useNotes();
@@ -60,7 +59,7 @@ export const NotesContent = () => {
   // Apply filters
   const filteredNotes = allNotes.filter(note => {
     const matchesColor = !selectedColor || note.subject_color === selectedColor;
-    const matchesSubject = !selectedSubject || note.subject === selectedSubject;
+    const matchesSubject = !currentSubject || note.subject === currentSubject;
     const matchesDate = !selectedDate || 
       format(new Date(note.created_at), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
     return matchesColor && matchesSubject && matchesDate;
@@ -68,8 +67,8 @@ export const NotesContent = () => {
 
   const clearFilters = () => {
     setSelectedColor(null);
-    setSelectedSubject(null);
     setSelectedDate(null);
+    // We don't clear currentSubject here as it's controlled by the URL
   };
 
   const handleCreateNote = async () => {
@@ -148,11 +147,11 @@ export const NotesContent = () => {
         loading={loading}
         generatingFlashcardsForNote={generatingFlashcardsForNote}
         selectedColor={selectedColor}
-        selectedSubject={selectedSubject}
+        selectedSubject={currentSubject}
         selectedDate={selectedDate}
         uniqueSubjects={uniqueSubjects}
         onColorChange={setSelectedColor}
-        onSubjectChange={setSelectedSubject}
+        onSubjectChange={() => {}} // This is now handled by the sidebar
         onDateChange={setSelectedDate}
         onClearFilters={clearFilters}
         onNoteClick={(note) => {
