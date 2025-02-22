@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNotes, type Note } from "@/hooks/useNotes";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
@@ -11,6 +12,7 @@ import { useSearchParams } from "react-router-dom";
 import { format } from "date-fns";
 import { NotesContainer } from "./NotesContainer";
 import { EditNoteDialog } from "./EditNoteDialog";
+import { NotesHeader } from "./NotesHeader";
 
 export const NotesContent = () => {
   const { user } = useAuth();
@@ -21,6 +23,7 @@ export const NotesContent = () => {
   // Filter states
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   
   const { notes: allNotes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards } = useNotes();
   const { 
@@ -55,18 +58,24 @@ export const NotesContent = () => {
   // Get unique subjects from notes
   const uniqueSubjects = Array.from(new Set(allNotes.map(note => note.subject).filter(Boolean)));
 
-  // Apply filters
+  // Apply filters and search
   const filteredNotes = allNotes.filter(note => {
     const matchesColor = !selectedColor || note.subject_color === selectedColor;
     const matchesSubject = !currentSubject || note.subject === currentSubject;
     const matchesDate = !selectedDate || 
       format(new Date(note.created_at), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
-    return matchesColor && matchesSubject && matchesDate;
+    const matchesSearch = !searchQuery || 
+      note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (note.subject?.toLowerCase() || '').includes(searchQuery.toLowerCase());
+    
+    return matchesColor && matchesSubject && matchesDate && matchesSearch;
   });
 
   const clearFilters = () => {
     setSelectedColor(null);
     setSelectedDate(null);
+    setSearchQuery("");
     // Clear the subject from URL params
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.delete("subject");
@@ -83,6 +92,10 @@ export const NotesContent = () => {
         description: "Note created successfully!",
       });
     }
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
   };
 
   const handleGenerateSummary = async () => {
@@ -132,6 +145,7 @@ export const NotesContent = () => {
   return (
     <div className="mx-auto max-w-[min(100%,64rem)] flex flex-col space-y-4 h-full">
       <div className="flex-none">
+        <NotesHeader onSearch={handleSearch} />
         <CreateNoteContainer
           isExpanded={isEditorExpanded}
           note={newNote}
