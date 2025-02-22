@@ -41,13 +41,13 @@ export function SubjectsSection({
         {isOpen && <h3 className="text-sm font-medium mb-2 px-2">Subjects</h3>}
         <div className="space-y-1">
           {subjects.map((subject) => (
-            <div key={subject} className="group flex items-center gap-1">
+            <div key={subject} className="group flex items-center justify-between pr-1">
               <Button
                 data-subject={subject}
                 variant={currentSubject === subject ? "secondary" : "ghost"}
                 size="sm"
                 className={cn(
-                  "w-full flex items-center relative",
+                  "flex-1 flex items-center relative min-w-0",
                   isOpen ? "justify-start px-2" : "justify-center px-0",
                   currentSubject === subject && "bg-accent/60",
                   dragOverSubject === subject && "border-2 border-primary",
@@ -63,7 +63,7 @@ export function SubjectsSection({
               >
                 <Tag 
                   className={cn(
-                    "h-4 w-4 cursor-grab select-none",
+                    "h-4 w-4 cursor-grab select-none shrink-0",
                     isDragging && "cursor-grabbing"
                   )}
                 />
