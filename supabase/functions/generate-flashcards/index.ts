@@ -1,4 +1,4 @@
-
+<lov-codelov-code>
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
@@ -41,7 +41,7 @@ serve(async (req) => {
     const aiResponse = await response.json();
     const flashcardsText = aiResponse.choices[0].message.content;
 
-    // Create a deck
+    // Create a deck with the simplified title
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -50,7 +50,7 @@ serve(async (req) => {
     const { data: deck, error: deckError } = await supabaseClient
       .from('flashcard_decks')
       .insert([{
-        title: `Flashcards for: ${title}`,
+        title: title, // Simply use the note title directly
         description: `Generated from note: ${title}`,
         user_id: (await supabaseClient.auth.getUser(req.headers.get('Authorization')?.split('Bearer ')[1] ?? '')).data.user?.id
       }])
@@ -116,3 +116,4 @@ serve(async (req) => {
     );
   }
 });
+</lov-code>
