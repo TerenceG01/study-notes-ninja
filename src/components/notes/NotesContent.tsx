@@ -1,8 +1,5 @@
 
 import { useState, useEffect } from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { NotesTable } from "./NotesTable";
-import { EditNoteDialog } from "./EditNoteDialog";
 import { useNotes, type Note } from "@/hooks/useNotes";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
 import { useNoteSummary } from "@/hooks/useNoteSummary";
@@ -12,27 +9,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { CommonSubjects } from "./CommonSubjects";
 import { useSearchParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Filter, Palette, Tag, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-const SUBJECT_COLORS = [
-  { name: 'Blue', value: 'blue', class: 'bg-blue-50 text-blue-600 hover:bg-blue-100' },
-  { name: 'Green', value: 'green', class: 'bg-green-50 text-green-600 hover:bg-green-100' },
-  { name: 'Purple', value: 'purple', class: 'bg-purple-50 text-purple-600 hover:bg-purple-100' },
-  { name: 'Red', value: 'red', class: 'bg-red-50 text-red-600 hover:bg-red-100' },
-  { name: 'Orange', value: 'orange', class: 'bg-orange-50 text-orange-600 hover:bg-orange-100' },
-];
+import { NotesContainer } from "./NotesContainer";
+import { EditNoteDialog } from "./EditNoteDialog";
 
 export const NotesContent = () => {
   const { user } = useAuth();
@@ -45,7 +24,7 @@ export const NotesContent = () => {
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   
-  const { notes: allNotes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards, deleteNotesForSubject } = useNotes();
+  const { notes: allNotes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards } = useNotes();
   const { 
     newNote, 
     newTag, 
@@ -164,143 +143,26 @@ export const NotesContent = () => {
         onSave={handleCreateNote}
       />
 
-      <Card className="shadow-sm border-muted/20">
-        <CardHeader className="bg-gradient-to-r from-muted/50 to-transparent">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-lg font-medium">Your Notes</CardTitle>
-              <CardDescription>Browse and manage your existing notes</CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              {/* Color Filter */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className={cn(
-                      "flex items-center gap-2",
-                      selectedColor && "border-primary"
-                    )}
-                  >
-                    <Palette className="h-4 w-4" />
-                    Color
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-48 p-2">
-                  <div className="grid grid-cols-2 gap-1">
-                    {SUBJECT_COLORS.map(color => (
-                      <Button
-                        key={color.value}
-                        variant="ghost"
-                        className={cn(
-                          "justify-start",
-                          color.class,
-                          selectedColor === color.value && "border-2 border-primary"
-                        )}
-                        onClick={() => setSelectedColor(color.value)}
-                      >
-                        {color.name}
-                      </Button>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
-
-              {/* Subject Filter */}
-              <Select value={selectedSubject || ""} onValueChange={setSelectedSubject}>
-                <SelectTrigger className="w-[140px] h-9">
-                  <SelectValue placeholder="Subject" />
-                </SelectTrigger>
-                <SelectContent>
-                  {uniqueSubjects.map(subject => (
-                    <SelectItem key={subject} value={subject}>
-                      {subject}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {/* Date Filter */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className={cn(
-                      "flex items-center gap-2",
-                      selectedDate && "border-primary"
-                    )}
-                  >
-                    <CalendarIcon className="h-4 w-4" />
-                    {selectedDate ? format(selectedDate, 'PP') : 'Date'}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="end">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={setSelectedDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-
-              {/* Clear Filters */}
-              {(selectedColor || selectedSubject || selectedDate) && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={clearFilters}
-                  className="text-muted-foreground hover:text-primary"
-                >
-                  <X className="h-4 w-4" />
-                  Clear
-                </Button>
-              )}
-            </div>
-          </div>
-          {/* Active Filters Display */}
-          {(selectedColor || selectedSubject || selectedDate) && (
-            <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-              <Filter className="h-4 w-4" />
-              <span>Filtering by:</span>
-              {selectedColor && (
-                <span className={cn(
-                  "px-2 py-1 rounded-md",
-                  SUBJECT_COLORS.find(c => c.value === selectedColor)?.class
-                )}>
-                  {SUBJECT_COLORS.find(c => c.value === selectedColor)?.name}
-                </span>
-              )}
-              {selectedSubject && (
-                <span className="px-2 py-1 bg-secondary rounded-md">
-                  {selectedSubject}
-                </span>
-              )}
-              {selectedDate && (
-                <span className="px-2 py-1 bg-secondary rounded-md">
-                  {format(selectedDate, 'PP')}
-                </span>
-              )}
-            </div>
-          )}
-        </CardHeader>
-        <CardContent className="p-0 overflow-x-auto">
-          <NotesTable
-            notes={filteredNotes}
-            loading={loading}
-            generatingFlashcardsForNote={generatingFlashcardsForNote}
-            onNoteClick={(note) => {
-              setSelectedNote(note);
-              setEditingNote(note);
-              setShowSummary(false);
-            }}
-            onGenerateFlashcards={generateFlashcards}
-            onNotesChanged={fetchNotes}
-          />
-        </CardContent>
-      </Card>
+      <NotesContainer
+        notes={filteredNotes}
+        loading={loading}
+        generatingFlashcardsForNote={generatingFlashcardsForNote}
+        selectedColor={selectedColor}
+        selectedSubject={selectedSubject}
+        selectedDate={selectedDate}
+        uniqueSubjects={uniqueSubjects}
+        onColorChange={setSelectedColor}
+        onSubjectChange={setSelectedSubject}
+        onDateChange={setSelectedDate}
+        onClearFilters={clearFilters}
+        onNoteClick={(note) => {
+          setSelectedNote(note);
+          setEditingNote(note);
+          setShowSummary(false);
+        }}
+        onGenerateFlashcards={generateFlashcards}
+        onNotesChanged={fetchNotes}
+      />
 
       <EditNoteDialog
         open={!!selectedNote}
@@ -327,4 +189,4 @@ export const NotesContent = () => {
       />
     </div>
   );
-}
+};
