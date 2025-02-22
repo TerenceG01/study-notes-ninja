@@ -5,13 +5,6 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Filter, Palette, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 // Base color definitions for reference
 const SUBJECT_COLORS = [
@@ -88,20 +81,6 @@ export const NoteFilters = ({
             </div>
           </PopoverContent>
         </Popover>
-
-        {/* Subject Filter */}
-        <Select value={selectedSubject || ""} onValueChange={onSubjectChange}>
-          <SelectTrigger className="w-[140px] h-9">
-            <SelectValue placeholder="Subject" />
-          </SelectTrigger>
-          <SelectContent>
-            {uniqueSubjects.map(subject => (
-              <SelectItem key={subject} value={subject}>
-                {subject}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
 
         {/* Date Filter */}
         <Popover>
