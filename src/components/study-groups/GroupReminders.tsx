@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ export function GroupReminders({ groupId, userRole }: GroupRemindersProps) {
   const [date, setDate] = useState<Date>();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const { data: reminders = [], isLoading } = useQuery({
     queryKey: ['group-reminders', groupId],
@@ -48,7 +50,7 @@ export function GroupReminders({ groupId, userRole }: GroupRemindersProps) {
 
   const createReminder = useMutation({
     mutationFn: async () => {
-      if (!date || !title.trim()) {
+      if (!date || !title.trim() || !user) {
         throw new Error("Please provide both title and date");
       }
 
@@ -59,6 +61,7 @@ export function GroupReminders({ groupId, userRole }: GroupRemindersProps) {
             group_id: groupId,
             title: title.trim(),
             due_date: date.toISOString(),
+            created_by: user.id
           }
         ]);
 
