@@ -19,7 +19,7 @@ export const NotesContent = () => {
   const [searchParams] = useSearchParams();
   const currentSubject = searchParams.get("subject");
   
-  const { notes: allNotes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards } = useNotes();
+  const { notes: allNotes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards, deleteNotesForSubject } = useNotes();
   const { 
     newNote, 
     newTag, 
@@ -171,4 +171,4 @@ export const NotesContent = () => {
       />
     </div>
   );
-};
+}

@@ -152,6 +152,31 @@ export const useNotes = () => {
     }
   };
 
+  const deleteNotesForSubject = async (subject: string) => {
+    try {
+      const { error } = await supabase
+        .from("notes")
+        .delete()
+        .eq("subject", subject);
+
+      if (error) throw error;
+
+      await fetchNotes();
+      
+      toast({
+        title: "Success",
+        description: `Deleted all notes for subject: ${subject}`,
+      });
+    } catch (error) {
+      console.error("Error deleting notes:", error);
+      toast({
+        variant: "destructive",
+        title: "Error deleting notes",
+        description: "Failed to delete notes. Please try again.",
+      });
+    }
+  };
+
   return {
     notes,
     loading,
@@ -159,5 +184,6 @@ export const useNotes = () => {
     fetchNotes,
     createNote,
     generateFlashcards,
+    deleteNotesForSubject,
   };
 };

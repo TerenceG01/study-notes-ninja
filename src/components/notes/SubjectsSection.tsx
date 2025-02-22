@@ -98,10 +98,13 @@ export function SubjectsSection({
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This will remove the subject "{subject}" from all related notes. 
-                        The notes will still exist but won't be categorized under this subject anymore.
+                      <AlertDialogTitle>Delete Subject and Notes</AlertDialogTitle>
+                      <AlertDialogDescription className="space-y-2">
+                        <p className="font-medium text-destructive">Warning: This action cannot be undone.</p>
+                        <p>
+                          This will permanently delete the subject "{subject}" and ALL notes associated with it. 
+                          Are you sure you want to proceed?
+                        </p>
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -110,7 +113,7 @@ export function SubjectsSection({
                         className="bg-destructive hover:bg-destructive/90"
                         onClick={() => onRemoveSubject(subject)}
                       >
-                        Remove Subject
+                        Delete Subject and Notes
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
