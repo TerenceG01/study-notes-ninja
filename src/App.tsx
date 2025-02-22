@@ -20,9 +20,6 @@ import { NavigationBar } from "./components/navigation/NavigationBar";
 import { NotesSidebar } from "./components/notes/NotesSidebar";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { ThemeProvider } from "next-themes";
-import { Button } from "./components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useSidebar } from "./components/ui/sidebar";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -39,30 +36,13 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
-  const { state, toggleSidebar } = useSidebar();
-  const isOpen = state === "expanded";
-
   return (
     <div className="min-h-screen">
       <NavigationBar />
       <div className="flex min-h-[calc(100vh-4rem)] pt-16">
         <NotesSidebar />
         <div className="flex-1 relative">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-primary/20 shadow-lg hover:shadow-primary/20 hover:border-primary/40 fixed top-20 z-50 transition-all duration-300 w-8 h-8 ${
-              isOpen ? 'left-36 hover:-translate-x-0.5' : 'left-5 hover:translate-x-0.5'
-            }`}
-            onClick={toggleSidebar}
-          >
-            {isOpen ? (
-              <ChevronLeft className="h-4 w-4 text-primary/80" />
-            ) : (
-              <ChevronRight className="h-4 w-4 text-primary/80" />
-            )}
-          </Button>
-          <main className={`transition-all duration-300 ${isOpen ? '-ml-12' : ''}`}>
+          <main>
             {children}
           </main>
         </div>
