@@ -26,17 +26,7 @@ export function NotesSidebar() {
   const isOpen = state === "expanded";
   const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
-  const {
-    uniqueSubjects,
-    draggedSubject,
-    setDraggedSubject,
-    dragOverSubject,
-    setDragOverSubject,
-    isDragging,
-    setIsDragging,
-    handleMoveSubject,
-    handleRemoveSubject
-  } = useSubjects();
+  const { uniqueSubjects, handleRemoveSubject } = useSubjects();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -68,26 +58,6 @@ export function NotesSidebar() {
     }
   };
 
-  const handleDragStart = (subject: string) => {
-    setDraggedSubject(subject);
-    setIsDragging(true);
-  };
-
-  const handleDragEnter = (subject: string) => {
-    if (draggedSubject && draggedSubject !== subject) {
-      setDragOverSubject(subject);
-    }
-  };
-
-  const handleDragEnd = async () => {
-    if (draggedSubject && dragOverSubject && draggedSubject !== dragOverSubject) {
-      await handleMoveSubject(draggedSubject, dragOverSubject);
-    }
-    setIsDragging(false);
-    setDraggedSubject(null);
-    setDragOverSubject(null);
-  };
-
   if (isMobile && !isOpen) {
     return null;
   }
@@ -114,13 +84,7 @@ export function NotesSidebar() {
           <SubjectsSection
             isOpen={isOpen}
             subjects={uniqueSubjects}
-            draggedSubject={draggedSubject}
-            dragOverSubject={dragOverSubject}
-            isDragging={isDragging}
             onSubjectClick={handleSubjectClick}
-            onDragStart={handleDragStart}
-            onDragEnter={handleDragEnter}
-            onDragEnd={handleDragEnd}
             onRemoveSubject={handleRemoveSubject}
           />
 
