@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { ViewSharedNote } from "./ViewSharedNote";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface SharedNote {
   note: {
@@ -73,27 +75,50 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   }
 
   return (
-    <div className="space-y-4">
-      {notes.map((note) => (
-        <Card 
-          key={note.note.id}
-          className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg border-2 hover:border-accent"
-          onClick={() => setSelectedNote(note.note)}
-        >
-          <CardHeader>
-            <CardTitle>{note.note.title}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
-              {note.note.content.substring(0, 200)}...
-            </p>
-            <div className="text-xs text-muted-foreground">
-              Shared by {note.shared_by_profile?.username || note.shared_by_profile?.full_name || 'Unknown'} on{' '}
-              {format(new Date(note.shared_at), 'PPP')}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+    <ScrollArea className="h-[600px] pr-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {notes.map((note) => {
+          const sharedByName = note.shared_by_profile?.username || 
+                             note.shared_by_profile?.full_name || 
+                             'Unknown';
+          const initials = sharedByName
+            .split(' ')
+            .map(n => n[0])
+            .join('')
+            .toUpperCase();
+
+          return (
+            <Card 
+              key={note.note.id}
+              className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg border hover:border-accent"
+              onClick={() => setSelectedNote(note.note)}
+            >
+              <CardHeader className="space-y-0 pb-2">
+                <div className="flex items-start justify-between">
+                  <CardTitle className="text-lg line-clamp-1">{note.note.title}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                  {note.note.content}
+                </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Avatar className="h-6 w-6">
+                      <AvatarImage />
+                      <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+                    </Avatar>
+                    <span className="text-xs text-muted-foreground">{sharedByName}</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {format(new Date(note.shared_at), 'MMM d')}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
       
       {selectedNote && (
         <ViewSharedNote
@@ -102,6 +127,6 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
           onOpenChange={(open) => !open && setSelectedNote(null)}
         />
       )}
-    </div>
+    </ScrollArea>
   );
 };
