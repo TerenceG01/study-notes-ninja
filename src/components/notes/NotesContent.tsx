@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNotes, type Note } from "@/hooks/useNotes";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
@@ -147,29 +146,27 @@ export const NotesContent = () => {
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-thin min-h-0 relative border rounded-lg">
-        <div className="absolute inset-0 overflow-y-auto">
-          <NotesContainer
-            notes={filteredNotes}
-            loading={loading}
-            generatingFlashcardsForNote={generatingFlashcardsForNote}
-            selectedColor={selectedColor}
-            selectedSubject={currentSubject}
-            selectedDate={selectedDate}
-            uniqueSubjects={uniqueSubjects}
-            onColorChange={setSelectedColor}
-            onSubjectChange={() => {}}
-            onDateChange={setSelectedDate}
-            onClearFilters={clearFilters}
-            onNoteClick={(note) => {
-              setSelectedNote(note);
-              setEditingNote(note);
-              setShowSummary(false);
-            }}
-            onGenerateFlashcards={generateFlashcards}
-            onNotesChanged={fetchNotes}
-          />
-        </div>
+      <div className="flex-1 overflow-y-auto min-h-0 border rounded-lg">
+        <NotesContainer
+          notes={filteredNotes}
+          loading={loading}
+          generatingFlashcardsForNote={generatingFlashcardsForNote}
+          selectedColor={selectedColor}
+          selectedSubject={currentSubject}
+          selectedDate={selectedDate}
+          uniqueSubjects={uniqueSubjects}
+          onColorChange={setSelectedColor}
+          onSubjectChange={() => {}}
+          onDateChange={setSelectedDate}
+          onClearFilters={clearFilters}
+          onNoteClick={(note) => {
+            setSelectedNote(note);
+            setEditingNote(note);
+            setShowSummary(false);
+          }}
+          onGenerateFlashcards={generateFlashcards}
+          onNotesChanged={fetchNotes}
+        />
       </div>
 
       <EditNoteDialog
