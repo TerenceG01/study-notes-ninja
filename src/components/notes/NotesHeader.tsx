@@ -1,5 +1,5 @@
 
-import { Search, Filter, Plus } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
@@ -76,9 +76,6 @@ export const NotesHeader = ({
           >
             <Plus className="h-4 w-4 mr-2" />
             New Note
-          </Button>
-          <Button variant="outline" size="icon" className="hidden sm:flex">
-            <Filter className="h-4 w-4" />
           </Button>
         </div>
       </div>
