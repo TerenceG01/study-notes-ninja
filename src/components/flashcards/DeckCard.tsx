@@ -1,16 +1,20 @@
+
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Trash2 } from "lucide-react";
+
 interface DeckCardProps {
   deck: {
     id: string;
     title: string;
     description: string | null;
     total_cards?: number;
+    subject?: string;
   };
   onDelete: (deckId: string, event: React.MouseEvent) => void;
 }
+
 export const DeckCard = ({
   deck,
   onDelete
@@ -25,6 +29,11 @@ export const DeckCard = ({
           <CardDescription className="text-base line-clamp-2">
             {deck.description || "No description"}
           </CardDescription>
+          {deck.subject && (
+            <CardDescription className="text-sm mt-2 text-primary">
+              Subject: {deck.subject}
+            </CardDescription>
+          )}
         </CardHeader>
         <CardContent className="p-6 pt-0">
           <div className="flex items-center gap-2 text-base text-muted-foreground">
