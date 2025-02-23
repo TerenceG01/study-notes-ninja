@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,43 +11,42 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2, User, Mail, PenLine, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+
 const Profile = () => {
-  const {
-    user
-  } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
-  const {
-    theme,
-    setTheme,
-    resolvedTheme
-  } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
     setMounted(true);
   }, []);
+
   useEffect(() => {
     if (!user) {
       navigate("/auth");
       return;
     }
+
     const fetchProfile = async () => {
-      const {
-        data,
-        error
-      } = await supabase.from("profiles").select("username, theme_preference").eq("id", user.id).maybeSingle();
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("username, theme_preference")
+        .eq("id", user.id)
+        .maybeSingle();
+
       if (error) {
         toast({
           variant: "destructive",
           title: "Error fetching profile",
-          description: error.message
+          description: error.message,
         });
         return;
       }
+
       if (data) {
         setUsername(data.username || "");
         if (data.theme_preference) {
@@ -54,61 +54,68 @@ const Profile = () => {
         }
       }
     };
+
     fetchProfile();
   }, [user, navigate, toast, setTheme]);
+
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+
     setLoading(true);
-    const {
-      error
-    } = await supabase.from("profiles").update({
-      username
-    }).eq("id", user.id);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ username })
+      .eq("id", user.id);
+
     if (error) {
       toast({
         variant: "destructive",
         title: "Error updating profile",
-        description: error.message
+        description: error.message,
       });
     } else {
       toast({
-        title: "Profile updated successfully"
+        title: "Profile updated successfully",
       });
     }
     setLoading(false);
   };
+
   const toggleTheme = async () => {
     const newTheme = resolvedTheme === "light" ? "dark" : "light";
     if (user) {
-      const {
-        error
-      } = await supabase.from("profiles").update({
-        theme_preference: newTheme
-      }).eq("id", user.id);
+      const { error } = await supabase
+        .from("profiles")
+        .update({ theme_preference: newTheme })
+        .eq("id", user.id);
+
       if (error) {
         toast({
           variant: "destructive",
           title: "Error updating theme preference",
-          description: error.message
+          description: error.message,
         });
         return;
       }
     }
     setTheme(newTheme);
   };
+
   if (!mounted) {
     return null;
   }
-  return <div className="min-h-screen bg-background">
-      <div className="max-w-3xl px-[10px] mx-0 my-0 py-[24px]">
-        <div className="mb-8 px-[16px]">
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="max-w-3xl px-4 mx-auto py-8">
+        <div className="mb-8 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
           <h1 className="text-4xl font-bold text-primary">My Profile</h1>
           <p className="text-muted-foreground mt-2">Manage your personal information</p>
         </div>
 
         <div className="grid gap-6">
-          <Card className="w-full">
+          <Card className="w-full animate-[fadeSlideIn_0.5s_ease-out_200ms_forwards]">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl">Profile Information</CardTitle>
               <CardDescription>Update your profile details and manage your account</CardDescription>
@@ -139,7 +146,14 @@ const Profile = () => {
                 <div className="space-y-2">
                   <Label htmlFor="username">Username</Label>
                   <div className="relative">
-                    <Input id="username" type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter your username" className="pl-8" />
+                    <Input
+                      id="username"
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="Enter your username"
+                      className="pl-8"
+                    />
                     <User className="h-4 w-4 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
                   </div>
                   <p className="text-sm text-muted-foreground">
@@ -149,66 +163,74 @@ const Profile = () => {
 
                 <div className="flex justify-end">
                   <Button type="submit" disabled={loading} className="min-w-[120px]">
-                    {loading ? <div className="flex items-center gap-2">
+                    {loading ? (
+                      <div className="flex items-center gap-2">
                         <Loader2 className="h-4 w-4 animate-spin" />
                         Saving...
-                      </div> : "Save Changes"}
+                      </div>
+                    ) : (
+                      "Save Changes"
+                    )}
                   </Button>
                 </div>
               </form>
             </CardContent>
           </Card>
 
-          <Card className="w-full">
+          <Card className="w-full animate-[fadeSlideIn_0.5s_ease-out_400ms_forwards]">
             <CardHeader>
               <CardTitle className="text-xl">Appearance</CardTitle>
-              <CardDescription>
-                Customize your app appearance
-              </CardDescription>
+              <CardDescription>Customize your app appearance</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between p-4 rounded-lg border">
+              <div className="flex items-center justify-between p-4 rounded-lg border hover:shadow-lg transition-all duration-300">
                 <div className="flex items-center gap-2">
-                  {resolvedTheme === 'light' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                  {resolvedTheme === "light" ? (
+                    <Sun className="h-5 w-5" />
+                  ) : (
+                    <Moon className="h-5 w-5" />
+                  )}
                   <span className="font-medium">
-                    {resolvedTheme === 'light' ? 'Light' : 'Dark'} Mode
+                    {resolvedTheme === "light" ? "Light" : "Dark"} Mode
                   </span>
                 </div>
                 <Button variant="outline" onClick={toggleTheme} className="min-w-[100px]">
-                  {resolvedTheme === 'light' ? 'Dark Mode' : 'Light Mode'}
+                  {resolvedTheme === "light" ? "Dark Mode" : "Light Mode"}
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="w-full">
+          <Card className="w-full animate-[fadeSlideIn_0.5s_ease-out_600ms_forwards]">
             <CardHeader>
               <CardTitle className="text-xl text-destructive">Danger Zone</CardTitle>
-              <CardDescription>
-                Manage your account settings and preferences
-              </CardDescription>
+              <CardDescription>Manage your account settings and preferences</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="destructive" className="w-full sm:w-auto" onClick={async () => {
-              const {
-                error
-              } = await supabase.auth.signOut();
-              if (error) {
-                toast({
-                  variant: "destructive",
-                  title: "Error signing out",
-                  description: error.message
-                });
-              } else {
-                navigate("/auth");
-              }
-            }}>
+              <Button
+                variant="destructive"
+                className="w-full sm:w-auto"
+                onClick={async () => {
+                  const { error } = await supabase.auth.signOut();
+                  if (error) {
+                    toast({
+                      variant: "destructive",
+                      title: "Error signing out",
+                      description: error.message,
+                    });
+                  } else {
+                    navigate("/auth");
+                  }
+                }}
+              >
                 Sign Out
               </Button>
             </CardContent>
           </Card>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Profile;
