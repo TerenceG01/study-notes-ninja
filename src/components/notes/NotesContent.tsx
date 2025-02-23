@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNotes, type Note } from "@/hooks/useNotes";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
@@ -13,29 +12,38 @@ import { format } from "date-fns";
 import { NotesContainer } from "./NotesContainer";
 import { EditNoteDialog } from "./EditNoteDialog";
 import { NotesHeader } from "./NotesHeader";
-
 export const NotesContent = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
+  const {
+    user
+  } = useAuth();
+  const {
+    toast
+  } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSubject = searchParams.get("subject");
-  
+
   // Filter states
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  
-  const { notes: allNotes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards } = useNotes();
-  const { 
-    newNote, 
-    newTag, 
+  const {
+    notes: allNotes,
+    loading,
+    generatingFlashcardsForNote,
+    fetchNotes,
+    createNote,
+    generateFlashcards
+  } = useNotes();
+  const {
+    newNote,
+    newTag,
     isEditorExpanded,
-    setIsEditorExpanded, 
-    setNewTag, 
-    handleNoteChange, 
-    addTag, 
-    removeTag, 
-    resetEditor 
+    setIsEditorExpanded,
+    setNewTag,
+    handleNoteChange,
+    addTag,
+    removeTag,
+    resetEditor
   } = useNoteEditor();
   const {
     summarizing,
@@ -43,12 +51,10 @@ export const NotesContent = () => {
     showSummary,
     setSummaryLevel,
     setShowSummary,
-    generateSummary,
+    generateSummary
   } = useNoteSummary();
-  
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
-
   useEffect(() => {
     if (user) {
       fetchNotes();
@@ -62,16 +68,10 @@ export const NotesContent = () => {
   const filteredNotes = allNotes.filter(note => {
     const matchesColor = !selectedColor || note.subject_color === selectedColor;
     const matchesSubject = !currentSubject || note.subject === currentSubject;
-    const matchesDate = !selectedDate || 
-      format(new Date(note.created_at), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
-    const matchesSearch = !searchQuery || 
-      note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (note.subject?.toLowerCase() || '').includes(searchQuery.toLowerCase());
-    
+    const matchesDate = !selectedDate || format(new Date(note.created_at), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
+    const matchesSearch = !searchQuery || note.title.toLowerCase().includes(searchQuery.toLowerCase()) || note.content.toLowerCase().includes(searchQuery.toLowerCase()) || (note.subject?.toLowerCase() || '').includes(searchQuery.toLowerCase());
     return matchesColor && matchesSubject && matchesDate && matchesSearch;
   });
-
   const clearFilters = () => {
     setSelectedColor(null);
     setSelectedDate(null);
@@ -81,7 +81,6 @@ export const NotesContent = () => {
     newSearchParams.delete("subject");
     setSearchParams(newSearchParams);
   };
-
   const handleCreateNote = async () => {
     if (!user) return;
     const success = await createNote(newNote, user.id);
@@ -89,46 +88,41 @@ export const NotesContent = () => {
       resetEditor();
       toast({
         title: "Success",
-        description: "Note created successfully!",
+        description: "Note created successfully!"
       });
     }
   };
-
   const handleSearch = (query: string) => {
     setSearchQuery(query);
   };
-
   const handleGenerateSummary = async () => {
     if (!selectedNote || !editingNote) return;
     const summary = await generateSummary(selectedNote);
     if (summary) {
-      setEditingNote(prev => prev ? { ...prev, summary } : null);
+      setEditingNote(prev => prev ? {
+        ...prev,
+        summary
+      } : null);
       setShowSummary(true);
     }
   };
-
   const updateNote = async () => {
     if (!editingNote) return;
-
     try {
-      const { error } = await supabase
-        .from("notes")
-        .update({
-          title: editingNote.title,
-          content: editingNote.content,
-          summary: editingNote.summary,
-          tags: editingNote.tags || [],
-          subject: editingNote.subject,
-        })
-        .eq("id", editingNote.id);
-
+      const {
+        error
+      } = await supabase.from("notes").update({
+        title: editingNote.title,
+        content: editingNote.content,
+        summary: editingNote.summary,
+        tags: editingNote.tags || [],
+        subject: editingNote.subject
+      }).eq("id", editingNote.id);
       if (error) throw error;
-
       toast({
         title: "Success",
-        description: "Note updated successfully!",
+        description: "Note updated successfully!"
       });
-
       setSelectedNote(null);
       setEditingNote(null);
       setShowSummary(false);
@@ -137,75 +131,30 @@ export const NotesContent = () => {
       toast({
         variant: "destructive",
         title: "Error updating note",
-        description: "Failed to update note. Please try again.",
+        description: "Failed to update note. Please try again."
       });
     }
   };
-
-  return (
-    <div className="h-full flex flex-col space-y-4 p-4">
+  return <div className="">
       <div className="flex-none">
         <NotesHeader onSearch={handleSearch} />
-        <CreateNoteContainer
-          isExpanded={isEditorExpanded}
-          note={newNote}
-          newTag={newTag}
-          commonSubjects={CommonSubjects}
-          onNoteChange={handleNoteChange}
-          onTagChange={setNewTag}
-          onAddTag={addTag}
-          onRemoveTag={removeTag}
-          onCancel={resetEditor}
-          onSave={handleCreateNote}
-        />
+        <CreateNoteContainer isExpanded={isEditorExpanded} note={newNote} newTag={newTag} commonSubjects={CommonSubjects} onNoteChange={handleNoteChange} onTagChange={setNewTag} onAddTag={addTag} onRemoveTag={removeTag} onCancel={resetEditor} onSave={handleCreateNote} />
       </div>
 
-      <div className="flex-1 min-h-0">
-        <NotesContainer
-          notes={filteredNotes}
-          loading={loading}
-          generatingFlashcardsForNote={generatingFlashcardsForNote}
-          selectedColor={selectedColor}
-          selectedSubject={currentSubject}
-          selectedDate={selectedDate}
-          uniqueSubjects={uniqueSubjects}
-          onColorChange={setSelectedColor}
-          onSubjectChange={() => {}}
-          onDateChange={setSelectedDate}
-          onClearFilters={clearFilters}
-          onNoteClick={(note) => {
-            setSelectedNote(note);
-            setEditingNote(note);
-            setShowSummary(false);
-          }}
-          onGenerateFlashcards={generateFlashcards}
-          onNotesChanged={fetchNotes}
-        />
+      <div className="flex-1 overflow-y-auto min-h-0 border rounded-lg">
+        <NotesContainer notes={filteredNotes} loading={loading} generatingFlashcardsForNote={generatingFlashcardsForNote} selectedColor={selectedColor} selectedSubject={currentSubject} selectedDate={selectedDate} uniqueSubjects={uniqueSubjects} onColorChange={setSelectedColor} onSubjectChange={() => {}} onDateChange={setSelectedDate} onClearFilters={clearFilters} onNoteClick={note => {
+        setSelectedNote(note);
+        setEditingNote(note);
+        setShowSummary(false);
+      }} onGenerateFlashcards={generateFlashcards} onNotesChanged={fetchNotes} />
       </div>
 
-      <EditNoteDialog
-        open={!!selectedNote}
-        onOpenChange={(open) => {
-          if (!open) {
-            setSelectedNote(null);
-            setEditingNote(null);
-            setShowSummary(false);
-          }
-        }}
-        selectedNote={selectedNote}
-        editingNote={editingNote}
-        showSummary={showSummary}
-        summaryLevel={summaryLevel}
-        summarizing={summarizing}
-        newTag={newTag}
-        commonSubjects={CommonSubjects}
-        onNoteChange={setEditingNote}
-        onSummaryLevelChange={setSummaryLevel}
-        onGenerateSummary={handleGenerateSummary}
-        onToggleSummary={() => setShowSummary(!showSummary)}
-        onNewTagChange={setNewTag}
-        onSave={updateNote}
-      />
-    </div>
-  );
+      <EditNoteDialog open={!!selectedNote} onOpenChange={open => {
+      if (!open) {
+        setSelectedNote(null);
+        setEditingNote(null);
+        setShowSummary(false);
+      }
+    }} selectedNote={selectedNote} editingNote={editingNote} showSummary={showSummary} summaryLevel={summaryLevel} summarizing={summarizing} newTag={newTag} commonSubjects={CommonSubjects} onNoteChange={setEditingNote} onSummaryLevelChange={setSummaryLevel} onGenerateSummary={handleGenerateSummary} onToggleSummary={() => setShowSummary(!showSummary)} onNewTagChange={setNewTag} onSave={updateNote} />
+    </div>;
 };
