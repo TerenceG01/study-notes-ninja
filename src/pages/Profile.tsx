@@ -3,14 +3,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, User, Mail, PenLine, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { ProfileInfoCard } from "@/components/profile/ProfileInfoCard";
+import { AppearanceCard } from "@/components/profile/AppearanceCard";
+import { DangerZoneCard } from "@/components/profile/DangerZoneCard";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -102,6 +99,19 @@ const Profile = () => {
     setTheme(newTheme);
   };
 
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error signing out",
+        description: error.message,
+      });
+    } else {
+      navigate("/auth");
+    }
+  };
+
   if (!mounted) {
     return null;
   }
@@ -115,118 +125,18 @@ const Profile = () => {
         </div>
 
         <div className="grid gap-6">
-          <Card className="w-full animate-[fadeSlideIn_0.5s_ease-out_200ms_forwards]">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-xl">Profile Information</CardTitle>
-              <CardDescription>Update your profile details and manage your account</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-6 mb-8">
-                <Avatar className="h-20 w-20">
-                  <AvatarImage src={user?.user_metadata?.avatar_url} />
-                  <AvatarFallback className="bg-primary/10">
-                    <User className="h-8 w-8 text-primary" />
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Mail className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">{user?.email}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <PenLine className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">
-                      {username ? `@${username}` : "No username set"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <form onSubmit={handleUpdateProfile} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
-                  <div className="relative">
-                    <Input
-                      id="username"
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      placeholder="Enter your username"
-                      className="pl-8"
-                    />
-                    <User className="h-4 w-4 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    This is your public display name
-                  </p>
-                </div>
-
-                <div className="flex justify-end">
-                  <Button type="submit" disabled={loading} className="min-w-[120px]">
-                    {loading ? (
-                      <div className="flex items-center gap-2">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Saving...
-                      </div>
-                    ) : (
-                      "Save Changes"
-                    )}
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-
-          <Card className="w-full animate-[fadeSlideIn_0.5s_ease-out_400ms_forwards]">
-            <CardHeader>
-              <CardTitle className="text-xl">Appearance</CardTitle>
-              <CardDescription>Customize your app appearance</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between p-4 rounded-lg border hover:shadow-lg transition-all duration-300">
-                <div className="flex items-center gap-2">
-                  {resolvedTheme === "light" ? (
-                    <Sun className="h-5 w-5" />
-                  ) : (
-                    <Moon className="h-5 w-5" />
-                  )}
-                  <span className="font-medium">
-                    {resolvedTheme === "light" ? "Light" : "Dark"} Mode
-                  </span>
-                </div>
-                <Button variant="outline" onClick={toggleTheme} className="min-w-[100px]">
-                  {resolvedTheme === "light" ? "Dark Mode" : "Light Mode"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="w-full animate-[fadeSlideIn_0.5s_ease-out_600ms_forwards]">
-            <CardHeader>
-              <CardTitle className="text-xl text-destructive">Danger Zone</CardTitle>
-              <CardDescription>Manage your account settings and preferences</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                variant="destructive"
-                className="w-full sm:w-auto"
-                onClick={async () => {
-                  const { error } = await supabase.auth.signOut();
-                  if (error) {
-                    toast({
-                      variant: "destructive",
-                      title: "Error signing out",
-                      description: error.message,
-                    });
-                  } else {
-                    navigate("/auth");
-                  }
-                }}
-              >
-                Sign Out
-              </Button>
-            </CardContent>
-          </Card>
+          <ProfileInfoCard
+            user={user}
+            username={username}
+            loading={loading}
+            setUsername={setUsername}
+            onSubmit={handleUpdateProfile}
+          />
+          <AppearanceCard
+            resolvedTheme={resolvedTheme}
+            onToggleTheme={toggleTheme}
+          />
+          <DangerZoneCard onSignOut={handleSignOut} />
         </div>
       </div>
     </div>
