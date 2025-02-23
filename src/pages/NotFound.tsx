@@ -17,7 +17,7 @@ const NotFound = () => {
     <div className="min-h-screen bg-background">
       <NavigationBar />
       <div className="pt-16 flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center animate-[fadeSlideIn_0.5s_ease-out_forwards]">
           <h1 className="text-4xl font-bold mb-4">404</h1>
           <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
           <a href="/" className="text-blue-500 hover:text-blue-700 underline">

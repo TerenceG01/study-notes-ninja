@@ -92,7 +92,7 @@ const StudyGroupDetails = () => {
       <div className="min-h-screen bg-background">
         <NavigationBar />
         <main className="container mx-auto px-4 pt-20">
-          <div className="text-center py-12">
+          <div className="text-center py-12 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
             <h2 className="text-2xl font-bold">Study Group Not Found</h2>
             <p className="text-muted-foreground mt-2">
               The study group you're looking for doesn't exist or you don't have access to it.
@@ -109,21 +109,25 @@ const StudyGroupDetails = () => {
     <div className="min-h-screen bg-background">
       <NavigationBar />
       <main className="container pt-0 mx-auto my-0 px-4 py-6">
-        <GroupHeader 
-          name={studyGroup.name} 
-          subject={studyGroup.subject} 
-          userRole={userRole} 
-          groupId={studyGroup.id} 
-        />
+        <div className="animate-[fadeSlideIn_0.5s_ease-out_forwards]">
+          <GroupHeader 
+            name={studyGroup.name} 
+            subject={studyGroup.subject} 
+            userRole={userRole} 
+            groupId={studyGroup.id} 
+          />
+        </div>
 
         <div className="grid gap-6 md:grid-cols-3">
           <div className="md:col-span-2 space-y-6">
-            <GroupAbout 
-              description={studyGroup.description} 
-              createdAt={studyGroup.created_at} 
-            />
+            <div className="animate-[fadeSlideIn_0.5s_ease-out_200ms_forwards]">
+              <GroupAbout 
+                description={studyGroup.description} 
+                createdAt={studyGroup.created_at} 
+              />
+            </div>
 
-            <Card>
+            <Card className="animate-[fadeSlideIn_0.5s_ease-out_400ms_forwards]">
               <CardHeader>
                 <CardTitle>Shared Notes</CardTitle>
                 <CardDescription>
@@ -136,7 +140,7 @@ const StudyGroupDetails = () => {
             </Card>
 
             {userRole && (
-              <Card>
+              <Card className="animate-[fadeSlideIn_0.5s_ease-out_600ms_forwards]">
                 <CardHeader>
                   <CardTitle>Invite Members</CardTitle>
                   <CardDescription>
@@ -151,8 +155,12 @@ const StudyGroupDetails = () => {
           </div>
 
           <div className="space-y-6">
-            <GroupMembersList members={members || []} />
-            <GroupReminders groupId={studyGroup.id} userRole={userRole} />
+            <div className="animate-[fadeSlideIn_0.5s_ease-out_200ms_forwards]">
+              <GroupMembersList members={members || []} />
+            </div>
+            <div className="animate-[fadeSlideIn_0.5s_ease-out_400ms_forwards]">
+              <GroupReminders groupId={studyGroup.id} userRole={userRole} />
+            </div>
           </div>
         </div>
       </main>
