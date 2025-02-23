@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
 import { NavigationBar } from "@/components/navigation/NavigationBar";
+import { BookOpen, PenLine, Brain, Users } from "lucide-react";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -82,85 +82,140 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="flex items-center justify-center px-4 py-8 min-h-[calc(100vh-4rem)]">
-        <Card className="w-full max-w-md mx-auto">
-          <CardHeader className="space-y-2 text-center">
-            <CardTitle className="text-3xl font-bold tracking-tight">Welcome back</CardTitle>
-            <CardDescription className="text-base">
-              Sign in to your account or create a new one
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-8">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
-              <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
-                    <Input
-                      id="signin-email"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="w-full"
-                    />
+      <main className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+        <div className="container grid lg:grid-cols-2 gap-8 px-4 py-8 items-center max-w-6xl mx-auto">
+          {/* Auth Form */}
+          <Card className="w-full max-w-md mx-auto">
+            <CardHeader className="space-y-2 text-center">
+              <CardTitle className="text-3xl font-bold tracking-tight">Welcome back</CardTitle>
+              <CardDescription className="text-base">
+                Sign in to your account or create a new one
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="signin" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-8">
+                  <TabsTrigger value="signin">Sign In</TabsTrigger>
+                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                </TabsList>
+                <TabsContent value="signin">
+                  <form onSubmit={handleSignIn} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-email">Email</Label>
+                      <Input
+                        id="signin-email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-password">Password</Label>
+                      <Input
+                        id="signin-password"
+                        type="password"
+                        placeholder="Enter your password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className="w-full"
+                      />
+                    </div>
+                    <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                      {loading ? "Signing in..." : "Sign In"}
+                    </Button>
+                  </form>
+                </TabsContent>
+                <TabsContent value="signup">
+                  <form onSubmit={handleSignUp} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email">Email</Label>
+                      <Input
+                        id="signup-email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password">Password</Label>
+                      <Input
+                        id="signup-password"
+                        type="password"
+                        placeholder="Create a password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className="w-full"
+                      />
+                    </div>
+                    <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                      {loading ? "Signing up..." : "Sign Up"}
+                    </Button>
+                  </form>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+
+          {/* Animated Features */}
+          <div className="hidden lg:flex flex-col gap-6 animate-fade-in">
+            <div className="space-y-8">
+              <h2 className="text-3xl font-bold tracking-tight text-primary">
+                Study Smarter with StudyNotes
+              </h2>
+              
+              {/* Feature Cards */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover-lift">
+                  <div className="p-2 rounded-full bg-primary/10">
+                    <BookOpen className="w-6 h-6 text-primary" />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
-                    <Input
-                      id="signin-password"
-                      type="password"
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="w-full"
-                    />
+                  <div>
+                    <h3 className="font-semibold mb-1">Smart Note Taking</h3>
+                    <p className="text-muted-foreground">Create and organize your study notes with ease</p>
                   </div>
-                  <Button type="submit" className="w-full" size="lg" disabled={loading}>
-                    {loading ? "Signing in..." : "Sign In"}
-                  </Button>
-                </form>
-              </TabsContent>
-              <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="w-full"
-                    />
+                </div>
+
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover-lift animation-delay-200">
+                  <div className="p-2 rounded-full bg-primary/10">
+                    <PenLine className="w-6 h-6 text-primary" />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      placeholder="Create a password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="w-full"
-                    />
+                  <div>
+                    <h3 className="font-semibold mb-1">AI-Powered Summaries</h3>
+                    <p className="text-muted-foreground">Generate concise summaries of your notes automatically</p>
                   </div>
-                  <Button type="submit" className="w-full" size="lg" disabled={loading}>
-                    {loading ? "Signing up..." : "Sign Up"}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover-lift animation-delay-400">
+                  <div className="p-2 rounded-full bg-primary/10">
+                    <Brain className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Flashcard Generation</h3>
+                    <p className="text-muted-foreground">Convert your notes into interactive flashcards</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover-lift animation-delay-600">
+                  <div className="p-2 rounded-full bg-primary/10">
+                    <Users className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Study Groups</h3>
+                    <p className="text-muted-foreground">Collaborate with peers in interactive study groups</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );
