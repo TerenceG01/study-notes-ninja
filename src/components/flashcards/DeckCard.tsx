@@ -19,10 +19,16 @@ export const DeckCard = ({
   deck,
   onDelete
 }: DeckCardProps) => {
-  return <Link to={`/flashcards/${deck.id}`}>
-      <Card className="h-full hover:bg-muted/50 transition-colors group px-0 mx-[10px]">
+  return (
+    <Link to={`/flashcards/${deck.id}`}>
+      <Card className="h-full hover:bg-muted/50 transition-colors group">
         <CardHeader className="relative p-6">
-          <Button variant="ghost" size="icon" className="absolute right-4 top-4 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => onDelete(deck.id, e)}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-4 top-4 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={e => onDelete(deck.id, e)}
+          >
             <Trash2 className="h-4 w-4 text-destructive" />
           </Button>
           <CardTitle className="text-2xl mb-2 line-clamp-1">{deck.title}</CardTitle>
@@ -42,5 +48,6 @@ export const DeckCard = ({
           </div>
         </CardContent>
       </Card>
-    </Link>;
+    </Link>
+  );
 };
