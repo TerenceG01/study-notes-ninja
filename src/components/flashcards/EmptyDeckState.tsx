@@ -2,14 +2,16 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Plus } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface EmptyDeckStateProps {
   onCreateClick: () => void;
+  className?: string;
 }
 
-export const EmptyDeckState = ({ onCreateClick }: EmptyDeckStateProps) => {
+export const EmptyDeckState = ({ onCreateClick, className }: EmptyDeckStateProps) => {
   return (
-    <Card className="bg-muted/50">
+    <Card className={cn("bg-muted/50", className)}>
       <CardContent className="flex flex-col items-center justify-center py-16">
         <BookOpen className="h-16 w-16 text-muted-foreground mb-6" />
         <p className="text-xl font-medium mb-3">No flashcard decks yet</p>
