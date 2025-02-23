@@ -5,9 +5,9 @@ import { NavigationBar } from "@/components/navigation/NavigationBar";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background w-full">
       <NavigationBar />
-      <div className="pt-16"> {/* Added padding to account for fixed navbar */}
+      <div className="pt-16 w-full">
         <Hero />
         <Features />
       </div>
