@@ -16,7 +16,6 @@ export type Database = {
           id: string
           last_used_mode: string | null
           learned_cards: number | null
-          subject: string | null
           tags: string[] | null
           title: string
           total_cards: number | null
@@ -29,7 +28,6 @@ export type Database = {
           id?: string
           last_used_mode?: string | null
           learned_cards?: number | null
-          subject?: string | null
           tags?: string[] | null
           title: string
           total_cards?: number | null
@@ -42,7 +40,6 @@ export type Database = {
           id?: string
           last_used_mode?: string | null
           learned_cards?: number | null
-          subject?: string | null
           tags?: string[] | null
           title?: string
           total_cards?: number | null

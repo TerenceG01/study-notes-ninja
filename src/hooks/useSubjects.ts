@@ -1,5 +1,6 @@
+
 import { useMemo, useEffect } from "react";
-import { useNotes, type Note } from "./useNotes";
+import { useNotes } from "./useNotes";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useSearchParams } from "react-router-dom";
@@ -19,9 +20,9 @@ export function useSubjects() {
     
     notes.forEach(note => {
       if (note.subject && note.subject !== "General") {
+        // If we haven't seen this subject yet, add it with its order
         if (!subjectsMap.has(note.subject)) {
-          const order = note.subject_order ?? 0;
-          subjectsMap.set(note.subject, order);
+          subjectsMap.set(note.subject, note.subject_order || 0);
         }
       }
     });
@@ -62,6 +63,7 @@ export function useSubjects() {
 
       if (error) throw error;
 
+      // Clear the subject from URL params if it's the current subject
       const currentSubject = searchParams.get("subject");
       if (currentSubject === subject) {
         const newSearchParams = new URLSearchParams(searchParams);
@@ -69,6 +71,7 @@ export function useSubjects() {
         setSearchParams(newSearchParams);
       }
 
+      // Refresh the notes list
       await fetchNotes();
       
       toast({
@@ -86,6 +89,7 @@ export function useSubjects() {
 
   const reorderSubject = async (subjects: SubjectWithOrder[]) => {
     try {
+      // Update all notes for each subject with new order
       for (const { subject, order } of subjects) {
         const { error } = await supabase
           .from('notes')

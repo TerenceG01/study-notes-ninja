@@ -19,42 +19,33 @@ export const NotesContent = () => {
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSubject = searchParams.get("subject");
-
+  
   // Filter states
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
-
-  const {
-    notes: allNotes,
-    loading,
-    generatingFlashcardsForNote,
-    fetchNotes,
-    createNote,
-    generateFlashcards
-  } = useNotes();
-
-  const {
-    newNote,
-    newTag,
+  
+  const { notes: allNotes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards } = useNotes();
+  const { 
+    newNote, 
+    newTag, 
     isEditorExpanded,
-    setIsEditorExpanded,
-    setNewTag,
-    handleNoteChange,
-    addTag,
-    removeTag,
-    resetEditor
+    setIsEditorExpanded, 
+    setNewTag, 
+    handleNoteChange, 
+    addTag, 
+    removeTag, 
+    resetEditor 
   } = useNoteEditor();
-
   const {
     summarizing,
     summaryLevel,
     showSummary,
     setSummaryLevel,
     setShowSummary,
-    generateSummary
+    generateSummary,
   } = useNoteSummary();
-
+  
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
 
@@ -71,11 +62,13 @@ export const NotesContent = () => {
   const filteredNotes = allNotes.filter(note => {
     const matchesColor = !selectedColor || note.subject_color === selectedColor;
     const matchesSubject = !currentSubject || note.subject === currentSubject;
-    const matchesDate = !selectedDate || format(new Date(note.created_at), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
+    const matchesDate = !selectedDate || 
+      format(new Date(note.created_at), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
     const matchesSearch = !searchQuery || 
-      note.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      note.content.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (note.subject?.toLowerCase() || '').includes(searchQuery.toLowerCase());
+    
     return matchesColor && matchesSubject && matchesDate && matchesSearch;
   });
 
@@ -96,29 +89,27 @@ export const NotesContent = () => {
       resetEditor();
       toast({
         title: "Success",
-        description: "Note created successfully!"
+        description: "Note created successfully!",
       });
     }
   };
 
-  const handleGenerateFlashcards = async (note: Note) => {
-    return await generateFlashcards(note.id);
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
   };
 
   const handleGenerateSummary = async () => {
     if (!selectedNote || !editingNote) return;
     const summary = await generateSummary(selectedNote);
     if (summary) {
-      setEditingNote(prev => prev ? {
-        ...prev,
-        summary
-      } : null);
+      setEditingNote(prev => prev ? { ...prev, summary } : null);
       setShowSummary(true);
     }
   };
 
   const updateNote = async () => {
     if (!editingNote) return;
+
     try {
       const { error } = await supabase
         .from("notes")
@@ -128,15 +119,16 @@ export const NotesContent = () => {
           summary: editingNote.summary,
           tags: editingNote.tags || [],
           subject: editingNote.subject,
-          subject_color: editingNote.subject_color
         })
         .eq("id", editingNote.id);
 
       if (error) throw error;
+
       toast({
         title: "Success",
-        description: "Note updated successfully!"
+        description: "Note updated successfully!",
       });
+
       setSelectedNote(null);
       setEditingNote(null);
       setShowSummary(false);
@@ -145,13 +137,13 @@ export const NotesContent = () => {
       toast({
         variant: "destructive",
         title: "Error updating note",
-        description: "Failed to update note. Please try again."
+        description: "Failed to update note. Please try again.",
       });
     }
   };
 
   return (
-    <div className="mx-auto max-w-[min(100%,64rem)] flex flex-col space-y-4 h-full py-0 px-[10px]">
+    <div className="mx-auto max-w-[min(100%,64rem)] flex flex-col space-y-4 h-full">
       <div className="flex-none">
         <NotesHeader onSearch={handleSearch} />
         <CreateNoteContainer
@@ -186,14 +178,14 @@ export const NotesContent = () => {
             setEditingNote(note);
             setShowSummary(false);
           }}
-          onGenerateFlashcards={handleGenerateFlashcards}
+          onGenerateFlashcards={generateFlashcards}
           onNotesChanged={fetchNotes}
         />
       </div>
 
       <EditNoteDialog
         open={!!selectedNote}
-        onOpenChange={open => {
+        onOpenChange={(open) => {
           if (!open) {
             setSelectedNote(null);
             setEditingNote(null);
@@ -207,7 +199,7 @@ export const NotesContent = () => {
         summarizing={summarizing}
         newTag={newTag}
         commonSubjects={CommonSubjects}
-        onNoteChange={(note) => setEditingNote(note)}
+        onNoteChange={setEditingNote}
         onSummaryLevelChange={setSummaryLevel}
         onGenerateSummary={handleGenerateSummary}
         onToggleSummary={() => setShowSummary(!showSummary)}

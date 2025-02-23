@@ -8,12 +8,11 @@ interface NoteEditorStore {
     title: string;
     content: string;
     tags: string[];
-    subject: string | null;
-    subject_color: string | null;
+    subject: string;
   };
   newTag: string;
   setNewTag: (value: string) => void;
-  handleNoteChange: (field: string, value: string | string[] | null) => void;
+  handleNoteChange: (field: string, value: string | string[]) => void;
   addTag: () => void;
   removeTag: (tag: string) => void;
   resetEditor: () => void;
@@ -26,8 +25,7 @@ export const useNoteEditor = create<NoteEditorStore>((set) => ({
     title: "",
     content: "",
     tags: [],
-    subject: "General",
-    subject_color: null
+    subject: "General"
   },
   newTag: "",
   setNewTag: (value) => set({ newTag: value }),
@@ -57,13 +55,7 @@ export const useNoteEditor = create<NoteEditorStore>((set) => ({
     })),
   resetEditor: () =>
     set({
-      newNote: {
-        title: "",
-        content: "",
-        tags: [],
-        subject: "General",
-        subject_color: null
-      },
+      newNote: { title: "", content: "", tags: [], subject: "General" },
       newTag: "",
       isEditorExpanded: false
     })
