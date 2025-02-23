@@ -1,6 +1,6 @@
 
 import { useMemo, useEffect } from "react";
-import { useNotes } from "./useNotes";
+import { useNotes, type Note } from "./useNotes";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useSearchParams } from "react-router-dom";
@@ -20,9 +20,10 @@ export function useSubjects() {
     
     notes.forEach(note => {
       if (note.subject && note.subject !== "General") {
-        // If we haven't seen this subject yet, add it with its order
         if (!subjectsMap.has(note.subject)) {
-          subjectsMap.set(note.subject, note.subject_order || 0);
+          // Default to 0 if subject_order is not available
+          const order = typeof note.subject_order === 'number' ? note.subject_order : 0;
+          subjectsMap.set(note.subject, order);
         }
       }
     });
