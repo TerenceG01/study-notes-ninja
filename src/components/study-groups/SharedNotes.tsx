@@ -76,7 +76,7 @@ const DraggableNoteCard = ({ note }: { note: SharedNote }) => {
       <div
         {...attributes}
         {...listeners}
-        className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 cursor-move p-2"
+        className="absolute left-2 top-[1.65rem] opacity-0 group-hover:opacity-100 cursor-move p-2"
       >
         <GripVertical className="h-4 w-4 text-muted-foreground" />
       </div>
