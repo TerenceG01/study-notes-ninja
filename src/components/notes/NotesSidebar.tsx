@@ -65,12 +65,12 @@ export function NotesSidebar() {
   return (
     <>
       <div className={cn(
-        "fixed top-0 left-0 h-full bg-background/50 backdrop-blur-sm transition-all duration-300 z-0",
+        "fixed top-0 left-0 h-screen bg-background/50 backdrop-blur-sm transition-all duration-300 z-0",
         isOpen ? "w-60" : "w-20"
       )} />
       
       <Sidebar className={cn(
-        "border-r bg-primary/5 backdrop-blur-sm h-full transition-all duration-300 relative z-10",
+        "border-r bg-primary/5 backdrop-blur-sm min-h-screen transition-all duration-300 relative z-10",
         isOpen ? "w-40" : "w-20"
       )}>
         <SidebarHeader className="p-4 border-b">
