@@ -42,7 +42,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="flex min-h-[calc(100vh-4rem)] pt-16">
         <NotesSidebar />
         <div className="flex-1 relative">
-          <main className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+          <main>
             {children}
           </main>
         </div>
@@ -55,7 +55,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen">
       <NavigationBar />
-      <main className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+      <main className="p-4">
         {children}
       </main>
     </div>

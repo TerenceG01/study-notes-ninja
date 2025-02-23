@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-
 export interface Note {
   id: string;
   created_at: string;
@@ -13,28 +12,23 @@ export interface Note {
   user_id: string;
   subject: string | null;
   subject_color: string | null;
-  subject_order: number | null;
-  folder: string | null;
 }
-
 export function useNotes() {
-  const { user } = useAuth();
-  const { toast } = useToast();
+  const {
+    user
+  } = useAuth();
+  const {
+    toast
+  } = useToast();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(false);
   const [generatingFlashcardsForNote, setGeneratingFlashcardsForNote] = useState<string | null>(null);
-  const [newNote, setNewNote] = useState<{
-    title: string;
-    content: string;
-    subject: string | null;
-    subject_color: string | null;
-  }>({
+  const [newNote, setNewNote] = useState({
     title: "",
     content: "",
     subject: null,
     subject_color: null
   });
-
   const fetchNotes = useCallback(async () => {
     if (!user) return;
     setLoading(true);
@@ -59,7 +53,6 @@ export function useNotes() {
       setLoading(false);
     }
   }, [user, toast]);
-
   const createNote = async (note: {
     title: string;
     content: string;
@@ -67,13 +60,17 @@ export function useNotes() {
     subject_color: string | null;
   }, userId: string) => {
     try {
-      const { data, error } = await supabase.from("notes").insert([{
+      const {
+        data,
+        error
+      } = await supabase.from("notes").insert([{
         ...note,
-        user_id: userId,
-        folder: 'My Notes'
+        user_id: userId
       }]);
-      if (error) throw new Error(error.message);
-      fetchNotes();
+      if (error) {
+        throw new Error(error.message);
+      }
+      fetchNotes(); // Refresh notes after creating a new one
       return true;
     } catch (error: any) {
       toast({
@@ -84,7 +81,6 @@ export function useNotes() {
       return false;
     }
   };
-
   const generateFlashcards = async (noteId: string) => {
     try {
       setGeneratingFlashcardsForNote(noteId);
@@ -134,15 +130,12 @@ export function useNotes() {
       setGeneratingFlashcardsForNote(null);
     }
   };
-
   return {
     notes,
     loading,
     generatingFlashcardsForNote,
     fetchNotes,
     createNote,
-    generateFlashcards,
-    newNote,
-    setNewNote
+    generateFlashcards
   };
 }

@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { NotesTable } from "./NotesTable";
 import { NoteFilters } from "./filters/NoteFilters";
