@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNotes, type Note } from "@/hooks/useNotes";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
@@ -12,13 +13,10 @@ import { format } from "date-fns";
 import { NotesContainer } from "./NotesContainer";
 import { EditNoteDialog } from "./EditNoteDialog";
 import { NotesHeader } from "./NotesHeader";
+
 export const NotesContent = () => {
-  const {
-    user
-  } = useAuth();
-  const {
-    toast
-  } = useToast();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSubject = searchParams.get("subject");
 
@@ -26,6 +24,7 @@ export const NotesContent = () => {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
+
   const {
     notes: allNotes,
     loading,
@@ -34,6 +33,7 @@ export const NotesContent = () => {
     createNote,
     generateFlashcards
   } = useNotes();
+
   const {
     newNote,
     newTag,
@@ -45,6 +45,7 @@ export const NotesContent = () => {
     removeTag,
     resetEditor
   } = useNoteEditor();
+
   const {
     summarizing,
     summaryLevel,
@@ -53,8 +54,10 @@ export const NotesContent = () => {
     setShowSummary,
     generateSummary
   } = useNoteSummary();
+
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
+
   useEffect(() => {
     if (user) {
       fetchNotes();
@@ -69,9 +72,13 @@ export const NotesContent = () => {
     const matchesColor = !selectedColor || note.subject_color === selectedColor;
     const matchesSubject = !currentSubject || note.subject === currentSubject;
     const matchesDate = !selectedDate || format(new Date(note.created_at), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
-    const matchesSearch = !searchQuery || note.title.toLowerCase().includes(searchQuery.toLowerCase()) || note.content.toLowerCase().includes(searchQuery.toLowerCase()) || (note.subject?.toLowerCase() || '').includes(searchQuery.toLowerCase());
+    const matchesSearch = !searchQuery || 
+      note.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      note.content.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      (note.subject?.toLowerCase() || '').includes(searchQuery.toLowerCase());
     return matchesColor && matchesSubject && matchesDate && matchesSearch;
   });
+
   const clearFilters = () => {
     setSelectedColor(null);
     setSelectedDate(null);
@@ -81,6 +88,7 @@ export const NotesContent = () => {
     newSearchParams.delete("subject");
     setSearchParams(newSearchParams);
   };
+
   const handleCreateNote = async () => {
     if (!user) return;
     const success = await createNote(newNote, user.id);
@@ -92,9 +100,11 @@ export const NotesContent = () => {
       });
     }
   };
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
+
+  const handleGenerateFlashcards = async (note: Note) => {
+    return await generateFlashcards(note.id);
   };
+
   const handleGenerateSummary = async () => {
     if (!selectedNote || !editingNote) return;
     const summary = await generateSummary(selectedNote);
@@ -106,18 +116,22 @@ export const NotesContent = () => {
       setShowSummary(true);
     }
   };
+
   const updateNote = async () => {
     if (!editingNote) return;
     try {
-      const {
-        error
-      } = await supabase.from("notes").update({
-        title: editingNote.title,
-        content: editingNote.content,
-        summary: editingNote.summary,
-        tags: editingNote.tags || [],
-        subject: editingNote.subject
-      }).eq("id", editingNote.id);
+      const { error } = await supabase
+        .from("notes")
+        .update({
+          title: editingNote.title,
+          content: editingNote.content,
+          summary: editingNote.summary,
+          tags: editingNote.tags || [],
+          subject: editingNote.subject,
+          subject_color: editingNote.subject_color
+        })
+        .eq("id", editingNote.id);
+
       if (error) throw error;
       toast({
         title: "Success",
@@ -135,26 +149,71 @@ export const NotesContent = () => {
       });
     }
   };
-  return <div className="mx-auto max-w-[min(100%,64rem)] flex flex-col space-y-4 h-full py-0 px-[10px]">
+
+  return (
+    <div className="mx-auto max-w-[min(100%,64rem)] flex flex-col space-y-4 h-full py-0 px-[10px]">
       <div className="flex-none">
         <NotesHeader onSearch={handleSearch} />
-        <CreateNoteContainer isExpanded={isEditorExpanded} note={newNote} newTag={newTag} commonSubjects={CommonSubjects} onNoteChange={handleNoteChange} onTagChange={setNewTag} onAddTag={addTag} onRemoveTag={removeTag} onCancel={resetEditor} onSave={handleCreateNote} />
+        <CreateNoteContainer
+          isExpanded={isEditorExpanded}
+          note={newNote}
+          newTag={newTag}
+          commonSubjects={CommonSubjects}
+          onNoteChange={handleNoteChange}
+          onTagChange={setNewTag}
+          onAddTag={addTag}
+          onRemoveTag={removeTag}
+          onCancel={resetEditor}
+          onSave={handleCreateNote}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0 border rounded-lg">
-        <NotesContainer notes={filteredNotes} loading={loading} generatingFlashcardsForNote={generatingFlashcardsForNote} selectedColor={selectedColor} selectedSubject={currentSubject} selectedDate={selectedDate} uniqueSubjects={uniqueSubjects} onColorChange={setSelectedColor} onSubjectChange={() => {}} onDateChange={setSelectedDate} onClearFilters={clearFilters} onNoteClick={note => {
-        setSelectedNote(note);
-        setEditingNote(note);
-        setShowSummary(false);
-      }} onGenerateFlashcards={generateFlashcards} onNotesChanged={fetchNotes} />
+        <NotesContainer
+          notes={filteredNotes}
+          loading={loading}
+          generatingFlashcardsForNote={generatingFlashcardsForNote}
+          selectedColor={selectedColor}
+          selectedSubject={currentSubject}
+          selectedDate={selectedDate}
+          uniqueSubjects={uniqueSubjects}
+          onColorChange={setSelectedColor}
+          onSubjectChange={() => {}}
+          onDateChange={setSelectedDate}
+          onClearFilters={clearFilters}
+          onNoteClick={(note) => {
+            setSelectedNote(note);
+            setEditingNote(note);
+            setShowSummary(false);
+          }}
+          onGenerateFlashcards={handleGenerateFlashcards}
+          onNotesChanged={fetchNotes}
+        />
       </div>
 
-      <EditNoteDialog open={!!selectedNote} onOpenChange={open => {
-      if (!open) {
-        setSelectedNote(null);
-        setEditingNote(null);
-        setShowSummary(false);
-      }
-    }} selectedNote={selectedNote} editingNote={editingNote} showSummary={showSummary} summaryLevel={summaryLevel} summarizing={summarizing} newTag={newTag} commonSubjects={CommonSubjects} onNoteChange={setEditingNote} onSummaryLevelChange={setSummaryLevel} onGenerateSummary={handleGenerateSummary} onToggleSummary={() => setShowSummary(!showSummary)} onNewTagChange={setNewTag} onSave={updateNote} />
-    </div>;
+      <EditNoteDialog
+        open={!!selectedNote}
+        onOpenChange={open => {
+          if (!open) {
+            setSelectedNote(null);
+            setEditingNote(null);
+            setShowSummary(false);
+          }
+        }}
+        selectedNote={selectedNote}
+        editingNote={editingNote}
+        showSummary={showSummary}
+        summaryLevel={summaryLevel}
+        summarizing={summarizing}
+        newTag={newTag}
+        commonSubjects={CommonSubjects}
+        onNoteChange={(note) => setEditingNote(note)}
+        onSummaryLevelChange={setSummaryLevel}
+        onGenerateSummary={handleGenerateSummary}
+        onToggleSummary={() => setShowSummary(!showSummary)}
+        onNewTagChange={setNewTag}
+        onSave={updateNote}
+      />
+    </div>
+  );
 };
