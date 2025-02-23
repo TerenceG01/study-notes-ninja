@@ -81,6 +81,50 @@
   }
 }
 
+/* Animation keyframes */
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Additional utilities */
+@layer utilities {
+  .sidebar-bg {
+    @apply bg-white dark:bg-[#1F1F1F];
+  }
+  
+  .card-bg {
+    @apply bg-white dark:bg-[#232323];
+  }
+  
+  .hover-effect {
+    @apply hover:bg-[#F3F4F6] dark:hover:bg-[#4F46E5];
+  }
+  
+  .border-color {
+    @apply border-[#E5E7EB] dark:border-[#3F3F3F];
+  }
+}
+
 .glass-morphism {
   @apply bg-white/80 dark:bg-black/80 backdrop-blur-sm border-accent dark:border-border;
 }
@@ -121,23 +165,4 @@
 
 .animation-delay-600 {
   animation-delay: 600ms;
-}
-
-/* Additional utilities */
-@layer utilities {
-  .sidebar-bg {
-    @apply bg-white dark:bg-[#1F1F1F];
-  }
-  
-  .card-bg {
-    @apply bg-white dark:bg-[#232323];
-  }
-  
-  .hover-effect {
-    @apply hover:bg-[#F3F4F6] dark:hover:bg-[#4F46E5];
-  }
-  
-  .border-color {
-    @apply border-[#E5E7EB] dark:border-[#3F3F3F];
-  }
 }

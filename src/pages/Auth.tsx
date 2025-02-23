@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -165,15 +166,15 @@ const Auth = () => {
           </Card>
 
           {/* Animated Features */}
-          <div className="hidden lg:flex flex-col gap-6 animate-fade-in">
+          <div className="hidden lg:flex flex-col gap-6">
             <div className="space-y-8">
-              <h2 className="text-3xl font-bold tracking-tight text-primary">
+              <h2 className="text-3xl font-bold tracking-tight text-primary animate-fade-in">
                 Study Smarter with StudyNotes
               </h2>
               
               {/* Feature Cards */}
               <div className="space-y-4">
-                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover-lift">
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
                   <div className="p-2 rounded-full bg-primary/10">
                     <BookOpen className="w-6 h-6 text-primary" />
                   </div>
@@ -183,7 +184,7 @@ const Auth = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover-lift animation-delay-200">
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_200ms_forwards]">
                   <div className="p-2 rounded-full bg-primary/10">
                     <PenLine className="w-6 h-6 text-primary" />
                   </div>
@@ -193,7 +194,7 @@ const Auth = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover-lift animation-delay-400">
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_400ms_forwards]">
                   <div className="p-2 rounded-full bg-primary/10">
                     <Brain className="w-6 h-6 text-primary" />
                   </div>
@@ -203,7 +204,7 @@ const Auth = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover-lift animation-delay-600">
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_600ms_forwards]">
                   <div className="p-2 rounded-full bg-primary/10">
                     <Users className="w-6 h-6 text-primary" />
                   </div>
