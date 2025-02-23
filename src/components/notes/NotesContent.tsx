@@ -143,7 +143,7 @@ export const NotesContent = () => {
   };
 
   return (
-    <div className="mx-auto max-w-[min(100%,64rem)] flex flex-col space-y-4 h-full">
+    <div className="h-full flex flex-col space-y-4 p-4">
       <div className="flex-none">
         <NotesHeader onSearch={handleSearch} />
         <CreateNoteContainer
@@ -160,7 +160,7 @@ export const NotesContent = () => {
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto min-h-0 border rounded-lg">
+      <div className="flex-1 min-h-0">
         <NotesContainer
           notes={filteredNotes}
           loading={loading}

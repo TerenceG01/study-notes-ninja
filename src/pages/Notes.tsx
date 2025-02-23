@@ -14,8 +14,8 @@ const Notes = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen">
-      <div className="mx-auto max-w-[min(100%,64rem)] space-y-4">
+    <div className="h-[calc(100vh-4rem)]">
+      <div className="h-full mx-auto max-w-[min(100%,64rem)]">
         <NotesContent />
       </div>
     </div>
