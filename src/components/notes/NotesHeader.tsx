@@ -44,7 +44,13 @@ export const NotesHeader = ({
   const handleSave = async () => {
     if (!user) return;
     
-    const success = await createNote(newNote, user.id);
+    const success = await createNote({
+      title: newNote.title,
+      content: newNote.content,
+      subject: newNote.subject,
+      subject_color: newNote.subject_color
+    }, user.id);
+
     if (success) {
       resetEditor();
       toast({

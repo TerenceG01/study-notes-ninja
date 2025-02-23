@@ -143,6 +143,12 @@ export const NotesContent = () => {
       });
     }
   };
+
+  const handleNoteClick = (note: Note) => {
+    setSelectedNote(note);
+    setEditingNote(note);
+  };
+
   return (
     <div className="mx-auto max-w-[min(100%,64rem)] flex flex-col space-y-4 h-full py-0 px-[10px]">
       <div className="flex-none">
@@ -181,7 +187,7 @@ export const NotesContent = () => {
             newSearchParams.delete("subject");
             setSearchParams(newSearchParams);
           }}
-          onNoteClick={setSelectedNote}
+          onNoteClick={handleNoteClick}
           onGenerateFlashcards={handleGenerateFlashcards}
           onNotesChanged={fetchNotes}
         />
