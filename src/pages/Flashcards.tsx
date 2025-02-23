@@ -86,7 +86,7 @@ const Flashcards = () => {
 
         {isLoading ? <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-          </div> : decks?.length === 0 ? <EmptyDeckState onCreateClick={() => setIsCreatingDeck(true)} /> : <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          </div> : decks?.length === 0 ? <EmptyDeckState onCreateClick={() => setIsCreatingDeck(true)} className="px-[15px]" /> : <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {decks?.map(deck => <DeckCard key={deck.id} deck={deck} onDelete={handleDelete} />)}
           </div>}
 
