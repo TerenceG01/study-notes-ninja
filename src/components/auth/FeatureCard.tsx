@@ -1,4 +1,5 @@
 
+import { memo } from "react";
 import { LucideIcon } from "lucide-react";
 
 interface FeatureCardProps {
@@ -8,7 +9,12 @@ interface FeatureCardProps {
   delay?: string;
 }
 
-export function FeatureCard({ icon: Icon, title, description, delay = "0ms" }: FeatureCardProps) {
+export const FeatureCard = memo(function FeatureCard({ 
+  icon: Icon, 
+  title, 
+  description, 
+  delay = "0ms" 
+}: FeatureCardProps) {
   return (
     <div className={`flex items-start gap-4 p-4 rounded-lg bg-white/80 dark:bg-black/20 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_${delay}_forwards]`}>
       <div className="p-2 rounded-full bg-primary/10">
@@ -20,4 +26,5 @@ export function FeatureCard({ icon: Icon, title, description, delay = "0ms" }: F
       </div>
     </div>
   );
-}
+});
+

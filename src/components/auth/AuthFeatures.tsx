@@ -1,8 +1,9 @@
 
+import { memo } from "react";
 import { BookOpen, PenLine, Brain, Users } from "lucide-react";
 import { FeatureCard } from "./FeatureCard";
 
-export function AuthFeatures() {
+export const AuthFeatures = memo(function AuthFeatures() {
   return (
     <div className="hidden lg:flex flex-col gap-6">
       <div className="space-y-8">
@@ -38,4 +39,5 @@ export function AuthFeatures() {
       </div>
     </div>
   );
-}
+});
+

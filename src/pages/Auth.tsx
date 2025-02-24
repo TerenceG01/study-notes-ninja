@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { NavigationBar } from "@/components/navigation/NavigationBar";
@@ -9,6 +9,7 @@ import { AuthFeatures } from "@/components/auth/AuthFeatures";
 const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [confirmingEmail, setConfirmingEmail] = useState(true);
 
   useEffect(() => {
     // Check for confirmation email success
@@ -22,7 +23,12 @@ const Auth = () => {
         description: "Your email has been confirmed. Welcome!",
       });
     }
+    setConfirmingEmail(false);
   }, [navigate, toast]);
+
+  if (confirmingEmail) {
+    return null; // Or a loading spinner if you prefer
+  }
 
   return (
     <div className="min-h-screen bg-background relative">
