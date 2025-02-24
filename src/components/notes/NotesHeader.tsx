@@ -56,8 +56,9 @@ export const NotesHeader = ({
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-card p-6 rounded-lg shadow-sm border border-border/50">
-        <div>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-br from-card via-card/95 to-secondary/80 backdrop-blur-sm p-6 rounded-lg shadow-card border border-border/50 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-50" />
+        <div className="relative z-10">
           <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-primary bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
             My Notes
           </h1>
@@ -65,7 +66,7 @@ export const NotesHeader = ({
             Organize and manage your study materials
           </p>
         </div>
-        <div className="flex items-center gap-4 w-full sm:w-auto">
+        <div className="flex items-center gap-4 w-full sm:w-auto relative z-10">
           <div className="relative flex-1 sm:flex-initial sm:w-64">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search notes..." className="pl-10" onChange={e => onSearch(e.target.value)} />
