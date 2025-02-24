@@ -55,21 +55,8 @@ export const ViewSharedNote = ({ note, open, onOpenChange }: ViewSharedNoteProps
     },
   });
 
-  const handleClose = () => {
-    setIsEditing(false);  // Reset editing state
-    setContent(note.content);  // Reset content to original
-    onOpenChange(false);
-  };
-
   return (
-    <Dialog 
-      open={open} 
-      onOpenChange={(newOpen) => {
-        if (!newOpen) {
-          handleClose();
-        }
-      }}
-    >
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[90vw] max-h-[90vh] p-4 md:p-6 md:w-[80vw] lg:w-[60vw] xl:w-[800px] overflow-y-auto">
         <DialogHeader className="space-y-4">
           <DialogTitle className="text-xl md:text-2xl">{note.title}</DialogTitle>
