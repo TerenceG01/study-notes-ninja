@@ -20,7 +20,6 @@ import { NavigationBar } from "./components/navigation/NavigationBar";
 import { NotesSidebar } from "./components/notes/NotesSidebar";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { ThemeProvider } from "next-themes";
-import { DialogProvider } from "@radix-ui/react-dialog";
 
 const ProtectedRoute = ({
   children
@@ -46,19 +45,17 @@ const AppLayout = ({
   children: React.ReactNode;
 }) => {
   return (
-    <DialogProvider>
-      <div className="min-h-screen">
-        <NavigationBar />
-        <div className="flex min-h-[calc(100vh-4rem)] pt-16">
-          <NotesSidebar />
-          <div className="flex-1 relative">
-            <main>
-              {children}
-            </main>
-          </div>
+    <div className="min-h-screen">
+      <NavigationBar />
+      <div className="flex min-h-[calc(100vh-4rem)] pt-16">
+        <NotesSidebar />
+        <div className="flex-1 relative">
+          <main>
+            {children}
+          </main>
         </div>
       </div>
-    </DialogProvider>
+    </div>
   );
 };
 
@@ -68,14 +65,12 @@ const MainLayout = ({
   children: React.ReactNode;
 }) => {
   return (
-    <DialogProvider>
-      <div className="min-h-screen">
-        <NavigationBar />
-        <main className="container mx-auto sm:px-6 lg:px-8 max-w-[1400px] px-[240px]">
-          {children}
-        </main>
-      </div>
-    </DialogProvider>
+    <div className="min-h-screen">
+      <NavigationBar />
+      <main className="container mx-auto sm:px-6 lg:px-8 max-w-[1400px] px-[240px]">
+        {children}
+      </main>
+    </div>
   );
 };
 
