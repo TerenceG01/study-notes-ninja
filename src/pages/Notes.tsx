@@ -11,7 +11,7 @@ const Notes = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="mx-auto max-w-[min(100%,64rem)] space-y-4 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 space-y-4 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
         <NotesContent />
       </div>
     </div>

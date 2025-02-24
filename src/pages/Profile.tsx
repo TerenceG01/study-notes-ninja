@@ -132,13 +132,13 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-3xl px-4 mx-auto py-8">
+      <div className="container mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 py-6">
         <div className="mb-8 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
           <h1 className="text-4xl font-bold text-primary">My Profile</h1>
           <p className="text-muted-foreground mt-2">Manage your personal information</p>
         </div>
 
-        <div className="grid gap-6">
+        <div className="grid gap-6 max-w-3xl mx-auto">
           <ProfileInfoCard
             user={user}
             username={username}

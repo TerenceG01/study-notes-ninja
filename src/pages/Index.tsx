@@ -7,7 +7,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background w-full">
       <NavigationBar />
-      <div className="pt-16 w-full animate-[fadeSlideIn_0.5s_ease-out_forwards]">
+      <div className="container mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pt-16 w-full animate-[fadeSlideIn_0.5s_ease-out_forwards]">
         <Hero />
         <Features />
       </div>

@@ -51,9 +51,9 @@ const StudyGroups = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="container mx-0 my-0 py-[24px] px-[10px]">
+      <main className="container mx-auto py-6 px-4 sm:px-6 lg:px-8 max-w-[1400px]">
         <div className="flex justify-between items-start mb-8 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
-          <div className="px-[16px]">
+          <div>
             <h1 className="text-4xl font-bold text-primary">Study Groups</h1>
             <p className="text-muted-foreground mt-2">
               Collaborate with other students in study groups
