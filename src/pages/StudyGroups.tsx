@@ -1,3 +1,4 @@
+
 import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -21,29 +22,32 @@ interface StudyGroup {
 }
 
 const StudyGroups = () => {
-  const {
-    user
-  } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const {
-    data: studyGroups,
-    isLoading
-  } = useQuery({
+
+  const { data: studyGroups, isLoading, error } = useQuery({
     queryKey: ['study-groups'],
     queryFn: async () => {
       if (!user?.id) throw new Error("User not authenticated");
-      const {
-        data,
-        error
-      } = await supabase.rpc('get_user_study_groups', {
+      
+      const { data, error } = await supabase.rpc('get_user_study_groups', {
         p_user_id: user.id
       });
+      
       if (error) throw error;
       return (data || []) as StudyGroup[];
     },
-    enabled: !!user
+    enabled: !!user,
+    retry: 1, // Only retry once if there's an error
+    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
   });
+
+  if (!user) {
+    navigate('/auth');
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <NavigationBar />
@@ -74,6 +78,13 @@ const StudyGroups = () => {
         {isLoading ? (
           <div className="flex justify-center items-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <p className="text-destructive mb-4">Error loading study groups</p>
+            <Button variant="outline" onClick={() => window.location.reload()}>
+              Try Again
+            </Button>
           </div>
         ) : !studyGroups || studyGroups.length === 0 ? (
           <EmptyGroupState onCreateClick={() => setIsOpen(true)} />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,20 +29,13 @@ interface CreateStudyGroupFormProps {
   onSuccess?: () => void;
 }
 
-interface StudyGroup {
-  id: string;
-  name: string;
-  subject: string;
-  description: string | null;
-  created_by: string;
-  created_at: string;
-}
+type FormData = z.infer<typeof formSchema>;
 
 export const CreateStudyGroupForm = ({ onSuccess }: CreateStudyGroupFormProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -52,7 +45,7 @@ export const CreateStudyGroupForm = ({ onSuccess }: CreateStudyGroupFormProps) =
   });
 
   const createGroupMutation = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => {
+    mutationFn: async (values: FormData) => {
       if (!user?.id) throw new Error("User not authenticated");
 
       const { data: groupData, error: groupError } = await supabase.rpc('create_study_group', {
@@ -88,12 +81,12 @@ export const CreateStudyGroupForm = ({ onSuccess }: CreateStudyGroupFormProps) =
       toast({
         variant: "destructive",
         title: "Error creating study group",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An error occurred",
       });
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: FormData) => {
     createGroupMutation.mutate(values);
   };
 
