@@ -38,7 +38,6 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         .from('multiple_choice_options')
         .select('*')
         .eq('flashcard_id', currentCard.id);
-
       if (error) throw error;
       return data || [];
     },
@@ -77,7 +76,6 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
           is_correct: isCorrect,
           user_id: (await supabase.auth.getUser()).data.user?.id,
         });
-
       if (error) throw error;
     },
     onSuccess: () => {
@@ -139,7 +137,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   if (!currentCard || !options) {
     return (
       <div className="text-center py-8">
-        <p className="text-lg font-medium mb-4">No flashcards available</p>
+        <p className="text-lg font-medium">No flashcards available</p>
       </div>
     );
   }
@@ -179,7 +177,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         </Button>
       </div>
 
-      <Card className="mb-6">
+      <Card>
         <CardContent className="p-6">
           <h3 className="text-lg font-medium mb-4">{currentCard.question}</h3>
           <MultipleChoiceOptions
