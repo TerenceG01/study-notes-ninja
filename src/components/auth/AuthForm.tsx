@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,52 +16,57 @@ export function AuthForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: window.location.origin + '/auth#signup'
-      }
-    });
-
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error signing up",
-        description: error.message,
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth#signup`
+        }
       });
-    } else {
+
+      if (error) throw error;
+
       toast({
         title: "Success!",
         description: "Please check your email to confirm your account.",
       });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error signing up",
+        description: error instanceof Error ? error.message : "An error occurred",
+      });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleSignIn = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
+      if (error) throw error;
+      navigate("/profile");
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error signing in",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An error occurred",
       });
-    } else {
-      navigate("/profile");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
