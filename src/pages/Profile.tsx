@@ -18,10 +18,12 @@ const Profile = () => {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
+  // Handle theme mounting
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Handle profile data fetching
   useEffect(() => {
     if (!user) {
       navigate("/auth");
@@ -29,26 +31,28 @@ const Profile = () => {
     }
 
     const fetchProfile = async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("username, theme_preference")
-        .eq("id", user.id)
-        .maybeSingle();
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("username, theme_preference")
+          .eq("id", user.id)
+          .maybeSingle();
 
-      if (error) {
+        if (error) throw error;
+
+        if (data) {
+          setUsername(data.username || "");
+          if (data.theme_preference) {
+            setTheme(data.theme_preference);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
         toast({
           variant: "destructive",
           title: "Error fetching profile",
-          description: error.message,
+          description: error instanceof Error ? error.message : "An error occurred",
         });
-        return;
-      }
-
-      if (data) {
-        setUsername(data.username || "");
-        if (data.theme_preference) {
-          setTheme(data.theme_preference);
-        }
       }
     };
 
@@ -60,58 +64,68 @@ const Profile = () => {
     if (!user) return;
 
     setLoading(true);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ username })
-      .eq("id", user.id);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ username })
+        .eq("id", user.id);
 
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error updating profile",
-        description: error.message,
-      });
-    } else {
+      if (error) throw error;
+
       toast({
         title: "Profile updated successfully",
       });
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast({
+        variant: "destructive",
+        title: "Error updating profile",
+        description: error instanceof Error ? error.message : "An error occurred",
+      });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const toggleTheme = async () => {
     const newTheme = resolvedTheme === "light" ? "dark" : "light";
-    if (user) {
+    if (!user) return;
+
+    try {
       const { error } = await supabase
         .from("profiles")
         .update({ theme_preference: newTheme })
         .eq("id", user.id);
 
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Error updating theme preference",
-          description: error.message,
-        });
-        return;
-      }
+      if (error) throw error;
+
+      setTheme(newTheme);
+    } catch (error) {
+      console.error("Error updating theme preference:", error);
+      toast({
+        variant: "destructive",
+        title: "Error updating theme preference",
+        description: error instanceof Error ? error.message : "An error occurred",
+      });
     }
-    setTheme(newTheme);
   };
 
   const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      navigate("/auth");
+    } catch (error) {
+      console.error("Error signing out:", error);
       toast({
         variant: "destructive",
         title: "Error signing out",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An error occurred",
       });
-    } else {
-      navigate("/auth");
     }
   };
 
+  // Prevent theme flash on load
   if (!mounted) {
     return null;
   }
