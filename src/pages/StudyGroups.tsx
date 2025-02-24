@@ -52,7 +52,7 @@ const StudyGroups = () => {
   }
   return <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="container mx-auto sm:px-6 lg:px-8 max-w-[1400px] px-[10px] py-[24px]">
+      <main className="container mx-auto sm:px-6 lg:px-8 max-w-[1400px] py-[24px] px-[10px]">
         <div className="flex justify-between items-start mb-8 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
           <div>
             <h1 className="text-4xl font-bold text-primary">Study Groups</h1>
