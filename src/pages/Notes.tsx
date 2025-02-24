@@ -1,12 +1,9 @@
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useSidebar } from "@/components/ui/sidebar";
 import { NotesContent } from "@/components/notes/NotesContent";
 
 const Notes = () => {
   const { user } = useAuth();
-  const { state } = useSidebar();
-
   if (!user) return null;
 
   return (

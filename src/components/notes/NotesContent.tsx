@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useNotes, type Note } from "@/hooks/useNotes";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
 import { useNoteSummary } from "@/hooks/useNoteSummary";
-import { CreateNoteContainer } from "./CreateNoteContainer";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,7 +19,6 @@ export const NotesContent = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSubject = searchParams.get("subject");
   
-  // Filter states
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -28,13 +26,13 @@ export const NotesContent = () => {
   const { notes: allNotes, loading, generatingFlashcardsForNote, fetchNotes, createNote, generateFlashcards } = useNotes();
   const { 
     newNote, 
-    newTag, 
+    newTag,
     isEditorExpanded,
-    setIsEditorExpanded, 
-    setNewTag, 
-    handleNoteChange, 
-    addTag, 
-    removeTag, 
+    setIsEditorExpanded,
+    setNewTag,
+    handleNoteChange,
+    addTag,
+    removeTag,
     resetEditor 
   } = useNoteEditor();
   const {
@@ -55,10 +53,8 @@ export const NotesContent = () => {
     }
   }, [user, fetchNotes]);
 
-  // Get unique subjects from notes
   const uniqueSubjects = Array.from(new Set(allNotes.map(note => note.subject).filter(Boolean)));
 
-  // Apply filters and search
   const filteredNotes = allNotes.filter(note => {
     const matchesColor = !selectedColor || note.subject_color === selectedColor;
     const matchesSubject = !currentSubject || note.subject === currentSubject;
@@ -76,26 +72,9 @@ export const NotesContent = () => {
     setSelectedColor(null);
     setSelectedDate(null);
     setSearchQuery("");
-    // Clear the subject from URL params
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.delete("subject");
     setSearchParams(newSearchParams);
-  };
-
-  const handleCreateNote = async () => {
-    if (!user) return;
-    const success = await createNote(newNote, user.id);
-    if (success) {
-      resetEditor();
-      toast({
-        title: "Success",
-        description: "Note created successfully!",
-      });
-    }
-  };
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
   };
 
   const handleGenerateSummary = async () => {
@@ -144,22 +123,7 @@ export const NotesContent = () => {
 
   return (
     <div className="mx-auto max-w-[min(100%,64rem)] flex flex-col space-y-4 h-full">
-      <div className="flex-none">
-        <NotesHeader onSearch={handleSearch} />
-        <CreateNoteContainer
-          isExpanded={isEditorExpanded}
-          note={newNote}
-          newTag={newTag}
-          commonSubjects={CommonSubjects}
-          onNoteChange={handleNoteChange}
-          onTagChange={setNewTag}
-          onAddTag={addTag}
-          onRemoveTag={removeTag}
-          onCancel={resetEditor}
-          onSave={handleCreateNote}
-        />
-      </div>
-
+      <NotesHeader onSearch={setSearchQuery} />
       <div className="flex-1 overflow-y-auto min-h-0 border rounded-lg">
         <NotesContainer
           notes={filteredNotes}
