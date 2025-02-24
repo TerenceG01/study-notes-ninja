@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,54 +20,69 @@ import { NavigationBar } from "./components/navigation/NavigationBar";
 import { NotesSidebar } from "./components/notes/NotesSidebar";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { ThemeProvider } from "next-themes";
+import { DialogProvider } from "@radix-ui/react-dialog";
+
 const ProtectedRoute = ({
   children
 }: {
   children: React.ReactNode;
 }) => {
-  const {
-    user,
-    loading
-  } = useAuth();
+  const { user, loading } = useAuth();
+  
   if (loading) {
     return <div>Loading...</div>;
   }
+  
   if (!user) {
     return <Navigate to="/auth" />;
   }
+  
   return <>{children}</>;
 };
+
 const AppLayout = ({
   children
 }: {
   children: React.ReactNode;
 }) => {
-  return <div className="min-h-screen">
-      <NavigationBar />
-      <div className="flex min-h-[calc(100vh-4rem)] pt-16">
-        <NotesSidebar />
-        <div className="flex-1 relative">
-          <main>
-            {children}
-          </main>
+  return (
+    <DialogProvider>
+      <div className="min-h-screen">
+        <NavigationBar />
+        <div className="flex min-h-[calc(100vh-4rem)] pt-16">
+          <NotesSidebar />
+          <div className="flex-1 relative">
+            <main>
+              {children}
+            </main>
+          </div>
         </div>
       </div>
-    </div>;
+    </DialogProvider>
+  );
 };
+
 const MainLayout = ({
   children
 }: {
   children: React.ReactNode;
 }) => {
-  return <div className="min-h-screen">
-      <NavigationBar />
-      <main className="container mx-auto sm:px-6 lg:px-8 max-w-[1400px] px-[240px]">
-        {children}
-      </main>
-    </div>;
+  return (
+    <DialogProvider>
+      <div className="min-h-screen">
+        <NavigationBar />
+        <main className="container mx-auto sm:px-6 lg:px-8 max-w-[1400px] px-[240px]">
+          {children}
+        </main>
+      </div>
+    </DialogProvider>
+  );
 };
+
 const queryClient = new QueryClient();
-const App = () => <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+
+const App = () => (
+  <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
@@ -91,5 +107,7 @@ const App = () => <ThemeProvider attribute="class" defaultTheme="system" enableS
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
-  </ThemeProvider>;
+  </ThemeProvider>
+);
+
 export default App;
