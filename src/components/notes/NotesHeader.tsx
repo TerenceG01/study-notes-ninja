@@ -14,9 +14,7 @@ interface NotesHeaderProps {
   onSearch: (query: string) => void;
 }
 
-export const NotesHeader = ({
-  onSearch
-}: NotesHeaderProps) => {
+export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
   const { user } = useAuth();
   const { createNote } = useNotes();
   const { 
@@ -33,7 +31,6 @@ export const NotesHeader = ({
   const { toast } = useToast();
 
   const handleCreateNote = () => {
-    console.log("Creating new note..."); // Debug log
     setIsEditorExpanded(true);
     toast({
       title: "Create Note",
