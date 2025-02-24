@@ -77,6 +77,10 @@ const StudyGroups = () => {
     }
   };
 
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+  };
+
   if (!user) {
     navigate('/auth');
     return null;
@@ -93,7 +97,7 @@ const StudyGroups = () => {
               Collaborate with other students in study groups
             </p>
           </div>
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
               <Button className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />
