@@ -81,9 +81,12 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
       <NavigationBar />
-      <main className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="w-1/2 h-full bg-[#D6BCFA]/10 absolute right-0" />
+      </div>
+      <main className="flex items-center justify-center min-h-[calc(100vh-4rem)] relative">
         <div className="container grid lg:grid-cols-2 gap-8 px-4 py-8 items-center max-w-6xl mx-auto">
           {/* Auth Form */}
           <Card className="w-full max-w-md mx-auto">
@@ -174,7 +177,7 @@ const Auth = () => {
               
               {/* Feature Cards */}
               <div className="space-y-4">
-                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-white/80 dark:bg-black/20 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
                   <div className="p-2 rounded-full bg-primary/10">
                     <BookOpen className="w-6 h-6 text-primary" />
                   </div>
@@ -184,7 +187,7 @@ const Auth = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_200ms_forwards]">
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-white/80 dark:bg-black/20 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_200ms_forwards]">
                   <div className="p-2 rounded-full bg-primary/10">
                     <PenLine className="w-6 h-6 text-primary" />
                   </div>
@@ -194,7 +197,7 @@ const Auth = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_400ms_forwards]">
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-white/80 dark:bg-black/20 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_400ms_forwards]">
                   <div className="p-2 rounded-full bg-primary/10">
                     <Brain className="w-6 h-6 text-primary" />
                   </div>
@@ -204,7 +207,7 @@ const Auth = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 rounded-lg bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_600ms_forwards]">
+                <div className="flex items-start gap-4 p-4 rounded-lg bg-white/80 dark:bg-black/20 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_600ms_forwards]">
                   <div className="p-2 rounded-full bg-primary/10">
                     <Users className="w-6 h-6 text-primary" />
                   </div>
