@@ -149,7 +149,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
         .select(`
           id,
           note_id,
-          note:notes!study_group_notes_note_id_fkey (
+          note:notes (
             id,
             title,
             content,
@@ -158,7 +158,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
           shared_by,
           shared_at,
           display_order,
-          shared_by_profile:profiles!study_group_notes_shared_by_fkey (
+          shared_by_profile:profiles (
             username,
             full_name
           )
@@ -172,7 +172,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
       }
 
       console.log('Fetched shared notes:', data);
-      return data as SharedNote[];
+      return (data || []) as SharedNote[];
     },
     enabled: !!groupId,
   });
