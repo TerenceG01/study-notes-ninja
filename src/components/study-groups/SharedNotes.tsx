@@ -132,14 +132,17 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
     })
   );
 
+  console.log('SharedNotes component rendered with groupId:', groupId); // Debug log
+
   const { data: notes, isLoading } = useQuery({
     queryKey: ['group-shared-notes', groupId],
     queryFn: async () => {
+      console.log('Fetching shared notes for group:', groupId); // Debug log
       const { data, error } = await supabase
         .from('study_group_notes')
         .select(`
           id,
-          note:notes!study_group_notes_note_id_fkey (
+          note:notes (
             id,
             title,
             content,
@@ -148,7 +151,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
           shared_by,
           shared_at,
           display_order,
-          shared_by_profile:profiles!study_group_notes_shared_by_profiles_fkey (
+          shared_by_profile:profiles (
             username,
             full_name
           )
@@ -156,9 +159,14 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
         .eq('group_id', groupId)
         .order('display_order');
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching shared notes:', error); // Debug log
+        throw error;
+      }
+      console.log('Fetched shared notes:', data); // Debug log
       return data as SharedNote[];
     },
+    enabled: !!groupId,
   });
 
   const updateOrderMutation = useMutation({
@@ -190,7 +198,6 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
     updatedNotes.splice(oldIndex, 1);
     updatedNotes.splice(newIndex, 0, movedNote);
     
-    // Update orders in database
     updatedNotes.forEach((note, index) => {
       if (note.display_order !== index + 1) {
         updateOrderMutation.mutate({
