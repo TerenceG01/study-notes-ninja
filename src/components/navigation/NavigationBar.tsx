@@ -1,38 +1,35 @@
 
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Icons } from "@/components/icons";
-import { buttonVariants } from "@/components/ui/button";
-import { NavigationItems } from "./NavigationItems";
 import { useAuth } from "@/contexts/AuthContext";
-import { useState, useEffect } from "react";
-import { AuthDialog } from "../auth/AuthDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { UserCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Menu } from "lucide-react";
+import { useSidebar } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const NavigationBar = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [showAuthDialog, setShowAuthDialog] = useState(false);
-  const [username, setUsername] = useState<string | null>(null);
+  const { toggleSidebar } = useSidebar();
+  const isMobile = useIsMobile();
 
-  useEffect(() => {
-    if (user) {
-      const fetchUsername = async () => {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('username')
-          .eq('id', user.id)
-          .single();
-        
-        if (data) {
-          setUsername(data.username);
-        }
-      };
+  const { data: profile } = useQuery({
+    queryKey: ['profile', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', user.id)
+        .single();
       
-      fetchUsername();
-    }
-  }, [user]);
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -40,41 +37,53 @@ export const NavigationBar = () => {
       toast({
         variant: "destructive",
         title: "Error signing out",
-        description: error.message
+        description: error.message,
       });
     } else {
       toast({
-        title: "Signed out successfully"
+        title: "Signed out successfully",
       });
     }
   };
 
   return (
-    <>
-      <header className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-6">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 rounded-full bg-primary/5 px-3 py-1.5">
-              <UserCircle className="h-5 w-5 text-primary" />
-              <span className="font-medium text-sm md:text-base">
-                {username || "No username set"}
-              </span>
-            </div>
-          </div>
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <button
-              onClick={handleLogout}
-              className={buttonVariants({ 
-                variant: "ghost",
-                className: "hover:bg-primary/10 transition-colors duration-200"
-              })}
-            >
-              Logout
-            </button>
+            {isMobile && user && (
+              <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+                <Menu className="h-5 w-5" />
+              </Button>
+            )}
+            <Link to="/" className="text-xl font-bold text-primary flex items-center gap-2">
+              {user && profile?.username && (
+                <span className="text-muted-foreground">{profile.username}</span>
+              )}
+              StudyNotes
+            </Link>
+          </div>
+          
+          <div className="flex gap-4">
+            {user ? (
+              <>
+                <Button variant="ghost" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link to="/auth">Sign In</Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/auth?tab=sign-up">Get Started</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
-      </header>
-      <AuthDialog open={showAuthDialog} onOpenChange={setShowAuthDialog} defaultTab="sign-in" />
-    </>
+      </div>
+    </nav>
   );
 };
