@@ -65,41 +65,39 @@ const Flashcards = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-start mb-8 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
-            <div>
-              <h1 className="text-4xl font-bold text-primary">My Flashcards</h1>
-              <p className="text-muted-foreground mt-2">Review and manage your flashcard decks</p>
-            </div>
-            <Button onClick={() => setIsCreatingDeck(true)} className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              Create New Deck
-            </Button>
+      <main className="container mx-auto px-4 py-6">
+        <div className="flex justify-between items-start mb-8 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
+          <div>
+            <h1 className="text-4xl font-bold text-primary">My Flashcards</h1>
+            <p className="text-muted-foreground mt-2">Review and manage your flashcard decks</p>
           </div>
-
-          {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            </div>
-          ) : decks?.length === 0 ? (
-            <EmptyDeckState onCreateClick={() => setIsCreatingDeck(true)} />
-          ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 animate-[fadeSlideIn_0.5s_ease-out_200ms_forwards]">
-              {decks?.map(deck => (
-                <DeckCard key={deck.id} deck={deck} onDelete={handleDelete} />
-              ))}
-            </div>
-          )}
-
-          {user && (
-            <CreateDeckDialog 
-              open={isCreatingDeck} 
-              onOpenChange={setIsCreatingDeck} 
-              userId={user.id} 
-            />
-          )}
+          <Button onClick={() => setIsCreatingDeck(true)} className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Create New Deck
+          </Button>
         </div>
+
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : decks?.length === 0 ? (
+          <EmptyDeckState onCreateClick={() => setIsCreatingDeck(true)} />
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 animate-[fadeSlideIn_0.5s_ease-out_200ms_forwards]">
+            {decks?.map(deck => (
+              <DeckCard key={deck.id} deck={deck} onDelete={handleDelete} />
+            ))}
+          </div>
+        )}
+
+        {user && (
+          <CreateDeckDialog 
+            open={isCreatingDeck} 
+            onOpenChange={setIsCreatingDeck} 
+            userId={user.id} 
+          />
+        )}
       </main>
     </div>
   );
