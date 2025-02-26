@@ -40,14 +40,8 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
 
-  // Add validation for groupId
-  if (!groupId) {
-    console.error('ShareNote component: groupId is required but was not provided');
-    return null;
-  }
-
   const { data: notes, isLoading: loadingNotes } = useQuery({
-    queryKey: ['user-notes'],
+    queryKey: ['user-notes', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('notes')
@@ -63,6 +57,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
   const { data: sharedNotes, isLoading: loadingSharedNotes } = useQuery({
     queryKey: ['shared-notes', groupId],
     queryFn: async () => {
+      if (!groupId) return [];
       const { data, error } = await supabase
         .from('study_group_notes')
         .select('note_id')
@@ -71,12 +66,13 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
       if (error) throw error;
       return data.map(n => n.note_id);
     },
-    enabled: !!groupId, // Only run if groupId is available
+    enabled: !!groupId && !!user,
   });
 
   const { data: maxOrder } = useQuery({
     queryKey: ['max-note-order', groupId],
     queryFn: async () => {
+      if (!groupId) return 0;
       const { data, error } = await supabase
         .from('study_group_notes')
         .select('display_order')
@@ -87,23 +83,23 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
       if (error) throw error;
       return data.length > 0 ? data[0].display_order : 0;
     },
-    enabled: !!groupId, // Only run if groupId is available
+    enabled: !!groupId && !!user,
   });
 
   const shareNoteMutation = useMutation({
     mutationFn: async (noteId: string) => {
-      if (!groupId) {
-        throw new Error('Cannot share note: No group ID provided');
+      if (!groupId || !user?.id) {
+        throw new Error('Cannot share note: Missing required data');
       }
-      
+
       const insertData = {
         group_id: groupId,
         note_id: noteId,
-        shared_by: user?.id,
+        shared_by: user.id,
         display_order: (maxOrder || 0) + 1,
       };
       
-      console.log('Sharing note with data:', insertData); // Debug log
+      console.log('Sharing note with data:', insertData);
       
       const { error } = await supabase
         .from('study_group_notes')
@@ -114,14 +110,14 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shared-notes', groupId] });
       queryClient.invalidateQueries({ queryKey: ['group-shared-notes', groupId] });
-      setOpen(false); // Close dialog on success
+      setOpen(false);
       toast({
         title: "Note shared",
         description: "The note has been shared with the group.",
       });
     },
     onError: (error) => {
-      console.error('Error sharing note:', error); // Debug log
+      console.error('Error sharing note:', error);
       toast({
         variant: "destructive",
         title: "Error sharing note",
@@ -169,10 +165,13 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
     }
   };
 
+  // Instead of returning null, we'll disable the button if groupId is missing
+  const isDisabled = !groupId;
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button disabled={isDisabled}>
           <Share2 className="h-4 w-4 mr-2" />
           Share Notes
         </Button>
