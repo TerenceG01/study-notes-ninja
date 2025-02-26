@@ -38,12 +38,11 @@ export const NotesContainer = ({
   onGenerateFlashcards,
   onNotesChanged,
 }: NotesContainerProps) => {
-  // Get unique colors from notes
   const uniqueColors = Array.from(new Set(notes.map(note => note.subject_color).filter(Boolean)));
 
   return (
-    <Card className="shadow-sm border-muted/20">
-      <CardHeader className="bg-gradient-to-r from-muted/50 to-transparent">
+    <Card className="shadow-sm">
+      <CardHeader className="bg-muted/40">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-lg font-medium">Your Notes</CardTitle>
@@ -63,7 +62,7 @@ export const NotesContainer = ({
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <ScrollArea className="h-[calc(5*56px+56px)]"> {/* 56px per row + header row */}
+        <ScrollArea className="h-[calc(5*56px+56px)]">
           <NotesTable
             notes={notes}
             loading={loading}

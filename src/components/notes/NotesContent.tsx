@@ -43,9 +43,10 @@ export const NotesContent = () => {
   }, [user, fetchNotes]);
 
   return (
-    <div className="mx-auto max-w-[min(100%,64rem)] flex flex-col space-y-4 h-full">
+    <div className="space-y-6">
       <NotesHeader onSearch={setSearchQuery} />
-      <div className="flex-1 overflow-y-auto min-h-0 border rounded-lg">
+      
+      <div className="rounded-lg border bg-card">
         <NotesContainer
           notes={filteredNotes}
           loading={loading}
@@ -64,11 +65,13 @@ export const NotesContent = () => {
         />
       </div>
 
-      <NoteEditingSection
-        onNotesChanged={fetchNotes}
-        newTag={newTag}
-        setNewTag={setNewTag}
-      />
+      <div className="mt-6">
+        <NoteEditingSection
+          onNotesChanged={fetchNotes}
+          newTag={newTag}
+          setNewTag={setNewTag}
+        />
+      </div>
     </div>
   );
 };
