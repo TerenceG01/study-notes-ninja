@@ -132,17 +132,24 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
     })
   );
 
-  console.log('SharedNotes component rendered with groupId:', groupId); // Debug log
+  console.log('SharedNotes component rendered with groupId:', groupId);
 
   const { data: notes, isLoading } = useQuery({
     queryKey: ['group-shared-notes', groupId],
     queryFn: async () => {
-      console.log('Fetching shared notes for group:', groupId); // Debug log
+      console.log('Fetching shared notes for group:', groupId);
+      
+      if (!groupId) {
+        console.error('No group ID provided');
+        return [];
+      }
+
       const { data, error } = await supabase
         .from('study_group_notes')
         .select(`
           id,
-          note:notes (
+          note_id,
+          note:notes!study_group_notes_note_id_fkey (
             id,
             title,
             content,
@@ -151,7 +158,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
           shared_by,
           shared_at,
           display_order,
-          shared_by_profile:profiles (
+          shared_by_profile:profiles!study_group_notes_shared_by_fkey (
             username,
             full_name
           )
@@ -160,10 +167,11 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
         .order('display_order');
 
       if (error) {
-        console.error('Error fetching shared notes:', error); // Debug log
+        console.error('Error fetching shared notes:', error);
         throw error;
       }
-      console.log('Fetched shared notes:', data); // Debug log
+
+      console.log('Fetched shared notes:', data);
       return data as SharedNote[];
     },
     enabled: !!groupId,
