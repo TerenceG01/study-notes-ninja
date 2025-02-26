@@ -50,13 +50,6 @@ export const Hero = () => {
               Get Started Free
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={handleSignIn}
-            >
-              Sign In
-            </Button>
           </div>
         </div>
       </div>
