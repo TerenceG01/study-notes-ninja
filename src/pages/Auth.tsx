@@ -34,16 +34,16 @@ const Auth = () => {
     <div className="min-h-screen bg-background">
       <NavigationBar />
       <main className="flex min-h-[calc(100vh-4rem)] relative">
-        <div className="container grid lg:grid-cols-2 gap-8 max-w-screen-xl mx-auto px-4 py-8">
+        <div className="grid lg:grid-cols-[1fr,auto] w-full">
           {/* Left side - Auth Form */}
-          <div className="flex items-center justify-center lg:justify-start">
-            <AuthForm />
+          <div className="flex items-center justify-center lg:justify-end px-4 py-8">
+            <div className="w-full max-w-md lg:mr-8">
+              <AuthForm />
+            </div>
           </div>
           
           {/* Right side - Features */}
-          <div className="hidden lg:flex items-center justify-center relative">
-            {/* Decorative background */}
-            <div className="absolute inset-0 bg-primary/5 rounded-2xl" />
+          <div className="hidden lg:block relative bg-primary/5 w-[600px]">
             <AuthFeatures />
           </div>
         </div>
