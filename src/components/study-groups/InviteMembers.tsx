@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Copy, Mail } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -32,6 +32,20 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [inviteCode, setInviteCode] = useState<string | null>(null);
+
+  // Fetch group name for the email
+  const { data: groupData } = useQuery({
+    queryKey: ['study-group', groupId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('study_groups')
+        .select('name')
+        .eq('id', groupId)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const form = useForm<z.infer<typeof emailFormSchema>>({
     resolver: zodResolver(emailFormSchema),
@@ -55,6 +69,22 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
         .single();
 
       if (error) throw error;
+      
+      // If email is provided, send the invitation email
+      if (email && data.invite_code && groupData) {
+        const emailResponse = await supabase.functions.invoke('send-group-invite', {
+          body: {
+            email,
+            inviteCode: data.invite_code,
+            groupName: groupData.name,
+          },
+        });
+
+        if (emailResponse.error) {
+          throw new Error('Failed to send invitation email');
+        }
+      }
+
       if (withCode) setInviteCode(data.invite_code);
       return data;
     },
@@ -112,7 +142,7 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
                       disabled={createInviteMutation.isPending}
                     >
                       {createInviteMutation.isPending && (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        <Loader2 className="h-4 w-4 mr-2" />
                       )}
                       <Mail className="h-4 w-4 mr-2" />
                       Send
@@ -145,7 +175,7 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
             disabled={createInviteMutation.isPending}
           >
             {createInviteMutation.isPending && (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              <Loader2 className="h-4 w-4 mr-2" />
             )}
             Generate Invite Link
           </Button>

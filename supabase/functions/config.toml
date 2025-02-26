@@ -3,3 +3,6 @@ project_id = "gqyihrqrguhxnxqhhjhi"
 
 [generate-flashcards]
 verify_jwt = true
+
+[send-group-invite]
+verify_jwt = true
