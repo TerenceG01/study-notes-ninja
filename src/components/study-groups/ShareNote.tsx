@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,12 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
 
+  // Add validation for groupId
+  if (!groupId) {
+    console.error('ShareNote component: groupId is required but was not provided');
+    return null;
+  }
+
   const { data: notes, isLoading: loadingNotes } = useQuery({
     queryKey: ['user-notes'],
     queryFn: async () => {
@@ -64,6 +71,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
       if (error) throw error;
       return data.map(n => n.note_id);
     },
+    enabled: !!groupId, // Only run if groupId is available
   });
 
   const { data: maxOrder } = useQuery({
@@ -79,25 +87,34 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
       if (error) throw error;
       return data.length > 0 ? data[0].display_order : 0;
     },
+    enabled: !!groupId, // Only run if groupId is available
   });
 
   const shareNoteMutation = useMutation({
     mutationFn: async (noteId: string) => {
-      console.log('Sharing note with group:', { groupId, noteId }); // Debug log
+      if (!groupId) {
+        throw new Error('Cannot share note: No group ID provided');
+      }
+      
+      const insertData = {
+        group_id: groupId,
+        note_id: noteId,
+        shared_by: user?.id,
+        display_order: (maxOrder || 0) + 1,
+      };
+      
+      console.log('Sharing note with data:', insertData); // Debug log
+      
       const { error } = await supabase
         .from('study_group_notes')
-        .insert({
-          group_id: groupId,
-          note_id: noteId,
-          shared_by: user?.id,
-          display_order: (maxOrder || 0) + 1,
-        });
+        .insert(insertData);
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shared-notes', groupId] });
       queryClient.invalidateQueries({ queryKey: ['group-shared-notes', groupId] });
+      setOpen(false); // Close dialog on success
       toast({
         title: "Note shared",
         description: "The note has been shared with the group.",
@@ -115,6 +132,10 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
 
   const unshareNoteMutation = useMutation({
     mutationFn: async (noteId: string) => {
+      if (!groupId) {
+        throw new Error('Cannot unshare note: No group ID provided');
+      }
+
       const { error } = await supabase
         .from('study_group_notes')
         .delete()
@@ -159,6 +180,9 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Share Notes with Group</DialogTitle>
+          <DialogDescription>
+            Select notes to share with your study group members
+          </DialogDescription>
         </DialogHeader>
         <div className="py-4">
           {(loadingNotes || loadingSharedNotes) ? (
