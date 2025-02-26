@@ -83,6 +83,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
 
   const shareNoteMutation = useMutation({
     mutationFn: async (noteId: string) => {
+      console.log('Sharing note with group:', { groupId, noteId }); // Debug log
       const { error } = await supabase
         .from('study_group_notes')
         .insert({
@@ -103,6 +104,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
       });
     },
     onError: (error) => {
+      console.error('Error sharing note:', error); // Debug log
       toast({
         variant: "destructive",
         title: "Error sharing note",
