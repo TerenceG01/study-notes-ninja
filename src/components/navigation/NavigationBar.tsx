@@ -4,32 +4,29 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { useQuery } from "@tanstack/react-query";
 import { Menu } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useState } from "react";
+import { AuthDialog } from "@/components/auth/AuthDialog";
 
 export const NavigationBar = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { toggleSidebar } = useSidebar();
   const isMobile = useIsMobile();
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [authTab, setAuthTab] = useState<"sign-in" | "sign-up">("sign-in");
 
-  const { data: profile } = useQuery({
-    queryKey: ['profile', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return null;
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('username')
-        .eq('id', user.id)
-        .single();
-      
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!user,
-  });
+  const handleSignIn = () => {
+    setAuthTab("sign-in");
+    setShowAuthDialog(true);
+  };
+
+  const handleGetStarted = () => {
+    setAuthTab("sign-up");
+    setShowAuthDialog(true);
+  };
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -56,10 +53,7 @@ export const NavigationBar = () => {
                 <Menu className="h-5 w-5" />
               </Button>
             )}
-            <Link to="/" className="text-xl font-bold text-primary flex items-center gap-2">
-              {user && profile?.username && (
-                <span className="text-muted-foreground">{profile.username}</span>
-              )}
+            <Link to="/" className="text-xl font-bold text-primary">
               StudyNotes
             </Link>
           </div>
@@ -73,17 +67,22 @@ export const NavigationBar = () => {
               </>
             ) : (
               <>
-                <Button variant="ghost" asChild>
-                  <Link to="/auth">Sign In</Link>
+                <Button variant="ghost" onClick={handleSignIn}>
+                  Sign In
                 </Button>
-                <Button asChild>
-                  <Link to="/auth?tab=sign-up">Get Started</Link>
+                <Button onClick={handleGetStarted}>
+                  Get Started
                 </Button>
               </>
             )}
           </div>
         </div>
       </div>
+      <AuthDialog 
+        open={showAuthDialog} 
+        onOpenChange={setShowAuthDialog}
+        defaultTab={authTab}
+      />
     </nav>
   );
 };
