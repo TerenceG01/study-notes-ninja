@@ -36,7 +36,7 @@ const StudyGroupDetails = () => {
   const { id } = useParams();
   const { user } = useAuth();
 
-  const { data: studyGroup, isLoading: isLoadingGroup } = useQuery({
+  const { data: studyGroup, isLoading: isLoadingGroup, error: groupError } = useQuery({
     queryKey: ['study-group', id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -87,12 +87,12 @@ const StudyGroupDetails = () => {
     );
   }
 
-  if (!studyGroup) {
+  if (groupError || !studyGroup) {
     return (
       <div className="min-h-screen bg-background">
         <NavigationBar />
         <main className="container mx-auto px-4 pt-20">
-          <div className="text-center py-12 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
+          <div className="text-center py-12">
             <h2 className="text-2xl font-bold">Study Group Not Found</h2>
             <p className="text-muted-foreground mt-2">
               The study group you're looking for doesn't exist or you don't have access to it.
@@ -108,8 +108,8 @@ const StudyGroupDetails = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="container pt-0 mx-auto my-0 px-4 py-6">
-        <div className="animate-[fadeSlideIn_0.5s_ease-out_forwards]">
+      <main className="container mx-auto px-4 py-6">
+        <div>
           <GroupHeader 
             name={studyGroup.name} 
             subject={studyGroup.subject} 
@@ -120,14 +120,14 @@ const StudyGroupDetails = () => {
 
         <div className="grid gap-6 md:grid-cols-3">
           <div className="md:col-span-2 space-y-6">
-            <div className="animate-[fadeSlideIn_0.5s_ease-out_200ms_forwards]">
+            <div>
               <GroupAbout 
                 description={studyGroup.description} 
                 createdAt={studyGroup.created_at} 
               />
             </div>
 
-            <Card className="animate-[fadeSlideIn_0.5s_ease-out_400ms_forwards]">
+            <Card>
               <CardHeader>
                 <CardTitle>Shared Notes</CardTitle>
                 <CardDescription>
@@ -140,7 +140,7 @@ const StudyGroupDetails = () => {
             </Card>
 
             {userRole && (
-              <Card className="animate-[fadeSlideIn_0.5s_ease-out_600ms_forwards]">
+              <Card>
                 <CardHeader>
                   <CardTitle>Invite Members</CardTitle>
                   <CardDescription>
@@ -155,10 +155,10 @@ const StudyGroupDetails = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="animate-[fadeSlideIn_0.5s_ease-out_200ms_forwards]">
+            <div>
               <GroupMembersList members={members || []} />
             </div>
-            <div className="animate-[fadeSlideIn_0.5s_ease-out_400ms_forwards]">
+            <div>
               <GroupReminders groupId={studyGroup.id} userRole={userRole} />
             </div>
           </div>

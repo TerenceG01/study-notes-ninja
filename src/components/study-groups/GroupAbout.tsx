@@ -9,6 +9,11 @@ interface GroupAboutProps {
 }
 
 export const GroupAbout = ({ description, createdAt }: GroupAboutProps) => {
+  // Add null check for createdAt
+  if (!createdAt) {
+    return null;
+  }
+
   return (
     <Card>
       <CardHeader>
