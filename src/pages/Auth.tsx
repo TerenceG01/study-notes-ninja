@@ -27,19 +27,25 @@ const Auth = () => {
   }, [navigate, toast]);
 
   if (confirmingEmail) {
-    return null; // Or a loading spinner if you prefer
+    return null;
   }
 
   return (
-    <div className="min-h-screen bg-background relative">
+    <div className="min-h-screen bg-background">
       <NavigationBar />
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="w-1/2 h-full bg-[#D6BCFA]/10 absolute right-0" />
-      </div>
-      <main className="flex items-center justify-center min-h-[calc(100vh-4rem)] relative">
-        <div className="container grid lg:grid-cols-2 gap-8 px-4 py-8 items-center max-w-6xl mx-auto">
-          <AuthForm />
-          <AuthFeatures />
+      <main className="flex min-h-[calc(100vh-4rem)] relative">
+        <div className="container grid lg:grid-cols-2 gap-8 max-w-screen-xl mx-auto px-4 py-8">
+          {/* Left side - Auth Form */}
+          <div className="flex items-center justify-center lg:justify-start">
+            <AuthForm />
+          </div>
+          
+          {/* Right side - Features */}
+          <div className="hidden lg:flex items-center justify-center relative">
+            {/* Decorative background */}
+            <div className="absolute inset-0 bg-primary/5 rounded-2xl" />
+            <AuthFeatures />
+          </div>
         </div>
       </main>
     </div>

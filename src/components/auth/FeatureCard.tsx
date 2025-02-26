@@ -16,7 +16,10 @@ export const FeatureCard = memo(function FeatureCard({
   delay = "0ms" 
 }: FeatureCardProps) {
   return (
-    <div className={`flex items-start gap-4 p-4 rounded-lg bg-white/80 dark:bg-black/20 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-[fadeSlideIn_0.5s_ease-out_${delay}_forwards]`}>
+    <div 
+      className="flex items-start gap-4 p-4 rounded-lg bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+      style={{ animationDelay: delay }}
+    >
       <div className="p-2 rounded-full bg-primary/10">
         <Icon className="w-6 h-6 text-primary" />
       </div>
@@ -27,4 +30,3 @@ export const FeatureCard = memo(function FeatureCard({
     </div>
   );
 });
-

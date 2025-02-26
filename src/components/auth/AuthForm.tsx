@@ -70,10 +70,10 @@ export function AuthForm() {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader className="space-y-2 text-center">
-        <CardTitle className="text-3xl font-bold tracking-tight">Welcome back</CardTitle>
-        <CardDescription className="text-base">
+    <Card className="w-full max-w-md">
+      <CardHeader className="space-y-2">
+        <CardTitle className="text-2xl text-center font-bold">Welcome back</CardTitle>
+        <CardDescription className="text-center">
           Sign in to your account or create a new one
         </CardDescription>
       </CardHeader>
@@ -94,7 +94,6 @@ export function AuthForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full"
                 />
               </div>
               <div className="space-y-2">
@@ -106,7 +105,6 @@ export function AuthForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full"
                 />
               </div>
               <Button type="submit" className="w-full" size="lg" disabled={loading}>
@@ -125,7 +123,6 @@ export function AuthForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full"
                 />
               </div>
               <div className="space-y-2">
@@ -137,7 +134,6 @@ export function AuthForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full"
                 />
               </div>
               <Button type="submit" className="w-full" size="lg" disabled={loading}>

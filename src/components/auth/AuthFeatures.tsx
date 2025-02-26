@@ -5,7 +5,7 @@ import { FeatureCard } from "./FeatureCard";
 
 export const AuthFeatures = memo(function AuthFeatures() {
   return (
-    <div className="hidden lg:flex flex-col gap-6">
+    <div className="relative w-full p-8 z-10">
       <div className="space-y-8">
         <h2 className="text-3xl font-bold tracking-tight text-primary animate-fade-in">
           Study Smarter with StudyNotes
@@ -40,4 +40,3 @@ export const AuthFeatures = memo(function AuthFeatures() {
     </div>
   );
 });
-
