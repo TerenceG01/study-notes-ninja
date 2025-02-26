@@ -8,7 +8,7 @@ interface DangerZoneCardProps {
 
 export function DangerZoneCard({ onSignOut }: DangerZoneCardProps) {
   return (
-    <Card className="w-full animate-[fadeSlideIn_0.5s_ease-out_600ms_forwards]">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle className="text-xl text-destructive">Danger Zone</CardTitle>
         <CardDescription>Manage your account settings and preferences</CardDescription>

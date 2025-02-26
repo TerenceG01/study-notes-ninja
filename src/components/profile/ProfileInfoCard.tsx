@@ -22,7 +22,7 @@ export function ProfileInfoCard({
   onSubmit,
 }: ProfileInfoCardProps) {
   return (
-    <Card className="w-full animate-[fadeSlideIn_0.5s_ease-out_200ms_forwards]">
+    <Card className="w-full">
       <CardHeader className="pb-4">
         <CardTitle className="text-xl">Profile Information</CardTitle>
         <CardDescription>Update your profile details and manage your account</CardDescription>
@@ -72,7 +72,7 @@ export function ProfileInfoCard({
             <Button type="submit" disabled={loading} className="min-w-[120px]">
               {loading ? (
                 <div className="flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4" />
                   Saving...
                 </div>
               ) : (

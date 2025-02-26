@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,29 +8,20 @@ import { useTheme } from "next-themes";
 import { ProfileInfoCard } from "@/components/profile/ProfileInfoCard";
 import { AppearanceCard } from "@/components/profile/AppearanceCard";
 import { DangerZoneCard } from "@/components/profile/DangerZoneCard";
+
 const Profile = () => {
-  const {
-    user
-  } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
-  const {
-    theme,
-    setTheme,
-    resolvedTheme
-  } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Handle theme mounting
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Handle profile data fetching
   useEffect(() => {
     if (!user) {
       navigate("/auth");
@@ -37,10 +29,11 @@ const Profile = () => {
     }
     const fetchProfile = async () => {
       try {
-        const {
-          data,
-          error
-        } = await supabase.from("profiles").select("username, theme_preference").eq("id", user.id).maybeSingle();
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("username, theme_preference")
+          .eq("id", user.id)
+          .maybeSingle();
         if (error) throw error;
         if (data) {
           setUsername(data.username || "");
@@ -59,16 +52,16 @@ const Profile = () => {
     };
     fetchProfile();
   }, [user, navigate, toast, setTheme]);
+
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
     setLoading(true);
     try {
-      const {
-        error
-      } = await supabase.from("profiles").update({
-        username
-      }).eq("id", user.id);
+      const { error } = await supabase
+        .from("profiles")
+        .update({ username })
+        .eq("id", user.id);
       if (error) throw error;
       toast({
         title: "Profile updated successfully"
@@ -84,15 +77,15 @@ const Profile = () => {
       setLoading(false);
     }
   };
+
   const toggleTheme = async () => {
     const newTheme = resolvedTheme === "light" ? "dark" : "light";
     if (!user) return;
     try {
-      const {
-        error
-      } = await supabase.from("profiles").update({
-        theme_preference: newTheme
-      }).eq("id", user.id);
+      const { error } = await supabase
+        .from("profiles")
+        .update({ theme_preference: newTheme })
+        .eq("id", user.id);
       if (error) throw error;
       setTheme(newTheme);
     } catch (error) {
@@ -104,11 +97,10 @@ const Profile = () => {
       });
     }
   };
+
   const handleSignOut = async () => {
     try {
-      const {
-        error
-      } = await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut();
       if (error) throw error;
       navigate("/auth");
     } catch (error) {
@@ -121,23 +113,37 @@ const Profile = () => {
     }
   };
 
-  // Prevent theme flash on load
   if (!mounted) {
     return null;
   }
-  return <div className="min-h-screen bg-background">
+
+  return (
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-[1400px] sm:px-6 lg:px-8 py-6 px-[10px]">
-        <div className="mb-8 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
+        <div className="mb-8">
           <h1 className="text-4xl font-bold text-primary">My Profile</h1>
           <p className="text-muted-foreground mt-2">Manage your personal information</p>
         </div>
 
         <div className="grid gap-6 max-w-3xl mx-auto">
-          <ProfileInfoCard user={user} username={username} loading={loading} setUsername={setUsername} onSubmit={handleUpdateProfile} />
-          <AppearanceCard resolvedTheme={resolvedTheme} onToggleTheme={toggleTheme} />
-          <DangerZoneCard onSignOut={handleSignOut} />
+          <ProfileInfoCard 
+            user={user} 
+            username={username} 
+            loading={loading} 
+            setUsername={setUsername} 
+            onSubmit={handleUpdateProfile} 
+          />
+          <AppearanceCard 
+            resolvedTheme={resolvedTheme} 
+            onToggleTheme={toggleTheme} 
+          />
+          <DangerZoneCard 
+            onSignOut={handleSignOut} 
+          />
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Profile;

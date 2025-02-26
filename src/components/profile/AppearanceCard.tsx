@@ -10,7 +10,7 @@ interface AppearanceCardProps {
 
 export function AppearanceCard({ resolvedTheme, onToggleTheme }: AppearanceCardProps) {
   return (
-    <Card className="w-full animate-[fadeSlideIn_0.5s_ease-out_400ms_forwards]">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle className="text-xl">Appearance</CardTitle>
         <CardDescription>Customize your app appearance</CardDescription>
