@@ -1,4 +1,3 @@
-
 import { FileText, BookOpen, Users, User } from "lucide-react";
 
 export interface NavigationItem {
@@ -7,7 +6,16 @@ export interface NavigationItem {
   path: string;
 }
 
+// Keep header navigation empty
 export const navigationItems: NavigationItem[] = [];
+
+// Add back sidebar navigation items
+export const sidebarNavigationItems: NavigationItem[] = [
+  { label: "My Notes", icon: FileText, path: "/notes" },
+  { label: "My Flashcards", icon: BookOpen, path: "/flashcards" },
+  { label: "Study Groups", icon: Users, path: "/study-groups" },
+  { label: "My Profile", icon: User, path: "/profile" }
+];
 
 export const NavigationItems = () => {
   return (

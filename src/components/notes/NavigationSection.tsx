@@ -3,7 +3,7 @@ import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { navigationItems } from "@/components/navigation/NavigationItems";
+import { sidebarNavigationItems } from "@/components/navigation/NavigationItems";
 
 interface NavigationSectionProps {
   isOpen: boolean;
@@ -14,7 +14,7 @@ export function NavigationSection({ isOpen }: NavigationSectionProps) {
 
   return (
     <div className="space-y-2 p-2">
-      {navigationItems.map((item) => (
+      {sidebarNavigationItems.map((item) => (
         <Button
           key={item.path}
           variant={location.pathname === item.path ? "secondary" : "ghost"}
