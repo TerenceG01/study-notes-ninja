@@ -34,7 +34,7 @@ const Auth = () => {
     <div className="min-h-screen bg-background">
       <NavigationBar />
       <main className="flex min-h-[calc(100vh-4rem)] relative">
-        <div className="grid lg:grid-cols-[1fr,auto] w-full">
+        <div className="grid lg:grid-cols-[1fr,1fr] w-full">
           {/* Left side - Auth Form */}
           <div className="flex items-center justify-center lg:justify-end px-4 py-8">
             <div className="w-full max-w-md lg:mr-8">
@@ -43,7 +43,7 @@ const Auth = () => {
           </div>
           
           {/* Right side - Features */}
-          <div className="hidden lg:block relative bg-primary/5 w-[600px]">
+          <div className="hidden lg:block relative bg-primary/5">
             <AuthFeatures />
           </div>
         </div>
