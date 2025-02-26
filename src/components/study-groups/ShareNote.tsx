@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Dialog,
@@ -39,6 +38,8 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+
+  console.log('ShareNote rendered with groupId:', groupId); // Debug log
 
   const { data: notes, isLoading: loadingNotes } = useQuery({
     queryKey: ['user-notes', user?.id],
@@ -171,7 +172,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button disabled={isDisabled}>
+        <Button>
           <Share2 className="h-4 w-4 mr-2" />
           Share Notes
         </Button>

@@ -114,7 +114,7 @@ const StudyGroupDetails = () => {
             name={studyGroup.name} 
             subject={studyGroup.subject} 
             userRole={userRole} 
-            groupId={studyGroup.id} 
+            groupId={id!} // Ensure we pass the ID
           />
         </div>
 

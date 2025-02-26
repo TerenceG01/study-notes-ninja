@@ -1,13 +1,16 @@
+
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ShareNote } from "./ShareNote";
+
 interface GroupHeaderProps {
   name: string;
   subject: string;
   userRole?: string;
   groupId: string;
 }
+
 export const GroupHeader = ({
   name,
   subject,
