@@ -24,6 +24,7 @@ import {
 
 interface SharedNote {
   id: string;
+  note_id: string;
   note: {
     id: string;
     title: string;
@@ -134,7 +135,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
 
   console.log('SharedNotes component rendered with groupId:', groupId);
 
-  const { data: notes, isLoading } = useQuery({
+  const { data: notes, isLoading, error } = useQuery({
     queryKey: ['group-shared-notes', groupId],
     queryFn: async () => {
       console.log('Fetching shared notes for group:', groupId);
@@ -144,6 +145,19 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
         return [];
       }
 
+      // First, let's verify the group exists
+      const { data: groupCheck, error: groupError } = await supabase
+        .from('study_groups')
+        .select('id')
+        .eq('id', groupId)
+        .single();
+
+      if (groupError || !groupCheck) {
+        console.error('Group not found:', groupError);
+        return [];
+      }
+
+      // Now fetch the shared notes with their related data
       const { data, error } = await supabase
         .from('study_group_notes')
         .select(`
@@ -164,18 +178,29 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
           )
         `)
         .eq('group_id', groupId)
-        .order('display_order');
+        .order('display_order', { ascending: true })
+        .throwOnError();
 
       if (error) {
         console.error('Error fetching shared notes:', error);
         throw error;
       }
 
-      console.log('Fetched shared notes:', data);
-      return (data || []) as SharedNote[];
+      console.log('Raw shared notes data:', data);
+
+      // Filter out any notes with missing data
+      const validNotes = data?.filter(note => note.note && note.note.id) || [];
+      console.log('Filtered valid notes:', validNotes);
+
+      return validNotes as SharedNote[];
     },
     enabled: !!groupId,
   });
+
+  // Log any query errors
+  if (error) {
+    console.error('Query error:', error);
+  }
 
   const updateOrderMutation = useMutation({
     mutationFn: async ({ id, newOrder }: { id: string; newOrder: number }) => {
