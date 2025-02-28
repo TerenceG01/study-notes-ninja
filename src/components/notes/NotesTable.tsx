@@ -14,6 +14,7 @@ import { useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 interface Note {
   id: string;
@@ -55,11 +56,39 @@ export const NotesTable = ({
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [sharingSubject, setSharingSubject] = useState<string | null>(null);
+  const [updatingNoteId, setUpdatingNoteId] = useState<string | null>(null);
+
+  // Temporary local state for optimistic updates
+  const [localNotes, setLocalNotes] = useState<Note[]>([]);
+  
+  // Function to update local notes state
+  const updateLocalNotes = (updatedNotes: Note[]) => {
+    setLocalNotes(updatedNotes);
+  };
 
   const handleColorChange = async (e: React.MouseEvent, note: Note, color: string) => {
     e.stopPropagation();
     
+    if (!navigator.onLine) {
+      toast({
+        variant: "destructive",
+        title: "You're offline",
+        description: "Color changes will be applied when you're back online.",
+      });
+      return;
+    }
+    
+    // Show optimistic UI update
+    setUpdatingNoteId(note.id);
+    
     try {
+      // Optimistic update
+      const updatedNotes = notes.map(n => 
+        n.id === note.id ? { ...n, subject_color: color } : n
+      );
+      updateLocalNotes(updatedNotes);
+      
       const { error } = await supabase
         .from('notes')
         .update({
@@ -67,7 +96,11 @@ export const NotesTable = ({
         })
         .eq('id', note.id);
 
-      if (error) throw error;
+      if (error) {
+        // Revert optimistic update on error
+        updateLocalNotes(notes);
+        throw error;
+      }
 
       onNotesChanged();
       
@@ -76,17 +109,40 @@ export const NotesTable = ({
         description: `Updated color for ${note.subject || 'note'}`,
       });
     } catch (error) {
+      console.error("Error updating color:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update note color",
+        description: error instanceof Error 
+          ? error.message 
+          : "Failed to update note color. Please try again.",
       });
+    } finally {
+      setUpdatingNoteId(null);
     }
   };
 
   const handleShareSubject = async (e: React.MouseEvent, note: Note) => {
     e.stopPropagation();
     if (!note.subject) return;
+    
+    if (!navigator.onLine) {
+      toast({
+        variant: "destructive",
+        title: "You're offline",
+        description: "Please connect to the internet to share notes.",
+      });
+      return;
+    }
+    
+    // Show loading state
+    setSharingSubject(note.subject);
+    
+    // Show loading toast
+    const loadingToastId = toast({
+      title: "Creating study group",
+      description: "Please wait...",
+    }).id;
     
     try {
       const notesWithSubject = notes.filter(n => n.subject === note.subject);
@@ -103,18 +159,24 @@ export const NotesTable = ({
 
       if (groupError) throw groupError;
 
+      // Dismiss loading toast
+      toast.dismiss(loadingToastId);
+      
       // Get the count of existing notes in the group
-      const { data: existingNotes } = await supabase
+      const { data: existingNotes, error: existingNotesError } = await supabase
         .from('study_group_notes')
         .select('id')
         .eq('group_id', group.id);
 
+      if (existingNotesError) throw existingNotesError;
+
       const startOrder = (existingNotes?.length || 0) + 1;
+      let sharedCount = 0;
 
       // Share all notes with sequential display_order
       for (let i = 0; i < notesWithSubject.length; i++) {
         const n = notesWithSubject[i];
-        await supabase
+        const { error } = await supabase
           .from('study_group_notes')
           .insert({
             note_id: n.id,
@@ -122,26 +184,48 @@ export const NotesTable = ({
             shared_by: user.id,
             display_order: startOrder + i
           });
+          
+        if (!error) sharedCount++;
       }
 
       toast({
         title: "Success",
-        description: `Created study group for ${note.subject} and shared ${notesWithSubject.length} notes`,
+        description: `Created study group for ${note.subject} and shared ${sharedCount} notes`,
       });
 
       navigate(`/study-groups/${group.id}`);
     } catch (error) {
+      // Dismiss loading toast if it's still showing
+      toast.dismiss(loadingToastId);
+      
+      console.error("Error sharing subject:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to share subject",
+        title: "Error sharing subject",
+        description: error instanceof Error 
+          ? error.message 
+          : "Failed to share subject. Please try again.",
       });
+    } finally {
+      setSharingSubject(null);
     }
   };
 
   const handleRemoveSubject = async (e: React.MouseEvent, note: Note) => {
     e.stopPropagation();
     if (!note.subject) return;
+    
+    if (!navigator.onLine) {
+      toast({
+        variant: "destructive",
+        title: "You're offline",
+        description: "Please connect to the internet to remove subjects.",
+      });
+      return;
+    }
+    
+    // Show loading state
+    setSharingSubject(note.subject);
     
     try {
       const { error } = await supabase
@@ -163,11 +247,16 @@ export const NotesTable = ({
         description: `Removed subject ${note.subject}`,
       });
     } catch (error) {
+      console.error("Error removing subject:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to remove subject",
+        description: error instanceof Error 
+          ? error.message 
+          : "Failed to remove subject. Please try again.",
       });
+    } finally {
+      setSharingSubject(null);
     }
   };
 
@@ -223,8 +312,13 @@ export const NotesTable = ({
                       size="sm"
                       className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
                       onClick={(e) => e.stopPropagation()} // Prevent row click when clicking dropdown
+                      disabled={updatingNoteId === note.id || sharingSubject === note.subject}
                     >
-                      <MoreVertical className="h-4 w-4" />
+                      {updatingNoteId === note.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <MoreVertical className="h-4 w-4" />
+                      )}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent 
@@ -247,6 +341,7 @@ export const NotesTable = ({
                             color.class
                           )}
                           onClick={(e) => handleColorChange(e, note, color.value)}
+                          disabled={updatingNoteId === note.id}
                         />
                       ))}
                     </div>
@@ -255,16 +350,36 @@ export const NotesTable = ({
                       <>
                         <DropdownMenuItem 
                           onClick={(e) => handleShareSubject(e, note)}
+                          disabled={sharingSubject === note.subject}
                         >
-                          <Share className="h-4 w-4 mr-2" />
-                          Share Subject
+                          {sharingSubject === note.subject ? (
+                            <>
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              Sharing...
+                            </>
+                          ) : (
+                            <>
+                              <Share className="h-4 w-4 mr-2" />
+                              Share Subject
+                            </>
+                          )}
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                           className="text-destructive"
                           onClick={(e) => handleRemoveSubject(e, note)}
+                          disabled={sharingSubject === note.subject}
                         >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Remove Subject
+                          {sharingSubject === note.subject ? (
+                            <>
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              Removing...
+                            </>
+                          ) : (
+                            <>
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Remove Subject
+                            </>
+                          )}
                         </DropdownMenuItem>
                       </>
                     )}
