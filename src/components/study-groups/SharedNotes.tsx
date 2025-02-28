@@ -68,6 +68,11 @@ const DraggableNoteCard = ({ note }: { note: SharedNote }) => {
     .join('')
     .toUpperCase();
 
+  const handleNoteClick = () => {
+    console.log("Note clicked, opening:", note.note);
+    setSelectedNote(note.note);
+  };
+
   return (
     <Card 
       ref={setNodeRef}
@@ -81,7 +86,7 @@ const DraggableNoteCard = ({ note }: { note: SharedNote }) => {
       >
         <GripVertical className="h-4 w-4 text-muted-foreground" />
       </div>
-      <div onClick={() => setSelectedNote(note.note)}>
+      <div onClick={handleNoteClick} className="w-full">
         <CardHeader className="space-y-0 pb-2 pl-10">
           <div className="flex items-start justify-between">
             <CardTitle className="text-lg line-clamp-1">{note.note.title}</CardTitle>
@@ -110,7 +115,10 @@ const DraggableNoteCard = ({ note }: { note: SharedNote }) => {
         <ViewSharedNote
           note={selectedNote}
           open={!!selectedNote}
-          onOpenChange={(open) => !open && setSelectedNote(null)}
+          onOpenChange={(open) => {
+            console.log("Dialog open state changing to:", open);
+            if (!open) setSelectedNote(null);
+          }}
         />
       )}
     </Card>

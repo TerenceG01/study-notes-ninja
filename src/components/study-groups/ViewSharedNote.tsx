@@ -29,16 +29,23 @@ export const ViewSharedNote = ({ note, open, onOpenChange }: ViewSharedNoteProps
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  console.log("ViewSharedNote rendered with:", { open, noteId: note?.id });
+
   const updateNoteMutation = useMutation({
     mutationFn: async () => {
+      console.log("Updating note with ID:", note.id);
       const { error } = await supabase
         .from('notes')
         .update({ content })
         .eq('id', note.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error updating note:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
+      console.log("Note updated successfully");
       queryClient.invalidateQueries({ queryKey: ['group-shared-notes'] });
       setIsEditing(false);
       toast({
@@ -47,6 +54,7 @@ export const ViewSharedNote = ({ note, open, onOpenChange }: ViewSharedNoteProps
       });
     },
     onError: (error) => {
+      console.error("Error in update mutation:", error);
       toast({
         variant: "destructive",
         title: "Error updating note",
