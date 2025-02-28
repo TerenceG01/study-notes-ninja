@@ -54,10 +54,10 @@ export const NotesContent = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full max-w-full px-4 sm:px-0">
       <NotesHeader onSearch={setSearchQuery} />
       
-      <div className="rounded-lg border bg-card">
+      <div className="rounded-lg border bg-card w-full">
         <NotesContainer
           notes={filteredNotes}
           loading={loading}
