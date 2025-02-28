@@ -4,6 +4,7 @@ import { NotesTable } from "./NotesTable";
 import { NoteFilters } from "./filters/NoteFilters";
 import { Note } from "@/hooks/useNotes";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { PaginationControls } from "@/components/common/PaginationControls";
 
 interface NotesContainerProps {
   notes: Note[];
@@ -13,6 +14,9 @@ interface NotesContainerProps {
   selectedSubject: string | null;
   selectedDate: Date | null;
   uniqueSubjects: string[];
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
   onColorChange: (color: string) => void;
   onSubjectChange: (subject: string) => void;
   onDateChange: (date: Date | null) => void;
@@ -30,6 +34,9 @@ export const NotesContainer = ({
   selectedSubject,
   selectedDate,
   uniqueSubjects,
+  currentPage,
+  totalPages,
+  onPageChange,
   onColorChange,
   onSubjectChange,
   onDateChange,
@@ -72,6 +79,15 @@ export const NotesContainer = ({
             onNotesChanged={onNotesChanged}
           />
         </ScrollArea>
+        
+        {/* Add pagination controls */}
+        <div className="p-4 border-t">
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={onPageChange}
+          />
+        </div>
       </CardContent>
     </Card>
   );
