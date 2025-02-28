@@ -213,13 +213,18 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
     enabled: !!groupId,
     // Add retry logic
     retry: 1,
-    // Add error handling
-    onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Error loading shared notes",
-        description: "Please try refreshing the page"
-      });
+    // Handle errors properly using onSettled in TanStack Query v5+
+    meta: {
+      errorToast: true
+    },
+    onSettled: (data, error) => {
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Error loading shared notes",
+          description: "Please try refreshing the page"
+        });
+      }
     }
   });
 
