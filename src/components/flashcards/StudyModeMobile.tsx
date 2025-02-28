@@ -86,6 +86,48 @@ export const StudyModeMobile = ({
     }
   }, [currentIndex, cards.length]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Add global keyboard shortcuts
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key) {
+          case 'ArrowLeft':
+            e.preventDefault();
+            navigateCards('prev');
+            break;
+          case 'ArrowRight':
+            e.preventDefault();
+            navigateCards('next');
+            break;
+          case 'f':
+            e.preventDefault();
+            setIsFlipped(!isFlipped);
+            break;
+        }
+      } else {
+        // Simple keyboard navigation
+        switch (e.key) {
+          case 'ArrowLeft':
+            navigateCards('prev');
+            break;
+          case 'ArrowRight':
+            navigateCards('next');
+            break;
+          case ' ': // Spacebar
+            e.preventDefault();
+            setIsFlipped(!isFlipped);
+            break;
+          case 'Enter':
+            setIsFlipped(!isFlipped);
+            break;
+        }
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFlipped, navigateCards]);
+
   const shuffleCards = () => {
     const shuffled = [...cards].sort(() => Math.random() - 0.5);
     setCards(shuffled);
@@ -166,7 +208,7 @@ export const StudyModeMobile = ({
           </div>
           
           <div className="text-center mt-4 text-xs text-muted-foreground">
-            Swipe left/right to navigate • Swipe up to flip
+            Swipe or use arrow keys • Space/Enter to flip
           </div>
         </>
       ) : (

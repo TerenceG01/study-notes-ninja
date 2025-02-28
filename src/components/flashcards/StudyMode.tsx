@@ -96,17 +96,45 @@ export const StudyMode = ({
   }, [currentIndex, cards.length]);
 
   useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        setIsFlipped(!isFlipped);
-      } else if (e.key === 'ArrowLeft') {
-        navigateCards('prev');
-      } else if (e.key === 'ArrowRight') {
-        navigateCards('next');
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Add global keyboard shortcuts
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key) {
+          case 'ArrowLeft':
+            e.preventDefault();
+            navigateCards('prev');
+            break;
+          case 'ArrowRight':
+            e.preventDefault();
+            navigateCards('next');
+            break;
+          case 'f':
+            e.preventDefault();
+            setIsFlipped(!isFlipped);
+            break;
+        }
+      } else {
+        // Simple keyboard navigation
+        switch (e.key) {
+          case 'ArrowLeft':
+            navigateCards('prev');
+            break;
+          case 'ArrowRight':
+            navigateCards('next');
+            break;
+          case ' ': // Spacebar
+            e.preventDefault();
+            setIsFlipped(!isFlipped);
+            break;
+          case 'Enter':
+            setIsFlipped(!isFlipped);
+            break;
+        }
       }
     };
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isFlipped, navigateCards]);
 
   const shuffleCards = () => {
@@ -167,7 +195,7 @@ export const StudyMode = ({
         </> : <MultipleChoiceMode flashcards={cards} deckId={deckId} />}
 
       {mode === 'standard' && <div className="text-center mt-4 text-sm text-muted-foreground">
-          Press Enter to flip • Arrow keys to navigate • Swipe gestures on mobile
+          Press Space/Enter to flip • Arrow keys to navigate • Ctrl+F to flip
         </div>}
     </div>;
 };
