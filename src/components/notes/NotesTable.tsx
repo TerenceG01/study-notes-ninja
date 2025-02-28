@@ -203,10 +203,10 @@ export const NotesTable = ({
             <TableRow 
               key={note.id}
               className="group hover:bg-muted/50 cursor-pointer transition-colors"
+              onClick={() => onNoteClick(note)}
             >
               <TableCell className="flex items-center gap-2">
                 <div
-                  onClick={() => onNoteClick(note)}
                   className={cn(
                     "flex-1 px-3 py-1 rounded-md font-medium transition-colors",
                     note.subject_color ? 
@@ -222,6 +222,7 @@ export const NotesTable = ({
                       variant="ghost" 
                       size="sm"
                       className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                      onClick={(e) => e.stopPropagation()} // Prevent row click when clicking dropdown
                     >
                       <MoreVertical className="h-4 w-4" />
                     </Button>
@@ -270,22 +271,13 @@ export const NotesTable = ({
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
-              <TableCell 
-                className="font-medium"
-                onClick={() => onNoteClick(note)}
-              >
+              <TableCell className="font-medium">
                 {note.title}
               </TableCell>
-              <TableCell 
-                className="max-w-md truncate hidden md:table-cell"
-                onClick={() => onNoteClick(note)}
-              >
+              <TableCell className="max-w-md truncate hidden md:table-cell">
                 {note.content}
               </TableCell>
-              <TableCell 
-                className="hidden sm:table-cell"
-                onClick={() => onNoteClick(note)}
-              >
+              <TableCell className="hidden sm:table-cell">
                 {new Date(note.created_at).toLocaleDateString()}
               </TableCell>
               <TableCell>
@@ -297,7 +289,7 @@ export const NotesTable = ({
                     onGenerateFlashcards(note);
                   }}
                   disabled={!!generatingFlashcardsForNote}
-                  className="flex items-center gap-2" // Removed opacity and transition classes
+                  className="flex items-center gap-2"
                 >
                   {generatingFlashcardsForNote === note.id ? (
                     <>

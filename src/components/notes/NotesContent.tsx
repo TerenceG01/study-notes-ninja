@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { useNotes } from "@/hooks/useNotes";
+import { useNotes, Note } from "@/hooks/useNotes";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
 import { useAuth } from "@/contexts/AuthContext";
 import { NotesContainer } from "./NotesContainer";
@@ -37,8 +37,8 @@ export const NotesContent = () => {
   } = useNotesFilters(allNotes);
 
   // Add states for selected and editing notes
-  const [selectedNote, setSelectedNote] = useState(null);
-  const [editingNote, setEditingNote] = useState(null);
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [editingNote, setEditingNote] = useState<Note | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -47,7 +47,8 @@ export const NotesContent = () => {
   }, [user, fetchNotes]);
 
   // Handle note click to open the editing dialog
-  const handleNoteClick = (note) => {
+  const handleNoteClick = (note: Note) => {
+    console.log("Note clicked:", note.title);
     setSelectedNote(note);
     setEditingNote(note);
   };

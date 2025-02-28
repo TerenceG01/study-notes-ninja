@@ -6,17 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Hash, Loader2 } from "lucide-react";
-
-type Note = {
-  id: string;
-  title: string;
-  content: string;
-  created_at: string;
-  folder: string;
-  summary?: string;
-  tags?: string[];
-  subject?: string;
-};
+import { Note } from "@/hooks/useNotes";
 
 type SummaryLevel = 'brief' | 'medium' | 'detailed';
 
@@ -55,6 +45,8 @@ export const EditNoteDialog = ({
   onNewTagChange,
   onSave,
 }: EditNoteDialogProps) => {
+  console.log("EditNoteDialog rendering, open:", open, "selectedNote:", selectedNote?.title);
+  
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[800px]">
