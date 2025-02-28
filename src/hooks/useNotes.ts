@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/AuthContext";
 
 export type Note = {
   id: string;
@@ -28,8 +29,8 @@ export type NewNote = {
 export const useNotes = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [generatingFlashcardsForNote, setGeneratingFlashcardsForNote] = useState<string | null>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   
@@ -59,34 +60,40 @@ export const useNotes = () => {
   }, []);
 
   const fetchNotes = async () => {
-    try {
-      console.log("Fetching notes..."); // Debug log
-      const { data, error } = await supabase
-        .from("notes")
-        .select("*")
-        .order("created_at", { ascending: false });
+    console.log("Fetching notes...");
+    const { data, error } = await supabase
+      .from("notes")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      console.log("Fetched notes:", data); // Debug log
-      
-      // If we're offline, merge with any offline notes
-      if (!navigator.onLine) {
-        const offlineNotes = getOfflineNotes();
-        setNotes([...offlineNotes, ...(data || [])]);
-      } else {
-        setNotes(data || []);
-      }
-    } catch (error) {
-      console.error("Error fetching notes:", error); // Debug log
-      toast({
-        variant: "destructive",
-        title: "Error fetching notes",
-        description: "Failed to load your notes. Please try again.",
-      });
-    } finally {
-      setLoading(false);
+    if (error) throw error;
+    console.log("Fetched notes:", data);
+    
+    // If we're offline, merge with any offline notes
+    if (!navigator.onLine) {
+      const offlineNotes = getOfflineNotes();
+      return [...offlineNotes, ...(data || [])];
     }
+    
+    return data || [];
   };
+
+  const { data: notes, isLoading: loading, refetch } = useQuery({
+    queryKey: ['notes', user?.id],
+    queryFn: fetchNotes,
+    enabled: !!user,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    cacheTime: 1000 * 60 * 30, // 30 minutes
+    onSuccess: (data) => {
+      // Cache for offline use
+      if (data?.length) {
+        localStorage.setItem('cachedNotes', JSON.stringify(data));
+      }
+    },
+    meta: {
+      errorToast: true
+    }
+  });
 
   // Function to sync pending changes when back online
   const syncPendingChanges = async () => {
@@ -133,7 +140,7 @@ export const useNotes = () => {
       });
       
       // Refresh notes to include synced items
-      await fetchNotes();
+      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
     } else {
       toast({
         title: "Back online",
@@ -141,13 +148,13 @@ export const useNotes = () => {
       });
       
       // Refresh notes
-      await fetchNotes();
+      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
     }
   };
   
   useEffect(() => {
-    fetchNotes();
-
+    if (!user) return;
+    
     // Subscribe to real-time changes
     const channel = supabase
       .channel('notes_changes')
@@ -160,7 +167,7 @@ export const useNotes = () => {
         },
         (payload) => {
           console.log("Realtime update received:", payload);
-          fetchNotes(); // Refresh notes when changes occur
+          queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
         }
       )
       .subscribe();
@@ -168,31 +175,21 @@ export const useNotes = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [user, queryClient]);
 
-  const createNote = async (newNote: NewNote, userId: string) => {
-    if (!newNote.title || !newNote.content) {
-      toast({
-        variant: "destructive",
-        title: "Missing fields",
-        description: "Please fill in both title and content.",
-      });
-      return false;
-    }
-
-    try {
+  const createNoteMutation = useMutation({
+    mutationFn: async ({ newNote, userId }: { newNote: NewNote; userId: string }) => {
+      if (!newNote.title || !newNote.content) {
+        throw new Error("Missing fields: Please fill in both title and content.");
+      }
+      
       if (!isOnline) {
         // Save to local storage for offline use
         saveOfflineNote(newNote, userId);
-        
-        toast({
-          title: "Saved offline",
-          description: "Your note has been saved locally and will sync when you're back online.",
-        });
-        return true;
+        return { offline: true };
       }
       
-      console.log("Creating note:", { ...newNote, user_id: userId }); // Debug log
+      console.log("Creating note:", { ...newNote, user_id: userId });
       const { error } = await supabase.from("notes").insert([
         {
           title: newNote.title,
@@ -204,21 +201,37 @@ export const useNotes = () => {
       ]);
 
       if (error) throw error;
-
-      console.log("Note created successfully"); // Debug log
-
-      toast({
-        title: "Success",
-        description: "Note created successfully!",
-      });
-      return true;
-    } catch (error) {
-      console.error("Error creating note:", error); // Debug log
+      return { success: true };
+    },
+    onSuccess: (result) => {
+      if (result.offline) {
+        toast({
+          title: "Saved offline",
+          description: "Your note has been saved locally and will sync when you're back online.",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Note created successfully!",
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
+    },
+    onError: (error) => {
+      console.error("Error creating note:", error);
       toast({
         variant: "destructive",
         title: "Error creating note",
-        description: "Failed to create note. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to create note. Please try again.",
       });
+    }
+  });
+
+  const createNote = async (newNote: NewNote, userId: string) => {
+    try {
+      await createNoteMutation.mutateAsync({ newNote, userId });
+      return true;
+    } catch (error) {
       return false;
     }
   };
@@ -236,14 +249,14 @@ export const useNotes = () => {
       });
       localStorage.setItem('offlineNotes', JSON.stringify(offlineNotes));
       
-      // Update local state to include the new offline note
-      setNotes(prevNotes => [{
+      // Update React Query cache to include the new offline note
+      queryClient.setQueryData(['notes', user?.id], (oldData: Note[] = []) => [{
         ...note,
         id: `offline_${Date.now()}`,
         created_at: new Date().toISOString(),
         folder: '',
         offline: true
-      } as Note, ...prevNotes]);
+      } as Note, ...oldData]);
     } catch (error) {
       console.error("Error saving offline note:", error);
     }
@@ -258,28 +271,29 @@ export const useNotes = () => {
     }
   };
 
-  const generateFlashcards = async (note: Note) => {
-    if (!isOnline) {
-      toast({
-        variant: "destructive",
-        title: "You're offline",
-        description: "Please connect to the internet to generate flashcards.",
-      });
-      return;
-    }
-    
-    try {
+  const generateFlashcardsMutation = useMutation({
+    mutationFn: async (note: Note) => {
+      if (!isOnline) {
+        throw new Error("You're offline. Please connect to the internet to generate flashcards.");
+      }
+      
       setGeneratingFlashcardsForNote(note.id);
-      const { data, error } = await supabase.functions.invoke('generate-flashcards', {
-        body: {
-          noteId: note.id,
-          content: note.content,
-          title: note.title,
-        },
-      });
+      try {
+        const { data, error } = await supabase.functions.invoke('generate-flashcards', {
+          body: {
+            noteId: note.id,
+            content: note.content,
+            title: note.title,
+          },
+        });
 
-      if (error) throw error;
-
+        if (error) throw error;
+        return data;
+      } finally {
+        setGeneratingFlashcardsForNote(null);
+      }
+    },
+    onSuccess: (data) => {
       if (data.success) {
         toast({
           title: "Success",
@@ -287,59 +301,64 @@ export const useNotes = () => {
         });
         navigate(`/flashcards/${data.deckId}`);
       }
-    } catch (error) {
+    },
+    onError: (error) => {
       toast({
         variant: "destructive",
         title: "Error generating flashcards",
-        description: "Failed to generate flashcards. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to generate flashcards. Please try again.",
       });
-    } finally {
-      setGeneratingFlashcardsForNote(null);
     }
+  });
+
+  const generateFlashcards = async (note: Note) => {
+    generateFlashcardsMutation.mutate(note);
   };
 
-  const deleteNotesForSubject = async (subject: string) => {
-    if (!isOnline) {
-      toast({
-        variant: "destructive",
-        title: "You're offline",
-        description: "Please connect to the internet to delete notes.",
-      });
-      return;
-    }
-    
-    try {
+  const deleteNotesForSubjectMutation = useMutation({
+    mutationFn: async (subject: string) => {
+      if (!isOnline) {
+        throw new Error("You're offline. Please connect to the internet to delete notes.");
+      }
+      
       const { error } = await supabase
         .from("notes")
         .delete()
         .eq("subject", subject);
 
       if (error) throw error;
-
-      await fetchNotes();
-      
+      return subject;
+    },
+    onSuccess: (subject) => {
+      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
       toast({
         title: "Success",
         description: `Deleted all notes for subject: ${subject}`,
       });
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error("Error deleting notes:", error);
       toast({
         variant: "destructive",
         title: "Error deleting notes",
-        description: "Failed to delete notes. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to delete notes. Please try again.",
       });
     }
+  });
+
+  const deleteNotesForSubject = async (subject: string) => {
+    deleteNotesForSubjectMutation.mutate(subject);
   };
 
   return {
-    notes,
+    notes: notes || [],
     loading,
     generatingFlashcardsForNote,
     isOnline,
-    fetchNotes,
+    fetchNotes: () => refetch(),
     createNote,
     generateFlashcards,
     deleteNotesForSubject,
   };
 };
+

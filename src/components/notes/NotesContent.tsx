@@ -40,12 +40,6 @@ export const NotesContent = () => {
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
 
-  useEffect(() => {
-    if (user) {
-      fetchNotes();
-    }
-  }, [user, fetchNotes]);
-
   // Handle note click to open the editing dialog
   const handleNoteClick = (note: Note) => {
     console.log("Note clicked:", note.title);
