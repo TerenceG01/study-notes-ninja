@@ -83,7 +83,7 @@ const Flashcards = () => {
       {isLoading ? (
         <NotesGridSkeleton count={3} />
       ) : !decks || decks.length === 0 ? (
-        <EmptyDeckState onCreate={() => setOpenCreateDialog(true)} />
+        <EmptyDeckState onCreateClick={() => setOpenCreateDialog(true)} />
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {decks.map((deck) => (
@@ -91,7 +91,10 @@ const Flashcards = () => {
               key={deck.id}
               deck={deck}
               cardCount={(deck.flashcards as any)?.[0]?.count || 0}
-              onDeleteDeck={() => handleDeleteDeck(deck.id)}
+              onDelete={(deckId, e) => {
+                e.preventDefault(); // Prevent navigation
+                handleDeleteDeck(deckId);
+              }}
             />
           ))}
         </div>
@@ -102,7 +105,6 @@ const Flashcards = () => {
         onOpenChange={setOpenCreateDialog}
         onDeckCreated={() => {
           refetch();
-          setOpenCreateDialog(false);
         }}
       />
     </div>

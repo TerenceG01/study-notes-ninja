@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,21 +15,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface CreateDeckDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  userId: string;
+  onDeckCreated?: () => void;
 }
 
-export const CreateDeckDialog = ({ open, onOpenChange, userId }: CreateDeckDialogProps) => {
+export const CreateDeckDialog = ({ open, onOpenChange, onDeckCreated }: CreateDeckDialogProps) => {
   const [newDeck, setNewDeck] = useState({ title: "", description: "" });
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const createDeckMutation = useMutation({
     mutationFn: async (values: { title: string; description: string }) => {
-      if (!userId) {
+      if (!user) {
         throw new Error("User not authenticated");
       }
 
@@ -40,7 +42,7 @@ export const CreateDeckDialog = ({ open, onOpenChange, userId }: CreateDeckDialo
             {
               title: values.title,
               description: values.description,
-              user_id: userId,
+              user_id: user.id,
             },
           ])
           .select()
@@ -70,6 +72,7 @@ export const CreateDeckDialog = ({ open, onOpenChange, userId }: CreateDeckDialo
       });
       onOpenChange(false);
       setNewDeck({ title: "", description: "" });
+      if (onDeckCreated) onDeckCreated();
     },
     onError: (error) => {
       console.error("Error creating deck:", error);

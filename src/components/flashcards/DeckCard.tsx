@@ -9,12 +9,12 @@ interface DeckCardProps {
     id: string;
     title: string;
     description: string | null;
-    total_cards?: number;
   };
+  cardCount: number;
   onDelete: (deckId: string, event: React.MouseEvent) => void;
 }
 
-export const DeckCard = ({ deck, onDelete }: DeckCardProps) => {
+export const DeckCard = ({ deck, cardCount, onDelete }: DeckCardProps) => {
   return (
     <Link to={`/flashcards/${deck.id}`}>
       <Card className="h-full hover:bg-muted/50 transition-colors group">
@@ -35,7 +35,7 @@ export const DeckCard = ({ deck, onDelete }: DeckCardProps) => {
         <CardContent className="p-6 pt-0">
           <div className="flex items-center gap-2 text-base text-muted-foreground">
             <BookOpen className="h-5 w-5" />
-            <span>{deck.total_cards || 0} cards</span>
+            <span>{cardCount || 0} cards</span>
           </div>
         </CardContent>
       </Card>
