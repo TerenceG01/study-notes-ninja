@@ -7,10 +7,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MultipleChoiceMode } from "@/components/flashcards/MultipleChoiceMode";
+import { EnhancedFlashcard } from "@/components/flashcards/EnhancedFlashcard";
+
 interface StudyModeProps {
   flashcards: any[];
   deckId: string;
 }
+
 export const StudyMode = ({
   flashcards,
   deckId
@@ -24,6 +27,7 @@ export const StudyMode = ({
   } = useToast();
   const queryClient = useQueryClient();
   const currentCard = cards[currentIndex];
+
   const updateFlashcardMutation = useMutation({
     mutationFn: async ({
       id,
@@ -81,6 +85,7 @@ export const StudyMode = ({
       });
     }
   });
+
   const navigateCards = useCallback((direction: 'prev' | 'next') => {
     setIsFlipped(false);
     if (direction === 'prev' && currentIndex > 0) {
@@ -89,6 +94,7 @@ export const StudyMode = ({
       setCurrentIndex(currentIndex + 1);
     }
   }, [currentIndex, cards.length]);
+
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
@@ -102,17 +108,20 @@ export const StudyMode = ({
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [isFlipped, navigateCards]);
+
   const shuffleCards = () => {
     const shuffled = [...cards].sort(() => Math.random() - 0.5);
     setCards(shuffled);
     setCurrentIndex(0);
     setIsFlipped(false);
   };
+
   if (!currentCard) {
     return <div className="text-center py-8">
         <p className="text-lg font-medium mb-4">No flashcards available</p>
       </div>;
   }
+
   return <div className="max-w-3xl px-4 mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div className="flex gap-2">
@@ -135,13 +144,14 @@ export const StudyMode = ({
           <div className="text-sm text-muted-foreground mb-2">
             Card {currentIndex + 1} of {cards.length}
           </div>
-          <Card className="min-h-[300px] cursor-pointer transition-all hover:shadow-lg" onClick={() => setIsFlipped(!isFlipped)}>
-            <CardContent className="flex items-center justify-center p-8 min-h-[300px]">
-              <div className="text-xl font-medium text-center">
-                {isFlipped ? currentCard.answer : currentCard.question}
-              </div>
-            </CardContent>
-          </Card>
+          
+          <EnhancedFlashcard 
+            card={currentCard}
+            isFlipped={isFlipped}
+            onFlip={setIsFlipped}
+            onNext={() => navigateCards('next')}
+            onPrev={() => navigateCards('prev')}
+          />
 
           <div className="flex justify-between items-center mt-6">
             <Button variant="outline" onClick={() => navigateCards('prev')} disabled={currentIndex === 0}>
@@ -157,7 +167,7 @@ export const StudyMode = ({
         </> : <MultipleChoiceMode flashcards={cards} deckId={deckId} />}
 
       {mode === 'standard' && <div className="text-center mt-4 text-sm text-muted-foreground">
-          Press Enter to flip • Arrow keys to navigate
+          Press Enter to flip • Arrow keys to navigate • Swipe gestures on mobile
         </div>}
     </div>;
 };
