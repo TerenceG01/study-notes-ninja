@@ -109,7 +109,7 @@ const Notes = () => {
           setNewTag={setNewTag}
         />
         
-        {selectedNote && (
+        {selectedNote && editingNote && (
           <EditNoteDialog
             open={isEditDialogOpen}
             onOpenChange={handleCloseEditDialog}
