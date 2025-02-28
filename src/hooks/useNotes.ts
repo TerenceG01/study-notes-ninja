@@ -61,13 +61,13 @@ export const useNotes = () => {
     enabled: !!user,
     staleTime: 1000 * 60 * 5, // 5 minutes
     gcTime: 1000 * 60 * 30, // 30 minutes - replaced cacheTime with gcTime
-    onSuccess: (data) => {
-      // Cache for offline use
-      if (data?.length) {
-        cacheNotesForOffline(data);
-      }
-    },
     meta: {
+      onSuccess: (data: Note[]) => {
+        // Cache for offline use
+        if (data?.length) {
+          cacheNotesForOffline(data);
+        }
+      },
       errorToast: true
     }
   });
@@ -145,13 +145,13 @@ export const useNotes = () => {
       if (!isOnline) {
         // Save to local storage for offline use
         saveOfflineNote(newNote, userId);
-        return { offline: true };
+        return { offline: true } as const;
       }
       
       return await createNoteInDb(newNote, userId);
     },
     onSuccess: (result) => {
-      if (result.offline) {
+      if ('offline' in result && result.offline) {
         toast({
           title: "Saved offline",
           description: "Your note has been saved locally and will sync when you're back online.",

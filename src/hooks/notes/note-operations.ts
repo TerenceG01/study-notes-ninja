@@ -39,7 +39,7 @@ export const createNoteInDb = async (newNote: NewNote, userId: string) => {
   ]);
 
   if (error) throw error;
-  return { success: true };
+  return { success: true } as const;
 };
 
 export const generateFlashcardsForNote = async (note: Note) => {
