@@ -34,11 +34,17 @@ export const NotesContent = () => {
     uniqueSubjects,
     filteredNotes,
     clearFilters,
-  } = useNotesFilters(allNotes || []);
+  } = useNotesFilters(allNotes);
 
   // Add states for selected and editing notes
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      fetchNotes();
+    }
+  }, [user, fetchNotes]);
 
   // Handle note click to open the editing dialog
   const handleNoteClick = (note: Note) => {
