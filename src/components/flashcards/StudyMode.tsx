@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -112,7 +113,7 @@ export const StudyMode = ({
         <p className="text-lg font-medium mb-4">No flashcards available</p>
       </div>;
   }
-  return <div className="max-w-3xl px-[10px] mx-0">
+  return <div className="max-w-3xl px-4 mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div className="flex gap-2">
           <Button variant={mode === 'standard' ? 'default' : 'outline'} onClick={() => setMode('standard')}>
