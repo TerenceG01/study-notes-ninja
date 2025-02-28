@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { ViewSharedNote } from "./ViewSharedNote";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "@/components/ui/use-toast";
 import {
   DndContext,
   DragEndEvent,
@@ -44,8 +45,24 @@ interface SharedNotesProps {
   groupId: string;
 }
 
-const DraggableNoteCard = ({ note }: { note: SharedNote }) => {
-  const [selectedNote, setSelectedNote] = useState<SharedNote['note'] | null>(null);
+// Add an error boundary component
+const ErrorBoundary = ({ children, fallback }: { children: React.ReactNode, fallback: React.ReactNode }) => {
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    const errorHandler = () => setHasError(true);
+    window.addEventListener('error', errorHandler);
+    return () => window.removeEventListener('error', errorHandler);
+  }, []);
+
+  if (hasError) {
+    return <>{fallback}</>;
+  }
+
+  return <>{children}</>;
+};
+
+const DraggableNoteCard = ({ note, onNoteClick }: { note: SharedNote; onNoteClick: (note: SharedNote) => void }) => {
   const {
     attributes,
     listeners,
@@ -68,11 +85,6 @@ const DraggableNoteCard = ({ note }: { note: SharedNote }) => {
     .join('')
     .toUpperCase();
 
-  const handleNoteClick = () => {
-    console.log("Note clicked, opening:", note.note);
-    setSelectedNote(note.note);
-  };
-
   return (
     <Card 
       ref={setNodeRef}
@@ -86,7 +98,7 @@ const DraggableNoteCard = ({ note }: { note: SharedNote }) => {
       >
         <GripVertical className="h-4 w-4 text-muted-foreground" />
       </div>
-      <div onClick={handleNoteClick} className="w-full">
+      <div onClick={() => onNoteClick(note)} className="w-full">
         <CardHeader className="space-y-0 pb-2 pl-10">
           <div className="flex items-start justify-between">
             <CardTitle className="text-lg line-clamp-1">{note.note.title}</CardTitle>
@@ -110,23 +122,13 @@ const DraggableNoteCard = ({ note }: { note: SharedNote }) => {
           </div>
         </CardContent>
       </div>
-      
-      {selectedNote && (
-        <ViewSharedNote
-          note={selectedNote}
-          open={!!selectedNote}
-          onOpenChange={(open) => {
-            console.log("Dialog open state changing to:", open);
-            if (!open) setSelectedNote(null);
-          }}
-        />
-      )}
     </Card>
   );
 };
 
 export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const sensors = useSensors(
     useSensor(MouseSensor, {
       activationConstraint: {
@@ -141,74 +143,85 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
     })
   );
 
-  console.log('SharedNotes component rendered with groupId:', groupId);
+  // Fix for note dialog state management
+  const [selectedNoteState, setSelectedNoteState] = useState<{
+    open: boolean;
+    note: SharedNote['note'] | null;
+  }>({
+    open: false,
+    note: null
+  });
 
+  // Remove excessive console logs and add error boundary
   const { data: notes, isLoading, error } = useQuery({
     queryKey: ['group-shared-notes', groupId],
     queryFn: async () => {
-      console.log('Fetching shared notes for group:', groupId);
-      
       if (!groupId) {
-        console.error('No group ID provided');
         return [];
       }
 
-      // First, let's verify the group exists
-      const { data: groupCheck, error: groupError } = await supabase
-        .from('study_groups')
-        .select('id')
-        .eq('id', groupId)
-        .single();
+      try {
+        // First, let's verify the group exists
+        const { data: groupCheck, error: groupError } = await supabase
+          .from('study_groups')
+          .select('id')
+          .eq('id', groupId)
+          .single();
 
-      if (groupError || !groupCheck) {
-        console.error('Group not found:', groupError);
-        return [];
-      }
+        if (groupError || !groupCheck) {
+          throw new Error('Group not found');
+        }
 
-      // Now fetch the shared notes with their related data
-      const { data, error } = await supabase
-        .from('study_group_notes')
-        .select(`
-          id,
-          note_id,
-          note:notes (
+        // Now fetch the shared notes with their related data
+        const { data, error } = await supabase
+          .from('study_group_notes')
+          .select(`
             id,
-            title,
-            content,
-            created_at
-          ),
-          shared_by,
-          shared_at,
-          display_order,
-          shared_by_profile:profiles (
-            username,
-            full_name
-          )
-        `)
-        .eq('group_id', groupId)
-        .order('display_order', { ascending: true })
-        .throwOnError();
+            note_id,
+            note:notes (
+              id,
+              title,
+              content,
+              created_at
+            ),
+            shared_by,
+            shared_at,
+            display_order,
+            shared_by_profile:profiles (
+              username,
+              full_name
+            )
+          `)
+          .eq('group_id', groupId)
+          .order('display_order', { ascending: true });
 
-      if (error) {
-        console.error('Error fetching shared notes:', error);
+        if (error) throw error;
+
+        // Filter out any notes with missing data
+        const validNotes = data?.filter(note => note.note && note.note.id) || [];
+        return validNotes as SharedNote[];
+      } catch (error) {
+        // Use toast for visible error
+        toast({
+          variant: "destructive",
+          title: "Failed to load shared notes",
+          description: error instanceof Error ? error.message : "An unknown error occurred"
+        });
         throw error;
       }
-
-      console.log('Raw shared notes data:', data);
-
-      // Filter out any notes with missing data
-      const validNotes = data?.filter(note => note.note && note.note.id) || [];
-      console.log('Filtered valid notes:', validNotes);
-
-      return validNotes as SharedNote[];
     },
     enabled: !!groupId,
+    // Add retry logic
+    retry: 1,
+    // Add error handling
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error loading shared notes",
+        description: "Please try refreshing the page"
+      });
+    }
   });
-
-  // Log any query errors
-  if (error) {
-    console.error('Query error:', error);
-  }
 
   const updateOrderMutation = useMutation({
     mutationFn: async ({ id, newOrder }: { id: string; newOrder: number }) => {
@@ -222,7 +235,46 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['group-shared-notes', groupId] });
     },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error updating note order",
+        description: "Failed to update the order of notes"
+      });
+    }
   });
+
+  const handleNoteClick = (note: SharedNote) => {
+    setSelectedNoteState({
+      open: true,
+      note: note.note
+    });
+  };
+
+  const handleDialogOpenChange = (open: boolean) => {
+    if (!open) {
+      // Only change the open state, preserve the note data until animation completes
+      setSelectedNoteState(prev => ({
+        ...prev,
+        open
+      }));
+      
+      // Clear note data after dialog closing animation completes
+      setTimeout(() => {
+        if (!open) {
+          setSelectedNoteState(prev => ({
+            ...prev,
+            note: null
+          }));
+        }
+      }, 300);
+    } else {
+      setSelectedNoteState(prev => ({
+        ...prev,
+        open
+      }));
+    }
+  };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -268,15 +320,34 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
 
   return (
     <ScrollArea className="h-[400px]">
-      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <SortableContext items={notes.map(note => note.id)} strategy={verticalListSortingStrategy}>
-          <div className="space-y-3">
-            {notes.map((note) => (
-              <DraggableNoteCard key={note.id} note={note} />
-            ))}
-          </div>
-        </SortableContext>
-      </DndContext>
+      <ErrorBoundary fallback={
+        <div className="text-center py-8 text-destructive">
+          Error loading notes. Please try refreshing the page.
+        </div>
+      }>
+        <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+          <SortableContext items={notes.map(note => note.id)} strategy={verticalListSortingStrategy}>
+            <div className="space-y-3">
+              {notes.map((note) => (
+                <DraggableNoteCard 
+                  key={note.id} 
+                  note={note}
+                  onNoteClick={handleNoteClick}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+        
+        {/* Use the improved state management for the dialog */}
+        {selectedNoteState.note && (
+          <ViewSharedNote
+            note={selectedNoteState.note}
+            open={selectedNoteState.open}
+            onOpenChange={handleDialogOpenChange}
+          />
+        )}
+      </ErrorBoundary>
     </ScrollArea>
   );
 };
