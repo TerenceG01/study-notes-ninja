@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Note } from "@/hooks/useNotes";
 import { EditNoteDialog } from "./EditNoteDialog";
 import { useNoteSummary } from "@/hooks/useNoteSummary";
@@ -40,7 +39,9 @@ export const NoteEditingSection = ({
     if (!selectedNote || !editingNote) return;
     const summary = await generateSummary(selectedNote);
     if (summary) {
-      setEditingNote(prev => prev ? { ...prev, summary } : null);
+      // Fix: Instead of using a function, create a new Note object directly
+      const updatedNote = { ...editingNote, summary };
+      setEditingNote(updatedNote);
       setShowSummary(true);
     }
   };
