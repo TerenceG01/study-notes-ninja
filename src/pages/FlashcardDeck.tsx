@@ -1,4 +1,3 @@
-
 import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -187,7 +186,7 @@ const FlashcardDeck = () => {
             {flashcards && flashcards.length > 0 ? (
               isMobile ? (
                 <div className="pb-16"> {/* Add padding to account for navigation */}
-                  <StudyModeMobile flashcards={flashcards} deckId={id!} />
+                  <StudyMode flashcards={flashcards} deckId={id!} />
                 </div>
               ) : (
                 <StudyMode flashcards={flashcards} deckId={id!} />
