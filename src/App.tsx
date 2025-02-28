@@ -16,9 +16,12 @@ import JoinStudyGroup from "./pages/JoinStudyGroup";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "./contexts/AuthContext";
 import { NavigationBar } from "./components/navigation/NavigationBar";
+import { MobileNavigationBar } from "./components/navigation/MobileNavigationBar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { NotesSidebar } from "./components/notes/NotesSidebar";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { ThemeProvider } from "next-themes";
+import { ResponsiveContainer } from "./components/ui/responsive-container";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -35,31 +38,45 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
+  const isMobile = useIsMobile();
+  
   return (
     <div className="min-h-screen">
       <NavigationBar />
-      <div className="flex min-h-[calc(100vh-4rem)] pt-16">
+      <div className={`flex min-h-[calc(100vh-4rem)] pt-16 ${isMobile ? 'pb-16' : ''}`}>
         <NotesSidebar />
         <div className="flex-1 relative">
           <main>{children}</main>
         </div>
       </div>
+      {isMobile && <MobileNavigationBar />}
     </div>
   );
 };
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
+  const isMobile = useIsMobile();
+  
   return (
     <div className="min-h-screen">
       <NavigationBar />
-      <main className="container mx-auto sm:px-6 lg:px-8 max-w-[1400px] px-[240px]">
+      <ResponsiveContainer>
         {children}
-      </main>
+      </ResponsiveContainer>
+      {isMobile && <MobileNavigationBar />}
     </div>
   );
 };
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+      refetchOnWindowFocus: false
+    }
+  }
+});
 
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
