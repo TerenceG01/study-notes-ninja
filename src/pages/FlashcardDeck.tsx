@@ -1,3 +1,4 @@
+
 import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -170,7 +171,7 @@ const FlashcardDeck = () => {
   }
   return <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="container mx-[50px] px-0 py-[10px]">
+      <main className="container mx-auto px-4 sm:px-6 py-4">
         <Button variant="ghost" onClick={() => navigate('/flashcards')} className="mb-6 px-[20px]">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Decks
