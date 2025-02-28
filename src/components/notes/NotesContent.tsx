@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNotes } from "@/hooks/useNotes";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
 import { useAuth } from "@/contexts/AuthContext";
@@ -36,11 +36,21 @@ export const NotesContent = () => {
     clearFilters,
   } = useNotesFilters(allNotes);
 
+  // Add states for selected and editing notes
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [editingNote, setEditingNote] = useState(null);
+
   useEffect(() => {
     if (user) {
       fetchNotes();
     }
   }, [user, fetchNotes]);
+
+  // Handle note click to open the editing dialog
+  const handleNoteClick = (note) => {
+    setSelectedNote(note);
+    setEditingNote(note);
+  };
 
   return (
     <div className="space-y-6">
@@ -59,7 +69,7 @@ export const NotesContent = () => {
           onSubjectChange={() => {}}
           onDateChange={setSelectedDate}
           onClearFilters={clearFilters}
-          onNoteClick={(note) => {}}
+          onNoteClick={handleNoteClick}
           onGenerateFlashcards={generateFlashcards}
           onNotesChanged={fetchNotes}
         />
@@ -70,6 +80,10 @@ export const NotesContent = () => {
           onNotesChanged={fetchNotes}
           newTag={newTag}
           setNewTag={setNewTag}
+          selectedNote={selectedNote}
+          setSelectedNote={setSelectedNote}
+          editingNote={editingNote}
+          setEditingNote={setEditingNote}
         />
       </div>
     </div>

@@ -11,12 +11,22 @@ interface NoteEditingSectionProps {
   onNotesChanged: () => void;
   newTag: string;
   setNewTag: (tag: string) => void;
+  selectedNote: Note | null;
+  setSelectedNote: (note: Note | null) => void;
+  editingNote: Note | null;
+  setEditingNote: (note: Note | null) => void;
 }
 
-export const NoteEditingSection = ({ onNotesChanged, newTag, setNewTag }: NoteEditingSectionProps) => {
+export const NoteEditingSection = ({ 
+  onNotesChanged, 
+  newTag, 
+  setNewTag, 
+  selectedNote, 
+  setSelectedNote, 
+  editingNote, 
+  setEditingNote 
+}: NoteEditingSectionProps) => {
   const { toast } = useToast();
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-  const [editingNote, setEditingNote] = useState<Note | null>(null);
   const {
     summarizing,
     summaryLevel,
