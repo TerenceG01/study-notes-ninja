@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import { Note } from "@/hooks/useNotes";
-import { EditNoteDialog } from "./EditNoteDialog";
 import { useNoteSummary } from "@/hooks/useNoteSummary";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -70,29 +69,5 @@ export const NoteEditingSection = ({ onNotesChanged, newTag, setNewTag }: NoteEd
     }
   };
 
-  return (
-    <EditNoteDialog
-      open={!!selectedNote}
-      onOpenChange={(open) => {
-        if (!open) {
-          setSelectedNote(null);
-          setEditingNote(null);
-          setShowSummary(false);
-        }
-      }}
-      selectedNote={selectedNote}
-      editingNote={editingNote}
-      showSummary={showSummary}
-      summaryLevel={summaryLevel}
-      summarizing={summarizing}
-      newTag={newTag}
-      commonSubjects={CommonSubjects}
-      onNoteChange={setEditingNote}
-      onSummaryLevelChange={setSummaryLevel}
-      onGenerateSummary={handleGenerateSummary}
-      onToggleSummary={() => setShowSummary(!showSummary)}
-      onNewTagChange={setNewTag}
-      onSave={updateNote}
-    />
-  );
+  return null;
 };
