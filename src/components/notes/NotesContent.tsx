@@ -1,31 +1,28 @@
 
-import { useNotesFilters } from "@/hooks/useNotesFilters";
+import { useEffect } from "react";
+import { useNotes } from "@/hooks/useNotes";
+import { useNoteEditor } from "@/hooks/useNoteEditor";
+import { useAuth } from "@/contexts/AuthContext";
 import { NotesContainer } from "./NotesContainer";
 import { NotesHeader } from "./NotesHeader";
 import { NoteEditingSection } from "./NoteEditingSection";
-import { Note } from "@/hooks/useNotes";
+import { useNotesFilters } from "@/hooks/useNotesFilters";
 
-interface NotesContentProps {
-  notes: Note[];
-  loading: boolean;
-  generatingFlashcardsForNote: string | null;
-  fetchNotes: () => void;
-  generateFlashcards: (note: Note) => void;
-  onNoteClick: (note: Note) => void;
-  newTag: string;
-  setNewTag: (tag: string) => void;
-}
+export const NotesContent = () => {
+  const { user } = useAuth();
+  const { 
+    notes: allNotes, 
+    loading, 
+    generatingFlashcardsForNote, 
+    fetchNotes, 
+    generateFlashcards 
+  } = useNotes();
+  
+  const { 
+    newTag,
+    setNewTag,
+  } = useNoteEditor();
 
-export const NotesContent = ({
-  notes: allNotes,
-  loading,
-  generatingFlashcardsForNote,
-  fetchNotes,
-  generateFlashcards,
-  onNoteClick,
-  newTag,
-  setNewTag
-}: NotesContentProps) => {
   const {
     selectedColor,
     setSelectedColor,
@@ -38,6 +35,12 @@ export const NotesContent = ({
     filteredNotes,
     clearFilters,
   } = useNotesFilters(allNotes);
+
+  useEffect(() => {
+    if (user) {
+      fetchNotes();
+    }
+  }, [user, fetchNotes]);
 
   return (
     <div className="space-y-6">
@@ -56,7 +59,7 @@ export const NotesContent = ({
           onSubjectChange={() => {}}
           onDateChange={setSelectedDate}
           onClearFilters={clearFilters}
-          onNoteClick={onNoteClick}
+          onNoteClick={(note) => {}}
           onGenerateFlashcards={generateFlashcards}
           onNotesChanged={fetchNotes}
         />
