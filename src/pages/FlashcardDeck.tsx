@@ -12,47 +12,35 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { StudyMode } from "@/components/flashcards/StudyMode";
+import { StudyModeMobile } from "@/components/flashcards/StudyModeMobile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useIsMobile } from "@/hooks/use-mobile";
+
 const FlashcardDeck = () => {
-  const {
-    id
-  } = useParams();
-  const {
-    user
-  } = useAuth();
+  const { id } = useParams();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editedQuestion, setEditedQuestion] = useState("");
   const [editedAnswer, setEditedAnswer] = useState("");
-  const {
-    data: deck,
-    isLoading: isDeckLoading
-  } = useQuery({
+  const isMobile = useIsMobile();
+  
+  const { data: deck, isLoading: isDeckLoading } = useQuery({
     queryKey: ['flashcard-deck', id],
     queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.from('flashcard_decks').select('*').eq('id', id).eq('user_id', user?.id).maybeSingle();
+      const { data, error } = await supabase.from('flashcard_decks').select('*').eq('id', id).eq('user_id', user?.id).maybeSingle();
       if (error) throw error;
       return data;
     },
     enabled: !!id && !!user
   });
-  const {
-    data: flashcards,
-    isLoading: isFlashcardsLoading
-  } = useQuery({
+  
+  const { data: flashcards, isLoading: isFlashcardsLoading } = useQuery({
     queryKey: ['flashcards', id],
     queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.from('flashcards').select('*').eq('deck_id', id).order('created_at', {
+      const { data, error } = await supabase.from('flashcards').select('*').eq('deck_id', id).order('created_at', {
         ascending: true
       });
       if (error) throw error;
@@ -60,19 +48,14 @@ const FlashcardDeck = () => {
     },
     enabled: !!id
   });
+  
   const updateFlashcardMutation = useMutation({
-    mutationFn: async ({
-      id,
-      question,
-      answer
-    }: {
+    mutationFn: async ({ id, question, answer }: {
       id: string;
       question: string;
       answer: string;
     }) => {
-      const {
-        error
-      } = await supabase.from('flashcards').update({
+      const { error } = await supabase.from('flashcards').update({
         question,
         answer
       }).eq('id', id);
@@ -96,11 +79,10 @@ const FlashcardDeck = () => {
       });
     }
   });
+  
   const deleteFlashcardMutation = useMutation({
     mutationFn: async (flashcardId: string) => {
-      const {
-        error
-      } = await supabase.from('flashcards').delete().eq('id', flashcardId);
+      const { error } = await supabase.from('flashcards').delete().eq('id', flashcardId);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -120,16 +102,19 @@ const FlashcardDeck = () => {
       });
     }
   });
+  
   const startEditing = (flashcard: any) => {
     setEditingId(flashcard.id);
     setEditedQuestion(flashcard.question);
     setEditedAnswer(flashcard.answer);
   };
+  
   const cancelEditing = () => {
     setEditingId(null);
     setEditedQuestion("");
     setEditedAnswer("");
   };
+  
   const handleSave = async (id: string) => {
     if (!editedQuestion.trim() || !editedAnswer.trim()) {
       toast({
@@ -145,11 +130,13 @@ const FlashcardDeck = () => {
       answer: editedAnswer
     });
   };
+  
   const handleDelete = async (flashcardId: string) => {
     if (window.confirm('Are you sure you want to delete this flashcard?')) {
       deleteFlashcardMutation.mutate(flashcardId);
     }
   };
+  
   if (isDeckLoading || isFlashcardsLoading) {
     return <div className="min-h-screen bg-background">
         <NavigationBar />
@@ -160,6 +147,7 @@ const FlashcardDeck = () => {
         </main>
       </div>;
   }
+  
   if (!deck) {
     toast({
       variant: "destructive",
@@ -169,6 +157,7 @@ const FlashcardDeck = () => {
     navigate('/flashcards');
     return null;
   }
+  
   return <div className="min-h-screen bg-background">
       <NavigationBar />
       <main className="container mx-auto px-4 sm:px-6 py-4">
@@ -195,7 +184,16 @@ const FlashcardDeck = () => {
           </TabsList>
 
           <TabsContent value="study" className="space-y-4">
-            {flashcards && flashcards.length > 0 ? <StudyMode flashcards={flashcards} deckId={id!} /> : <Card>
+            {flashcards && flashcards.length > 0 ? (
+              isMobile ? (
+                <div className="pb-16"> {/* Add padding to account for navigation */}
+                  <StudyModeMobile flashcards={flashcards} deckId={id!} />
+                </div>
+              ) : (
+                <StudyMode flashcards={flashcards} deckId={id!} />
+              )
+            ) : (
+              <Card>
                 <CardContent className="flex flex-col items-center justify-center py-12">
                   <BookOpen className="h-12 w-12 text-muted-foreground mb-4" />
                   <p className="text-lg font-medium mb-2">No flashcards yet</p>
@@ -203,7 +201,8 @@ const FlashcardDeck = () => {
                     Add some flashcards to start studying
                   </p>
                 </CardContent>
-              </Card>}
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="manage">
