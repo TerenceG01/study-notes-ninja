@@ -34,7 +34,7 @@ export const NotesContent = () => {
     uniqueSubjects,
     filteredNotes,
     clearFilters,
-  } = useNotesFilters(allNotes);
+  } = useNotesFilters(allNotes || []);
 
   // Add states for selected and editing notes
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);

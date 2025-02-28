@@ -1,30 +1,26 @@
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { Note, NewNote } from "./notes/types";
+import { 
+  fetchNotes,
+  createNoteInDb,
+  generateFlashcardsForNote,
+  deleteNotesForSubject,
+  syncOfflineNotes
+} from "./notes/note-operations";
+import {
+  saveOfflineNote,
+  getOfflineNotes,
+  cacheNotesForOffline,
+  clearOfflineNotes
+} from "./notes/offline-storage";
 
-export type Note = {
-  id: string;
-  title: string;
-  content: string;
-  created_at: string;
-  folder: string;
-  summary?: string;
-  tags?: string[];
-  subject?: string;
-  subject_color?: string;
-  subject_order?: number;
-};
-
-export type NewNote = {
-  title: string;
-  content: string;
-  tags: string[];
-  subject: string;
-};
+export type { Note, NewNote };
 
 export const useNotes = () => {
   const { toast } = useToast();
@@ -59,35 +55,16 @@ export const useNotes = () => {
     };
   }, []);
 
-  const fetchNotes = async () => {
-    console.log("Fetching notes...");
-    const { data, error } = await supabase
-      .from("notes")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-    console.log("Fetched notes:", data);
-    
-    // If we're offline, merge with any offline notes
-    if (!navigator.onLine) {
-      const offlineNotes = getOfflineNotes();
-      return [...offlineNotes, ...(data || [])];
-    }
-    
-    return data || [];
-  };
-
   const { data: notes, isLoading: loading, refetch } = useQuery({
     queryKey: ['notes', user?.id],
     queryFn: fetchNotes,
     enabled: !!user,
     staleTime: 1000 * 60 * 5, // 5 minutes
-    cacheTime: 1000 * 60 * 30, // 30 minutes
+    gcTime: 1000 * 60 * 30, // 30 minutes - replaced cacheTime with gcTime
     onSuccess: (data) => {
       // Cache for offline use
       if (data?.length) {
-        localStorage.setItem('cachedNotes', JSON.stringify(data));
+        cacheNotesForOffline(data);
       }
     },
     meta: {
@@ -97,6 +74,8 @@ export const useNotes = () => {
 
   // Function to sync pending changes when back online
   const syncPendingChanges = async () => {
+    if (!user) return;
+    
     const offlineNotes = getOfflineNotes();
     
     if (offlineNotes.length > 0) {
@@ -105,30 +84,10 @@ export const useNotes = () => {
         description: `Syncing ${offlineNotes.length} offline notes...`,
       }).id;
       
-      let syncedCount = 0;
-      
-      for (const note of offlineNotes) {
-        try {
-          const { error } = await supabase.from("notes").insert([
-            {
-              title: note.title,
-              content: note.content,
-              tags: note.tags,
-              subject: note.subject,
-              user_id: note.user_id,
-            },
-          ]);
-          
-          if (!error) {
-            syncedCount++;
-          }
-        } catch (error) {
-          console.error("Error syncing offline note:", error);
-        }
-      }
+      const { syncedCount, totalCount } = await syncOfflineNotes(user.id);
       
       // Clear offline notes after sync attempt
-      localStorage.removeItem('offlineNotes');
+      clearOfflineNotes();
       
       // Dismiss the syncing toast
       toast.dismiss(syncToastId);
@@ -136,7 +95,7 @@ export const useNotes = () => {
       // Show result toast
       toast({
         title: "Sync complete",
-        description: `Successfully synced ${syncedCount} of ${offlineNotes.length} notes.`,
+        description: `Successfully synced ${syncedCount} of ${totalCount} notes.`,
       });
       
       // Refresh notes to include synced items
@@ -189,19 +148,7 @@ export const useNotes = () => {
         return { offline: true };
       }
       
-      console.log("Creating note:", { ...newNote, user_id: userId });
-      const { error } = await supabase.from("notes").insert([
-        {
-          title: newNote.title,
-          content: newNote.content,
-          tags: newNote.tags,
-          subject: newNote.subject,
-          user_id: userId,
-        },
-      ]);
-
-      if (error) throw error;
-      return { success: true };
+      return await createNoteInDb(newNote, userId);
     },
     onSuccess: (result) => {
       if (result.offline) {
@@ -236,41 +183,6 @@ export const useNotes = () => {
     }
   };
 
-  // Define offline storage helpers
-  const saveOfflineNote = (note: NewNote, userId: string) => {
-    try {
-      const offlineNotes = getOfflineNotes();
-      offlineNotes.push({
-        ...note,
-        user_id: userId,
-        id: `offline_${Date.now()}`,
-        created_at: new Date().toISOString(),
-        offline: true
-      });
-      localStorage.setItem('offlineNotes', JSON.stringify(offlineNotes));
-      
-      // Update React Query cache to include the new offline note
-      queryClient.setQueryData(['notes', user?.id], (oldData: Note[] = []) => [{
-        ...note,
-        id: `offline_${Date.now()}`,
-        created_at: new Date().toISOString(),
-        folder: '',
-        offline: true
-      } as Note, ...oldData]);
-    } catch (error) {
-      console.error("Error saving offline note:", error);
-    }
-  };
-  
-  const getOfflineNotes = (): any[] => {
-    try {
-      return JSON.parse(localStorage.getItem('offlineNotes') || '[]');
-    } catch (error) {
-      console.error("Error retrieving offline notes:", error);
-      return [];
-    }
-  };
-
   const generateFlashcardsMutation = useMutation({
     mutationFn: async (note: Note) => {
       if (!isOnline) {
@@ -279,16 +191,7 @@ export const useNotes = () => {
       
       setGeneratingFlashcardsForNote(note.id);
       try {
-        const { data, error } = await supabase.functions.invoke('generate-flashcards', {
-          body: {
-            noteId: note.id,
-            content: note.content,
-            title: note.title,
-          },
-        });
-
-        if (error) throw error;
-        return data;
+        return await generateFlashcardsForNote(note);
       } finally {
         setGeneratingFlashcardsForNote(null);
       }
@@ -321,13 +224,7 @@ export const useNotes = () => {
         throw new Error("You're offline. Please connect to the internet to delete notes.");
       }
       
-      const { error } = await supabase
-        .from("notes")
-        .delete()
-        .eq("subject", subject);
-
-      if (error) throw error;
-      return subject;
+      return await deleteNotesForSubject(subject);
     },
     onSuccess: (subject) => {
       queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
@@ -346,10 +243,6 @@ export const useNotes = () => {
     }
   });
 
-  const deleteNotesForSubject = async (subject: string) => {
-    deleteNotesForSubjectMutation.mutate(subject);
-  };
-
   return {
     notes: notes || [],
     loading,
@@ -358,7 +251,6 @@ export const useNotes = () => {
     fetchNotes: () => refetch(),
     createNote,
     generateFlashcards,
-    deleteNotesForSubject,
+    deleteNotesForSubject: (subject: string) => deleteNotesForSubjectMutation.mutate(subject),
   };
 };
-

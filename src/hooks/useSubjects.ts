@@ -18,14 +18,16 @@ export function useSubjects() {
   const uniqueSubjectsWithOrder = useMemo(() => {
     const subjectsMap = new Map<string, number>();
     
-    notes.forEach(note => {
-      if (note.subject && note.subject !== "General") {
-        // If we haven't seen this subject yet, add it with its order
-        if (!subjectsMap.has(note.subject)) {
-          subjectsMap.set(note.subject, note.subject_order || 0);
+    if (Array.isArray(notes)) {
+      notes.forEach(note => {
+        if (note.subject && note.subject !== "General") {
+          // If we haven't seen this subject yet, add it with its order
+          if (!subjectsMap.has(note.subject)) {
+            subjectsMap.set(note.subject, note.subject_order || 0);
+          }
         }
-      }
-    });
+      });
+    }
 
     return Array.from(subjectsMap.entries())
       .map(([subject, order]) => ({ subject, order }))
