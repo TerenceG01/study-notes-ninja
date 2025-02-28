@@ -1,104 +1,110 @@
 
-import { NavigationBar } from "@/components/navigation/NavigationBar";
-import { useAuth } from "@/contexts/AuthContext";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Plus } from "lucide-react";
 import { useState } from "react";
-import { EmptyDeckState } from "@/components/flashcards/EmptyDeckState";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 import { CreateDeckDialog } from "@/components/flashcards/CreateDeckDialog";
 import { DeckCard } from "@/components/flashcards/DeckCard";
+import { EmptyDeckState } from "@/components/flashcards/EmptyDeckState";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import { PlusCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { NotesGridSkeleton } from "@/components/ui/loading-skeletons";
 
 const Flashcards = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const [isCreatingDeck, setIsCreatingDeck] = useState(false);
+  const [openCreateDialog, setOpenCreateDialog] = useState(false);
 
-  const { data: decks, isLoading } = useQuery({
-    queryKey: ['flashcard-decks', user?.id],
+  const { data: decks, isLoading, refetch } = useQuery({
+    queryKey: ["flashcard-decks"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('flashcard_decks')
-        .select('*')
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false });
+        .from("flashcard_decks")
+        .select("*, flashcards(count)")
+        .eq("user_id", user?.id)
+        .order("created_at", { ascending: false });
+      
       if (error) throw error;
-      return data;
+      return data || [];
     },
-    enabled: !!user
+    enabled: !!user,
   });
 
-  const deleteDeckMutation = useMutation({
-    mutationFn: async (deckId: string) => {
-      const { error } = await supabase
-        .from('flashcard_decks')
+  const handleDeleteDeck = async (deckId: string) => {
+    try {
+      // First delete all flashcards in the deck
+      const { error: flashcardsError } = await supabase
+        .from("flashcards")
         .delete()
-        .eq('id', deckId);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['flashcard-decks'] });
+        .eq("deck_id", deckId);
+      
+      if (flashcardsError) throw flashcardsError;
+      
+      // Then delete the deck itself
+      const { error: deckError } = await supabase
+        .from("flashcard_decks")
+        .delete()
+        .eq("id", deckId);
+      
+      if (deckError) throw deckError;
+      
+      refetch();
+      
       toast({
-        title: "Success",
-        description: "Flashcard deck deleted successfully"
+        title: "Deck deleted",
+        description: "The flashcard deck has been deleted successfully",
       });
-    },
-    onError: error => {
+    } catch (error) {
+      console.error("Error deleting deck:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message
+        description: "Failed to delete the deck. Please try again.",
       });
-    }
-  });
-
-  const handleDelete = async (deckId: string, event: React.MouseEvent) => {
-    event.preventDefault();
-    if (window.confirm('Are you sure you want to delete this deck? All flashcards in this deck will be deleted.')) {
-      deleteDeckMutation.mutate(deckId);
     }
   };
 
+  if (!user) return null;
+
   return (
-    <div className="min-h-screen bg-background">
-      <NavigationBar />
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-start mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-primary">My Flashcards</h1>
-            <p className="text-muted-foreground mt-2">Review and manage your flashcard decks</p>
-          </div>
-          <Button onClick={() => setIsCreatingDeck(true)} className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            Create New Deck
-          </Button>
+    <div className="container mx-auto max-w-[1400px] px-4 lg:px-8 pt-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Flashcards</h1>
+        <Button 
+          onClick={() => setOpenCreateDialog(true)}
+          className="gap-2"
+        >
+          <PlusCircle className="h-4 w-4" />
+          New Deck
+        </Button>
+      </div>
+
+      {isLoading ? (
+        <NotesGridSkeleton count={3} />
+      ) : !decks || decks.length === 0 ? (
+        <EmptyDeckState onCreate={() => setOpenCreateDialog(true)} />
+      ) : (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {decks.map((deck) => (
+            <DeckCard
+              key={deck.id}
+              deck={deck}
+              cardCount={(deck.flashcards as any)?.[0]?.count || 0}
+              onDeleteDeck={() => handleDeleteDeck(deck.id)}
+            />
+          ))}
         </div>
+      )}
 
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 text-muted-foreground" />
-          </div>
-        ) : decks?.length === 0 ? (
-          <EmptyDeckState onCreateClick={() => setIsCreatingDeck(true)} />
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {decks?.map(deck => (
-              <DeckCard key={deck.id} deck={deck} onDelete={handleDelete} />
-            ))}
-          </div>
-        )}
-
-        {user && (
-          <CreateDeckDialog 
-            open={isCreatingDeck} 
-            onOpenChange={setIsCreatingDeck} 
-            userId={user.id} 
-          />
-        )}
-      </main>
+      <CreateDeckDialog 
+        open={openCreateDialog} 
+        onOpenChange={setOpenCreateDialog}
+        onDeckCreated={() => {
+          refetch();
+          setOpenCreateDialog(false);
+        }}
+      />
     </div>
   );
 };

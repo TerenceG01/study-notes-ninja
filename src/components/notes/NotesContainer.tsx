@@ -4,6 +4,7 @@ import { NotesTable } from "./NotesTable";
 import { NoteFilters } from "./filters/NoteFilters";
 import { Note } from "@/hooks/useNotes";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { TableSkeleton } from "@/components/ui/loading-skeletons";
 
 interface NotesContainerProps {
   notes: Note[];
@@ -63,14 +64,18 @@ export const NotesContainer = ({
       </CardHeader>
       <CardContent className="p-0">
         <ScrollArea className="h-[calc(5*56px+56px)]">
-          <NotesTable
-            notes={notes}
-            loading={loading}
-            generatingFlashcardsForNote={generatingFlashcardsForNote}
-            onNoteClick={onNoteClick}
-            onGenerateFlashcards={onGenerateFlashcards}
-            onNotesChanged={onNotesChanged}
-          />
+          {loading ? (
+            <TableSkeleton rows={5} />
+          ) : (
+            <NotesTable
+              notes={notes}
+              loading={loading}
+              generatingFlashcardsForNote={generatingFlashcardsForNote}
+              onNoteClick={onNoteClick}
+              onGenerateFlashcards={onGenerateFlashcards}
+              onNotesChanged={onNotesChanged}
+            />
+          )}
         </ScrollArea>
       </CardContent>
     </Card>

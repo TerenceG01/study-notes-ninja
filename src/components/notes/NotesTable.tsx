@@ -272,16 +272,7 @@ export const NotesTable = ({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {loading ? (
-          <TableRow>
-            <TableCell colSpan={5} className="text-center py-8">
-              <div className="flex items-center justify-center gap-2">
-                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                <span className="text-muted-foreground">Loading notes...</span>
-              </div>
-            </TableCell>
-          </TableRow>
-        ) : notes.length === 0 ? (
+        {notes.length === 0 ? (
           <TableRow>
             <TableCell colSpan={5} className="text-center py-8">
               <p className="text-muted-foreground">No notes found. Create your first note above!</p>

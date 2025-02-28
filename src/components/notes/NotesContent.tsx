@@ -7,6 +7,7 @@ import { NotesContainer } from "./NotesContainer";
 import { NotesHeader } from "./NotesHeader";
 import { NoteEditingSection } from "./NoteEditingSection";
 import { useNotesFilters } from "@/hooks/useNotesFilters";
+import { NoteCardSkeleton } from "@/components/ui/loading-skeletons";
 
 export const NotesContent = () => {
   const { user } = useAuth();
@@ -58,22 +59,32 @@ export const NotesContent = () => {
       <NotesHeader onSearch={setSearchQuery} />
       
       <div className="rounded-lg border bg-card w-full">
-        <NotesContainer
-          notes={filteredNotes}
-          loading={loading}
-          generatingFlashcardsForNote={generatingFlashcardsForNote}
-          selectedColor={selectedColor}
-          selectedSubject={currentSubject}
-          selectedDate={selectedDate}
-          uniqueSubjects={uniqueSubjects}
-          onColorChange={setSelectedColor}
-          onSubjectChange={() => {}}
-          onDateChange={setSelectedDate}
-          onClearFilters={clearFilters}
-          onNoteClick={handleNoteClick}
-          onGenerateFlashcards={generateFlashcards}
-          onNotesChanged={fetchNotes}
-        />
+        {loading ? (
+          <div className="p-6">
+            <div className="space-y-2 mb-6">
+              <div className="h-7 w-40 bg-muted rounded-md animate-pulse" />
+              <div className="h-4 w-60 bg-muted/70 rounded-md animate-pulse" />
+            </div>
+            <NoteCardSkeleton />
+          </div>
+        ) : (
+          <NotesContainer
+            notes={filteredNotes}
+            loading={loading}
+            generatingFlashcardsForNote={generatingFlashcardsForNote}
+            selectedColor={selectedColor}
+            selectedSubject={currentSubject}
+            selectedDate={selectedDate}
+            uniqueSubjects={uniqueSubjects}
+            onColorChange={setSelectedColor}
+            onSubjectChange={() => {}}
+            onDateChange={setSelectedDate}
+            onClearFilters={clearFilters}
+            onNoteClick={handleNoteClick}
+            onGenerateFlashcards={generateFlashcards}
+            onNotesChanged={fetchNotes}
+          />
+        )}
       </div>
 
       <div className="mt-6">
