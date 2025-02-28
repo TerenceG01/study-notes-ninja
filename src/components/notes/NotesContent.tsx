@@ -84,17 +84,21 @@ export const NotesContent = () => {
   return (
     <div className="flex flex-col md:flex-row gap-6">
       <div className="w-full md:w-1/5">
-        <NavigationSection
-          notes={allNotes}
-          onSubjectClick={handleSubjectChange}
-          onClearFilters={clearFilters}
-        />
+        <NavigationSection isOpen={true} />
       </div>
       
       <div className="flex-1 flex flex-col gap-6">
         <CreateNoteContainer 
-          onCreateNote={handleCreateNote}
-          isOnline={isOnline}
+          isExpanded={true}
+          note={{ title: "", content: "", tags: [], subject: "General" }}
+          newTag=""
+          commonSubjects={uniqueSubjects}
+          onNoteChange={() => {}}
+          onTagChange={() => {}}
+          onAddTag={() => {}}
+          onRemoveTag={() => {}}
+          onCancel={() => {}}
+          onSave={() => {}}
         />
         
         <NotesContainer
@@ -119,10 +123,21 @@ export const NotesContent = () => {
       </div>
       
       <EditNoteDialog
-        note={selectedNote}
+        selectedNote={selectedNote}
+        editingNote={selectedNote}
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
-        onNotesChanged={handleNotesChanged}
+        showSummary={false}
+        summaryLevel="brief"
+        summarizing={false}
+        newTag=""
+        commonSubjects={uniqueSubjects}
+        onNoteChange={() => {}}
+        onSummaryLevelChange={() => {}}
+        onGenerateSummary={() => {}}
+        onToggleSummary={() => {}}
+        onNewTagChange={() => {}}
+        onSave={() => {}}
       />
     </div>
   );
