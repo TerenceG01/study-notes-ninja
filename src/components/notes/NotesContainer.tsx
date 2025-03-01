@@ -63,7 +63,7 @@ export const NotesContainer = ({
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <ScrollArea className="h-[calc(5*56px+56px)]">
+        <ScrollArea className="h-[calc(5*56px+56px)]" type="always">
           {loading ? (
             <TableSkeleton rows={5} />
           ) : (

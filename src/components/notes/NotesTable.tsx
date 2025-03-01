@@ -1,4 +1,3 @@
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Loader2, MoreVertical, ChevronUp, ChevronDown, Share, Trash2 } from "lucide-react";
@@ -313,158 +312,160 @@ export const NotesTable = ({
 
   return (
     <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="font-semibold text-primary">Subject</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead className="hidden md:table-cell">Content</TableHead>
-            <TableHead className="hidden sm:table-cell">Created At</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {notes.length === 0 ? (
+      <div className="relative overflow-x-auto">
+        <Table>
+          <TableHeader className="sticky top-0 bg-background z-10 border-b">
             <TableRow>
-              <TableCell colSpan={5} className="text-center py-8">
-                <p className="text-muted-foreground">No notes found. Create your first note above!</p>
-              </TableCell>
+              <TableHead className="font-semibold text-primary">Subject</TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead className="hidden md:table-cell">Content</TableHead>
+              <TableHead className="hidden sm:table-cell">Created At</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
-          ) : (
-            notes.map((note) => (
-              <TableRow 
-                key={note.id}
-                className="group hover:bg-muted/50 cursor-pointer transition-colors"
-                onClick={() => onNoteClick(note)}
-              >
-                <TableCell className="flex items-center gap-2">
-                  <div
-                    className={cn(
-                      "flex-1 px-3 py-1 rounded-md font-medium transition-colors",
-                      note.subject_color ? 
-                        SUBJECT_COLORS.find(c => c.value === note.subject_color)?.class : 
-                        "bg-primary/5 text-primary hover:bg-primary/10"
-                    )}
-                  >
-                    {note.subject || 'General'}
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
-                        onClick={(e) => e.stopPropagation()} // Prevent row click when clicking dropdown
-                        disabled={updatingNoteId === note.id || sharingSubject === note.subject}
-                      >
-                        {updatingNoteId === note.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <MoreVertical className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent 
-                      align="end" 
-                      side="top" 
-                      sideOffset={5}
-                      className="w-48"
-                    >
-                      <div className="px-2 py-1.5 text-sm font-medium text-muted-foreground">
-                        Subject Color
-                      </div>
-                      <div className="grid grid-cols-5 gap-1 p-2">
-                        {SUBJECT_COLORS.map((color) => (
-                          <Button
-                            key={color.value}
-                            variant="ghost"
-                            size="sm"
-                            className={cn(
-                              "h-6 w-6 p-0 rounded-full",
-                              color.class
-                            )}
-                            onClick={(e) => handleColorChange(e, note, color.value)}
-                            disabled={updatingNoteId === note.id}
-                          />
-                        ))}
-                      </div>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem 
-                        onClick={(e) => handleShareNote(e, note)}
-                        disabled={updatingNoteId === note.id}
-                      >
-                        {updatingNoteId === note.id ? (
-                          <>
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            Sharing...
-                          </>
-                        ) : (
-                          <>
-                            <Share className="h-4 w-4 mr-2" />
-                            Share Note
-                          </>
-                        )}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        className="text-destructive"
-                        onClick={(e) => handleRemoveNote(e, note)}
-                        disabled={updatingNoteId === note.id}
-                      >
-                        {updatingNoteId === note.id ? (
-                          <>
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            Removing...
-                          </>
-                        ) : (
-                          <>
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Remove Note
-                          </>
-                        )}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-                <TableCell className="font-medium max-w-[200px] sm:max-w-[250px] md:max-w-[300px]">
-                  <div className="truncate" title={note.title}>
-                    {note.title}
-                  </div>
-                </TableCell>
-                <TableCell className="max-w-md truncate hidden md:table-cell">
-                  {note.content}
-                </TableCell>
-                <TableCell className="hidden sm:table-cell">
-                  {new Date(note.created_at).toLocaleDateString()}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onGenerateFlashcards(note);
-                    }}
-                    disabled={!!generatingFlashcardsForNote}
-                    className="flex items-center gap-2"
-                  >
-                    {generatingFlashcardsForNote === note.id ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
-                    ) : (
-                      <>
-                        <BookOpen className="h-4 w-4" />
-                        Create Flashcards
-                      </>
-                    )}
-                  </Button>
+          </TableHeader>
+          <TableBody>
+            {notes.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-8">
+                  <p className="text-muted-foreground">No notes found. Create your first note above!</p>
                 </TableCell>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+            ) : (
+              notes.map((note) => (
+                <TableRow 
+                  key={note.id}
+                  className="group hover:bg-muted/50 cursor-pointer transition-colors"
+                  onClick={() => onNoteClick(note)}
+                >
+                  <TableCell className="flex items-center gap-2">
+                    <div
+                      className={cn(
+                        "flex-1 px-3 py-1 rounded-md font-medium transition-colors",
+                        note.subject_color ? 
+                          SUBJECT_COLORS.find(c => c.value === note.subject_color)?.class : 
+                          "bg-primary/5 text-primary hover:bg-primary/10"
+                      )}
+                    >
+                      {note.subject || 'General'}
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                          onClick={(e) => e.stopPropagation()} // Prevent row click when clicking dropdown
+                          disabled={updatingNoteId === note.id || sharingSubject === note.subject}
+                        >
+                          {updatingNoteId === note.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <MoreVertical className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent 
+                        align="end" 
+                        side="top" 
+                        sideOffset={5}
+                        className="w-48"
+                      >
+                        <div className="px-2 py-1.5 text-sm font-medium text-muted-foreground">
+                          Subject Color
+                        </div>
+                        <div className="grid grid-cols-5 gap-1 p-2">
+                          {SUBJECT_COLORS.map((color) => (
+                            <Button
+                              key={color.value}
+                              variant="ghost"
+                              size="sm"
+                              className={cn(
+                                "h-6 w-6 p-0 rounded-full",
+                                color.class
+                              )}
+                              onClick={(e) => handleColorChange(e, note, color.value)}
+                              disabled={updatingNoteId === note.id}
+                            />
+                          ))}
+                        </div>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          onClick={(e) => handleShareNote(e, note)}
+                          disabled={updatingNoteId === note.id}
+                        >
+                          {updatingNoteId === note.id ? (
+                            <>
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              Sharing...
+                            </>
+                          ) : (
+                            <>
+                              <Share className="h-4 w-4 mr-2" />
+                              Share Note
+                            </>
+                          )}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          className="text-destructive"
+                          onClick={(e) => handleRemoveNote(e, note)}
+                          disabled={updatingNoteId === note.id}
+                        >
+                          {updatingNoteId === note.id ? (
+                            <>
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              Removing...
+                            </>
+                          ) : (
+                            <>
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Remove Note
+                            </>
+                          )}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                  <TableCell className="font-medium max-w-[200px] sm:max-w-[250px] md:max-w-[300px]">
+                    <div className="truncate" title={note.title}>
+                      {note.title}
+                    </div>
+                  </TableCell>
+                  <TableCell className="max-w-md truncate hidden md:table-cell">
+                    {note.content}
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell">
+                    {new Date(note.created_at).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onGenerateFlashcards(note);
+                      }}
+                      disabled={!!generatingFlashcardsForNote}
+                      className="flex items-center gap-2"
+                    >
+                      {generatingFlashcardsForNote === note.id ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <BookOpen className="h-4 w-4" />
+                          Create Flashcards
+                        </>
+                      )}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       {/* Study Group Selection Sheet */}
       <Sheet open={showGroupSelector} onOpenChange={setShowGroupSelector}>
