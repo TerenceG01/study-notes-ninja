@@ -74,22 +74,31 @@ const Profile = () => {
       
       if (notesError) throw notesError;
       
-      // Get flashcards count
-      const { count: flashcardsCount, error: flashcardsError } = await supabase
-        .from("flashcards")
-        .select("*", { count: "exact", head: true })
-        .in("deck_id", (query) => {
-          query
-            .select("id")
-            .from("flashcard_decks")
-            .eq("user_id", user.id);
-        });
+      // Get flashcards count - Fix for the TypeScript error
+      const userDecks = await supabase
+        .from("flashcard_decks")
+        .select("id")
+        .eq("user_id", user.id);
+        
+      if (userDecks.error) throw userDecks.error;
       
-      if (flashcardsError) throw flashcardsError;
+      // If user has decks, get the count of flashcards in those decks
+      let flashcardsTotal = 0;
+      if (userDecks.data && userDecks.data.length > 0) {
+        const deckIds = userDecks.data.map(deck => deck.id);
+        
+        const { count, error: flashcardsError } = await supabase
+          .from("flashcards")
+          .select("*", { count: "exact", head: true })
+          .in("deck_id", deckIds);
+          
+        if (flashcardsError) throw flashcardsError;
+        flashcardsTotal = count || 0;
+      }
       
       // Set the values
       setNotesCount(notesCount || 0);
-      setFlashcardsCount(flashcardsCount || 0);
+      setFlashcardsCount(flashcardsTotal);
       
       // For demo purposes, set a random streak between 1-14
       setStudyStreak(Math.floor(Math.random() * 14) + 1);
