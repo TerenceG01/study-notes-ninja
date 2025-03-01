@@ -1,3 +1,4 @@
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Loader2, MoreVertical, ChevronUp, ChevronDown, Share, Trash2 } from "lucide-react";
@@ -151,16 +152,14 @@ export const NotesTable = ({
     }
   };
 
-  const handleShareSubject = (e: React.MouseEvent, note: Note) => {
+  const handleShareNote = (e: React.MouseEvent, note: Note) => {
     e.stopPropagation();
-    if (!note.subject) return;
-    
     setSelectedNote(note);
     setShowGroupSelector(true);
   };
 
   const handleShareToGroup = async (groupId: string) => {
-    if (!selectedNote || !selectedNote.subject) return;
+    if (!selectedNote) return;
     
     setShowGroupSelector(false);
     setSelectedGroupId(groupId);
@@ -168,7 +167,7 @@ export const NotesTable = ({
   };
 
   const confirmShareToGroup = async () => {
-    if (!selectedNote || !selectedNote.subject || !selectedGroupId) return;
+    if (!selectedNote || !selectedGroupId) return;
     
     if (!navigator.onLine) {
       toast({
@@ -181,17 +180,15 @@ export const NotesTable = ({
     }
     
     // Show loading state
-    setSharingSubject(selectedNote.subject);
+    setSharingSubject(selectedNote.subject || null);
     
     // Show loading toast
     const loadingToastId = toast({
-      title: "Sharing notes to study group",
+      title: "Sharing note to study group",
       description: "Please wait...",
     }).id;
     
     try {
-      const notesWithSubject = notes.filter(n => n.subject === selectedNote.subject);
-      
       if (!user) throw new Error("User not found");
 
       // Get the count of existing notes in the group
@@ -203,36 +200,30 @@ export const NotesTable = ({
       if (existingNotesError) throw existingNotesError;
 
       const startOrder = (existingNotes?.length || 0) + 1;
-      let sharedCount = 0;
-
-      // Share all notes with sequential display_order
-      for (let i = 0; i < notesWithSubject.length; i++) {
-        const n = notesWithSubject[i];
-        // Log the note being shared for debugging
-        console.log("Sharing note:", n.id, "to group:", selectedGroupId);
+      
+      // Log the note being shared for debugging
+      console.log("Sharing note:", selectedNote.id, "to group:", selectedGroupId);
+      
+      const { data, error } = await supabase
+        .from('study_group_notes')
+        .insert({
+          note_id: selectedNote.id,
+          group_id: selectedGroupId,
+          shared_by: user.id,
+          display_order: startOrder
+        })
+        .select();
         
-        const { data, error } = await supabase
-          .from('study_group_notes')
-          .insert({
-            note_id: n.id,
-            group_id: selectedGroupId,
-            shared_by: user.id,
-            display_order: startOrder + i
-          })
-          .select();
-          
-        if (error) {
-          console.error("Error sharing note:", error);
-          continue;
-        }
-        
-        console.log("Note shared successfully:", data);
-        sharedCount++;
+      if (error) {
+        console.error("Error sharing note:", error);
+        throw error;
       }
+      
+      console.log("Note shared successfully:", data);
 
       toast({
         title: "Success",
-        description: `Shared ${sharedCount} notes to study group`,
+        description: `Shared "${selectedNote.title}" to study group`,
       });
 
       // Ask if user wants to navigate to the group
@@ -245,7 +236,7 @@ export const NotesTable = ({
           title: "Success",
           description: (
             <div className="flex flex-col gap-2">
-              <p>Shared {sharedCount} notes to {selectedGroup.name}</p>
+              <p>Shared "{selectedNote.title}" to {selectedGroup.name}</p>
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -262,13 +253,13 @@ export const NotesTable = ({
       // Dismiss loading toast if it's still showing
       toast.dismiss(loadingToastId);
       
-      console.error("Error sharing subject:", error);
+      console.error("Error sharing note:", error);
       toast({
         variant: "destructive",
-        title: "Error sharing subject",
+        title: "Error sharing note",
         description: error instanceof Error 
           ? error.message 
-          : "Failed to share subject. Please try again.",
+          : "Failed to share note. Please try again.",
       });
     } finally {
       setSharingSubject(null);
@@ -277,52 +268,46 @@ export const NotesTable = ({
     }
   };
 
-  const handleRemoveSubject = async (e: React.MouseEvent, note: Note) => {
+  const handleRemoveNote = async (e: React.MouseEvent, note: Note) => {
     e.stopPropagation();
-    if (!note.subject) return;
     
     if (!navigator.onLine) {
       toast({
         variant: "destructive",
         title: "You're offline",
-        description: "Please connect to the internet to remove subjects.",
+        description: "Please connect to the internet to remove notes.",
       });
       return;
     }
     
     // Show loading state
-    setSharingSubject(note.subject);
+    setUpdatingNoteId(note.id);
     
     try {
       const { error } = await supabase
         .from('notes')
-        .update({ subject: null })
-        .eq('subject', note.subject);
+        .delete()
+        .eq('id', note.id);
 
       if (error) throw error;
-
-      if (searchParams.get("subject") === note.subject) {
-        searchParams.delete("subject");
-        setSearchParams(searchParams);
-      }
 
       onNotesChanged();
       
       toast({
         title: "Success",
-        description: `Removed subject ${note.subject}`,
+        description: `Removed note "${note.title}"`,
       });
     } catch (error) {
-      console.error("Error removing subject:", error);
+      console.error("Error removing note:", error);
       toast({
         variant: "destructive",
         title: "Error",
         description: error instanceof Error 
           ? error.message 
-          : "Failed to remove subject. Please try again.",
+          : "Failed to remove note. Please try again.",
       });
     } finally {
-      setSharingSubject(null);
+      setUpdatingNoteId(null);
     }
   };
 
@@ -404,43 +389,39 @@ export const NotesTable = ({
                         ))}
                       </div>
                       <DropdownMenuSeparator />
-                      {note.subject && (
-                        <>
-                          <DropdownMenuItem 
-                            onClick={(e) => handleShareSubject(e, note)}
-                            disabled={sharingSubject === note.subject}
-                          >
-                            {sharingSubject === note.subject ? (
-                              <>
-                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                Sharing...
-                              </>
-                            ) : (
-                              <>
-                                <Share className="h-4 w-4 mr-2" />
-                                Share Subject
-                              </>
-                            )}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            className="text-destructive"
-                            onClick={(e) => handleRemoveSubject(e, note)}
-                            disabled={sharingSubject === note.subject}
-                          >
-                            {sharingSubject === note.subject ? (
-                              <>
-                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                Removing...
-                              </>
-                            ) : (
-                              <>
-                                <Trash2 className="h-4 w-4 mr-2" />
-                                Remove Subject
-                              </>
-                            )}
-                          </DropdownMenuItem>
-                        </>
-                      )}
+                      <DropdownMenuItem 
+                        onClick={(e) => handleShareNote(e, note)}
+                        disabled={updatingNoteId === note.id}
+                      >
+                        {updatingNoteId === note.id ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Sharing...
+                          </>
+                        ) : (
+                          <>
+                            <Share className="h-4 w-4 mr-2" />
+                            Share Note
+                          </>
+                        )}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        className="text-destructive"
+                        onClick={(e) => handleRemoveNote(e, note)}
+                        disabled={updatingNoteId === note.id}
+                      >
+                        {updatingNoteId === note.id ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Removing...
+                          </>
+                        ) : (
+                          <>
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Remove Note
+                          </>
+                        )}
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -489,7 +470,7 @@ export const NotesTable = ({
           <SheetHeader>
             <SheetTitle>Select Study Group</SheetTitle>
             <SheetDescription>
-              Choose a study group to share {selectedNote?.subject} notes with
+              Choose a study group to share {selectedNote?.title ? `"${selectedNote.title}"` : 'note'} with
             </SheetDescription>
           </SheetHeader>
           <div className="py-4 space-y-4">
@@ -533,15 +514,14 @@ export const NotesTable = ({
       <AlertDialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Share {selectedNote?.subject} Notes</AlertDialogTitle>
-            <AlertDialogDescription className="text-sm text-muted-foreground">
-              This will share all notes with the subject "{selectedNote?.subject}" to the selected study group.
-              Are you sure you want to continue?
+            <AlertDialogTitle>Share Note</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to share "{selectedNote?.title}" to the selected study group?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmShareToGroup}>Share Notes</AlertDialogAction>
+            <AlertDialogAction onClick={confirmShareToGroup}>Share Note</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
