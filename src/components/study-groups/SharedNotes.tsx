@@ -127,6 +127,7 @@ const DraggableNoteCard = ({ note, onNoteClick }: { note: SharedNote; onNoteClic
 };
 
 export const SharedNotes = ({ groupId }: SharedNotesProps) => {
+  console.log("SharedNotes component rendering with groupId:", groupId);
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const sensors = useSensors(
@@ -153,14 +154,17 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   });
 
   // Remove excessive console logs and add error boundary
-  const { data: notes, isLoading, error } = useQuery({
+  const { data: notes, isLoading, error, refetch } = useQuery({
     queryKey: ['group-shared-notes', groupId],
     queryFn: async () => {
       if (!groupId) {
+        console.log("No groupId provided");
         return [];
       }
 
       try {
+        console.log("Fetching notes for group:", groupId);
+        
         // First, let's verify the group exists
         const { data: groupCheck, error: groupError } = await supabase
           .from('study_groups')
@@ -169,9 +173,12 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
           .single();
 
         if (groupError || !groupCheck) {
+          console.error("Group not found:", groupError);
           throw new Error('Group not found');
         }
 
+        console.log("Group exists, fetching shared notes");
+        
         // Now fetch the shared notes with their related data
         const { data, error } = await supabase
           .from('study_group_notes')
@@ -195,12 +202,19 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
           .eq('group_id', groupId)
           .order('display_order', { ascending: true });
 
-        if (error) throw error;
+        if (error) {
+          console.error("Error fetching shared notes:", error);
+          throw error;
+        }
 
+        console.log("Shared notes fetched:", data);
+        
         // Filter out any notes with missing data
         const validNotes = data?.filter(note => note.note && note.note.id) || [];
+        console.log("Valid notes:", validNotes.length);
         return validNotes as SharedNote[];
       } catch (error) {
+        console.error("Failed to load shared notes:", error);
         // Use toast for visible error
         toast({
           variant: "destructive",
@@ -212,7 +226,9 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
     },
     enabled: !!groupId,
     // Add retry logic
-    retry: 1,
+    retry: 2,
+    refetchOnWindowFocus: true,
+    staleTime: 10000, // 10 seconds
     meta: {
       errorToast: true
     }
@@ -221,6 +237,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   // Show error toast when there's an error
   useEffect(() => {
     if (error) {
+      console.error("Error in useEffect:", error);
       toast({
         variant: "destructive",
         title: "Error loading shared notes",
@@ -228,6 +245,14 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
       });
     }
   }, [error, toast]);
+
+  // Add a refetch effect when groupId changes
+  useEffect(() => {
+    if (groupId) {
+      console.log("GroupId changed, refetching notes");
+      refetch();
+    }
+  }, [groupId, refetch]);
 
   const updateOrderMutation = useMutation({
     mutationFn: async ({ id, newOrder }: { id: string; newOrder: number }) => {
@@ -242,6 +267,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
       queryClient.invalidateQueries({ queryKey: ['group-shared-notes', groupId] });
     },
     onError: (error) => {
+      console.error("Error updating note order:", error);
       toast({
         variant: "destructive",
         title: "Error updating note order",
@@ -251,6 +277,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   });
 
   const handleNoteClick = (note: SharedNote) => {
+    console.log("Note clicked:", note);
     setSelectedNoteState({
       open: true,
       note: note.note

@@ -209,16 +209,26 @@ export const NotesTable = ({
       // Share all notes with sequential display_order
       for (let i = 0; i < notesWithSubject.length; i++) {
         const n = notesWithSubject[i];
-        const { error } = await supabase
+        // Log the note being shared for debugging
+        console.log("Sharing note:", n.id, "to group:", selectedGroupId);
+        
+        const { data, error } = await supabase
           .from('study_group_notes')
           .insert({
             note_id: n.id,
             group_id: selectedGroupId,
             shared_by: user.id,
             display_order: startOrder + i
-          });
+          })
+          .select();
           
-        if (!error) sharedCount++;
+        if (error) {
+          console.error("Error sharing note:", error);
+          continue;
+        }
+        
+        console.log("Note shared successfully:", data);
+        sharedCount++;
       }
 
       toast({

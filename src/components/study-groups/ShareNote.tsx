@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   Dialog,
@@ -50,6 +51,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
         .eq('user_id', user?.id);
 
       if (error) throw error;
+      console.log("User notes fetched:", data?.length);
       return data as Note[];
     },
     enabled: !!user,
@@ -59,12 +61,14 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
     queryKey: ['shared-notes', groupId],
     queryFn: async () => {
       if (!groupId) return [];
+      console.log("Fetching already shared notes for group:", groupId);
       const { data, error } = await supabase
         .from('study_group_notes')
         .select('note_id')
         .eq('group_id', groupId);
 
       if (error) throw error;
+      console.log("Already shared notes:", data.map(n => n.note_id));
       return data.map(n => n.note_id);
     },
     enabled: !!groupId && !!user,
@@ -74,6 +78,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
     queryKey: ['max-note-order', groupId],
     queryFn: async () => {
       if (!groupId) return 0;
+      console.log("Fetching max order for group:", groupId);
       const { data, error } = await supabase
         .from('study_group_notes')
         .select('display_order')
@@ -82,7 +87,9 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
         .limit(1);
 
       if (error) throw error;
-      return data.length > 0 ? data[0].display_order : 0;
+      const maxOrder = data.length > 0 ? data[0].display_order : 0;
+      console.log("Max order:", maxOrder);
+      return maxOrder;
     },
     enabled: !!groupId && !!user,
   });
@@ -93,24 +100,31 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
         throw new Error('Cannot share note: Missing required data');
       }
 
+      const nextOrder = (maxOrder || 0) + 1;
+      console.log("Sharing note with order:", nextOrder);
+
       const insertData = {
         group_id: groupId,
         note_id: noteId,
         shared_by: user.id,
-        display_order: (maxOrder || 0) + 1,
+        display_order: nextOrder,
       };
       
       console.log('Sharing note with data:', insertData);
       
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('study_group_notes')
-        .insert(insertData);
+        .insert(insertData)
+        .select();
 
       if (error) throw error;
+      console.log("Note shared successfully:", data);
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shared-notes', groupId] });
       queryClient.invalidateQueries({ queryKey: ['group-shared-notes', groupId] });
+      queryClient.invalidateQueries({ queryKey: ['max-note-order', groupId] });
       setOpen(false);
       toast({
         title: "Note shared",
@@ -122,7 +136,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
       toast({
         variant: "destructive",
         title: "Error sharing note",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
       });
     },
   });
@@ -133,6 +147,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
         throw new Error('Cannot unshare note: No group ID provided');
       }
 
+      console.log("Unsharing note:", noteId, "from group:", groupId);
       const { error } = await supabase
         .from('study_group_notes')
         .delete()
@@ -150,10 +165,11 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
       });
     },
     onError: (error) => {
+      console.error('Error unsharing note:', error);
       toast({
         variant: "destructive",
         title: "Error unsharing note",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
       });
     },
   });
@@ -172,7 +188,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button disabled={isDisabled}>
           <Share2 className="h-4 w-4 mr-2" />
           Share Notes
         </Button>
@@ -192,38 +208,39 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
           ) : (
             <ScrollArea className="h-[400px] pr-4">
               <div className="space-y-4">
-                {notes?.map((note) => {
-                  const isShared = sharedNotes?.includes(note.id);
-                  return (
-                    <Card key={note.id}>
-                      <CardHeader className="p-4">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <CardTitle className="text-lg">{note.title}</CardTitle>
-                            <CardDescription>
-                              {note.content.substring(0, 100)}...
-                            </CardDescription>
+                {notes?.length ? (
+                  notes.map((note) => {
+                    const isShared = sharedNotes?.includes(note.id);
+                    return (
+                      <Card key={note.id}>
+                        <CardHeader className="p-4">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <CardTitle className="text-lg">{note.title}</CardTitle>
+                              <CardDescription>
+                                {note.content.substring(0, 100)}...
+                              </CardDescription>
+                            </div>
+                            <Button
+                              variant={isShared ? "destructive" : "secondary"}
+                              size="sm"
+                              onClick={() => handleShareToggle(note.id, !!isShared)}
+                              disabled={shareNoteMutation.isPending || unshareNoteMutation.isPending}
+                            >
+                              {shareNoteMutation.isPending || unshareNoteMutation.isPending ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : isShared ? (
+                                "Unshare"
+                              ) : (
+                                "Share"
+                              )}
+                            </Button>
                           </div>
-                          <Button
-                            variant={isShared ? "destructive" : "secondary"}
-                            size="sm"
-                            onClick={() => handleShareToggle(note.id, !!isShared)}
-                            disabled={shareNoteMutation.isPending || unshareNoteMutation.isPending}
-                          >
-                            {shareNoteMutation.isPending || unshareNoteMutation.isPending ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : isShared ? (
-                              "Unshare"
-                            ) : (
-                              "Share"
-                            )}
-                          </Button>
-                        </div>
-                      </CardHeader>
-                    </Card>
-                  );
-                })}
-                {(!notes || notes.length === 0) && (
+                        </CardHeader>
+                      </Card>
+                    );
+                  })
+                ) : (
                   <div className="text-center py-8">
                     <FileText className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                     <p className="text-muted-foreground">No notes found</p>

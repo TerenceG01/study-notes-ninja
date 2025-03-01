@@ -12,6 +12,7 @@ import { GroupHeader } from "@/components/study-groups/GroupHeader";
 import { GroupAbout } from "@/components/study-groups/GroupAbout";
 import { GroupMembersList } from "@/components/study-groups/GroupMembersList";
 import { GroupReminders } from "@/components/study-groups/GroupReminders";
+import { useEffect } from "react";
 
 interface StudyGroup {
   id: string;
@@ -36,6 +37,11 @@ const StudyGroupDetails = () => {
   const { id } = useParams();
   const { user } = useAuth();
 
+  // Debug logging
+  useEffect(() => {
+    console.log("StudyGroupDetails mounted with id:", id);
+  }, [id]);
+
   const { data: studyGroup, isLoading: isLoadingGroup, error: groupError } = useQuery({
     queryKey: ['study-group', id],
     queryFn: async () => {
@@ -47,9 +53,11 @@ const StudyGroupDetails = () => {
 
       if (error) throw error;
       if (!data) throw new Error('Study group not found');
+      console.log("Study group details fetched:", data);
       return data as StudyGroup;
     },
-    enabled: !!id
+    enabled: !!id,
+    refetchOnWindowFocus: false
   });
 
   const { data: members, isLoading: isLoadingMembers } = useQuery({
@@ -69,9 +77,11 @@ const StudyGroupDetails = () => {
         .eq('group_id', id);
 
       if (error) throw error;
+      console.log("Study group members fetched:", data?.length);
       return data as StudyGroupMember[];
     },
-    enabled: !!id && !!studyGroup
+    enabled: !!id && !!studyGroup,
+    refetchOnWindowFocus: false
   });
 
   if (isLoadingGroup || isLoadingMembers) {
@@ -88,6 +98,7 @@ const StudyGroupDetails = () => {
   }
 
   if (groupError || !studyGroup) {
+    console.error("Error loading study group:", groupError);
     return (
       <div className="min-h-screen bg-background">
         <NavigationBar />
@@ -104,6 +115,7 @@ const StudyGroupDetails = () => {
   }
 
   const userRole = members?.find(member => member.user_id === user?.id)?.role;
+  console.log("User role in group:", userRole);
 
   return (
     <div className="min-h-screen bg-background">
@@ -135,7 +147,8 @@ const StudyGroupDetails = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <SharedNotes groupId={studyGroup.id} />
+                {/* Key added to force re-render when the ID changes */}
+                <SharedNotes key={`shared-notes-${id}`} groupId={studyGroup.id} />
               </CardContent>
             </Card>
 
