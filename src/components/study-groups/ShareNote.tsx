@@ -289,133 +289,131 @@ export const ShareNote = ({ groupId, selectedNoteId, selectedSubject }: ShareNot
     : 0;
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button disabled={isDisabled}>
-            <Share2 className="h-4 w-4 mr-2" />
-            Share Notes
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>Share Notes with Group</DialogTitle>
-            <DialogDescription>
-              Select notes to share with your study group members
-            </DialogDescription>
-          </DialogHeader>
-          
-          {/* Share Mode Selector */}
-          {selectedNoteId || selectedSubject ? (
-            <div className="mb-4">
-              <RadioGroup 
-                value={shareMode} 
-                onValueChange={(value) => setShareMode(value as "single" | "subject")}
-                className="flex flex-col space-y-2"
-              >
-                {selectedNoteId && (
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="single" id="share-single" />
-                    <Label htmlFor="share-single">Share selected note only</Label>
-                  </div>
-                )}
-                {selectedSubject && (
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="subject" id="share-subject" />
-                    <Label htmlFor="share-subject" className="flex items-center">
-                      Share all notes with subject &quot;{selectedSubject}&quot;
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Info className="h-4 w-4 ml-2 text-muted-foreground" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            {subjectNotesCount} notes will be shared
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </Label>
-                  </div>
-                )}
-              </RadioGroup>
-              
-              {/* Share All Button for Subject Mode */}
-              {shareMode === "subject" && selectedSubject && (
-                <Button 
-                  className="mt-4" 
-                  onClick={handleShareAll}
-                  disabled={shareMultipleNotesMutation.isPending || subjectNotesCount === 0}
-                >
-                  {shareMultipleNotesMutation.isPending ? (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  ) : (
-                    <Share2 className="h-4 w-4 mr-2" />
-                  )}
-                  Share All {subjectNotesCount > 0 ? `(${subjectNotesCount})` : "(None Available)"}
-                </Button>
-              )}
-            </div>
-          )}
-          
-          <div className="py-4">
-            {(loadingNotes || loadingSharedNotes) ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin" />
-              </div>
-            ) : (
-              <ScrollArea className="h-[400px] pr-4">
-                <div className="space-y-4">
-                  {filteredNotes?.length ? (
-                    filteredNotes.map((note) => {
-                      const isShared = sharedNotes?.includes(note.id);
-                      return (
-                        <Card key={note.id}>
-                          <CardHeader className="p-4">
-                            <div className="flex items-start justify-between">
-                              <div>
-                                <CardTitle className="text-lg">{note.title}</CardTitle>
-                                <CardDescription>
-                                  {note.content.substring(0, 100)}...
-                                  {note.subject && (
-                                    <div className="mt-1">
-                                      <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
-                                        {note.subject}
-                                      </span>
-                                    </div>
-                                  )}
-                                </CardDescription>
-                              </div>
-                              <Button
-                                variant={isShared ? "destructive" : "secondary"}
-                                size="sm"
-                                onClick={() => handleShareToggle(note.id, !!isShared)}
-                                disabled={shareNoteMutation.isPending || unshareNoteMutation.isPending}
-                              >
-                                {shareNoteMutation.isPending || unshareNoteMutation.isPending ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : isShared ? (
-                                  "Unshare"
-                                ) : (
-                                  "Share"
-                                )}
-                              </Button>
-                            </div>
-                          </CardHeader>
-                        </Card>
-                      );
-                    })
-                  ) : (
-                    <div className="text-center py-8">
-                      <FileText className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                      <p className="text-muted-foreground">No notes found</p>
-                    </div>
-                  )}
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button disabled={isDisabled}>
+          <Share2 className="h-4 w-4 mr-2" />
+          Share Notes
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>Share Notes with Group</DialogTitle>
+          <DialogDescription>
+            Select notes to share with your study group members
+          </DialogDescription>
+        </DialogHeader>
+        
+        {/* Share Mode Selector */}
+        {selectedNoteId || selectedSubject ? (
+          <div className="mb-4">
+            <RadioGroup 
+              value={shareMode} 
+              onValueChange={(value) => setShareMode(value as "single" | "subject")}
+              className="flex flex-col space-y-2"
+            >
+              {selectedNoteId && (
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="single" id="share-single" />
+                  <Label htmlFor="share-single">Share selected note only</Label>
                 </div>
-              </ScrollArea>
+              )}
+              {selectedSubject && (
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="subject" id="share-subject" />
+                  <Label htmlFor="share-subject" className="flex items-center">
+                    Share all notes with subject &quot;{selectedSubject}&quot;
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 ml-2 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {subjectNotesCount} notes will be shared
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </Label>
+                </div>
+              )}
+            </RadioGroup>
+            
+            {/* Share All Button for Subject Mode */}
+            {shareMode === "subject" && selectedSubject && (
+              <Button 
+                className="mt-4" 
+                onClick={handleShareAll}
+                disabled={shareMultipleNotesMutation.isPending || subjectNotesCount === 0}
+              >
+                {shareMultipleNotesMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Share2 className="h-4 w-4 mr-2" />
+                )}
+                Share All {subjectNotesCount > 0 ? `(${subjectNotesCount})` : "(None Available)"}
+              </Button>
             )}
           </div>
-        </DialogContent>
-      </Dialog>
-    </>
+        )}
+        
+        <div className="py-4">
+          {(loadingNotes || loadingSharedNotes) ? (
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          ) : (
+            <ScrollArea className="h-[400px] pr-4">
+              <div className="space-y-4">
+                {filteredNotes?.length ? (
+                  filteredNotes.map((note) => {
+                    const isShared = sharedNotes?.includes(note.id);
+                    return (
+                      <Card key={note.id}>
+                        <CardHeader className="p-4">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <CardTitle className="text-lg">{note.title}</CardTitle>
+                              <CardDescription>
+                                {note.content.substring(0, 100)}...
+                                {note.subject && (
+                                  <div className="mt-1">
+                                    <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                                      {note.subject}
+                                    </span>
+                                  </div>
+                                )}
+                              </CardDescription>
+                            </div>
+                            <Button
+                              variant={isShared ? "destructive" : "secondary"}
+                              size="sm"
+                              onClick={() => handleShareToggle(note.id, !!isShared)}
+                              disabled={shareNoteMutation.isPending || unshareNoteMutation.isPending}
+                            >
+                              {shareNoteMutation.isPending || unshareNoteMutation.isPending ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : isShared ? (
+                                "Unshare"
+                              ) : (
+                                "Share"
+                              )}
+                            </Button>
+                          </div>
+                        </CardHeader>
+                      </Card>
+                    );
+                  })
+                ) : (
+                  <div className="text-center py-8">
+                    <FileText className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                    <p className="text-muted-foreground">No notes found</p>
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
