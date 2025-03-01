@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
@@ -159,7 +159,7 @@ export const NotesTable = ({
   };
 
   // Fetch study groups when component mounts
-  useState(() => {
+  useEffect(() => {
     const fetchStudyGroups = async () => {
       if (!user) return;
       
