@@ -63,20 +63,22 @@ export const NotesContainer = ({
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <ScrollArea className="h-[calc(5*56px+56px)]" type="always">
-          {loading ? (
-            <TableSkeleton rows={5} />
-          ) : (
-            <NotesTable
-              notes={notes}
-              loading={loading}
-              generatingFlashcardsForNote={generatingFlashcardsForNote}
-              onNoteClick={onNoteClick}
-              onGenerateFlashcards={onGenerateFlashcards}
-              onNotesChanged={onNotesChanged}
-            />
-          )}
-        </ScrollArea>
+        <div className="relative">
+          <ScrollArea className="h-[calc(5*56px+56px)]" type="always">
+            {loading ? (
+              <TableSkeleton rows={5} />
+            ) : (
+              <NotesTable
+                notes={notes}
+                loading={loading}
+                generatingFlashcardsForNote={generatingFlashcardsForNote}
+                onNoteClick={onNoteClick}
+                onGenerateFlashcards={onGenerateFlashcards}
+                onNotesChanged={onNotesChanged}
+              />
+            )}
+          </ScrollArea>
+        </div>
       </CardContent>
     </Card>
   );

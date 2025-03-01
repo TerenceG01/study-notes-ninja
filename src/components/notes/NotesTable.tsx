@@ -312,9 +312,9 @@ export const NotesTable = ({
 
   return (
     <>
-      <div className="relative overflow-x-auto">
+      <div className="relative">
         <Table>
-          <TableHeader className="sticky top-0 bg-background z-10 border-b">
+          <TableHeader className="sticky top-0 z-10 bg-background shadow-sm">
             <TableRow>
               <TableHead className="font-semibold text-primary">Subject</TableHead>
               <TableHead>Title</TableHead>
