@@ -2,11 +2,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, FileText, GripVertical, Trash2 } from "lucide-react";
-import { format } from "date-fns";
-import { ViewSharedNote } from "./ViewSharedNote";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -17,158 +12,27 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-} from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-
-interface SharedNote {
-  id: string;
-  note_id: string;
-  note: {
-    id: string;
-    title: string;
-    content: string;
-    created_at: string;
-  };
-  shared_by: string;
-  shared_at: string;
-  display_order: number;
-  shared_by_profile: {
-    username: string | null;
-    full_name: string | null;
-  } | null;
-}
-
-interface SharedNotesProps {
-  groupId: string;
-}
-
-// Add an error boundary component
-const ErrorBoundary = ({ children, fallback }: { children: React.ReactNode, fallback: React.ReactNode }) => {
-  const [hasError, setHasError] = useState(false);
-
-  useEffect(() => {
-    const errorHandler = () => setHasError(true);
-    window.addEventListener('error', errorHandler);
-    return () => window.removeEventListener('error', errorHandler);
-  }, []);
-
-  if (hasError) {
-    return <>{fallback}</>;
-  }
-
-  return <>{children}</>;
-};
-
-const DraggableNoteCard = ({ 
-  note, 
-  onNoteClick, 
-  onRemoveNote, 
-  isCurrentUserNote 
-}: { 
-  note: SharedNote; 
-  onNoteClick: (note: SharedNote) => void;
-  onRemoveNote: (note: SharedNote) => void;
-  isCurrentUserNote: boolean;
-}) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: note.id });
-
-  const style = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-    transition,
-  } : undefined;
-
-  const sharedByName = note.shared_by_profile?.username || 
-                      note.shared_by_profile?.full_name || 
-                      'Unknown';
-  const initials = sharedByName
-    .split(' ')
-    .map(n => n[0])
-    .join('')
-    .toUpperCase();
-
-  return (
-    <Card 
-      ref={setNodeRef}
-      style={style}
-      className="cursor-pointer transition-colors hover:shadow-lg border hover:border-accent relative group"
-    >
-      <div
-        {...attributes}
-        {...listeners}
-        className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 cursor-move p-2"
-      >
-        <GripVertical className="h-4 w-4 text-muted-foreground" />
-      </div>
-      <div onClick={() => onNoteClick(note)} className="w-full">
-        <CardHeader className="space-y-0 pb-2 pl-10">
-          <div className="flex items-start justify-between">
-            <CardTitle className="text-lg line-clamp-1">{note.note.title}</CardTitle>
-            {isCurrentUserNote && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onRemoveNote(note);
-                }}
-              >
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
-            )}
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-            {note.note.content}
-          </p>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Avatar className="h-6 w-6">
-                <AvatarImage />
-                <AvatarFallback className="text-xs">{initials}</AvatarFallback>
-              </Avatar>
-              <span className="text-xs text-muted-foreground">{sharedByName}</span>
-            </div>
-            <span className="text-xs text-muted-foreground">
-              {format(new Date(note.shared_at), 'MMM d')}
-            </span>
-          </div>
-        </CardContent>
-      </div>
-    </Card>
-  );
-};
+import { ViewSharedNote } from "./ViewSharedNote";
+import { DraggableNoteCard } from "./DraggableNoteCard";
+import { RemoveNoteDialog } from "./RemoveNoteDialog";
+import { ErrorBoundary } from "./ErrorBoundary";
+import { EmptyNotes } from "./EmptyNotes";
+import { LoadingNotes } from "./LoadingNotes";
+import { SharedNote, SharedNotesProps } from "./types";
 
 export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   console.log("SharedNotes component rendering with groupId:", groupId);
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { user } = useAuth();
-  const [confirmRemoval, setConfirmRemoval] = useState<{open: boolean, note: SharedNote | null}>({
+  const [confirmRemoval, setConfirmRemoval] = useState<{
+    open: boolean;
+    note: SharedNote | null;
+  }>({
     open: false,
-    note: null
+    note: null,
   });
 
   const sensors = useSensors(
@@ -188,15 +52,15 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   // Fix for note dialog state management
   const [selectedNoteState, setSelectedNoteState] = useState<{
     open: boolean;
-    note: SharedNote['note'] | null;
+    note: SharedNote["note"] | null;
   }>({
     open: false,
-    note: null
+    note: null,
   });
 
   // Remove excessive console logs and add error boundary
   const { data: notes, isLoading, error, refetch } = useQuery({
-    queryKey: ['group-shared-notes', groupId],
+    queryKey: ["group-shared-notes", groupId],
     queryFn: async () => {
       if (!groupId) {
         console.log("No groupId provided");
@@ -205,24 +69,24 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
 
       try {
         console.log("Fetching notes for group:", groupId);
-        
+
         // First, let's verify the group exists
         const { data: groupCheck, error: groupError } = await supabase
-          .from('study_groups')
-          .select('id')
-          .eq('id', groupId)
+          .from("study_groups")
+          .select("id")
+          .eq("id", groupId)
           .single();
 
         if (groupError || !groupCheck) {
           console.error("Group not found:", groupError);
-          throw new Error('Group not found');
+          throw new Error("Group not found");
         }
 
         console.log("Group exists, fetching shared notes");
-        
+
         // Now fetch the shared notes with their related data
         const { data, error } = await supabase
-          .from('study_group_notes')
+          .from("study_group_notes")
           .select(`
             id,
             note_id,
@@ -240,8 +104,8 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
               full_name
             )
           `)
-          .eq('group_id', groupId)
-          .order('display_order', { ascending: true });
+          .eq("group_id", groupId)
+          .order("display_order", { ascending: true });
 
         if (error) {
           console.error("Error fetching shared notes:", error);
@@ -249,9 +113,9 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
         }
 
         console.log("Shared notes fetched:", data);
-        
+
         // Filter out any notes with missing data
-        const validNotes = data?.filter(note => note.note && note.note.id) || [];
+        const validNotes = data?.filter((note) => note.note && note.note.id) || [];
         console.log("Valid notes:", validNotes.length);
         return validNotes as SharedNote[];
       } catch (error) {
@@ -260,7 +124,8 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
         toast({
           variant: "destructive",
           title: "Failed to load shared notes",
-          description: error instanceof Error ? error.message : "An unknown error occurred"
+          description:
+            error instanceof Error ? error.message : "An unknown error occurred",
         });
         throw error;
       }
@@ -271,8 +136,8 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
     refetchOnWindowFocus: true,
     staleTime: 10000, // 10 seconds
     meta: {
-      errorToast: true
-    }
+      errorToast: true,
+    },
   });
 
   // Show error toast when there's an error
@@ -282,7 +147,7 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
       toast({
         variant: "destructive",
         title: "Error loading shared notes",
-        description: "Please try refreshing the page"
+        description: "Please try refreshing the page",
       });
     }
   }, [error, toast]);
@@ -298,41 +163,41 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   const updateOrderMutation = useMutation({
     mutationFn: async ({ id, newOrder }: { id: string; newOrder: number }) => {
       const { error } = await supabase
-        .from('study_group_notes')
+        .from("study_group_notes")
         .update({ display_order: newOrder })
-        .eq('id', id);
-      
+        .eq("id", id);
+
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['group-shared-notes', groupId] });
+      queryClient.invalidateQueries({ queryKey: ["group-shared-notes", groupId] });
     },
     onError: (error) => {
       console.error("Error updating note order:", error);
       toast({
         variant: "destructive",
         title: "Error updating note order",
-        description: "Failed to update the order of notes"
+        description: "Failed to update the order of notes",
       });
-    }
+    },
   });
 
   const removeNoteMutation = useMutation({
     mutationFn: async (noteId: string) => {
       console.log("Removing note with ID:", noteId);
       const { error } = await supabase
-        .from('study_group_notes')
+        .from("study_group_notes")
         .delete()
-        .eq('id', noteId);
-      
+        .eq("id", noteId);
+
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['group-shared-notes', groupId] });
-      queryClient.invalidateQueries({ queryKey: ['shared-notes', groupId] });
+      queryClient.invalidateQueries({ queryKey: ["group-shared-notes", groupId] });
+      queryClient.invalidateQueries({ queryKey: ["shared-notes", groupId] });
       toast({
         title: "Note removed",
-        description: "The note has been removed from the study group"
+        description: "The note has been removed from the study group",
       });
       setConfirmRemoval({ open: false, note: null });
     },
@@ -341,16 +206,16 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
       toast({
         variant: "destructive",
         title: "Error removing note",
-        description: "Failed to remove the note from the study group"
+        description: "Failed to remove the note from the study group",
       });
-    }
+    },
   });
 
   const handleNoteClick = (note: SharedNote) => {
     console.log("Note clicked:", note);
     setSelectedNoteState({
       open: true,
-      note: note.note
+      note: note.note,
     });
   };
 
@@ -367,43 +232,43 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   const handleDialogOpenChange = (open: boolean) => {
     if (!open) {
       // Only change the open state, preserve the note data until animation completes
-      setSelectedNoteState(prev => ({
+      setSelectedNoteState((prev) => ({
         ...prev,
-        open
+        open,
       }));
-      
+
       // Clear note data after dialog closing animation completes
       setTimeout(() => {
         if (!open) {
-          setSelectedNoteState(prev => ({
+          setSelectedNoteState((prev) => ({
             ...prev,
-            note: null
+            note: null,
           }));
         }
       }, 300);
     } else {
-      setSelectedNoteState(prev => ({
+      setSelectedNoteState((prev) => ({
         ...prev,
-        open
+        open,
       }));
     }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    
+
     if (!over || active.id === over.id || !notes) return;
-    
+
     const oldIndex = notes.findIndex((note) => note.id === active.id);
     const newIndex = notes.findIndex((note) => note.id === over.id);
-    
+
     if (oldIndex === -1 || newIndex === -1) return;
-    
+
     const updatedNotes = [...notes];
     const movedNote = updatedNotes[oldIndex];
     updatedNotes.splice(oldIndex, 1);
     updatedNotes.splice(newIndex, 0, movedNote);
-    
+
     updatedNotes.forEach((note, index) => {
       if (note.display_order !== index + 1) {
         updateOrderMutation.mutate({
@@ -415,35 +280,31 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center py-8">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
+    return <LoadingNotes />;
   }
 
   if (!notes || notes.length === 0) {
-    return (
-      <div className="text-center py-8">
-        <FileText className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-        <p className="text-muted-foreground">No notes have been shared yet</p>
-      </div>
-    );
+    return <EmptyNotes />;
   }
 
   return (
     <ScrollArea className="h-[400px]">
-      <ErrorBoundary fallback={
-        <div className="text-center py-8 text-destructive">
-          Error loading notes. Please try refreshing the page.
-        </div>
-      }>
+      <ErrorBoundary
+        fallback={
+          <div className="text-center py-8 text-destructive">
+            Error loading notes. Please try refreshing the page.
+          </div>
+        }
+      >
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-          <SortableContext items={notes.map(note => note.id)} strategy={verticalListSortingStrategy}>
+          <SortableContext
+            items={notes.map((note) => note.id)}
+            strategy={verticalListSortingStrategy}
+          >
             <div className="space-y-3">
               {notes.map((note) => (
-                <DraggableNoteCard 
-                  key={note.id} 
+                <DraggableNoteCard
+                  key={note.id}
                   note={note}
                   onNoteClick={handleNoteClick}
                   onRemoveNote={handleRemoveNote}
@@ -453,37 +314,18 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
             </div>
           </SortableContext>
         </DndContext>
-        
+
         {/* Confirm remove note dialog */}
-        <AlertDialog 
-          open={confirmRemoval.open} 
-          onOpenChange={(open) => setConfirmRemoval(prev => ({ ...prev, open }))}
-        >
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Remove Note</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to remove this note from the study group? 
-                This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction 
-                onClick={confirmRemoveNote}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              >
-                {removeNoteMutation.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                ) : (
-                  <Trash2 className="h-4 w-4 mr-2" />
-                )}
-                Remove
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        
+        <RemoveNoteDialog
+          open={confirmRemoval.open}
+          onOpenChange={(open) =>
+            setConfirmRemoval((prev) => ({ ...prev, open }))
+          }
+          onConfirm={confirmRemoveNote}
+          isPending={removeNoteMutation.isPending}
+          note={confirmRemoval.note}
+        />
+
         {/* Use the improved state management for the dialog */}
         {selectedNoteState.note && (
           <ViewSharedNote
