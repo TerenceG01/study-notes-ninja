@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, FileText, GripVertical } from "lucide-react";
+import { Loader2, FileText, GripVertical, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ViewSharedNote } from "./ViewSharedNote";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,6 +22,18 @@ import {
   verticalListSortingStrategy,
   useSortable,
 } from "@dnd-kit/sortable";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 interface SharedNote {
   id: string;
@@ -62,7 +74,17 @@ const ErrorBoundary = ({ children, fallback }: { children: React.ReactNode, fall
   return <>{children}</>;
 };
 
-const DraggableNoteCard = ({ note, onNoteClick }: { note: SharedNote; onNoteClick: (note: SharedNote) => void }) => {
+const DraggableNoteCard = ({ 
+  note, 
+  onNoteClick, 
+  onRemoveNote, 
+  isCurrentUserNote 
+}: { 
+  note: SharedNote; 
+  onNoteClick: (note: SharedNote) => void;
+  onRemoveNote: (note: SharedNote) => void;
+  isCurrentUserNote: boolean;
+}) => {
   const {
     attributes,
     listeners,
@@ -102,6 +124,19 @@ const DraggableNoteCard = ({ note, onNoteClick }: { note: SharedNote; onNoteClic
         <CardHeader className="space-y-0 pb-2 pl-10">
           <div className="flex items-start justify-between">
             <CardTitle className="text-lg line-clamp-1">{note.note.title}</CardTitle>
+            {isCurrentUserNote && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemoveNote(note);
+                }}
+              >
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -130,6 +165,12 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
   console.log("SharedNotes component rendering with groupId:", groupId);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const [confirmRemoval, setConfirmRemoval] = useState<{open: boolean, note: SharedNote | null}>({
+    open: false,
+    note: null
+  });
+
   const sensors = useSensors(
     useSensor(MouseSensor, {
       activationConstraint: {
@@ -276,12 +317,51 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
     }
   });
 
+  const removeNoteMutation = useMutation({
+    mutationFn: async (noteId: string) => {
+      console.log("Removing note with ID:", noteId);
+      const { error } = await supabase
+        .from('study_group_notes')
+        .delete()
+        .eq('id', noteId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['group-shared-notes', groupId] });
+      queryClient.invalidateQueries({ queryKey: ['shared-notes', groupId] });
+      toast({
+        title: "Note removed",
+        description: "The note has been removed from the study group"
+      });
+      setConfirmRemoval({ open: false, note: null });
+    },
+    onError: (error) => {
+      console.error("Error removing note:", error);
+      toast({
+        variant: "destructive",
+        title: "Error removing note",
+        description: "Failed to remove the note from the study group"
+      });
+    }
+  });
+
   const handleNoteClick = (note: SharedNote) => {
     console.log("Note clicked:", note);
     setSelectedNoteState({
       open: true,
       note: note.note
     });
+  };
+
+  const handleRemoveNote = (note: SharedNote) => {
+    setConfirmRemoval({ open: true, note });
+  };
+
+  const confirmRemoveNote = () => {
+    if (confirmRemoval.note) {
+      removeNoteMutation.mutate(confirmRemoval.note.id);
+    }
   };
 
   const handleDialogOpenChange = (open: boolean) => {
@@ -366,11 +446,43 @@ export const SharedNotes = ({ groupId }: SharedNotesProps) => {
                   key={note.id} 
                   note={note}
                   onNoteClick={handleNoteClick}
+                  onRemoveNote={handleRemoveNote}
+                  isCurrentUserNote={note.shared_by === user?.id}
                 />
               ))}
             </div>
           </SortableContext>
         </DndContext>
+        
+        {/* Confirm remove note dialog */}
+        <AlertDialog 
+          open={confirmRemoval.open} 
+          onOpenChange={(open) => setConfirmRemoval(prev => ({ ...prev, open }))}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Remove Note</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to remove this note from the study group? 
+                This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={confirmRemoveNote}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {removeNoteMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <Trash2 className="h-4 w-4 mr-2" />
+                )}
+                Remove
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         
         {/* Use the improved state management for the dialog */}
         {selectedNoteState.note && (
