@@ -1,44 +1,15 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Loader2, MoreVertical, ChevronUp, ChevronDown, Share, Trash2 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
 import { useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
-
-interface Note {
-  id: string;
-  title: string;
-  content: string;
-  created_at: string;
-  folder: string;
-  summary?: string;
-  tags?: string[];
-  subject?: string;
-  subject_color?: string;
-}
-
-interface StudyGroup {
-  id: string;
-  name: string;
-  subject: string;
-  description: string | null;
-  created_at: string;
-}
+import { Note, StudyGroup } from "./types";
+import { NoteTableRow } from "./table/NoteTableRow";
+import { ShareNoteDialog } from "./table/ShareNoteDialog";
 
 interface NotesTableProps {
   notes: Note[];
@@ -48,14 +19,6 @@ interface NotesTableProps {
   onGenerateFlashcards: (note: Note) => void;
   onNotesChanged: () => void;
 }
-
-const SUBJECT_COLORS = [
-  { name: 'Blue', value: 'blue', class: 'bg-blue-50 text-blue-600 hover:bg-blue-100' },
-  { name: 'Green', value: 'green', class: 'bg-green-50 text-green-600 hover:bg-green-100' },
-  { name: 'Purple', value: 'purple', class: 'bg-purple-50 text-purple-600 hover:bg-purple-100' },
-  { name: 'Red', value: 'red', class: 'bg-red-50 text-red-600 hover:bg-red-100' },
-  { name: 'Orange', value: 'orange', class: 'bg-orange-50 text-orange-600 hover:bg-orange-100' },
-];
 
 export const NotesTable = ({
   notes,
@@ -76,14 +39,6 @@ export const NotesTable = ({
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
 
-  // Temporary local state for optimistic updates
-  const [localNotes, setLocalNotes] = useState<Note[]>([]);
-  
-  // Function to update local notes state
-  const updateLocalNotes = (updatedNotes: Note[]) => {
-    setLocalNotes(updatedNotes);
-  };
-
   // Fetch study groups
   const { data: studyGroups, isLoading: isLoadingGroups } = useQuery({
     queryKey: ['study-groups'],
@@ -100,59 +55,7 @@ export const NotesTable = ({
     staleTime: 1000 * 60 * 5
   });
 
-  const handleColorChange = async (e: React.MouseEvent, note: Note, color: string) => {
-    e.stopPropagation();
-    
-    if (!navigator.onLine) {
-      toast({
-        variant: "destructive",
-        title: "You're offline",
-        description: "Color changes will be applied when you're back online.",
-      });
-      return;
-    }
-    
-    // Show optimistic UI update
-    setUpdatingNoteId(note.id);
-    
-    try {
-      // Optimistic update
-      const updatedNotes = notes.map(n => 
-        n.id === note.id ? { ...n, subject_color: color } : n
-      );
-      updateLocalNotes(updatedNotes);
-      
-      const { error } = await supabase
-        .from('notes')
-        .update({
-          subject_color: color,
-        })
-        .eq('id', note.id);
-
-      if (error) throw error;
-
-      onNotesChanged();
-      
-      toast({
-        title: "Success",
-        description: `Updated color for ${note.subject || 'note'}`,
-      });
-    } catch (error) {
-      console.error("Error updating color:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error instanceof Error 
-          ? error.message 
-          : "Failed to update note color. Please try again.",
-      });
-    } finally {
-      setUpdatingNoteId(null);
-    }
-  };
-
-  const handleShareNote = (e: React.MouseEvent, note: Note) => {
-    e.stopPropagation();
+  const handleShareNote = (note: Note) => {
     setSelectedNote(note);
     setShowGroupSelector(true);
   };
@@ -267,49 +170,6 @@ export const NotesTable = ({
     }
   };
 
-  const handleRemoveNote = async (e: React.MouseEvent, note: Note) => {
-    e.stopPropagation();
-    
-    if (!navigator.onLine) {
-      toast({
-        variant: "destructive",
-        title: "You're offline",
-        description: "Please connect to the internet to remove notes.",
-      });
-      return;
-    }
-    
-    // Show loading state
-    setUpdatingNoteId(note.id);
-    
-    try {
-      const { error } = await supabase
-        .from('notes')
-        .delete()
-        .eq('id', note.id);
-
-      if (error) throw error;
-
-      onNotesChanged();
-      
-      toast({
-        title: "Success",
-        description: `Removed note "${note.title}"`,
-      });
-    } catch (error) {
-      console.error("Error removing note:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error instanceof Error 
-          ? error.message 
-          : "Failed to remove note. Please try again.",
-      });
-    } finally {
-      setUpdatingNoteId(null);
-    }
-  };
-
   return (
     <>
       <div className="relative">
@@ -332,202 +192,36 @@ export const NotesTable = ({
               </TableRow>
             ) : (
               notes.map((note) => (
-                <TableRow 
+                <NoteTableRow
                   key={note.id}
-                  className="group hover:bg-muted/50 cursor-pointer transition-colors"
-                  onClick={() => onNoteClick(note)}
-                >
-                  <TableCell className="flex items-center gap-2">
-                    <div
-                      className={cn(
-                        "flex-1 px-3 py-1 rounded-md font-medium transition-colors",
-                        note.subject_color ? 
-                          SUBJECT_COLORS.find(c => c.value === note.subject_color)?.class : 
-                          "bg-primary/5 text-primary hover:bg-primary/10"
-                      )}
-                    >
-                      {note.subject || 'General'}
-                    </div>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
-                          onClick={(e) => e.stopPropagation()} // Prevent row click when clicking dropdown
-                          disabled={updatingNoteId === note.id || sharingSubject === note.subject}
-                        >
-                          {updatingNoteId === note.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <MoreVertical className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent 
-                        align="end" 
-                        side="top" 
-                        sideOffset={5}
-                        className="w-48"
-                      >
-                        <div className="px-2 py-1.5 text-sm font-medium text-muted-foreground">
-                          Subject Color
-                        </div>
-                        <div className="grid grid-cols-5 gap-1 p-2">
-                          {SUBJECT_COLORS.map((color) => (
-                            <Button
-                              key={color.value}
-                              variant="ghost"
-                              size="sm"
-                              className={cn(
-                                "h-6 w-6 p-0 rounded-full",
-                                color.class
-                              )}
-                              onClick={(e) => handleColorChange(e, note, color.value)}
-                              disabled={updatingNoteId === note.id}
-                            />
-                          ))}
-                        </div>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem 
-                          onClick={(e) => handleShareNote(e, note)}
-                          disabled={updatingNoteId === note.id}
-                        >
-                          {updatingNoteId === note.id ? (
-                            <>
-                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                              Sharing...
-                            </>
-                          ) : (
-                            <>
-                              <Share className="h-4 w-4 mr-2" />
-                              Share Note
-                            </>
-                          )}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                          className="text-destructive"
-                          onClick={(e) => handleRemoveNote(e, note)}
-                          disabled={updatingNoteId === note.id}
-                        >
-                          {updatingNoteId === note.id ? (
-                            <>
-                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                              Removing...
-                            </>
-                          ) : (
-                            <>
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Remove Note
-                            </>
-                          )}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                  <TableCell className="font-medium max-w-[200px] sm:max-w-[250px] md:max-w-[300px]">
-                    <div className="truncate" title={note.title}>
-                      {note.title}
-                    </div>
-                  </TableCell>
-                  <TableCell className="max-w-md truncate hidden md:table-cell">
-                    {note.content}
-                  </TableCell>
-                  <TableCell className="hidden sm:table-cell">
-                    {new Date(note.created_at).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onGenerateFlashcards(note);
-                      }}
-                      disabled={!!generatingFlashcardsForNote}
-                      className="flex items-center gap-2"
-                    >
-                      {generatingFlashcardsForNote === note.id ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          Generating...
-                        </>
-                      ) : (
-                        <>
-                          <BookOpen className="h-4 w-4" />
-                          Create Flashcards
-                        </>
-                      )}
-                    </Button>
-                  </TableCell>
-                </TableRow>
+                  note={note}
+                  generatingFlashcardsForNote={generatingFlashcardsForNote}
+                  updatingNoteId={updatingNoteId}
+                  sharingSubject={sharingSubject}
+                  onNoteClick={onNoteClick}
+                  onGenerateFlashcards={onGenerateFlashcards}
+                  onShareNote={handleShareNote}
+                  onNotesChanged={onNotesChanged}
+                />
               ))
             )}
           </TableBody>
         </Table>
       </div>
 
-      {/* Study Group Selection Sheet */}
-      <Sheet open={showGroupSelector} onOpenChange={setShowGroupSelector}>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Select Study Group</SheetTitle>
-            <SheetDescription>
-              Choose a study group to share {selectedNote?.title ? `"${selectedNote.title}"` : 'note'} with
-            </SheetDescription>
-          </SheetHeader>
-          <div className="py-4 space-y-4">
-            {isLoadingGroups ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-              </div>
-            ) : studyGroups && studyGroups.length > 0 ? (
-              <div className="space-y-2">
-                {studyGroups.map((group) => (
-                  <div 
-                    key={group.id} 
-                    className="border rounded-md p-4 hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => handleShareToGroup(group.id)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-medium">{group.name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Subject: {group.subject}
-                        </p>
-                      </div>
-                      <Share className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground mb-4">You don't have any study groups yet</p>
-                <Button onClick={() => navigate('/study-groups')}>
-                  Create a Study Group
-                </Button>
-              </div>
-            )}
-          </div>
-        </SheetContent>
-      </Sheet>
-
-      {/* Confirmation Dialog */}
-      <AlertDialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Share Note</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to share "{selectedNote?.title}" to the selected study group?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmShareToGroup}>Share Note</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ShareNoteDialog
+        selectedNote={selectedNote}
+        showGroupSelector={showGroupSelector}
+        isConfirmDialogOpen={isConfirmDialogOpen}
+        selectedGroupId={selectedGroupId}
+        isLoadingGroups={isLoadingGroups}
+        studyGroups={studyGroups}
+        sharingSubject={sharingSubject}
+        setShowGroupSelector={setShowGroupSelector}
+        setIsConfirmDialogOpen={setIsConfirmDialogOpen}
+        handleShareToGroup={handleShareToGroup}
+        confirmShareToGroup={confirmShareToGroup}
+      />
     </>
   );
 };
