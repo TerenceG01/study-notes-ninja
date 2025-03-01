@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,6 +8,7 @@ import { useTheme } from "next-themes";
 import { ProfileInfoCard } from "@/components/profile/ProfileInfoCard";
 import { AppearanceCard } from "@/components/profile/AppearanceCard";
 import { StatsCard } from "@/components/profile/StatsCard";
+import { ResponsiveContainer } from "@/components/ui/responsive-container";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -174,14 +176,14 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto max-w-[1400px] sm:px-6 lg:px-8 py-6 px-[10px]">
+      <ResponsiveContainer className="pb-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-primary">My Profile</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-primary">My Profile</h1>
           <p className="text-muted-foreground mt-2">Manage your personal information</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-6 w-full">
             <ProfileInfoCard 
               user={user} 
               username={username} 
@@ -193,11 +195,9 @@ const Profile = () => {
               resolvedTheme={resolvedTheme} 
               onToggleTheme={toggleTheme} 
             />
-            
-            {/* Sign Out button removed */}
           </div>
           
-          <div className="space-y-6">
+          <div className="space-y-6 w-full">
             <StatsCard 
               joinDate={user?.created_at || new Date().toISOString()}
               notesCount={notesCount}
@@ -207,7 +207,7 @@ const Profile = () => {
             />
           </div>
         </div>
-      </div>
+      </ResponsiveContainer>
     </div>
   );
 };

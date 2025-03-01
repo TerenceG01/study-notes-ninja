@@ -24,7 +24,7 @@ export function StatsCard({
   isLoading 
 }: StatsCardProps) {
   return (
-    <Card className="w-full">
+    <Card className="w-full h-full">
       <CardHeader>
         <CardTitle className="text-xl flex items-center gap-2">
           <Activity className="h-5 w-5 text-primary" />
@@ -32,7 +32,7 @@ export function StatsCard({
         </CardTitle>
         <CardDescription>Track your progress and activity</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-6">
+      <CardContent className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
         <div className="flex items-center gap-4 rounded-md border p-4 hover:bg-muted/50 transition-colors">
           <div className="bg-primary/10 p-2 rounded-full">
             <CalendarDays className="h-5 w-5 text-primary" />
