@@ -35,10 +35,10 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
       className="group hover:bg-muted/50 cursor-pointer transition-colors"
       onClick={() => onNoteClick(note)}
     >
-      <TableCell className="flex items-center gap-2">
+      <TableCell className="flex items-center gap-2 w-[20%]">
         <div
           className={cn(
-            "flex-1 px-3 py-1 rounded-md font-medium transition-colors",
+            "flex-1 px-3 py-1 rounded-md font-medium transition-colors text-center",
             note.subject_color ? 
               SUBJECT_COLORS.find(c => c.value === note.subject_color)?.class : 
               "bg-primary/5 text-primary hover:bg-primary/10"
@@ -54,7 +54,7 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
           sharingSubject={sharingSubject}
         />
       </TableCell>
-      <TableCell className="font-medium max-w-[200px] sm:max-w-[250px] md:max-w-[300px]">
+      <TableCell className="font-medium w-[20%]">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -68,13 +68,15 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
           </Tooltip>
         </TooltipProvider>
       </TableCell>
-      <TableCell className="max-w-md truncate hidden md:table-cell">
-        {note.content}
+      <TableCell className="hidden md:table-cell w-[30%]">
+        <div className="truncate">
+          {note.content}
+        </div>
       </TableCell>
-      <TableCell className="hidden sm:table-cell">
+      <TableCell className="hidden sm:table-cell w-[10%]">
         {new Date(note.created_at).toLocaleDateString()}
       </TableCell>
-      <TableCell>
+      <TableCell className="w-[20%]">
         <Button
           variant="ghost"
           size="sm"
