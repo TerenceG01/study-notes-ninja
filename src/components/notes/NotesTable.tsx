@@ -1,3 +1,4 @@
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "react-router-dom";
@@ -172,7 +173,7 @@ export const NotesTable = ({
 
   return (
     <>
-      <div className="relative">
+      <div className="relative w-full overflow-hidden">
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-background shadow-sm">
             <TableRow>

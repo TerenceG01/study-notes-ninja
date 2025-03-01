@@ -63,7 +63,7 @@ export const NotesContainer = ({
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="relative">
+        <div className="relative max-h-[calc(5*56px+56px)] overflow-hidden">
           <ScrollArea className="h-[calc(5*56px+56px)]" type="always">
             {loading ? (
               <TableSkeleton rows={5} />
