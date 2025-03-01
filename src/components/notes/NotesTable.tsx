@@ -425,8 +425,10 @@ export const NotesTable = ({
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
-                <TableCell className="font-medium">
-                  {note.title}
+                <TableCell className="font-medium max-w-[200px] sm:max-w-[250px] md:max-w-[300px]">
+                  <div className="truncate" title={note.title}>
+                    {note.title}
+                  </div>
                 </TableCell>
                 <TableCell className="max-w-md truncate hidden md:table-cell">
                   {note.content}
