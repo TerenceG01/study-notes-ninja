@@ -4,11 +4,18 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Menu } from "lucide-react";
+import { Menu, User } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
+import { ProfileModal } from "@/components/profile/ProfileModal";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const NavigationBar = () => {
   const { user } = useAuth();
@@ -16,6 +23,7 @@ export const NavigationBar = () => {
   const { toggleSidebar } = useSidebar();
   const isMobile = useIsMobile();
   const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const [authTab, setAuthTab] = useState<"sign-in" | "sign-up">("sign-in");
 
   const handleSignIn = () => {
@@ -58,13 +66,23 @@ export const NavigationBar = () => {
             </Link>
           </div>
           
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
             {user ? (
-              <>
-                <Button variant="ghost" onClick={handleLogout}>
-                  Logout
-                </Button>
-              </>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full" aria-label="User menu">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onSelect={() => setShowProfileModal(true)}>
+                    My Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={handleLogout}>
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <>
                 <Button variant="ghost" onClick={handleSignIn}>
@@ -82,6 +100,10 @@ export const NavigationBar = () => {
         open={showAuthDialog} 
         onOpenChange={setShowAuthDialog}
         defaultTab={authTab}
+      />
+      <ProfileModal
+        open={showProfileModal}
+        onOpenChange={setShowProfileModal}
       />
     </nav>
   );

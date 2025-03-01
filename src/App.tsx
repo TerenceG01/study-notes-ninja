@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import Index from "./pages/Index";
 import Notes from "./pages/Notes";
-import Profile from "./pages/Profile";
 import Flashcards from "./pages/Flashcards";
 import FlashcardDeck from "./pages/FlashcardDeck";
 import StudyGroups from "./pages/StudyGroups";
@@ -112,10 +111,6 @@ const App = () => (
                 <Route
                   path="/study-groups/join/:code"
                   element={<ProtectedRoute><AppLayout><JoinStudyGroup /></AppLayout></ProtectedRoute>}
-                />
-                <Route
-                  path="/profile"
-                  element={<ProtectedRoute><AppLayout><Profile /></AppLayout></ProtectedRoute>}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>
