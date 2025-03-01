@@ -1,13 +1,11 @@
 
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
 import { CreateDeckDialog } from "@/components/flashcards/CreateDeckDialog";
 import { DeckCard } from "@/components/flashcards/DeckCard";
 import { EmptyDeckState } from "@/components/flashcards/EmptyDeckState";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { PlusCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { NotesGridSkeleton } from "@/components/ui/loading-skeletons";
 
@@ -71,13 +69,6 @@ const Flashcards = () => {
     <div className="container mx-auto max-w-[1400px] px-4 lg:px-8 pt-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Flashcards</h1>
-        <Button 
-          onClick={() => setOpenCreateDialog(true)}
-          className="gap-2"
-        >
-          <PlusCircle className="h-4 w-4" />
-          New Deck
-        </Button>
       </div>
 
       {isLoading ? (
