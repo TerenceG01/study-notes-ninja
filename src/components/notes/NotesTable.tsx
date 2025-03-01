@@ -1,4 +1,50 @@
 
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from "@/components/ui/alert-dialog";
+import { Loader2, Share } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { Note } from "@/hooks/useNotes";
+
+interface NotesTableProps {
+  notes: Note[];
+  loading: boolean;
+  generatingFlashcardsForNote: string | null;
+  onNoteClick: (note: Note) => void;
+  onGenerateFlashcards: (note: Note) => void;
+  onNotesChanged: () => void;
+}
+
+export const NotesTable = ({
+  notes,
+  loading,
+  generatingFlashcardsForNote,
+  onNoteClick,
+  onGenerateFlashcards,
+  onNotesChanged,
+}: NotesTableProps) => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+  const [sharingSubject, setSharingSubject] = useState<string | null>(null);
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [studyGroups, setStudyGroups] = useState<any[]>([]);
+
   const confirmShareToGroup = async () => {
     if (!selectedNote || !selectedGroupId) return;
     
@@ -111,3 +157,179 @@
       setSelectedNote(null);
     }
   };
+
+  // Fetch study groups when component mounts
+  useState(() => {
+    const fetchStudyGroups = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('study_groups')
+          .select(`
+            id,
+            name,
+            study_group_members!inner(user_id)
+          `)
+          .eq('study_group_members.user_id', user.id);
+          
+        if (error) throw error;
+        setStudyGroups(data || []);
+      } catch (error) {
+        console.error("Error fetching study groups:", error);
+      }
+    };
+    
+    fetchStudyGroups();
+  }, [user]);
+
+  // Render table component
+  return (
+    <div className="w-full">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b">
+            <th className="text-left py-3 px-4 font-medium">Title</th>
+            <th className="text-left py-3 px-4 font-medium">Subject</th>
+            <th className="text-left py-3 px-4 font-medium">Created</th>
+            <th className="text-right py-3 px-4 font-medium">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {notes.length === 0 ? (
+            <tr>
+              <td colSpan={4} className="text-center py-6 text-muted-foreground">
+                No notes found. Create your first note to get started!
+              </td>
+            </tr>
+          ) : (
+            notes.map((note) => (
+              <tr key={note.id} className="border-b hover:bg-muted/50 cursor-pointer">
+                <td 
+                  className="py-3 px-4" 
+                  onClick={() => onNoteClick(note)}
+                >
+                  {note.title}
+                </td>
+                <td 
+                  className="py-3 px-4" 
+                  onClick={() => onNoteClick(note)}
+                >
+                  {note.subject || "-"}
+                </td>
+                <td 
+                  className="py-3 px-4" 
+                  onClick={() => onNoteClick(note)}
+                >
+                  {new Date(note.created_at).toLocaleDateString()}
+                </td>
+                <td className="py-3 px-4 text-right space-x-2">
+                  {generatingFlashcardsForNote === note.id ? (
+                    <Button variant="ghost" size="sm" disabled>
+                      <Loader2 className="animate-spin mr-2" size={16} />
+                      Generating...
+                    </Button>
+                  ) : (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onGenerateFlashcards(note)}
+                      >
+                        Flashcards
+                      </Button>
+                      
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedNote(note);
+                          // Show dialog with options
+                          setIsConfirmDialogOpen(true);
+                        }}
+                      >
+                        <Share className="h-4 w-4 mr-1" />
+                        Share
+                      </Button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+
+      {/* Alert Dialog for share confirmation */}
+      <AlertDialog 
+        open={isConfirmDialogOpen} 
+        onOpenChange={setIsConfirmDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Share Notes</AlertDialogTitle>
+            <AlertDialogDescription>
+              {selectedNote?.subject 
+                ? `Do you want to share just this note or all notes with the subject "${selectedNote.subject}"?`
+                : "Share this note to a study group:"}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="mb-4">
+            <select 
+              className="w-full p-2 border rounded"
+              value={selectedGroupId || ''}
+              onChange={(e) => setSelectedGroupId(e.target.value)}
+            >
+              <option value="">Select a study group</option>
+              {studyGroups?.map(group => (
+                <option key={group.id} value={group.id}>
+                  {group.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <AlertDialogFooter className="flex flex-col sm:flex-row gap-2">
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            
+            {selectedNote?.subject && (
+              <>
+                <Button
+                  onClick={() => {
+                    // Share just this note
+                    setSharingSubject(null);
+                    confirmShareToGroup();
+                  }}
+                  disabled={!selectedGroupId}
+                >
+                  Share this note only
+                </Button>
+                
+                <AlertDialogAction
+                  onClick={() => {
+                    // Share all notes with this subject
+                    setSharingSubject(selectedNote.subject);
+                    confirmShareToGroup();
+                  }}
+                  disabled={!selectedGroupId}
+                >
+                  Share all "{selectedNote.subject}" notes
+                </AlertDialogAction>
+              </>
+            )}
+            
+            {!selectedNote?.subject && (
+              <AlertDialogAction
+                onClick={confirmShareToGroup}
+                disabled={!selectedGroupId}
+              >
+                Share Note
+              </AlertDialogAction>
+            )}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+};
