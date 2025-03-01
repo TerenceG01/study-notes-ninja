@@ -1,4 +1,3 @@
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Loader2, MoreVertical, ChevronUp, ChevronDown, Share, Trash2 } from "lucide-react";
@@ -535,7 +534,7 @@ export const NotesTable = ({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Share {selectedNote?.subject} Notes</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogDescription className="text-sm text-muted-foreground">
               This will share all notes with the subject "{selectedNote?.subject}" to the selected study group.
               Are you sure you want to continue?
             </AlertDialogDescription>
