@@ -197,7 +197,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
         <DialogHeader>
           <DialogTitle>Share Notes with Group</DialogTitle>
           <DialogDescription>
-            Select notes to share with your study group members
+            Select individual notes to share with your study group members
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
