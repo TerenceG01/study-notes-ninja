@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { useNotes, Note } from "@/hooks/notes";
+import { useNotes, Note } from "@/hooks/useNotes";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
 import { useAuth } from "@/contexts/AuthContext";
 import { NotesContainer } from "./NotesContainer";

@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Note } from "@/hooks/notes";
+import { Note } from "@/hooks/useNotes";
 import { EditNoteDialog } from "./EditNoteDialog";
 import { useNoteSummary } from "@/hooks/useNoteSummary";
 import { supabase } from "@/integrations/supabase/client";

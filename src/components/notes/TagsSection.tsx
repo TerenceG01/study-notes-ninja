@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from "react";
 import { Hash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Note } from "@/hooks/notes";
+import { Note } from "@/hooks/useNotes";
 
 interface TagsSectionProps {
   tags: string[];
@@ -51,7 +52,7 @@ export const TagsSection = ({
       addTag();
     }
   };
-  
+
   return (
     <div className="space-y-2">
       <div className="flex items-center space-x-2">

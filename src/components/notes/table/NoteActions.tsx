@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Note } from "@/hooks/notes";
+import { Note } from "@/hooks/useNotes";
 import { NoteColorPicker } from "./NoteColorPicker";
 import { NoteActionMenuItems } from "./NoteActionMenuItems";
 import { SUBJECT_COLORS } from "./constants/colors";
