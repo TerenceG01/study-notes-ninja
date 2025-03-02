@@ -1,6 +1,7 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -83,6 +84,20 @@ export const EditNoteDialog = ({
     return () => clearTimeout(autoSaveTimer);
   }, [editingNote, autoSaveEnabled, onSave]);
 
+  // Handle keyboard shortcut for save
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's' && open) {
+        e.preventDefault();
+        onSave();
+        setLastSaved(new Date());
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [open, onSave]);
+
   const addTag = () => {
     if (!newTag || tags.includes(newTag)) return;
     
@@ -128,12 +143,9 @@ export const EditNoteDialog = ({
     setIsFullscreen(!isFullscreen);
   };
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
-        className={`${isFullscreen ? 'fixed inset-0 w-full h-full max-w-none rounded-none p-6 z-50' : 'sm:max-w-[800px]'} 
-          flex flex-col overflow-hidden transition-all duration-200`}
-      >
+  const renderNoteContent = useCallback(() => {
+    return (
+      <>
         <div className="flex justify-between items-center">
           <DialogHeader className="flex-grow">
             <DialogTitle>
@@ -289,7 +301,7 @@ export const EditNoteDialog = ({
                 } : null)} 
                 className="flex-grow resize-none"
                 placeholder="Write your notes here..."
-                style={{ minHeight: "300px", height: "100%" }}
+                style={{ height: "100%", minHeight: isFullscreen ? "calc(100vh - 350px)" : "300px" }}
               />
               <div className="flex justify-between text-xs text-muted-foreground pt-2">
                 <div className="flex items-center gap-1">
@@ -313,7 +325,38 @@ export const EditNoteDialog = ({
             Save Changes
           </Button>
         </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      </>
+    );
+  }, [
+    addTag, autoSaveEnabled, commonSubjects, editingNote, handleSave, handleTagKeyPress, 
+    isFullscreen, lastSaved, newTag, onGenerateSummary, onNewTagChange, onNoteChange, 
+    onOpenChange, onSave, onSummaryLevelChange, onToggleSummary, removeTag, showSummary, 
+    summarizing, summaryLevel, tags, toggleFullscreen, wordCount
+  ]);
+
+  return (
+    <>
+      {isFullscreen ? (
+        <Sheet open={open && isFullscreen} onOpenChange={(open) => {
+          if (!open) {
+            setIsFullscreen(false);
+            onOpenChange(false);
+          }
+        }}>
+          <SheetContent
+            side="top"
+            className="h-screen w-screen p-6 flex flex-col overflow-hidden max-h-screen"
+          >
+            {renderNoteContent()}
+          </SheetContent>
+        </Sheet>
+      ) : (
+        <Dialog open={open && !isFullscreen} onOpenChange={onOpenChange}>
+          <DialogContent className="sm:max-w-[800px] flex flex-col overflow-hidden transition-all duration-200">
+            {renderNoteContent()}
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 };
