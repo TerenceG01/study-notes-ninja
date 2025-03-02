@@ -1,62 +1,19 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
-import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
-
-export type Note = {
-  id: string;
-  title: string;
-  content: string;
-  created_at: string;
-  folder: string;
-  summary?: string;
-  tags?: string[];
-  subject?: string;
-  subject_color?: string;
-  subject_order?: number;
-};
-
-export type NewNote = {
-  title: string;
-  content: string;
-  tags: string[];
-  subject: string;
-};
+import { useNetworkStatus } from "./useNetworkStatus";
+import { useOfflineNotes } from "./useOfflineNotes";
+import { useFlashcardGeneration } from "./useFlashcardGeneration";
+import { Note, NewNote } from "./types";
 
 export const useNotes = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
-  const [generatingFlashcardsForNote, setGeneratingFlashcardsForNote] = useState<string | null>(null);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  
-  // Listen for online/offline events
-  useEffect(() => {
-    const handleOnline = () => {
-      setIsOnline(true);
-      // Attempt to sync any pending changes
-      syncPendingChanges();
-    };
-    
-    const handleOffline = () => {
-      setIsOnline(false);
-      toast({
-        title: "You're offline",
-        description: "Changes will be saved locally and synced when you reconnect.",
-      });
-    };
-    
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
+  const { isOnline } = useNetworkStatus();
+  const { saveOfflineNote, getOfflineNotes, clearOfflineNotes } = useOfflineNotes();
+  const { generatingFlashcardsForNote, generateFlashcards: generateFlashcardsBase } = useFlashcardGeneration();
 
   const fetchNotes = async () => {
     try {
@@ -70,7 +27,7 @@ export const useNotes = () => {
       console.log("Fetched notes:", data); // Debug log
       
       // If we're offline, merge with any offline notes
-      if (!navigator.onLine) {
+      if (!isOnline) {
         const offlineNotes = getOfflineNotes();
         setNotes([...offlineNotes, ...(data || [])]);
       } else {
@@ -90,6 +47,8 @@ export const useNotes = () => {
 
   // Function to sync pending changes when back online
   const syncPendingChanges = async () => {
+    if (!isOnline) return;
+
     const offlineNotes = getOfflineNotes();
     
     if (offlineNotes.length > 0) {
@@ -121,7 +80,7 @@ export const useNotes = () => {
       }
       
       // Clear offline notes after sync attempt
-      localStorage.removeItem('offlineNotes');
+      clearOfflineNotes();
       
       // Dismiss the syncing toast
       toast.dismiss(syncToastId);
@@ -134,41 +93,8 @@ export const useNotes = () => {
       
       // Refresh notes to include synced items
       await fetchNotes();
-    } else {
-      toast({
-        title: "Back online",
-        description: "Your connection has been restored.",
-      });
-      
-      // Refresh notes
-      await fetchNotes();
     }
   };
-  
-  useEffect(() => {
-    fetchNotes();
-
-    // Subscribe to real-time changes
-    const channel = supabase
-      .channel('notes_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'notes'
-        },
-        (payload) => {
-          console.log("Realtime update received:", payload);
-          fetchNotes(); // Refresh notes when changes occur
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
 
   const createNote = async (newNote: NewNote, userId: string) => {
     if (!newNote.title || !newNote.content) {
@@ -183,13 +109,18 @@ export const useNotes = () => {
     try {
       if (!isOnline) {
         // Save to local storage for offline use
-        saveOfflineNote(newNote, userId);
+        const offlineNote = saveOfflineNote(newNote, userId);
         
-        toast({
-          title: "Saved offline",
-          description: "Your note has been saved locally and will sync when you're back online.",
-        });
-        return true;
+        if (offlineNote) {
+          setNotes(prevNotes => [offlineNote, ...prevNotes]);
+          
+          toast({
+            title: "Saved offline",
+            description: "Your note has been saved locally and will sync when you're back online.",
+          });
+          return true;
+        }
+        return false;
       }
       
       console.log("Creating note:", { ...newNote, user_id: userId }); // Debug log
@@ -223,79 +154,8 @@ export const useNotes = () => {
     }
   };
 
-  // Define offline storage helpers
-  const saveOfflineNote = (note: NewNote, userId: string) => {
-    try {
-      const offlineNotes = getOfflineNotes();
-      offlineNotes.push({
-        ...note,
-        user_id: userId,
-        id: `offline_${Date.now()}`,
-        created_at: new Date().toISOString(),
-        offline: true
-      });
-      localStorage.setItem('offlineNotes', JSON.stringify(offlineNotes));
-      
-      // Update local state to include the new offline note
-      setNotes(prevNotes => [{
-        ...note,
-        id: `offline_${Date.now()}`,
-        created_at: new Date().toISOString(),
-        folder: '',
-        offline: true
-      } as Note, ...prevNotes]);
-    } catch (error) {
-      console.error("Error saving offline note:", error);
-    }
-  };
-  
-  const getOfflineNotes = (): any[] => {
-    try {
-      return JSON.parse(localStorage.getItem('offlineNotes') || '[]');
-    } catch (error) {
-      console.error("Error retrieving offline notes:", error);
-      return [];
-    }
-  };
-
-  const generateFlashcards = async (note: Note) => {
-    if (!isOnline) {
-      toast({
-        variant: "destructive",
-        title: "You're offline",
-        description: "Please connect to the internet to generate flashcards.",
-      });
-      return;
-    }
-    
-    try {
-      setGeneratingFlashcardsForNote(note.id);
-      const { data, error } = await supabase.functions.invoke('generate-flashcards', {
-        body: {
-          noteId: note.id,
-          content: note.content,
-          title: note.title,
-        },
-      });
-
-      if (error) throw error;
-
-      if (data.success) {
-        toast({
-          title: "Success",
-          description: `Created ${data.flashcardsCount} flashcards! You can find them in your flashcard decks.`,
-        });
-        navigate(`/flashcards/${data.deckId}`);
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error generating flashcards",
-        description: "Failed to generate flashcards. Please try again.",
-      });
-    } finally {
-      setGeneratingFlashcardsForNote(null);
-    }
+  const generateFlashcards = (note: Note) => {
+    return generateFlashcardsBase(note, isOnline);
   };
 
   const deleteNotesForSubject = async (subject: string) => {
@@ -338,6 +198,7 @@ export const useNotes = () => {
     generatingFlashcardsForNote,
     isOnline,
     fetchNotes,
+    syncPendingChanges,
     createNote,
     generateFlashcards,
     deleteNotesForSubject,
