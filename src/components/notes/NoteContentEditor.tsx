@@ -2,7 +2,7 @@
 import { FileText, Clock, Wand2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { Note } from "@/hooks/notes/types";
+import { Note } from "@/hooks/notes";
 import { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";

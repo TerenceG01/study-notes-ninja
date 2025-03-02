@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { NoteEditor } from "./NoteEditor";
 import { CommonSubjects } from "./CommonSubjects";
-import { useNotes } from "@/hooks/notes";
+import { useNotes } from "@/hooks/useNotes";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface NotesHeaderProps {

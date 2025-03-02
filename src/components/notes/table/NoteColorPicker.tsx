@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Note } from "@/hooks/notes/types";
+import { Note } from "@/hooks/useNotes";
 import { SUBJECT_COLORS } from "./constants/colors";
 
 interface NoteColorPickerProps {

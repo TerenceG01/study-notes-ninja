@@ -1,9 +1,10 @@
+
 import React from "react";
 import { Loader2, Share, Trash2 } from "lucide-react";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Note } from "@/hooks/notes/types";
+import { Note } from "@/hooks/useNotes";
 
 interface NoteActionMenuItemsProps {
   note: Note;

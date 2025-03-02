@@ -1,7 +1,8 @@
+
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { format } from "date-fns";
-import { Note } from "@/hooks/notes/types";
+import { Note } from "@/hooks/useNotes";
 
 export const useNotesFilters = (allNotes: Note[]) => {
   const [searchParams, setSearchParams] = useSearchParams();

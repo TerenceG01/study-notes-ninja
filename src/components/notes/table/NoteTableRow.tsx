@@ -1,9 +1,8 @@
-
 import React from "react";
 import { TableRow, TableCell } from "@/components/ui/table";
 import { format } from "date-fns";
 import { generateRandomColor } from "@/lib/utils";
-import { Note } from "@/hooks/notes/types";
+import { Note } from "@/hooks/notes";
 import { NoteActions } from "./NoteActions";
 
 interface NoteTableRowProps {

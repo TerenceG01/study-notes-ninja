@@ -5,7 +5,7 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Note } from "@/hooks/notes/types";
+import { Note } from "@/hooks/notes";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
 import { NoteHeaderSection } from "./NoteHeaderSection";
 import { TagsSection } from "./TagsSection";

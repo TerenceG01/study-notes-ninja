@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Hash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Note } from "@/hooks/notes/types";
+import { Note } from "@/hooks/notes";
 
 interface TagsSectionProps {
   tags: string[];
