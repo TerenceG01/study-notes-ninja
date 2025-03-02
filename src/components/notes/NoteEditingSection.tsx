@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Note } from "@/hooks/useNotes";
 import { EditNoteDialog } from "./EditNoteDialog";
 import { useNoteSummary } from "@/hooks/useNoteSummary";
@@ -37,12 +38,25 @@ export const NoteEditingSection = ({
 
   const handleGenerateSummary = async () => {
     if (!selectedNote || !editingNote) return;
-    const summary = await generateSummary(selectedNote);
-    if (summary) {
-      // Fix: Instead of using a function, create a new Note object directly
-      const updatedNote = { ...editingNote, summary };
-      setEditingNote(updatedNote);
-      setShowSummary(true);
+    
+    try {
+      const summary = await generateSummary(selectedNote);
+      if (summary) {
+        const updatedNote = { ...editingNote, summary };
+        setEditingNote(updatedNote);
+        setShowSummary(true);
+        
+        toast({
+          title: "Summary generated",
+          description: "Your note has been summarized successfully.",
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Summary generation failed",
+        description: "There was an error generating the summary.",
+      });
     }
   };
 
@@ -68,9 +82,6 @@ export const NoteEditingSection = ({
         description: "Note updated successfully!",
       });
 
-      setSelectedNote(null);
-      setEditingNote(null);
-      setShowSummary(false);
       onNotesChanged();
     } catch (error) {
       toast({
