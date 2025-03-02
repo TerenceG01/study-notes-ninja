@@ -131,7 +131,7 @@ export const EditNoteDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className={`${isFullscreen ? 'fixed inset-0 max-w-full h-full rounded-none p-4 sm:p-6' : 'sm:max-w-[800px]'} 
+        className={`${isFullscreen ? 'fixed inset-0 w-full h-full max-w-none rounded-none p-6 z-50' : 'sm:max-w-[800px]'} 
           flex flex-col overflow-hidden transition-all duration-200`}
       >
         <div className="flex justify-between items-center">
@@ -287,8 +287,9 @@ export const EditNoteDialog = ({
                   ...editingNote,
                   content: e.target.value
                 } : null)} 
-                className="flex-grow resize-none min-h-[300px] h-full"
+                className="flex-grow resize-none"
                 placeholder="Write your notes here..."
+                style={{ minHeight: "300px", height: "100%" }}
               />
               <div className="flex justify-between text-xs text-muted-foreground pt-2">
                 <div className="flex items-center gap-1">
