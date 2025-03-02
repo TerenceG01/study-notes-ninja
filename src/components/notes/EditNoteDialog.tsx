@@ -2,16 +2,16 @@
 import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Hash, Loader2, Maximize2, Minimize2, Save, X, FileText, Clock } from "lucide-react";
+import { Save } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Note } from "@/hooks/useNotes";
+import { SummaryLevel } from "@/hooks/useNoteSummary";
+import { NoteHeaderSection } from "./NoteHeaderSection";
+import { TagsSection } from "./TagsSection";
+import { SummaryControls } from "./SummaryControls";
+import { NoteContentEditor } from "./NoteContentEditor";
 
-type SummaryLevel = 'brief' | 'medium' | 'detailed';
 interface EditNoteDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -98,41 +98,6 @@ export const EditNoteDialog = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [open, onSave]);
 
-  const addTag = () => {
-    if (!newTag || tags.includes(newTag)) return;
-    
-    const updatedTags = [...tags, newTag];
-    setTags(updatedTags);
-    
-    if (editingNote) {
-      onNoteChange({
-        ...editingNote,
-        tags: updatedTags
-      });
-    }
-    
-    onNewTagChange('');
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    const updatedTags = tags.filter(tag => tag !== tagToRemove);
-    setTags(updatedTags);
-    
-    if (editingNote) {
-      onNoteChange({
-        ...editingNote,
-        tags: updatedTags
-      });
-    }
-  };
-
-  const handleTagKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && newTag) {
-      e.preventDefault();
-      addTag();
-    }
-  };
-
   // Manual save function
   const handleSave = () => {
     onSave();
@@ -143,181 +108,55 @@ export const EditNoteDialog = ({
     setIsFullscreen(!isFullscreen);
   };
 
+  const toggleAutoSave = () => {
+    setAutoSaveEnabled(!autoSaveEnabled);
+  };
+
   const renderNoteContent = useCallback(() => {
     return (
       <div className="flex flex-col h-full overflow-hidden">
-        <div className="flex justify-between items-center">
-          <DialogHeader className="flex-grow">
-            <DialogTitle>
-              <Input 
-                value={editingNote?.title || ""} 
-                onChange={e => onNoteChange(editingNote ? {
-                  ...editingNote,
-                  title: e.target.value
-                } : null)} 
-                className="text-xl font-semibold" 
-                placeholder="Note Title"
-              />
-            </DialogTitle>
-          </DialogHeader>
-          
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={toggleFullscreen} 
-            className="ml-2"
-          >
-            {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-          </Button>
-        </div>
+        <NoteHeaderSection 
+          editingNote={editingNote}
+          isFullscreen={isFullscreen}
+          commonSubjects={commonSubjects}
+          lastSaved={lastSaved}
+          autoSaveEnabled={autoSaveEnabled}
+          onNoteChange={onNoteChange}
+          onToggleFullscreen={toggleFullscreen}
+          onToggleAutoSave={toggleAutoSave}
+        />
 
         <ScrollArea className="flex-grow overflow-y-auto">
           <div className="space-y-4 pr-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-              <div className="md:col-span-2">
-                <Select 
-                  value={editingNote?.subject || "General"} 
-                  onValueChange={value => onNoteChange(editingNote ? {
-                    ...editingNote,
-                    subject: value
-                  } : null)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select subject" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {commonSubjects.map(subject => (
-                      <SelectItem key={subject} value={subject} className="hover:bg-muted cursor-pointer">
-                        {subject}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <TagsSection 
+              tags={tags}
+              newTag={newTag}
+              onTagsChange={setTags}
+              onNewTagChange={onNewTagChange}
+              editingNote={editingNote}
+              onNoteChange={onNoteChange}
+            />
 
-              <div className="flex gap-2 items-center">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="text-xs flex-shrink-0"
-                  onClick={() => setAutoSaveEnabled(!autoSaveEnabled)}
-                >
-                  {autoSaveEnabled ? (
-                    <>
-                      <Clock className="mr-1 h-3 w-3" />
-                      Auto-save On
-                    </>
-                  ) : (
-                    <>
-                      <X className="mr-1 h-3 w-3" />
-                      Auto-save Off
-                    </>
-                  )}
-                </Button>
-                
-                {lastSaved && (
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">
-                    Saved {lastSaved.toLocaleTimeString()}
-                  </span>
-                )}
-              </div>
-            </div>
+            <SummaryControls 
+              summaryLevel={summaryLevel}
+              summarizing={summarizing}
+              hasSummary={!!editingNote?.summary}
+              showSummary={showSummary}
+              onSummaryLevelChange={onSummaryLevelChange}
+              onGenerateSummary={onGenerateSummary}
+              onToggleSummary={onToggleSummary}
+            />
 
-            <div className="flex flex-wrap gap-2 items-center mt-4">
-              <Hash className="h-4 w-4 text-muted-foreground" />
-              {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm flex items-center gap-1"
-                >
-                  {tag}
-                  <button
-                    onClick={() => removeTag(tag)}
-                    className="hover:text-destructive ml-1"
-                    aria-label={`Remove ${tag} tag`}
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
-              <div className="flex items-center gap-2">
-                <Input
-                  placeholder="Add tag..."
-                  value={newTag}
-                  onChange={(e) => onNewTagChange(e.target.value)}
-                  onKeyPress={handleTagKeyPress}
-                  className="w-32 h-8 text-sm"
-                />
-                <Button size="sm" variant="ghost" onClick={addTag} disabled={!newTag}>
-                  +
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex gap-4 items-center mt-4">
-              <Select value={summaryLevel} onValueChange={onSummaryLevelChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Summary Level" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="brief">Brief (30%)</SelectItem>
-                  <SelectItem value="medium">Medium (50%)</SelectItem>
-                  <SelectItem value="detailed">Detailed (70%)</SelectItem>
-                </SelectContent>
-              </Select>
-              
-              <Button onClick={onGenerateSummary} disabled={summarizing} variant="secondary">
-                {summarizing ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Summarizing...
-                  </>
-                ) : 'Generate Summary'}
-              </Button>
-
-              {editingNote?.summary && (
-                <Button variant="outline" onClick={onToggleSummary}>
-                  {showSummary ? 'Show Original' : 'Show Summary'}
-                </Button>
-              )}
-            </div>
-
-            <div className="mt-4 min-h-[300px]">
-              {showSummary && editingNote?.summary ? (
-                <Card className="p-4 bg-muted/50 h-full overflow-auto">
-                  <div className="prose max-w-none">
-                    {editingNote.summary.split('\n').map((line, index) => (
-                      <p key={index} className="mb-2">{line}</p>
-                    ))}
-                  </div>
-                </Card>
-              ) : (
-                <div className="flex flex-col h-full">
-                  <Textarea 
-                    value={editingNote?.content || ""} 
-                    onChange={e => onNoteChange(editingNote ? {
-                      ...editingNote,
-                      content: e.target.value
-                    } : null)} 
-                    className="flex-grow resize-none"
-                    placeholder="Write your notes here..."
-                    style={{ 
-                      height: isFullscreen ? "calc(100vh - 350px)" : "300px",
-                      minHeight: "300px"
-                    }}
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground pt-2">
-                    <div className="flex items-center gap-1">
-                      <FileText className="h-3 w-3" />
-                      <span>{wordCount} words</span>
-                    </div>
-                    <div>
-                      Press Ctrl+S to save
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            <NoteContentEditor 
+              editingNote={editingNote}
+              showSummary={showSummary}
+              isFullscreen={isFullscreen}
+              wordCount={wordCount}
+              autoSaveEnabled={autoSaveEnabled}
+              lastSaved={lastSaved}
+              onNoteChange={onNoteChange}
+              onToggleAutoSave={toggleAutoSave}
+            />
           </div>
         </ScrollArea>
 
@@ -333,10 +172,10 @@ export const EditNoteDialog = ({
       </div>
     );
   }, [
-    addTag, autoSaveEnabled, commonSubjects, editingNote, handleSave, handleTagKeyPress, 
-    isFullscreen, lastSaved, newTag, onGenerateSummary, onNewTagChange, onNoteChange, 
-    onOpenChange, onSave, onSummaryLevelChange, onToggleSummary, removeTag, showSummary, 
-    summarizing, summaryLevel, tags, toggleFullscreen, wordCount
+    editingNote, isFullscreen, commonSubjects, lastSaved, autoSaveEnabled,
+    onNoteChange, newTag, onNewTagChange, tags, summaryLevel, summarizing,
+    showSummary, onSummaryLevelChange, onGenerateSummary, onToggleSummary,
+    wordCount, handleSave, onOpenChange, toggleAutoSave, toggleFullscreen
   ]);
 
   return (
