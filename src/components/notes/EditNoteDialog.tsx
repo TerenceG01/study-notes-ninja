@@ -1,16 +1,11 @@
 
-import { useState, useEffect, useCallback } from "react";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState, useEffect } from "react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Save } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Note } from "@/hooks/useNotes";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
-import { NoteHeaderSection } from "./NoteHeaderSection";
-import { TagsSection } from "./TagsSection";
-import { SummaryControls } from "./SummaryControls";
-import { NoteContentEditor } from "./NoteContentEditor";
+import { NoteContentContainer } from "./NoteContentContainer";
+import { DialogFooterActions } from "./DialogFooterActions";
 
 interface EditNoteDialogProps {
   open: boolean;
@@ -116,74 +111,37 @@ export const EditNoteDialog = ({
     setAutoSaveEnabled(!autoSaveEnabled);
   };
 
-  const renderNoteContent = useCallback(() => {
-    return (
-      <div className="flex flex-col h-full overflow-hidden">
-        <NoteHeaderSection 
-          editingNote={editingNote}
-          isFullscreen={isFullscreen}
-          commonSubjects={commonSubjects}
-          lastSaved={lastSaved}
-          autoSaveEnabled={autoSaveEnabled}
-          onNoteChange={onNoteChange}
-          onToggleFullscreen={toggleFullscreen}
-          onToggleAutoSave={toggleAutoSave}
-        />
-
-        <ScrollArea className="flex-grow overflow-y-auto">
-          <div className="space-y-4 pr-4">
-            <TagsSection 
-              tags={tags}
-              newTag={newTag}
-              onTagsChange={setTags}
-              onNewTagChange={onNewTagChange}
-              editingNote={editingNote}
-              onNoteChange={onNoteChange}
-            />
-
-            <SummaryControls 
-              summaryLevel={summaryLevel}
-              summarizing={summarizing}
-              hasSummary={!!editingNote?.summary}
-              showSummary={showSummary}
-              editingNote={editingNote}
-              enhancing={enhancing}
-              onSummaryLevelChange={onSummaryLevelChange}
-              onGenerateSummary={onGenerateSummary}
-              onToggleSummary={onToggleSummary}
-              onEnhanceNote={onEnhanceNote}
-            />
-
-            <NoteContentEditor 
-              editingNote={editingNote}
-              showSummary={showSummary}
-              isFullscreen={isFullscreen}
-              wordCount={wordCount}
-              autoSaveEnabled={autoSaveEnabled}
-              lastSaved={lastSaved}
-              onNoteChange={onNoteChange}
-              onToggleAutoSave={toggleAutoSave}
-            />
-          </div>
-        </ScrollArea>
-
-        <DialogFooter className="mt-4 flex justify-end space-x-2 py-2 bg-background sticky bottom-0 border-t">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button onClick={handleSave} className="gap-2">
-            <Save className="h-4 w-4" />
-            Save Changes
-          </Button>
-        </DialogFooter>
-      </div>
-    );
-  }, [
-    editingNote, isFullscreen, commonSubjects, lastSaved, autoSaveEnabled,
-    onNoteChange, newTag, onNewTagChange, tags, summaryLevel, summarizing,
-    showSummary, enhancing, onSummaryLevelChange, onGenerateSummary, onToggleSummary,
-    wordCount, handleSave, onOpenChange, toggleAutoSave, toggleFullscreen, onEnhanceNote
-  ]);
+  const renderDialogContent = () => (
+    <>
+      <NoteContentContainer
+        editingNote={editingNote}
+        isFullscreen={isFullscreen}
+        showSummary={showSummary}
+        summaryLevel={summaryLevel}
+        summarizing={summarizing}
+        enhancing={enhancing}
+        newTag={newTag}
+        commonSubjects={commonSubjects}
+        wordCount={wordCount}
+        lastSaved={lastSaved}
+        autoSaveEnabled={autoSaveEnabled}
+        tags={tags}
+        onTagsChange={setTags}
+        onNoteChange={onNoteChange}
+        onSummaryLevelChange={onSummaryLevelChange}
+        onGenerateSummary={onGenerateSummary}
+        onToggleSummary={onToggleSummary}
+        onEnhanceNote={onEnhanceNote}
+        onNewTagChange={onNewTagChange}
+        onToggleFullscreen={toggleFullscreen}
+        onToggleAutoSave={toggleAutoSave}
+      />
+      <DialogFooterActions 
+        onSave={handleSave} 
+        onCancel={() => onOpenChange(false)} 
+      />
+    </>
+  );
 
   return (
     <>
@@ -198,13 +156,13 @@ export const EditNoteDialog = ({
             side="top"
             className="h-screen w-screen p-6 flex flex-col max-h-screen"
           >
-            {renderNoteContent()}
+            {renderDialogContent()}
           </SheetContent>
         </Sheet>
       ) : (
         <Dialog open={open && !isFullscreen} onOpenChange={onOpenChange}>
           <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col">
-            {renderNoteContent()}
+            {renderDialogContent()}
           </DialogContent>
         </Dialog>
       )}
