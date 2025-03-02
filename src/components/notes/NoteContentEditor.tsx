@@ -33,7 +33,7 @@ export const NoteContentEditor = ({
         ...editingNote,
         content: e.target.value
       } : null)} placeholder="Write your notes here..." style={{
-        height: isFullscreen ? "calc(100vh - 350px)" : "calc(100vh - 450px)",
+        height: isFullscreen ? "calc(100vh - 250px)" : "calc(100vh - 450px)",
         minHeight: "300px"
       }} className="flex-grow resize-none mx-[5px] flex-1" />
           <div className="flex justify-between text-xs text-muted-foreground pt-2">
