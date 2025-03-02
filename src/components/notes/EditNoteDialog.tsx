@@ -73,7 +73,7 @@ export const EditNoteDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className={`${expanded ? 'fixed inset-2 h-[calc(100vh-16px)] max-h-none max-w-none m-0 rounded-lg flex flex-col' : 'sm:max-w-[800px] max-h-[90vh]'} overflow-y-auto`}
+        className={`${expanded ? 'fixed inset-4 h-[calc(100vh-32px)] max-h-none max-w-none m-0 p-6 rounded-lg flex flex-col' : 'sm:max-w-[800px] max-h-[90vh]'} overflow-y-auto`}
       >
         <DialogHeader className="flex flex-row items-center justify-between">
           <DialogTitle className="flex-1">
@@ -180,7 +180,8 @@ export const EditNoteDialog = ({
                 ...editingNote,
                 content: e.target.value
               } : null)} 
-              className={`resize-y ${expanded ? 'h-full' : `min-h-[${textareaHeight}]`}`}
+              className={`resize-y ${expanded ? 'h-full' : ''}`}
+              style={{minHeight: expanded ? 'auto' : textareaHeight}}
               placeholder="Write your note content here..."
             />
           )}
