@@ -13,7 +13,7 @@ export const DialogFooterActions = ({
   onCancel,
 }: DialogFooterActionsProps) => {
   return (
-    <DialogFooter className="mt-4 flex justify-end space-x-2 py-2 bg-background sticky bottom-0 border-t">
+    <DialogFooter className="flex justify-end space-x-2 py-2 bg-background fixed bottom-0 left-0 right-0 border-t z-10 px-6">
       <Button variant="outline" onClick={onCancel}>
         Cancel
       </Button>
