@@ -31,7 +31,7 @@ export const NoteHeaderSection = ({
             <Input value={editingNote?.title || ""} onChange={e => onNoteChange(editingNote ? {
             ...editingNote,
             title: e.target.value
-          } : null)} placeholder="Note Title" className="text-xl font-semibold my-[10px]" />
+          } : null)} placeholder="Note Title" className="text-xl font-semibold my-[10px] mx-px" />
           </DialogTitle>
         </DialogHeader>
         
