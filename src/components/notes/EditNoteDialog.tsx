@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,9 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Hash, Loader2 } from "lucide-react";
 import { Note } from "@/hooks/useNotes";
-
 type SummaryLevel = 'brief' | 'medium' | 'detailed';
-
 interface EditNoteDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -27,7 +24,6 @@ interface EditNoteDialogProps {
   onNewTagChange: (tag: string) => void;
   onSave: () => void;
 }
-
 export const EditNoteDialog = ({
   open,
   onOpenChange,
@@ -43,50 +39,38 @@ export const EditNoteDialog = ({
   onGenerateSummary,
   onToggleSummary,
   onNewTagChange,
-  onSave,
+  onSave
 }: EditNoteDialogProps) => {
   console.log("EditNoteDialog rendering, open:", open, "selectedNote:", selectedNote?.title);
-  
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+  return <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[800px]">
         <DialogHeader>
           <DialogTitle>
-            <Input
-              value={editingNote?.title || ""}
-              onChange={(e) => onNoteChange(editingNote ? { ...editingNote, title: e.target.value } : null)}
-              className="text-xl font-semibold"
-            />
+            <Input value={editingNote?.title || ""} onChange={e => onNoteChange(editingNote ? {
+            ...editingNote,
+            title: e.target.value
+          } : null)} className="text-xl font-semibold" />
           </DialogTitle>
         </DialogHeader>
 
         <div className="mt-4">
-          <Select
-            value={editingNote?.subject || "General"}
-            onValueChange={(value) => onNoteChange(editingNote ? { ...editingNote, subject: value } : null)}
-          >
+          <Select value={editingNote?.subject || "General"} onValueChange={value => onNoteChange(editingNote ? {
+          ...editingNote,
+          subject: value
+        } : null)}>
             <SelectTrigger>
               <SelectValue placeholder="Select subject" />
             </SelectTrigger>
             <SelectContent>
-              {commonSubjects.map((subject) => (
-                <SelectItem 
-                  key={subject} 
-                  value={subject}
-                  className="hover:bg-muted cursor-pointer"
-                >
+              {commonSubjects.map(subject => <SelectItem key={subject} value={subject} className="hover:bg-muted cursor-pointer">
                   {subject}
-                </SelectItem>
-              ))}
+                </SelectItem>)}
             </SelectContent>
           </Select>
         </div>
 
         <div className="flex gap-4 items-center mt-4">
-          <Select
-            value={summaryLevel}
-            onValueChange={onSummaryLevelChange}
-          >
+          <Select value={summaryLevel} onValueChange={onSummaryLevelChange}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Summary Level" />
             </SelectTrigger>
@@ -97,84 +81,30 @@ export const EditNoteDialog = ({
             </SelectContent>
           </Select>
           
-          <Button 
-            onClick={onGenerateSummary}
-            disabled={summarizing}
-            variant="secondary"
-          >
-            {summarizing ? (
-              <>
+          <Button onClick={onGenerateSummary} disabled={summarizing} variant="secondary">
+            {summarizing ? <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Summarizing...
-              </>
-            ) : (
-              'Generate Summary'
-            )}
+              </> : 'Generate Summary'}
           </Button>
 
-          {editingNote?.summary && (
-            <Button
-              variant="outline"
-              onClick={onToggleSummary}
-            >
+          {editingNote?.summary && <Button variant="outline" onClick={onToggleSummary}>
               {showSummary ? 'Show Original' : 'Show Summary'}
-            </Button>
-          )}
+            </Button>}
         </div>
 
         <div className="mt-4">
-          {showSummary && editingNote?.summary ? (
-            <Card className="p-4 bg-muted/50">
+          {showSummary && editingNote?.summary ? <Card className="p-4 bg-muted/50">
               <div className="prose max-w-none">
-                {editingNote.summary.split('\n').map((line, index) => (
-                  <p key={index} className="mb-2">{line}</p>
-                ))}
+                {editingNote.summary.split('\n').map((line, index) => <p key={index} className="mb-2">{line}</p>)}
               </div>
-            </Card>
-          ) : (
-            <Textarea
-              value={editingNote?.content || ""}
-              onChange={(e) => onNoteChange(editingNote ? { ...editingNote, content: e.target.value } : null)}
-              className="min-h-[300px] resize-y"
-            />
-          )}
+            </Card> : <Textarea value={editingNote?.content || ""} onChange={e => onNoteChange(editingNote ? {
+          ...editingNote,
+          content: e.target.value
+        } : null)} className="min-h-[300px] resize-y" />}
         </div>
 
-        <div className="flex flex-wrap gap-2 items-center mt-4">
-          <Hash className="h-4 w-4 text-muted-foreground" />
-          {editingNote?.tags?.map((tag) => (
-            <span
-              key={tag}
-              className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm flex items-center gap-1 hover:bg-secondary/80 transition-colors"
-            >
-              {tag}
-              <button
-                onClick={() => onNoteChange({
-                  ...editingNote,
-                  tags: editingNote.tags?.filter(t => t !== tag) || []
-                })}
-                className="hover:text-destructive ml-1"
-              >
-                ×
-              </button>
-            </span>
-          ))}
-          <Input
-            placeholder="Add tag..."
-            value={newTag}
-            onChange={(e) => onNewTagChange(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter' && newTag && editingNote) {
-                onNoteChange({
-                  ...editingNote,
-                  tags: [...(editingNote.tags || []), newTag]
-                });
-                onNewTagChange("");
-              }
-            }}
-            className="!mt-0 w-32 h-8 text-sm"
-          />
-        </div>
+        
 
         <DialogFooter className="flex justify-end space-x-2 mt-4">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -185,6 +115,5 @@ export const EditNoteDialog = ({
           </Button>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>;
 };
