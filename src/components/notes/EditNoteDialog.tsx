@@ -145,7 +145,7 @@ export const EditNoteDialog = ({
 
   const renderNoteContent = useCallback(() => {
     return (
-      <>
+      <div className="flex flex-col h-full overflow-hidden">
         <div className="flex justify-between items-center">
           <DialogHeader className="flex-grow">
             <DialogTitle>
@@ -171,152 +171,157 @@ export const EditNoteDialog = ({
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          <div className="md:col-span-2">
-            <Select 
-              value={editingNote?.subject || "General"} 
-              onValueChange={value => onNoteChange(editingNote ? {
-                ...editingNote,
-                subject: value
-              } : null)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select subject" />
-              </SelectTrigger>
-              <SelectContent>
-                {commonSubjects.map(subject => (
-                  <SelectItem key={subject} value={subject} className="hover:bg-muted cursor-pointer">
-                    {subject}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <ScrollArea className="flex-grow overflow-y-auto">
+          <div className="space-y-4 pr-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <div className="md:col-span-2">
+                <Select 
+                  value={editingNote?.subject || "General"} 
+                  onValueChange={value => onNoteChange(editingNote ? {
+                    ...editingNote,
+                    subject: value
+                  } : null)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select subject" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {commonSubjects.map(subject => (
+                      <SelectItem key={subject} value={subject} className="hover:bg-muted cursor-pointer">
+                        {subject}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <div className="flex gap-2 items-center">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="text-xs flex-shrink-0"
-              onClick={() => setAutoSaveEnabled(!autoSaveEnabled)}
-            >
-              {autoSaveEnabled ? (
-                <>
-                  <Clock className="mr-1 h-3 w-3" />
-                  Auto-save On
-                </>
-              ) : (
-                <>
-                  <X className="mr-1 h-3 w-3" />
-                  Auto-save Off
-                </>
-              )}
-            </Button>
-            
-            {lastSaved && (
-              <span className="text-xs text-muted-foreground whitespace-nowrap">
-                Saved {lastSaved.toLocaleTimeString()}
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="flex flex-wrap gap-2 items-center mt-4">
-          <Hash className="h-4 w-4 text-muted-foreground" />
-          {tags.map((tag) => (
-            <span
-              key={tag}
-              className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm flex items-center gap-1"
-            >
-              {tag}
-              <button
-                onClick={() => removeTag(tag)}
-                className="hover:text-destructive ml-1"
-                aria-label={`Remove ${tag} tag`}
-              >
-                ×
-              </button>
-            </span>
-          ))}
-          <div className="flex items-center gap-2">
-            <Input
-              placeholder="Add tag..."
-              value={newTag}
-              onChange={(e) => onNewTagChange(e.target.value)}
-              onKeyPress={handleTagKeyPress}
-              className="w-32 h-8 text-sm"
-            />
-            <Button size="sm" variant="ghost" onClick={addTag} disabled={!newTag}>
-              +
-            </Button>
-          </div>
-        </div>
-
-        <div className="flex gap-4 items-center mt-4">
-          <Select value={summaryLevel} onValueChange={onSummaryLevelChange}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Summary Level" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="brief">Brief (30%)</SelectItem>
-              <SelectItem value="medium">Medium (50%)</SelectItem>
-              <SelectItem value="detailed">Detailed (70%)</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Button onClick={onGenerateSummary} disabled={summarizing} variant="secondary">
-            {summarizing ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Summarizing...
-              </>
-            ) : 'Generate Summary'}
-          </Button>
-
-          {editingNote?.summary && (
-            <Button variant="outline" onClick={onToggleSummary}>
-              {showSummary ? 'Show Original' : 'Show Summary'}
-            </Button>
-          )}
-        </div>
-
-        <div className="relative flex-grow mt-4 min-h-[300px] flex flex-col overflow-hidden">
-          {showSummary && editingNote?.summary ? (
-            <Card className="p-4 bg-muted/50 h-full overflow-auto">
-              <ScrollArea className="h-full pr-4">
-                <div className="prose max-w-none">
-                  {editingNote.summary.split('\n').map((line, index) => (
-                    <p key={index} className="mb-2">{line}</p>
-                  ))}
-                </div>
-              </ScrollArea>
-            </Card>
-          ) : (
-            <div className="flex flex-col h-full">
-              <Textarea 
-                value={editingNote?.content || ""} 
-                onChange={e => onNoteChange(editingNote ? {
-                  ...editingNote,
-                  content: e.target.value
-                } : null)} 
-                className="flex-grow resize-none"
-                placeholder="Write your notes here..."
-                style={{ height: "100%", minHeight: isFullscreen ? "calc(100vh - 350px)" : "300px" }}
-              />
-              <div className="flex justify-between text-xs text-muted-foreground pt-2">
-                <div className="flex items-center gap-1">
-                  <FileText className="h-3 w-3" />
-                  <span>{wordCount} words</span>
-                </div>
-                <div>
-                  Press Ctrl+S to save
-                </div>
+              <div className="flex gap-2 items-center">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-xs flex-shrink-0"
+                  onClick={() => setAutoSaveEnabled(!autoSaveEnabled)}
+                >
+                  {autoSaveEnabled ? (
+                    <>
+                      <Clock className="mr-1 h-3 w-3" />
+                      Auto-save On
+                    </>
+                  ) : (
+                    <>
+                      <X className="mr-1 h-3 w-3" />
+                      Auto-save Off
+                    </>
+                  )}
+                </Button>
+                
+                {lastSaved && (
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">
+                    Saved {lastSaved.toLocaleTimeString()}
+                  </span>
+                )}
               </div>
             </div>
-          )}
-        </div>
 
-        <DialogFooter className="mt-4 flex justify-end space-x-2 sticky bottom-0 pt-2 bg-background border-t">
+            <div className="flex flex-wrap gap-2 items-center mt-4">
+              <Hash className="h-4 w-4 text-muted-foreground" />
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm flex items-center gap-1"
+                >
+                  {tag}
+                  <button
+                    onClick={() => removeTag(tag)}
+                    className="hover:text-destructive ml-1"
+                    aria-label={`Remove ${tag} tag`}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              <div className="flex items-center gap-2">
+                <Input
+                  placeholder="Add tag..."
+                  value={newTag}
+                  onChange={(e) => onNewTagChange(e.target.value)}
+                  onKeyPress={handleTagKeyPress}
+                  className="w-32 h-8 text-sm"
+                />
+                <Button size="sm" variant="ghost" onClick={addTag} disabled={!newTag}>
+                  +
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex gap-4 items-center mt-4">
+              <Select value={summaryLevel} onValueChange={onSummaryLevelChange}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Summary Level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="brief">Brief (30%)</SelectItem>
+                  <SelectItem value="medium">Medium (50%)</SelectItem>
+                  <SelectItem value="detailed">Detailed (70%)</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Button onClick={onGenerateSummary} disabled={summarizing} variant="secondary">
+                {summarizing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Summarizing...
+                  </>
+                ) : 'Generate Summary'}
+              </Button>
+
+              {editingNote?.summary && (
+                <Button variant="outline" onClick={onToggleSummary}>
+                  {showSummary ? 'Show Original' : 'Show Summary'}
+                </Button>
+              )}
+            </div>
+
+            <div className="mt-4 min-h-[300px]">
+              {showSummary && editingNote?.summary ? (
+                <Card className="p-4 bg-muted/50 h-full overflow-auto">
+                  <div className="prose max-w-none">
+                    {editingNote.summary.split('\n').map((line, index) => (
+                      <p key={index} className="mb-2">{line}</p>
+                    ))}
+                  </div>
+                </Card>
+              ) : (
+                <div className="flex flex-col h-full">
+                  <Textarea 
+                    value={editingNote?.content || ""} 
+                    onChange={e => onNoteChange(editingNote ? {
+                      ...editingNote,
+                      content: e.target.value
+                    } : null)} 
+                    className="flex-grow resize-none"
+                    placeholder="Write your notes here..."
+                    style={{ 
+                      height: isFullscreen ? "calc(100vh - 350px)" : "300px",
+                      minHeight: "300px"
+                    }}
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground pt-2">
+                    <div className="flex items-center gap-1">
+                      <FileText className="h-3 w-3" />
+                      <span>{wordCount} words</span>
+                    </div>
+                    <div>
+                      Press Ctrl+S to save
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </ScrollArea>
+
+        <DialogFooter className="mt-4 flex justify-end space-x-2 py-2 bg-background sticky bottom-0 border-t">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
@@ -325,7 +330,7 @@ export const EditNoteDialog = ({
             Save Changes
           </Button>
         </DialogFooter>
-      </>
+      </div>
     );
   }, [
     addTag, autoSaveEnabled, commonSubjects, editingNote, handleSave, handleTagKeyPress, 
@@ -345,14 +350,14 @@ export const EditNoteDialog = ({
         }}>
           <SheetContent
             side="top"
-            className="h-screen w-screen p-6 flex flex-col overflow-hidden max-h-screen"
+            className="h-screen w-screen p-6 flex flex-col max-h-screen"
           >
             {renderNoteContent()}
           </SheetContent>
         </Sheet>
       ) : (
         <Dialog open={open && !isFullscreen} onOpenChange={onOpenChange}>
-          <DialogContent className="sm:max-w-[800px] flex flex-col overflow-hidden transition-all duration-200">
+          <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col">
             {renderNoteContent()}
           </DialogContent>
         </Dialog>
