@@ -46,7 +46,7 @@ export const NoteHeaderSection = ({
           ...editingNote,
           subject: value
         } : null)}>
-            <SelectTrigger>
+            <SelectTrigger className="mx-[5px]">
               <SelectValue placeholder="Select subject" />
             </SelectTrigger>
             <SelectContent>

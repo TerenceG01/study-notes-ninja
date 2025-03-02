@@ -1,9 +1,7 @@
-
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
-
 interface SummaryControlsProps {
   summaryLevel: SummaryLevel;
   summarizing: boolean;
@@ -13,7 +11,6 @@ interface SummaryControlsProps {
   onGenerateSummary: () => void;
   onToggleSummary: () => void;
 }
-
 export const SummaryControls = ({
   summaryLevel,
   summarizing,
@@ -23,10 +20,9 @@ export const SummaryControls = ({
   onGenerateSummary,
   onToggleSummary
 }: SummaryControlsProps) => {
-  return (
-    <div className="flex gap-4 items-center mt-4">
+  return <div className="flex gap-4 items-center mt-4">
       <Select value={summaryLevel} onValueChange={onSummaryLevelChange}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[180px] mx-[5px]">
           <SelectValue placeholder="Summary Level" />
         </SelectTrigger>
         <SelectContent>
@@ -37,19 +33,14 @@ export const SummaryControls = ({
       </Select>
       
       <Button onClick={onGenerateSummary} disabled={summarizing} variant="secondary">
-        {summarizing ? (
-          <>
+        {summarizing ? <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             Summarizing...
-          </>
-        ) : 'Generate Summary'}
+          </> : 'Generate Summary'}
       </Button>
 
-      {hasSummary && (
-        <Button variant="outline" onClick={onToggleSummary}>
+      {hasSummary && <Button variant="outline" onClick={onToggleSummary}>
           {showSummary ? 'Show Original' : 'Show Summary'}
-        </Button>
-      )}
-    </div>
-  );
+        </Button>}
+    </div>;
 };

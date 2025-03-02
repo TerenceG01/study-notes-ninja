@@ -1,9 +1,7 @@
-
 import { FileText, Clock } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Note } from "@/hooks/useNotes";
-
 interface NoteContentEditorProps {
   editingNote: Note | null;
   showSummary: boolean;
@@ -14,7 +12,6 @@ interface NoteContentEditorProps {
   onNoteChange: (note: Note | null) => void;
   onToggleAutoSave: () => void;
 }
-
 export const NoteContentEditor = ({
   editingNote,
   showSummary,
@@ -25,31 +22,19 @@ export const NoteContentEditor = ({
   onNoteChange,
   onToggleAutoSave
 }: NoteContentEditorProps) => {
-  return (
-    <div className="mt-4 min-h-[300px]">
-      {showSummary && editingNote?.summary ? (
-        <Card className="p-4 bg-muted/50 h-full overflow-auto">
+  return <div className="mt-4 min-h-[300px]">
+      {showSummary && editingNote?.summary ? <Card className="p-4 bg-muted/50 h-full overflow-auto">
           <div className="prose max-w-none">
-            {editingNote.summary.split('\n').map((line, index) => (
-              <p key={index} className="mb-2">{line}</p>
-            ))}
+            {editingNote.summary.split('\n').map((line, index) => <p key={index} className="mb-2">{line}</p>)}
           </div>
-        </Card>
-      ) : (
-        <div className="flex flex-col h-full">
-          <Textarea 
-            value={editingNote?.content || ""} 
-            onChange={e => onNoteChange(editingNote ? {
-              ...editingNote,
-              content: e.target.value
-            } : null)} 
-            className="flex-grow resize-none"
-            placeholder="Write your notes here..."
-            style={{ 
-              height: isFullscreen ? "calc(100vh - 350px)" : "300px",
-              minHeight: "300px"
-            }}
-          />
+        </Card> : <div className="flex flex-col h-full">
+          <Textarea value={editingNote?.content || ""} onChange={e => onNoteChange(editingNote ? {
+        ...editingNote,
+        content: e.target.value
+      } : null)} placeholder="Write your notes here..." style={{
+        height: isFullscreen ? "calc(100vh - 350px)" : "300px",
+        minHeight: "300px"
+      }} className="flex-grow resize-none mx-[5px]" />
           <div className="flex justify-between text-xs text-muted-foreground pt-2">
             <div className="flex items-center gap-1">
               <FileText className="h-3 w-3" />
@@ -59,8 +44,6 @@ export const NoteContentEditor = ({
               Press Ctrl+S to save
             </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
+        </div>}
+    </div>;
 };
