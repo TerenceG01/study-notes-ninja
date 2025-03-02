@@ -1,6 +1,6 @@
 
 import { useMemo, useEffect } from "react";
-import { useNotes } from "./useNotes";
+import { useNotes } from "@/hooks/notes";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useSearchParams } from "react-router-dom";

@@ -1,9 +1,11 @@
+
 import { Maximize2, Minimize2, Clock, X } from "lucide-react";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Note } from "@/hooks/useNotes";
+import { Note } from "@/hooks/notes/types";
+
 interface NoteHeaderSectionProps {
   editingNote: Note | null;
   isFullscreen: boolean;
@@ -14,6 +16,7 @@ interface NoteHeaderSectionProps {
   onToggleFullscreen: () => void;
   onToggleAutoSave: () => void;
 }
+
 export const NoteHeaderSection = ({
   editingNote,
   isFullscreen,

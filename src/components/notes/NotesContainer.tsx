@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { NotesTable } from "./NotesTable";
 import { NoteFilters } from "./filters/NoteFilters";
-import { Note } from "@/hooks/useNotes";
+import { Note } from "@/hooks/notes/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
 
