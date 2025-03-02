@@ -2,7 +2,7 @@
 import { Table, TableBody } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
-import { Note } from "./types";
+import { Note, StudyGroup } from "./types";
 import { NoteTableRow } from "./table/NoteTableRow";
 import { ShareNoteDialog } from "./table/ShareNoteDialog";
 import { NotesTableHeader } from "./table/NotesTableHeader";
