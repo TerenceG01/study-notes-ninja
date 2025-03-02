@@ -20,12 +20,14 @@ interface EditNoteDialogProps {
   showSummary: boolean;
   summaryLevel: SummaryLevel;
   summarizing: boolean;
+  enhancing: boolean;
   newTag: string;
   commonSubjects: string[];
   onNoteChange: (note: Note | null) => void;
   onSummaryLevelChange: (level: SummaryLevel) => void;
   onGenerateSummary: () => void;
   onToggleSummary: () => void;
+  onEnhanceNote: (enhanceType: 'grammar' | 'structure' | 'all') => void;
   onNewTagChange: (tag: string) => void;
   onSave: () => void;
 }
@@ -38,12 +40,14 @@ export const EditNoteDialog = ({
   showSummary,
   summaryLevel,
   summarizing,
+  enhancing,
   newTag,
   commonSubjects,
   onNoteChange,
   onSummaryLevelChange,
   onGenerateSummary,
   onToggleSummary,
+  onEnhanceNote,
   onNewTagChange,
   onSave
 }: EditNoteDialogProps) => {
@@ -142,9 +146,12 @@ export const EditNoteDialog = ({
               summarizing={summarizing}
               hasSummary={!!editingNote?.summary}
               showSummary={showSummary}
+              editingNote={editingNote}
+              enhancing={enhancing}
               onSummaryLevelChange={onSummaryLevelChange}
               onGenerateSummary={onGenerateSummary}
               onToggleSummary={onToggleSummary}
+              onEnhanceNote={onEnhanceNote}
             />
 
             <NoteContentEditor 
@@ -174,8 +181,8 @@ export const EditNoteDialog = ({
   }, [
     editingNote, isFullscreen, commonSubjects, lastSaved, autoSaveEnabled,
     onNoteChange, newTag, onNewTagChange, tags, summaryLevel, summarizing,
-    showSummary, onSummaryLevelChange, onGenerateSummary, onToggleSummary,
-    wordCount, handleSave, onOpenChange, toggleAutoSave, toggleFullscreen
+    showSummary, enhancing, onSummaryLevelChange, onGenerateSummary, onToggleSummary,
+    wordCount, handleSave, onOpenChange, toggleAutoSave, toggleFullscreen, onEnhanceNote
   ]);
 
   return (

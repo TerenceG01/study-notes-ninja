@@ -1,18 +1,9 @@
 
-import { FileText, Clock, Wand2 } from "lucide-react";
+import { FileText, Clock } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Note } from "@/hooks/useNotes";
 import { useRef, useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 interface NoteContentEditorProps {
   editingNote: Note | null;
@@ -40,8 +31,6 @@ export const NoteContentEditor = ({
   const [textareaHeight, setTextareaHeight] = useState(defaultHeight);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const resizeStartPosRef = useRef<number | null>(null);
-  const { toast } = useToast();
-  const [enhancing, setEnhancing] = useState(false);
   
   // Update default height when fullscreen mode changes
   useEffect(() => {
@@ -77,51 +66,6 @@ export const NoteContentEditor = ({
     document.removeEventListener('mouseup', handleResizeEnd);
   };
 
-  // Handle enhance note with AI
-  const handleEnhanceNote = async (enhanceType: 'grammar' | 'structure' | 'all') => {
-    if (!editingNote) return;
-    
-    try {
-      setEnhancing(true);
-      
-      toast({
-        title: "Enhancing note...",
-        description: "This may take a few moments.",
-      });
-
-      const { data, error } = await supabase.functions.invoke('enhance-note', {
-        body: {
-          content: editingNote.content,
-          title: editingNote.title,
-          enhanceType
-        },
-      });
-
-      if (error) throw error;
-
-      if (data.enhancedContent) {
-        onNoteChange({
-          ...editingNote,
-          content: data.enhancedContent
-        });
-        
-        toast({
-          title: "Note enhanced!",
-          description: "Your note has been successfully enhanced.",
-        });
-      }
-    } catch (error) {
-      console.error("Error enhancing note:", error);
-      toast({
-        variant: "destructive",
-        title: "Enhancement failed",
-        description: "Failed to enhance your note. Please try again later.",
-      });
-    } finally {
-      setEnhancing(false);
-    }
-  };
-
   return <div className="mt-4 min-h-[300px] flex flex-col h-full">
       {showSummary && editingNote?.summary ? (
         <Card className="p-4 bg-muted/50 h-full overflow-auto">
@@ -132,32 +76,6 @@ export const NoteContentEditor = ({
       ) : (
         <div className="flex flex-col h-full flex-1">
           <div className="relative flex-1">
-            <div className="absolute right-2 top-2 z-10">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="gap-1 h-8"
-                    disabled={enhancing || !editingNote?.content}
-                  >
-                    <Wand2 className="h-3.5 w-3.5" />
-                    {enhancing ? "Enhancing..." : "Enhance with AI"}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => handleEnhanceNote('grammar')}>
-                    Fix Grammar & Spelling
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleEnhanceNote('structure')}>
-                    Improve Structure & Format
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleEnhanceNote('all')}>
-                    Complete Enhancement
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
             <Textarea 
               ref={textareaRef}
               value={editingNote?.content || ""} 

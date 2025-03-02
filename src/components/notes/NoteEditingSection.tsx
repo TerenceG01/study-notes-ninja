@@ -27,6 +27,7 @@ export const NoteEditingSection = ({
   setEditingNote 
 }: NoteEditingSectionProps) => {
   const { toast } = useToast();
+  const [enhancing, setEnhancing] = useState(false);
   const {
     summarizing,
     summaryLevel,
@@ -57,6 +58,50 @@ export const NoteEditingSection = ({
         title: "Summary generation failed",
         description: "There was an error generating the summary.",
       });
+    }
+  };
+
+  const handleEnhanceNote = async (enhanceType: 'grammar' | 'structure' | 'all') => {
+    if (!editingNote) return;
+    
+    try {
+      setEnhancing(true);
+      
+      toast({
+        title: "Enhancing note...",
+        description: "This may take a few moments.",
+      });
+
+      const { data, error } = await supabase.functions.invoke('enhance-note', {
+        body: {
+          content: editingNote.content,
+          title: editingNote.title,
+          enhanceType
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.enhancedContent) {
+        setEditingNote({
+          ...editingNote,
+          content: data.enhancedContent
+        });
+        
+        toast({
+          title: "Note enhanced!",
+          description: "Your note has been successfully enhanced.",
+        });
+      }
+    } catch (error) {
+      console.error("Error enhancing note:", error);
+      toast({
+        variant: "destructive",
+        title: "Enhancement failed",
+        description: "Failed to enhance your note. Please try again later.",
+      });
+    } finally {
+      setEnhancing(false);
     }
   };
 
@@ -107,12 +152,14 @@ export const NoteEditingSection = ({
       showSummary={showSummary}
       summaryLevel={summaryLevel}
       summarizing={summarizing}
+      enhancing={enhancing}
       newTag={newTag}
       commonSubjects={CommonSubjects}
       onNoteChange={setEditingNote}
       onSummaryLevelChange={setSummaryLevel}
       onGenerateSummary={handleGenerateSummary}
       onToggleSummary={() => setShowSummary(!showSummary)}
+      onEnhanceNote={handleEnhanceNote}
       onNewTagChange={setNewTag}
       onSave={updateNote}
     />
