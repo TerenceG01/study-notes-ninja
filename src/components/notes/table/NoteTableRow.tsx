@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { BookOpen, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Note } from "@/hooks/useNotes";
-import { NoteActions, SUBJECT_COLORS } from "./NoteActions";
+import { NoteActions } from "./NoteActions";
+import { SUBJECT_COLORS } from "./constants/colors";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface NoteTableRowProps {
