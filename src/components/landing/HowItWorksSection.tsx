@@ -1,4 +1,3 @@
-
 import { ArrowRight, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -26,7 +25,7 @@ const steps = [
 
 export const HowItWorksSection = ({ isVisible, handleGetStarted }: HowItWorksSectionProps) => {
   return (
-    <section id="howItWorks" className="py-24 bg-secondary/20 min-h-screen flex items-center">
+    <section id="howItWorks" className="py-16 bg-secondary/20 min-h-[80vh] flex items-center">
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl">
         <div 
           className={cn(

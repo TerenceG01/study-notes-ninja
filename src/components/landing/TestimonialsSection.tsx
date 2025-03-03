@@ -1,4 +1,3 @@
-
 import { Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +26,7 @@ const testimonials = [
 
 export const TestimonialsSection = ({ isVisible }: TestimonialsSectionProps) => {
   return (
-    <section id="testimonials" className="py-24 min-h-screen flex items-center">
+    <section id="testimonials" className="py-16 min-h-[80vh] flex items-center">
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl text-center">
         <div 
           className={cn(

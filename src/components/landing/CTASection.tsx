@@ -1,4 +1,3 @@
-
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -10,7 +9,7 @@ interface CTASectionProps {
 
 export const CTASection = ({ isVisible, handleGetStarted }: CTASectionProps) => {
   return (
-    <section id="cta" className="py-20 bg-gradient-to-r from-primary/10 to-secondary/20 min-h-[50vh] flex items-center">
+    <section id="cta" className="py-16 bg-gradient-to-r from-primary/10 to-secondary/20 min-h-[40vh] flex items-center">
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl text-center">
         <div 
           className={cn(
