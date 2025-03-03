@@ -1,3 +1,4 @@
+
 import { Maximize2, Minimize2, Clock, X } from "lucide-react";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -24,54 +25,89 @@ export const NoteHeaderSection = ({
   onToggleFullscreen,
   onToggleAutoSave
 }: NoteHeaderSectionProps) => {
-  return <>
+  return (
+    <div className="bg-card/50 backdrop-blur-sm rounded-lg p-4 shadow-sm border border-border/50 mb-6">
       <div className="flex justify-between items-center">
         <DialogHeader className="flex-grow">
           <DialogTitle>
-            <Input value={editingNote?.title || ""} onChange={e => onNoteChange(editingNote ? {
-            ...editingNote,
-            title: e.target.value
-          } : null)} placeholder="Note Title" className="text-xl font-semibold my-[10px] mx-[5px]" />
+            <Input 
+              value={editingNote?.title || ""} 
+              onChange={e => onNoteChange(editingNote ? {
+                ...editingNote,
+                title: e.target.value
+              } : null)} 
+              placeholder="Note Title" 
+              className="text-xl font-semibold border-none shadow-none focus-visible:ring-1 bg-transparent placeholder:text-muted-foreground/50"
+            />
           </DialogTitle>
         </DialogHeader>
         
-        <Button variant="ghost" size="icon" onClick={onToggleFullscreen} className="ml-2">
-          {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={onToggleFullscreen} 
+          className="ml-2 hover:bg-muted"
+        >
+          {isFullscreen ? 
+            <Minimize2 className="h-4 w-4" /> : 
+            <Maximize2 className="h-4 w-4" />
+          }
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         <div className="md:col-span-2">
-          <Select value={editingNote?.subject || "General"} onValueChange={value => onNoteChange(editingNote ? {
-          ...editingNote,
-          subject: value
-        } : null)}>
-            <SelectTrigger className="mx-[5px]">
+          <Select 
+            value={editingNote?.subject || "General"} 
+            onValueChange={value => onNoteChange(editingNote ? {
+              ...editingNote,
+              subject: value
+            } : null)}
+          >
+            <SelectTrigger className="w-full bg-background/50 border-border/50">
               <SelectValue placeholder="Select subject" />
             </SelectTrigger>
             <SelectContent>
-              {commonSubjects.map(subject => <SelectItem key={subject} value={subject} className="hover:bg-muted cursor-pointer">
+              {commonSubjects.map(subject => (
+                <SelectItem 
+                  key={subject} 
+                  value={subject} 
+                  className="hover:bg-muted cursor-pointer"
+                >
                   {subject}
-                </SelectItem>)}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
 
         <div className="flex gap-2 items-center">
-          <Button variant="outline" size="sm" className="text-xs flex-shrink-0" onClick={onToggleAutoSave}>
-            {autoSaveEnabled ? <>
+          <Button 
+            variant={autoSaveEnabled ? "secondary" : "outline"} 
+            size="sm" 
+            className="text-xs flex-shrink-0 h-9 transition-all"
+            onClick={onToggleAutoSave}
+          >
+            {autoSaveEnabled ? (
+              <>
                 <Clock className="mr-1 h-3 w-3" />
                 Auto-save On
-              </> : <>
+              </>
+            ) : (
+              <>
                 <X className="mr-1 h-3 w-3" />
                 Auto-save Off
-              </>}
+              </>
+            )}
           </Button>
           
-          {lastSaved && <span className="text-xs text-muted-foreground whitespace-nowrap">
+          {lastSaved && (
+            <span className="text-xs text-muted-foreground whitespace-nowrap">
               Saved {lastSaved.toLocaleTimeString()}
-            </span>}
+            </span>
+          )}
         </div>
       </div>
-    </>;
+    </div>
+  );
 };

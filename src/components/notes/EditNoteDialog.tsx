@@ -146,22 +146,25 @@ export const EditNoteDialog = ({
   return (
     <>
       {isFullscreen ? (
-        <Sheet open={open && isFullscreen} onOpenChange={(open) => {
-          if (!open) {
-            setIsFullscreen(false);
-            onOpenChange(false);
-          }
-        }}>
+        <Sheet 
+          open={open && isFullscreen} 
+          onOpenChange={(open) => {
+            if (!open) {
+              setIsFullscreen(false);
+              onOpenChange(false);
+            }
+          }}
+        >
           <SheetContent
             side="top"
-            className="h-screen w-screen p-6 flex flex-col max-h-screen"
+            className="h-screen w-screen p-6 flex flex-col max-h-screen overflow-hidden bg-background/95 backdrop-blur-sm"
           >
             {renderDialogContent()}
           </SheetContent>
         </Sheet>
       ) : (
         <Dialog open={open && !isFullscreen} onOpenChange={onOpenChange}>
-          <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col">
+          <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col p-6 overflow-hidden bg-background/98 backdrop-blur-sm">
             {renderDialogContent()}
           </DialogContent>
         </Dialog>
