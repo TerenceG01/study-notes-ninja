@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { CreateDeckDialog } from "@/components/flashcards/CreateDeckDialog";
@@ -68,7 +67,10 @@ const Flashcards = () => {
   return (
     <div className="container mx-auto max-w-[1400px] px-4 lg:px-8 pt-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Flashcards</h1>
+        <div>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-primary">My Flashcards</h1>
+          <p className="text-muted-foreground">Create and review flashcards to improve retention</p>
+        </div>
       </div>
 
       {isLoading ? (
