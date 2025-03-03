@@ -21,7 +21,7 @@ interface SummaryControlsProps {
   onSummaryLevelChange: (level: SummaryLevel) => void;
   onGenerateSummary: () => void;
   onToggleSummary: () => void;
-  onEnhanceNote: (enhanceType: 'grammar' | 'structure') => void;
+  onEnhanceNote: (enhanceType: 'grammar' | 'structure' | 'all') => void;
 }
 
 export const SummaryControls = ({
@@ -36,7 +36,7 @@ export const SummaryControls = ({
   onToggleSummary,
   onEnhanceNote
 }: SummaryControlsProps) => {
-  return <div className="flex gap-4 items-center mt-2 mb-2 flex-wrap">
+  return <div className="flex gap-4 items-center mt-4 flex-wrap">
       <Select value={summaryLevel} onValueChange={onSummaryLevelChange}>
         <SelectTrigger className="w-[180px] mx-[5px]">
           <SelectValue placeholder="Summary Level" />
