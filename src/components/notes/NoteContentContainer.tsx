@@ -23,7 +23,7 @@ interface NoteContentContainerProps {
   onSummaryLevelChange: (level: SummaryLevel) => void;
   onGenerateSummary: () => void;
   onToggleSummary: () => void;
-  onEnhanceNote: (enhanceType: 'grammar' | 'structure' | 'all') => void;
+  onEnhanceNote: (enhanceType: 'grammar' | 'structure') => void;
   onToggleFullscreen: () => void;
   onToggleAutoSave: () => void;
 }
@@ -63,7 +63,7 @@ export const NoteContentContainer = ({
       />
 
       <ScrollArea className="flex-grow overflow-y-auto">
-        <div className="space-y-4 pr-4">
+        <div className="space-y-0 pr-4">
           <SummaryControls 
             summaryLevel={summaryLevel}
             summarizing={summarizing}

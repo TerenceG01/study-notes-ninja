@@ -1,9 +1,10 @@
 
-import { FileText, Clock } from "lucide-react";
+import { FileText } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Note } from "@/hooks/useNotes";
 import { useRef, useState, useEffect } from "react";
+import { TextFormattingToolbar } from "./TextFormattingToolbar";
 
 interface NoteContentEditorProps {
   editingNote: Note | null;
@@ -27,14 +28,14 @@ export const NoteContentEditor = ({
   onToggleAutoSave
 }: NoteContentEditorProps) => {
   // Default heights based on fullscreen mode
-  const defaultHeight = isFullscreen ? "calc(100vh - 250px)" : "calc(100vh - 450px)";
+  const defaultHeight = isFullscreen ? "calc(100vh - 300px)" : "calc(100vh - 500px)";
   const [textareaHeight, setTextareaHeight] = useState(defaultHeight);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const resizeStartPosRef = useRef<number | null>(null);
   
   // Update default height when fullscreen mode changes
   useEffect(() => {
-    setTextareaHeight(isFullscreen ? "calc(100vh - 250px)" : "calc(100vh - 450px)");
+    setTextareaHeight(isFullscreen ? "calc(100vh - 300px)" : "calc(100vh - 500px)");
   }, [isFullscreen]);
 
   // Handle mouse down for resize
@@ -66,6 +67,105 @@ export const NoteContentEditor = ({
     document.removeEventListener('mouseup', handleResizeEnd);
   };
 
+  // Handles text formatting
+  const handleFormatText = (formatType: string) => {
+    if (!textareaRef.current || !editingNote) return;
+    
+    const textarea = textareaRef.current;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = editingNote.content.substring(start, end);
+    
+    let formattedText = '';
+    let newCursorPos = end;
+    
+    switch (formatType) {
+      case 'bold':
+        formattedText = `**${selectedText}**`;
+        newCursorPos = end + 4;
+        break;
+      case 'italic':
+        formattedText = `*${selectedText}*`;
+        newCursorPos = end + 2;
+        break;
+      case 'underline':
+        formattedText = `<u>${selectedText}</u>`;
+        newCursorPos = end + 7;
+        break;
+      case 'strikethrough':
+        formattedText = `~~${selectedText}~~`;
+        newCursorPos = end + 4;
+        break;
+      case 'h1':
+        formattedText = `# ${selectedText}`;
+        newCursorPos = end + 2;
+        break;
+      case 'h2':
+        formattedText = `## ${selectedText}`;
+        newCursorPos = end + 3;
+        break;
+      case 'list-bullet':
+        formattedText = selectedText
+          .split('\n')
+          .map(line => `- ${line}`)
+          .join('\n');
+        newCursorPos = end + selectedText.split('\n').length * 2;
+        break;
+      case 'list-numbered':
+        formattedText = selectedText
+          .split('\n')
+          .map((line, i) => `${i + 1}. ${line}`)
+          .join('\n');
+        const numberedListOffset = selectedText.split('\n')
+          .reduce((sum, _, i) => sum + String(i + 1).length + 2, 0);
+        newCursorPos = end + numberedListOffset;
+        break;
+      case 'align-left':
+        formattedText = `<div style="text-align: left">${selectedText}</div>`;
+        newCursorPos = end + 33;
+        break;
+      case 'align-center':
+        formattedText = `<div style="text-align: center">${selectedText}</div>`;
+        newCursorPos = end + 35;
+        break;
+      case 'align-right':
+        formattedText = `<div style="text-align: right">${selectedText}</div>`;
+        newCursorPos = end + 34;
+        break;
+      case 'code':
+        formattedText = `\`\`\`\n${selectedText}\n\`\`\``;
+        newCursorPos = end + 8;
+        break;
+      case 'quote':
+        formattedText = selectedText
+          .split('\n')
+          .map(line => `> ${line}`)
+          .join('\n');
+        newCursorPos = end + selectedText.split('\n').length * 2;
+        break;
+      default:
+        formattedText = selectedText;
+    }
+    
+    const newContent = 
+      editingNote.content.substring(0, start) + 
+      formattedText + 
+      editingNote.content.substring(end);
+    
+    onNoteChange({
+      ...editingNote,
+      content: newContent
+    });
+    
+    // Set the selection and focus after state update
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        textareaRef.current.setSelectionRange(start, start + formattedText.length);
+      }
+    }, 0);
+  };
+
   return (
     <div className="mt-4 min-h-[300px] flex flex-col h-full bg-card rounded-lg border border-border shadow-sm">
       {showSummary && editingNote?.summary ? (
@@ -77,8 +177,11 @@ export const NoteContentEditor = ({
           </div>
         </Card>
       ) : (
-        <div className="flex flex-col h-full flex-1 p-2">
-          <div className="relative flex-1">
+        <div className="flex flex-col h-full flex-1">
+          {/* Text formatting toolbar */}
+          <TextFormattingToolbar onFormatText={handleFormatText} />
+          
+          <div className="relative flex-1 p-2">
             <Textarea 
               ref={textareaRef}
               value={editingNote?.content || ""} 
