@@ -66,6 +66,16 @@ export const NoteContentEditor = ({
     document.removeEventListener('mouseup', handleResizeEnd);
   };
 
+  // Handle content change with cursor position preservation
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!editingNote) return;
+    
+    onNoteChange({
+      ...editingNote,
+      content: e.target.value
+    });
+  };
+
   return (
     <div className="mt-4 min-h-[300px] flex flex-col h-full bg-card rounded-lg border border-border shadow-sm">
       {showSummary && editingNote?.summary ? (
@@ -82,10 +92,7 @@ export const NoteContentEditor = ({
             <Textarea 
               ref={textareaRef}
               value={editingNote?.content || ""} 
-              onChange={e => onNoteChange(editingNote ? {
-                ...editingNote,
-                content: e.target.value
-              } : null)} 
+              onChange={handleContentChange} 
               placeholder="Write your notes here..." 
               style={{
                 height: textareaHeight,
