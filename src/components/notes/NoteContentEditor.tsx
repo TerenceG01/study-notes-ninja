@@ -1,9 +1,9 @@
 
-import { FileText, Clock } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
+import { FileText } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Note } from "@/hooks/useNotes";
 import { useRef, useState, useEffect } from "react";
+import { TextFormattingToolbar } from "./TextFormattingToolbar";
 
 interface NoteContentEditorProps {
   editingNote: Note | null;
@@ -29,7 +29,7 @@ export const NoteContentEditor = ({
   // Default heights based on fullscreen mode
   const defaultHeight = isFullscreen ? "calc(100vh - 250px)" : "calc(100vh - 450px)";
   const [textareaHeight, setTextareaHeight] = useState(defaultHeight);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
   const resizeStartPosRef = useRef<number | null>(null);
   
   // Update default height when fullscreen mode changes
@@ -49,10 +49,10 @@ export const NoteContentEditor = ({
 
   // Handle mouse move for resizing
   const handleResize = (e: MouseEvent) => {
-    if (resizeStartPosRef.current === null || !textareaRef.current) return;
+    if (resizeStartPosRef.current === null || !editorRef.current) return;
     
     const deltaY = e.clientY - resizeStartPosRef.current;
-    const currentHeight = textareaRef.current.offsetHeight;
+    const currentHeight = editorRef.current.offsetHeight;
     const newHeight = Math.max(100, currentHeight + deltaY); // Minimum height of 100px
     
     setTextareaHeight(`${newHeight}px`);
@@ -66,15 +66,79 @@ export const NoteContentEditor = ({
     document.removeEventListener('mouseup', handleResizeEnd);
   };
 
-  // Handle content change with cursor position preservation
-  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (!editingNote) return;
+  // WYSIWYG content change handler
+  const handleContentChange = () => {
+    if (!editingNote || !editorRef.current) return;
     
+    const content = editorRef.current.innerHTML;
     onNoteChange({
       ...editingNote,
-      content: e.target.value
+      content: content
     });
   };
+
+  // Format text based on the command
+  const handleFormatText = (command: string, value?: string) => {
+    if (command === 'createLink') {
+      const url = prompt('Enter the URL:');
+      if (url) {
+        document.execCommand(command, false, url);
+      }
+    } else if (command === 'formatCode') {
+      document.execCommand('insertHTML', false, '<pre><code>' + 
+        window.getSelection()?.toString() + '</code></pre>');
+    } else if (value) {
+      document.execCommand(command, false, value);
+    } else {
+      document.execCommand(command, false);
+    }
+    
+    // Make sure to update the content after formatting
+    handleContentChange();
+  };
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key.toLowerCase()) {
+          case 'b':
+            e.preventDefault();
+            handleFormatText('bold');
+            break;
+          case 'i':
+            e.preventDefault();
+            handleFormatText('italic');
+            break;
+          case 'u':
+            e.preventDefault();
+            handleFormatText('underline');
+            break;
+          // 's' is handled by the save shortcut in parent component
+          default:
+            break;
+        }
+      }
+    };
+
+    const editor = editorRef.current;
+    if (editor) {
+      editor.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      if (editor) {
+        editor.removeEventListener('keydown', handleKeyDown);
+      }
+    };
+  }, []);
+
+  // Focus editor on initial load
+  useEffect(() => {
+    if (editorRef.current && !showSummary) {
+      editorRef.current.focus();
+    }
+  }, [showSummary]);
 
   return (
     <div className="mt-4 min-h-[300px] flex flex-col h-full bg-card rounded-lg border border-border shadow-sm">
@@ -87,18 +151,20 @@ export const NoteContentEditor = ({
           </div>
         </Card>
       ) : (
-        <div className="flex flex-col h-full flex-1 p-2">
-          <div className="relative flex-1">
-            <Textarea 
-              ref={textareaRef}
-              value={editingNote?.content || ""} 
-              onChange={handleContentChange} 
-              placeholder="Write your notes here..." 
+        <div className="flex flex-col h-full flex-1">
+          <TextFormattingToolbar onFormatText={handleFormatText} />
+          <div className="relative flex-1 p-2">
+            <div 
+              ref={editorRef}
+              contentEditable
+              dangerouslySetInnerHTML={{ __html: editingNote?.content || "" }}
+              onInput={handleContentChange}
+              className="h-full flex-grow overflow-y-auto flex-1 p-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-background rounded-lg"
               style={{
                 height: textareaHeight,
                 minHeight: "300px"
-              }} 
-              className="flex-grow resize-none flex-1 p-4 border-none focus-visible:ring-1 shadow-none bg-background rounded-lg" 
+              }}
+              placeholder="Write your notes here..."
             />
             <div 
               className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-muted transition-colors rounded-b-lg"

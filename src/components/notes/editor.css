@@ -1,0 +1,94 @@
+
+[contenteditable=true]:empty:before {
+  content: attr(placeholder);
+  color: #9ca3af;
+  cursor: text;
+}
+
+[contenteditable=true]:focus {
+  outline: none;
+}
+
+[contenteditable=true] {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-height: 1.5em;
+  line-height: 1.5;
+}
+
+[contenteditable=true] h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+[contenteditable=true] h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.25;
+}
+
+[contenteditable=true] h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+[contenteditable=true] p {
+  margin-bottom: 0.75rem;
+}
+
+[contenteditable=true] ul, 
+[contenteditable=true] ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+[contenteditable=true] ul {
+  list-style-type: disc;
+}
+
+[contenteditable=true] ol {
+  list-style-type: decimal;
+}
+
+[contenteditable=true] blockquote {
+  border-left: 3px solid #d1d5db;
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  font-style: italic;
+  color: #6b7280;
+}
+
+[contenteditable=true] pre {
+  background-color: #f3f4f6;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  overflow-x: auto;
+  margin-bottom: 0.75rem;
+}
+
+[contenteditable=true] code {
+  font-family: monospace;
+  background-color: #f3f4f6;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+[contenteditable=true] pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+[contenteditable=true] a {
+  color: #3b82f6;
+  text-decoration: underline;
+}

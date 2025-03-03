@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -49,10 +48,14 @@ export const EditNoteDialog = ({
   // Tags state removed
   const [tags, setTags] = useState<string[]>([]);
 
-  // Handle word count calculation
+  // Handle word count calculation for HTML content
   useEffect(() => {
     if (editingNote?.content) {
-      const words = editingNote.content.trim().split(/\s+/).filter(Boolean).length;
+      // Create a temporary element to strip HTML tags
+      const tempElement = document.createElement('div');
+      tempElement.innerHTML = editingNote.content;
+      const textContent = tempElement.textContent || tempElement.innerText || '';
+      const words = textContent.trim().split(/\s+/).filter(Boolean).length;
       setWordCount(words);
     } else {
       setWordCount(0);
