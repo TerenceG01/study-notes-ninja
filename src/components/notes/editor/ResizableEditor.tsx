@@ -65,7 +65,7 @@ export const ResizableEditor = forwardRef<HTMLDivElement, ResizableEditorProps>(
               .replace(/^(\d+)\. (.*)$/gm, '<ol><li>$2</li></ol>')
               .replace(/`(.*?)`/g, '<code>$1</code>')
               .replace(/^> (.*)$/gm, '<blockquote>$1</blockquote>')
-              .replace(/\n/g, '<br/>') || 'Write your notes here...'
+              .replace(/\n/g, '<br/>') : 'Write your notes here...'
         }}
       />
       
