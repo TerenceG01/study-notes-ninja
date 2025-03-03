@@ -30,12 +30,10 @@ export const HeroSection = ({
                 </span>
               </h1>
               
-              {/* Animated floating shapes - now bigger */}
-              <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full">
-                <div className="animate-float-slow absolute -top-12 -left-20 w-40 h-40 rounded-full bg-primary/10"></div>
-                <div className="animate-float-medium absolute top-1/3 right-0 w-52 h-52 rounded-full bg-secondary/20"></div>
-                <div className="animate-float-fast absolute bottom-0 left-1/4 w-32 h-32 rounded-full bg-primary/5"></div>
-                <div className="animate-spin-slow absolute top-1/4 right-1/4 w-24 h-24 rounded-md bg-secondary/10"></div>
+              {/* Diagonal creative element */}
+              <div className="absolute -z-10 inset-0 w-full h-full">
+                <div className="absolute -inset-10 bg-gradient-to-tr from-primary/5 to-transparent transform -rotate-6"></div>
+                <div className="absolute -inset-10 bg-gradient-to-bl from-secondary/10 to-transparent transform rotate-6"></div>
               </div>
             </div>
             
@@ -53,8 +51,6 @@ export const HeroSection = ({
                 Sign In
               </Button>
             </div>
-            
-            
           </div>
         </div>
       </div>

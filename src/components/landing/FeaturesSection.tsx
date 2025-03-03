@@ -43,12 +43,15 @@ const FeatureCard = ({
   return (
     <div 
       className={cn(
-        "p-6 rounded-xl border border-border hover:shadow-md hover:border-primary/20 transition-all duration-500 bg-card",
-        "transform",
+        "p-6 rounded-xl border border-border hover:shadow-md hover:border-primary/20 transition-all duration-500 bg-card backdrop-blur-sm",
+        "transform relative overflow-hidden",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
       )}
       style={{ transitionDelay: `${index * 150}ms` }}
     >
+      {/* Diagonal accent line */}
+      <div className="absolute top-0 right-0 w-16 h-1 bg-gradient-to-r from-primary/40 to-secondary/40 transform rotate-45 translate-x-2 -translate-y-4"></div>
+      
       <div className="mb-4 text-primary">{feature.icon}</div>
       <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
       <p className="text-muted-foreground">{feature.description}</p>
@@ -59,11 +62,10 @@ const FeatureCard = ({
 export const FeaturesSection = ({ isVisible }: FeaturesSectionProps) => {
   return (
     <section id="features" className="py-24 relative overflow-hidden">
-      {/* Larger floating elements */}
-      <div className="absolute inset-0 -z-10 pointer-events-none">
-        <div className="animate-float-slow absolute top-10 left-10 w-64 h-64 rounded-full bg-primary/5"></div>
-        <div className="animate-float-medium absolute bottom-20 right-10 w-80 h-80 rounded-full bg-secondary/10"></div>
-        <div className="animate-spin-slow absolute bottom-40 left-1/3 w-36 h-36 rounded-md bg-primary/5"></div>
+      {/* Creative background element - diagonal split */}
+      <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/5 to-transparent transform -skew-y-6"></div>
+        <div className="absolute bottom-0 right-0 w-full h-full bg-gradient-to-tl from-secondary/10 to-transparent transform skew-y-6"></div>
       </div>
       
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl relative z-10">

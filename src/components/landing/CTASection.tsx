@@ -35,11 +35,24 @@ export const CTASection = ({ isVisible, handleGetStarted }: CTASectionProps) => 
         </div>
       </div>
       
-      {/* Larger animated background elements */}
-      <div className="absolute inset-0 -z-0 pointer-events-none">
-        <div className="animate-float-slow absolute top-1/4 left-1/4 w-80 h-80 rounded-full bg-primary/5"></div>
-        <div className="animate-float-medium absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-secondary/10"></div>
-        <div className="animate-float-fast absolute top-3/4 left-3/4 w-64 h-64 rounded-full bg-primary/5"></div>
+      {/* Creative element - staggered dots pattern */}
+      <div className="absolute inset-0 -z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full">
+          {Array.from({ length: 5 }).map((_, rowIndex) => (
+            <div key={rowIndex} className="flex justify-around">
+              {Array.from({ length: 12 }).map((_, colIndex) => (
+                <div 
+                  key={colIndex} 
+                  className={`h-2 w-2 rounded-full ${(rowIndex + colIndex) % 2 === 0 ? 'bg-primary/10' : 'bg-secondary/15'}`}
+                  style={{ 
+                    transform: `translate(${(colIndex - 6) * 120}px, ${(rowIndex * 100) + 20}px)`,
+                    opacity: 0.5 + (0.1 * ((rowIndex + colIndex) % 5))
+                  }}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

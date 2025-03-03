@@ -27,11 +27,14 @@ const steps = [
 export const HowItWorksSection = ({ isVisible, handleGetStarted }: HowItWorksSectionProps) => {
   return (
     <section id="howItWorks" className="py-24 bg-secondary/20 relative overflow-hidden">
-      {/* Larger floating elements */}
-      <div className="absolute inset-0 -z-0 pointer-events-none">
-        <div className="animate-float-slow absolute top-20 left-1/3 w-56 h-56 rounded-full bg-primary/5"></div>
-        <div className="animate-float-medium absolute bottom-24 right-20 w-72 h-72 rounded-full bg-secondary/10"></div>
-        <div className="animate-float-fast absolute top-40 right-1/4 w-40 h-40 rounded-full bg-primary/5"></div>
+      {/* Creative element - layered waves */}
+      <div className="absolute inset-0 -z-0 pointer-events-none overflow-hidden">
+        <svg className="absolute bottom-0 left-0 w-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+          <path fill="rgba(109, 40, 217, 0.05)" fillOpacity="1" d="M0,288L48,272C96,256,192,224,288,197.3C384,171,480,149,576,165.3C672,181,768,235,864,250.7C960,267,1056,245,1152,224C1248,203,1344,181,1392,170.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+        <svg className="absolute bottom-0 left-0 w-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+          <path fill="rgba(109, 40, 217, 0.03)" fillOpacity="1" d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,138.7C672,128,768,160,864,192C960,224,1056,256,1152,245.3C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
       </div>
       
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl relative z-10">
@@ -60,18 +63,22 @@ export const HowItWorksSection = ({ isVisible, handleGetStarted }: HowItWorksSec
               <div 
                 key={index} 
                 className={cn(
-                  "flex items-start gap-5 text-left transition-all duration-700 delay-300",
+                  "flex items-start gap-5 text-left transition-all duration-700 delay-300 relative",
                   isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
                 )}
                 style={{ transitionDelay: `${index * 150 + 300}ms` }}
               >
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary text-white font-bold shrink-0 animate-pulse-slow">
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary text-white font-bold shrink-0">
                   {index + 1}
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg">{step.title}</h3>
                   <p className="text-muted-foreground">{step.description}</p>
                 </div>
+                {/* Connecting line between steps */}
+                {index < steps.length - 1 && (
+                  <div className="absolute top-12 left-6 w-0.5 h-12 bg-gradient-to-b from-primary/50 to-primary/10"></div>
+                )}
               </div>
             ))}
           </div>

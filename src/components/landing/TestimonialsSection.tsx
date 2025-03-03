@@ -27,7 +27,26 @@ const testimonials = [
 
 export const TestimonialsSection = ({ isVisible }: TestimonialsSectionProps) => {
   return (
-    <section id="testimonials" className="py-24">
+    <section id="testimonials" className="py-24 relative">
+      {/* Creative element - hexagon pattern */}
+      <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden opacity-20">
+        <div className="honeycomb" aria-hidden="true">
+          {Array.from({ length: 20 }).map((_, i) => (
+            <div 
+              key={i} 
+              className="honeycomb-cell"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                width: `${40 + Math.random() * 30}px`,
+                height: `${40 + Math.random() * 30}px`,
+                opacity: 0.1 + Math.random() * 0.3
+              }}
+            />
+          ))}
+        </div>
+      </div>
+      
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl text-center">
         <div 
           className={cn(
@@ -51,19 +70,23 @@ export const TestimonialsSection = ({ isVisible }: TestimonialsSectionProps) => 
               key={index} 
               className={cn(
                 "bg-card p-8 rounded-xl shadow-sm border border-border/50 hover:shadow-md transition-all duration-500",
-                "flex flex-col h-full transform",
+                "flex flex-col h-full transform relative",
                 isVisible 
                   ? "opacity-100 translate-y-0" 
                   : "opacity-0 translate-y-20"
               )}
               style={{ transitionDelay: `${index * 150}ms` }}
             >
+              {/* Quote mark decoration */}
+              <div className="absolute -top-4 -left-2 text-6xl text-primary/10">"</div>
+              <div className="absolute -bottom-8 -right-2 text-6xl text-primary/10">"</div>
+              
               <div className="text-primary mb-4">
                 {Array(5).fill(0).map((_, i) => (
                   <span key={i} className="text-lg">★</span>
                 ))}
               </div>
-              <p className="text-foreground mb-6 flex-grow italic">"{testimonial.quote}"</p>
+              <p className="text-foreground mb-6 flex-grow italic relative z-10">"{testimonial.quote}"</p>
               <div className="flex items-center mt-auto">
                 <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center font-bold text-primary mr-3">
                   {testimonial.name[0]}
