@@ -13,10 +13,7 @@ import {
   Heading2,
   Code,
   Quote,
-  Eye,
-  Edit,
-  Columns,
-  Square
+  Text
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -24,14 +21,10 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface TextFormattingToolbarProps {
   onFormatText: (formatType: string) => void;
-  previewMode: boolean;
-  onTogglePreview: () => void;
 }
 
 export const TextFormattingToolbar = ({ 
-  onFormatText, 
-  previewMode,
-  onTogglePreview 
+  onFormatText 
 }: TextFormattingToolbarProps) => {
   // Format buttons configuration
   const textControls = [
@@ -150,26 +143,9 @@ export const TextFormattingToolbar = ({
         </div>
       </div>
       
-      <div className="flex gap-1">
-        <Button
-          variant={previewMode ? "outline" : "secondary"}
-          size="sm"
-          onClick={onTogglePreview}
-          title={previewMode ? "Show both views" : "Show only preview"}
-          className="h-8 px-3"
-        >
-          {previewMode ? (
-            <>
-              <Columns className="h-4 w-4 mr-1" />
-              Split View
-            </>
-          ) : (
-            <>
-              <Square className="h-4 w-4 mr-1" />
-              Preview Only
-            </>
-          )}
-        </Button>
+      <div className="flex items-center">
+        <Text className="h-4 w-4 mr-1 text-muted-foreground" />
+        <span className="text-xs text-muted-foreground">Rich Text Editor</span>
       </div>
     </div>
   );
