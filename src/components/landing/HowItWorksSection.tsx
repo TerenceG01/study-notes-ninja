@@ -26,8 +26,15 @@ const steps = [
 
 export const HowItWorksSection = ({ isVisible, handleGetStarted }: HowItWorksSectionProps) => {
   return (
-    <section id="howItWorks" className="py-24 bg-secondary/20">
-      <div className="container px-4 sm:px-6 mx-auto max-w-7xl">
+    <section id="howItWorks" className="py-24 bg-secondary/20 relative overflow-hidden">
+      {/* Larger floating elements */}
+      <div className="absolute inset-0 -z-0 pointer-events-none">
+        <div className="animate-float-slow absolute top-20 left-1/3 w-56 h-56 rounded-full bg-primary/5"></div>
+        <div className="animate-float-medium absolute bottom-24 right-20 w-72 h-72 rounded-full bg-secondary/10"></div>
+        <div className="animate-float-fast absolute top-40 right-1/4 w-40 h-40 rounded-full bg-primary/5"></div>
+      </div>
+      
+      <div className="container px-4 sm:px-6 mx-auto max-w-7xl relative z-10">
         <div 
           className={cn(
             "flex flex-col items-center text-center space-y-8 max-w-2xl mx-auto transition-all duration-700",

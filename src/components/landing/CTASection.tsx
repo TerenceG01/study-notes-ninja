@@ -35,11 +35,11 @@ export const CTASection = ({ isVisible, handleGetStarted }: CTASectionProps) => 
         </div>
       </div>
       
-      {/* Animated background elements */}
-      <div className="absolute inset-0 -z-0">
-        <div className="animate-float-slow absolute top-1/4 left-1/4 w-32 h-32 rounded-full bg-primary/5"></div>
-        <div className="animate-float-medium absolute bottom-1/4 right-1/4 w-40 h-40 rounded-full bg-secondary/10"></div>
-        <div className="animate-float-fast absolute top-3/4 left-3/4 w-24 h-24 rounded-full bg-primary/5"></div>
+      {/* Larger animated background elements */}
+      <div className="absolute inset-0 -z-0 pointer-events-none">
+        <div className="animate-float-slow absolute top-1/4 left-1/4 w-80 h-80 rounded-full bg-primary/5"></div>
+        <div className="animate-float-medium absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-secondary/10"></div>
+        <div className="animate-float-fast absolute top-3/4 left-3/4 w-64 h-64 rounded-full bg-primary/5"></div>
       </div>
     </section>
   );

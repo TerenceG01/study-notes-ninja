@@ -58,8 +58,15 @@ const FeatureCard = ({
 
 export const FeaturesSection = ({ isVisible }: FeaturesSectionProps) => {
   return (
-    <section id="features" className="py-24">
-      <div className="container px-4 sm:px-6 mx-auto max-w-7xl">
+    <section id="features" className="py-24 relative overflow-hidden">
+      {/* Larger floating elements */}
+      <div className="absolute inset-0 -z-10 pointer-events-none">
+        <div className="animate-float-slow absolute top-10 left-10 w-64 h-64 rounded-full bg-primary/5"></div>
+        <div className="animate-float-medium absolute bottom-20 right-10 w-80 h-80 rounded-full bg-secondary/10"></div>
+        <div className="animate-spin-slow absolute bottom-40 left-1/3 w-36 h-36 rounded-md bg-primary/5"></div>
+      </div>
+      
+      <div className="container px-4 sm:px-6 mx-auto max-w-7xl relative z-10">
         <div 
           className={cn(
             "text-center mb-16 transition-all duration-700",
