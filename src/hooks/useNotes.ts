@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -24,6 +23,8 @@ export type NewNote = {
   tags: string[];
   subject: string;
 };
+
+export type SummaryLevel = 'brief' | 'medium' | 'detailed';
 
 export const useNotes = () => {
   const { toast } = useToast();
@@ -332,6 +333,213 @@ export const useNotes = () => {
     }
   };
 
+  const addNote = (note: Note) => {
+    if (!note.title || !note.content) {
+      toast({
+        variant: "destructive",
+        title: "Missing fields",
+        description: "Please fill in both title and content.",
+      });
+      return false;
+    }
+
+    try {
+      // Add new note to state immediately for a responsive UI
+      const newNote = {
+        ...note,
+        id: note.id.toString(), // Ensure ID is a string
+        created_at: new Date().toISOString(),
+        folder: note.folder || 'My Notes',
+      };
+      
+      setNotes([newNote, ...notes]);
+      
+      // If online, also send to the server
+      if (isOnline) {
+        supabase.from("notes").insert([
+          {
+            title: note.title,
+            content: note.content,
+            tags: note.tags || [],
+            subject: note.subject,
+          },
+        ]).then(({ error }) => {
+          if (error) {
+            console.error("Error saving note to server:", error);
+            toast({
+              variant: "destructive",
+              title: "Error saving note",
+              description: "The note was saved locally, but failed to sync.",
+            });
+          }
+        });
+      } else {
+        // Save locally when offline
+        const offlineNotes = getOfflineNotes();
+        offlineNotes.push({
+          ...newNote,
+          offline: true
+        });
+        localStorage.setItem('offlineNotes', JSON.stringify(offlineNotes));
+      }
+      
+      return true;
+    } catch (error) {
+      console.error("Error adding note:", error);
+      toast({
+        variant: "destructive",
+        title: "Error adding note",
+        description: "Failed to add note. Please try again.",
+      });
+      return false;
+    }
+  };
+
+  const updateNote = (note: Note) => {
+    try {
+      // Update in local state for immediate UI update
+      const updatedNotes = notes.map(n => n.id === note.id ? note : n);
+      setNotes(updatedNotes);
+      
+      // If online, also update on the server
+      if (isOnline) {
+        supabase.from("notes").update({
+          title: note.title,
+          content: note.content,
+          tags: note.tags || [],
+          subject: note.subject,
+          summary: note.summary,
+        }).eq("id", note.id).then(({ error }) => {
+          if (error) {
+            console.error("Error updating note on server:", error);
+            toast({
+              variant: "destructive",
+              title: "Error updating note",
+              description: "The note was updated locally, but failed to sync.",
+            });
+          }
+        });
+      } else {
+        // Handle offline updates
+        toast({
+          title: "Offline update",
+          description: "Note updated locally and will sync when online.",
+        });
+      }
+      
+      return true;
+    } catch (error) {
+      console.error("Error updating note:", error);
+      toast({
+        variant: "destructive",
+        title: "Error updating note",
+        description: "Failed to update note. Please try again.",
+      });
+      return false;
+    }
+  };
+
+  const deleteNote = (noteId: string) => {
+    try {
+      // Delete from local state immediately
+      setNotes(notes.filter(note => note.id !== noteId));
+      
+      // If online, also delete from the server
+      if (isOnline) {
+        supabase.from("notes").delete().eq("id", noteId).then(({ error }) => {
+          if (error) {
+            console.error("Error deleting note from server:", error);
+            toast({
+              variant: "destructive",
+              title: "Error deleting note",
+              description: "The note was removed locally, but failed to delete from server.",
+            });
+          }
+        });
+      }
+      
+      return true;
+    } catch (error) {
+      console.error("Error deleting note:", error);
+      toast({
+        variant: "destructive",
+        title: "Error deleting note",
+        description: "Failed to delete note. Please try again.",
+      });
+      return false;
+    }
+  };
+
+  const generateSummary = async (content: string, level: SummaryLevel): Promise<string> => {
+    try {
+      if (!isOnline) {
+        toast({
+          variant: "destructive",
+          title: "You're offline",
+          description: "Please connect to the internet to generate summaries.",
+        });
+        return "Offline - Summary cannot be generated";
+      }
+      
+      const { data, error } = await supabase.functions.invoke('summarize-note', {
+        body: {
+          content,
+          level,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.summary) {
+        return data.summary;
+      }
+      return "Unable to generate summary at this time.";
+    } catch (error) {
+      console.error("Error generating summary:", error);
+      toast({
+        variant: "destructive",
+        title: "Error generating summary",
+        description: "Failed to generate summary. Please try again.",
+      });
+      return "Error generating summary. Please try again.";
+    }
+  };
+
+  const enhanceNote = async (content: string, enhanceType: 'grammar' | 'structure'): Promise<string> => {
+    try {
+      if (!isOnline) {
+        toast({
+          variant: "destructive",
+          title: "You're offline",
+          description: "Please connect to the internet to enhance notes.",
+        });
+        return content;
+      }
+      
+      const { data, error } = await supabase.functions.invoke('enhance-note', {
+        body: {
+          content,
+          enhanceType,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.enhanced) {
+        return data.enhanced;
+      }
+      return content;
+    } catch (error) {
+      console.error("Error enhancing note:", error);
+      toast({
+        variant: "destructive",
+        title: "Error enhancing note",
+        description: "Failed to enhance note. Please try again.",
+      });
+      return content;
+    }
+  };
+
   return {
     notes,
     loading,
@@ -341,5 +549,10 @@ export const useNotes = () => {
     createNote,
     generateFlashcards,
     deleteNotesForSubject,
+    addNote,
+    updateNote,
+    deleteNote,
+    generateSummary,
+    enhanceNote,
   };
 };

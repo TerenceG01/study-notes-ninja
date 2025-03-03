@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useState } from 'react';
 import { Note } from './hooks/useNotes';
@@ -20,14 +21,23 @@ function App() {
   } = useNotes();
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [showSummary, setShowSummary] = useState(false);
-  const [summaryLevel, setSummaryLevel] = useState<SummaryLevel>('simple');
+  const [summaryLevel, setSummaryLevel] = useState<SummaryLevel>('brief');
   const [summarizing, setSummarizing] = useState(false);
   const [enhancing, setEnhancing] = useState(false);
   const [commonSubjects, setCommonSubjects] = useState<string[]>([]);
 
   const handleOpenDialog = (note: Note | null) => {
     setSelectedNote(note);
-    setEditingNote(note ? { ...note } : { id: Date.now(), title: 'New Note', content: '', tags: [] });
+    setEditingNote(note 
+      ? { ...note } 
+      : { 
+          id: Date.now().toString(), 
+          title: 'New Note', 
+          content: '', 
+          tags: [],
+          created_at: new Date().toISOString(),
+          folder: 'My Notes',
+        } as Note);
     setIsDialogOpen(true);
   };
 
