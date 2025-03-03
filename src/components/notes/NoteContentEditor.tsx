@@ -106,9 +106,11 @@ export const NoteContentEditor = ({
         
         // Update the note content
         if (editorRef.current) {
+          // Use the updated content
+          const updatedContent = editorRef.current.innerText;
           onNoteChange({
             ...editingNote,
-            content: editorRef.current.innerText
+            content: updatedContent
           });
         }
       }

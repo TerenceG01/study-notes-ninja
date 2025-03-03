@@ -1,5 +1,5 @@
 
-import { forwardRef } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Note } from "@/hooks/useNotes";
 import ReactMarkdown from "react-markdown";
@@ -17,6 +17,24 @@ export const ResizableEditor = forwardRef<HTMLDivElement, ResizableEditorProps>(
   onContentChange,
   onResizeStart
 }, ref) => {
+  const [markdownContent, setMarkdownContent] = useState<string>('');
+
+  // Update markdown content when editingNote changes
+  useEffect(() => {
+    if (editingNote?.content) {
+      setMarkdownContent(editingNote.content);
+    } else {
+      setMarkdownContent('');
+    }
+  }, [editingNote]);
+
+  // Handle content changes and update markdown
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    const content = e.currentTarget.innerText;
+    setMarkdownContent(content);
+    onContentChange();
+  };
+
   return (
     <div className="relative flex-1 p-2">
       <div
@@ -32,13 +50,14 @@ export const ResizableEditor = forwardRef<HTMLDivElement, ResizableEditorProps>(
         ref={ref}
         contentEditable={true}
         suppressContentEditableWarning={true}
-        onInput={onContentChange}
-        dangerouslySetInnerHTML={{ 
-          __html: editingNote?.content 
-            ? `<ReactMarkdown>${editingNote.content}</ReactMarkdown>` 
-            : '<p>Write your notes here...</p>' 
-        }}
-      />
+        onInput={handleInput}
+      >
+        {editingNote?.content ? (
+          <ReactMarkdown>{editingNote.content}</ReactMarkdown>
+        ) : (
+          <p>Write your notes here...</p>
+        )}
+      </div>
       
       <div 
         className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-muted transition-colors rounded-b-lg"
