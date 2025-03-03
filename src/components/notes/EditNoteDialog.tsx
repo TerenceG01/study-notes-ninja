@@ -44,9 +44,10 @@ export const EditNoteDialog = ({
 }: EditNoteDialogProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [wordCount, setWordCount] = useState(0);
-  const [tags, setTags] = useState<string[]>([]);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+  // Tags state removed
+  const [tags, setTags] = useState<string[]>([]);
 
   // Handle word count calculation
   useEffect(() => {

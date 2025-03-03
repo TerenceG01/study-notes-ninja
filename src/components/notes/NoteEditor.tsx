@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Hash, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 
 interface NoteEditorProps {
   note: {
@@ -68,36 +68,6 @@ export const NoteEditor = ({
         onChange={(e) => onNoteChange('content', e.target.value)}
         className="min-h-[200px] resize-y"
       />
-
-      <div className="flex flex-wrap gap-2 items-center">
-        <Hash className="h-4 w-4 text-muted-foreground" />
-        {note.tags.map((tag) => (
-          <span
-            key={tag}
-            className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm flex items-center gap-1 hover:bg-secondary/80 transition-colors"
-          >
-            {tag}
-            <button
-              onClick={() => onRemoveTag(tag)}
-              className="hover:text-destructive ml-1"
-              aria-label={`Remove ${tag} tag`}
-            >
-              ×
-            </button>
-          </span>
-        ))}
-        <Input
-          placeholder="Add tag..."
-          value={newTag}
-          onChange={(e) => onTagChange(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter' && newTag) {
-              onAddTag();
-            }
-          }}
-          className="!mt-0 w-32 h-8 text-sm"
-        />
-      </div>
 
       <div className="flex justify-end gap-2 pt-4">
         <Button

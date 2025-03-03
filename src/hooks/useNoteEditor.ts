@@ -33,26 +33,9 @@ export const useNoteEditor = create<NoteEditorStore>((set) => ({
     set((state) => ({
       newNote: { ...state.newNote, [field]: value }
     })),
-  addTag: () =>
-    set((state) => {
-      if (state.newTag && !state.newNote.tags.includes(state.newTag)) {
-        return {
-          newNote: {
-            ...state.newNote,
-            tags: [...state.newNote.tags, state.newTag]
-          },
-          newTag: ""
-        };
-      }
-      return state;
-    }),
-  removeTag: (tagToRemove) =>
-    set((state) => ({
-      newNote: {
-        ...state.newNote,
-        tags: state.newNote.tags.filter((tag) => tag !== tagToRemove)
-      }
-    })),
+  // Tag functions kept for compatibility but made into no-ops
+  addTag: () => set((state) => state),
+  removeTag: (tagToRemove) => set((state) => state),
   resetEditor: () =>
     set({
       newNote: { title: "", content: "", tags: [], subject: "General" },

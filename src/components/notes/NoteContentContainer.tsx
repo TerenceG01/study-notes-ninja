@@ -3,7 +3,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Note } from "@/hooks/useNotes";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
 import { NoteHeaderSection } from "./NoteHeaderSection";
-import { TagsSection } from "./TagsSection";
 import { SummaryControls } from "./SummaryControls";
 import { NoteContentEditor } from "./NoteContentEditor";
 
@@ -65,13 +64,6 @@ export const NoteContentContainer = ({
 
       <ScrollArea className="flex-grow overflow-y-auto">
         <div className="space-y-4 pr-4">
-          <TagsSection 
-            tags={tags}
-            onTagsChange={onTagsChange}
-            editingNote={editingNote}
-            onNoteChange={onNoteChange}
-          />
-
           <SummaryControls 
             summaryLevel={summaryLevel}
             summarizing={summarizing}

@@ -111,7 +111,8 @@ export const NoteEditingSection = ({
           title: editingNote.title,
           content: editingNote.content,
           summary: editingNote.summary,
-          tags: editingNote.tags || [],
+          // Still send empty array for tags to maintain database compatibility
+          tags: [],
           subject: editingNote.subject,
         })
         .eq("id", editingNote.id);
