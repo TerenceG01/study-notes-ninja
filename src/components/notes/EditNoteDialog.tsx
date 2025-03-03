@@ -21,7 +21,7 @@ interface EditNoteDialogProps {
   onSummaryLevelChange: (level: SummaryLevel) => void;
   onGenerateSummary: () => void;
   onToggleSummary: () => void;
-  onEnhanceNote: (enhanceType: 'grammar' | 'structure') => void;
+  onEnhanceNote: (enhanceType: 'grammar' | 'structure' | 'all') => void;
   onSave: () => void;
 }
 
