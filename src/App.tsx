@@ -1,10 +1,7 @@
-
 import React from 'react';
 import { useState } from 'react';
-import { Note } from './hooks/useNotes';
+import { Note, useNotes, SummaryLevel } from './hooks/useNotes';
 import { EditNoteDialog } from './components/notes/EditNoteDialog';
-import { useNotes } from './hooks/useNotes';
-import { SummaryLevel } from './hooks/useNoteSummary';
 import './App.css';
 import './components/notes/editor.css';
 

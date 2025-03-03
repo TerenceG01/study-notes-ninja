@@ -1,0 +1,23 @@
+
+export type Note = {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+  folder: string;
+  summary?: string;
+  tags?: string[];
+  subject?: string;
+  subject_color?: string;
+  subject_order?: number;
+  offline?: boolean;
+};
+
+export type NewNote = {
+  title: string;
+  content: string;
+  tags: string[];
+  subject: string;
+};
+
+export type SummaryLevel = 'brief' | 'medium' | 'detailed';

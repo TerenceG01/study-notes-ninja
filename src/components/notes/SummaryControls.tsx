@@ -2,7 +2,7 @@
 import { Loader2, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { SummaryLevel } from "@/hooks/useNoteSummary";
+import { SummaryLevel } from "@/hooks/useNotes";
 import { 
   DropdownMenu,
   DropdownMenuContent,

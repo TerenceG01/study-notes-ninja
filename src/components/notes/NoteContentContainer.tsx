@@ -1,7 +1,6 @@
-
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Note } from "@/hooks/useNotes";
-import { SummaryLevel } from "@/hooks/useNoteSummary";
+import { SummaryLevel } from "@/hooks/useNotes";
 import { NoteHeaderSection } from "./NoteHeaderSection";
 import { SummaryControls } from "./SummaryControls";
 import { NoteContentEditor } from "./NoteContentEditor";

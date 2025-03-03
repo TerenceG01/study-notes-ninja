@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Note } from "@/hooks/useNotes";
-import { SummaryLevel } from "@/hooks/useNoteSummary";
+import { SummaryLevel } from "@/hooks/useNotes";
 import { NoteContentContainer } from "./NoteContentContainer";
 import { DialogFooterActions } from "./DialogFooterActions";
 import { NoteContentEditor } from "./NoteContentEditor";
