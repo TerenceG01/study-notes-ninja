@@ -66,19 +66,16 @@ export const NoteContentEditor = ({
     document.removeEventListener('mouseup', handleResizeEnd);
   };
 
-  return (
-    <div className="mt-6 min-h-[300px] flex flex-col h-full mx-[5px]">
+  return <div className="mt-4 min-h-[300px] flex flex-col h-full">
       {showSummary && editingNote?.summary ? (
-        <Card className="p-6 bg-muted/30 h-full overflow-auto rounded-lg border border-accent/50 shadow-sm">
+        <Card className="p-4 bg-muted/50 h-full overflow-auto">
           <div className="prose max-w-none">
-            {editingNote.summary.split('\n').map((line, index) => (
-              <p key={index} className="mb-3 text-foreground/90 leading-relaxed">{line}</p>
-            ))}
+            {editingNote.summary.split('\n').map((line, index) => <p key={index} className="mb-2">{line}</p>)}
           </div>
         </Card>
       ) : (
         <div className="flex flex-col h-full flex-1">
-          <div className="relative flex-1 rounded-lg overflow-hidden">
+          <div className="relative flex-1">
             <Textarea 
               ref={textareaRef}
               value={editingNote?.content || ""} 
@@ -91,25 +88,24 @@ export const NoteContentEditor = ({
                 height: textareaHeight,
                 minHeight: "300px"
               }} 
-              className="flex-grow resize-none rounded-lg border-accent/20 focus-visible:ring-primary/30 transition-all duration-200 p-4 text-base leading-relaxed" 
+              className="flex-grow resize-none mx-[5px] flex-1" 
             />
             <div 
-              className="absolute bottom-0 left-0 right-0 h-2 cursor-ns-resize hover:bg-muted/70 transition-colors"
+              className="absolute bottom-0 left-0 right-0 h-2 cursor-ns-resize hover:bg-muted/50 transition-colors"
               onMouseDown={handleResizeStart}
               title="Drag to resize"
             />
           </div>
-          <div className="flex justify-between text-xs text-muted-foreground pt-3">
-            <div className="flex items-center gap-1.5">
-              <FileText className="h-3.5 w-3.5" />
+          <div className="flex justify-between text-xs text-muted-foreground pt-2">
+            <div className="flex items-center gap-1">
+              <FileText className="h-3 w-3" />
               <span>{wordCount} words</span>
             </div>
-            <div className="italic">
+            <div>
               Press Ctrl+S to save
             </div>
           </div>
         </div>
       )}
-    </div>
-  );
+    </div>;
 };

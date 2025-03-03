@@ -67,8 +67,8 @@ export const NoteContentContainer = ({
         onToggleAutoSave={onToggleAutoSave}
       />
 
-      <ScrollArea className="flex-grow overflow-y-auto pr-2">
-        <div className="space-y-6 pr-2 pb-16">
+      <ScrollArea className="flex-grow overflow-y-auto">
+        <div className="space-y-4 pr-4">
           <TagsSection 
             tags={tags}
             newTag={newTag}

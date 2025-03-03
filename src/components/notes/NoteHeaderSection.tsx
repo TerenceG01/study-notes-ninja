@@ -1,11 +1,9 @@
-
-import { Maximize2, Minimize2, Clock, X, Tag } from "lucide-react";
+import { Maximize2, Minimize2, Clock, X } from "lucide-react";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Note } from "@/hooks/useNotes";
-
 interface NoteHeaderSectionProps {
   editingNote: Note | null;
   isFullscreen: boolean;
@@ -16,7 +14,6 @@ interface NoteHeaderSectionProps {
   onToggleFullscreen: () => void;
   onToggleAutoSave: () => void;
 }
-
 export const NoteHeaderSection = ({
   editingNote,
   isFullscreen,
@@ -27,89 +24,54 @@ export const NoteHeaderSection = ({
   onToggleFullscreen,
   onToggleAutoSave
 }: NoteHeaderSectionProps) => {
-  return (
-    <>
-      <div className="flex justify-between items-center mb-3">
+  return <>
+      <div className="flex justify-between items-center">
         <DialogHeader className="flex-grow">
           <DialogTitle>
-            <Input 
-              value={editingNote?.title || ""} 
-              onChange={e => onNoteChange(editingNote ? {
-                ...editingNote,
-                title: e.target.value
-              } : null)} 
-              placeholder="Note Title" 
-              className="text-xl font-semibold my-[10px] mx-[5px] border-transparent hover:border-input focus:border-input transition-colors" 
-            />
+            <Input value={editingNote?.title || ""} onChange={e => onNoteChange(editingNote ? {
+            ...editingNote,
+            title: e.target.value
+          } : null)} placeholder="Note Title" className="text-xl font-semibold my-[10px] mx-[5px]" />
           </DialogTitle>
         </DialogHeader>
         
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={onToggleFullscreen} 
-          className="ml-2 text-muted-foreground hover:text-foreground"
-        >
-          {isFullscreen ? 
-            <Minimize2 className="h-4 w-4" /> : 
-            <Maximize2 className="h-4 w-4" />
-          }
+        <Button variant="ghost" size="icon" onClick={onToggleFullscreen} className="ml-2">
+          {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 mb-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         <div className="md:col-span-2">
-          <Select 
-            value={editingNote?.subject || "General"} 
-            onValueChange={value => onNoteChange(editingNote ? {
-              ...editingNote,
-              subject: value
-            } : null)}
-          >
-            <SelectTrigger className="mx-[5px] border-accent/30 focus:ring-primary/30">
+          <Select value={editingNote?.subject || "General"} onValueChange={value => onNoteChange(editingNote ? {
+          ...editingNote,
+          subject: value
+        } : null)}>
+            <SelectTrigger className="mx-[5px]">
               <SelectValue placeholder="Select subject" />
             </SelectTrigger>
             <SelectContent>
-              {commonSubjects.map(subject => (
-                <SelectItem 
-                  key={subject} 
-                  value={subject} 
-                  className="hover:bg-muted cursor-pointer"
-                >
+              {commonSubjects.map(subject => <SelectItem key={subject} value={subject} className="hover:bg-muted cursor-pointer">
                   {subject}
-                </SelectItem>
-              ))}
+                </SelectItem>)}
             </SelectContent>
           </Select>
         </div>
 
-        <div className="flex gap-2 items-center justify-end">
-          <Button 
-            variant={autoSaveEnabled ? "outline" : "secondary"} 
-            size="sm" 
-            className={`text-xs flex-shrink-0 ${autoSaveEnabled ? 'border-accent/40' : ''} transition-all`}
-            onClick={onToggleAutoSave}
-          >
-            {autoSaveEnabled ? (
-              <>
-                <Clock className="mr-1 h-3 w-3 text-primary" />
+        <div className="flex gap-2 items-center">
+          <Button variant="outline" size="sm" className="text-xs flex-shrink-0" onClick={onToggleAutoSave}>
+            {autoSaveEnabled ? <>
+                <Clock className="mr-1 h-3 w-3" />
                 Auto-save On
-              </>
-            ) : (
-              <>
+              </> : <>
                 <X className="mr-1 h-3 w-3" />
                 Auto-save Off
-              </>
-            )}
+              </>}
           </Button>
           
-          {lastSaved && (
-            <span className="text-xs text-muted-foreground whitespace-nowrap">
+          {lastSaved && <span className="text-xs text-muted-foreground whitespace-nowrap">
               Saved {lastSaved.toLocaleTimeString()}
-            </span>
-          )}
+            </span>}
         </div>
       </div>
-    </>
-  );
+    </>;
 };

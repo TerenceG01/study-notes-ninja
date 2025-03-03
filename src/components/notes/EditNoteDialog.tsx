@@ -154,14 +154,14 @@ export const EditNoteDialog = ({
         }}>
           <SheetContent
             side="top"
-            className="h-screen w-screen p-6 flex flex-col max-h-screen bg-background/95 backdrop-blur-sm border-accent"
+            className="h-screen w-screen p-6 flex flex-col max-h-screen"
           >
             {renderDialogContent()}
           </SheetContent>
         </Sheet>
       ) : (
         <Dialog open={open && !isFullscreen} onOpenChange={onOpenChange}>
-          <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col bg-background/95 backdrop-blur-sm border-accent">
+          <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col">
             {renderDialogContent()}
           </DialogContent>
         </Dialog>
