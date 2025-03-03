@@ -1,11 +1,11 @@
+
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Note } from "@/hooks/useNotes";
-import { SummaryLevel } from "@/hooks/useNotes";
+import { SummaryLevel } from "@/hooks/useNoteSummary";
 import { NoteContentContainer } from "./NoteContentContainer";
 import { DialogFooterActions } from "./DialogFooterActions";
-import { NoteContentEditor } from "./NoteContentEditor";
 
 interface EditNoteDialogProps {
   open: boolean;
@@ -46,16 +46,13 @@ export const EditNoteDialog = ({
   const [wordCount, setWordCount] = useState(0);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+  // Tags state removed
   const [tags, setTags] = useState<string[]>([]);
 
-  // Handle word count calculation for HTML content
+  // Handle word count calculation
   useEffect(() => {
     if (editingNote?.content) {
-      // Create a temporary element to strip HTML tags
-      const tempElement = document.createElement('div');
-      tempElement.innerHTML = editingNote.content;
-      const textContent = tempElement.textContent || tempElement.innerText || '';
-      const words = textContent.trim().split(/\s+/).filter(Boolean).length;
+      const words = editingNote.content.trim().split(/\s+/).filter(Boolean).length;
       setWordCount(words);
     } else {
       setWordCount(0);

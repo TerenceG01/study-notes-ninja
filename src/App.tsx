@@ -1,143 +1,125 @@
 
-import React from 'react';
-import { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { Note, useNotes, SummaryLevel } from './hooks/useNotes';
-import { EditNoteDialog } from './components/notes/EditNoteDialog';
-import './App.css';
-import './components/notes/editor.css';
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import Index from "./pages/Index";
+import Notes from "./pages/Notes";
+import Flashcards from "./pages/Flashcards";
+import FlashcardDeck from "./pages/FlashcardDeck";
+import StudyGroups from "./pages/StudyGroups";
+import StudyGroupDetails from "./pages/StudyGroupDetails";
+import JoinStudyGroup from "./pages/JoinStudyGroup";
+import NotFound from "./pages/NotFound";
+import { useAuth } from "./contexts/AuthContext";
+import { NavigationBar } from "./components/navigation/NavigationBar";
+import { MobileNavigationBar } from "./components/navigation/MobileNavigationBar";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { NotesSidebar } from "./components/notes/NotesSidebar";
+import { SidebarProvider } from "./components/ui/sidebar";
+import { ThemeProvider } from "next-themes";
+import { ResponsiveContainer } from "./components/ui/responsive-container";
 
-function App() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-  const {
-    notes,
-    addNote,
-    updateNote,
-    deleteNote,
-    generateSummary,
-    enhanceNote,
-  } = useNotes();
-  const [editingNote, setEditingNote] = useState<Note | null>(null);
-  const [showSummary, setShowSummary] = useState(false);
-  const [summaryLevel, setSummaryLevel] = useState<SummaryLevel>('brief');
-  const [summarizing, setSummarizing] = useState(false);
-  const [enhancing, setEnhancing] = useState(false);
-  const [commonSubjects, setCommonSubjects] = useState<string[]>([]);
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+  
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  const handleOpenDialog = (note: Note | null) => {
-    setSelectedNote(note);
-    setEditingNote(note 
-      ? { ...note } 
-      : { 
-          id: Date.now().toString(), 
-          title: 'New Note', 
-          content: '', 
-          tags: [],
-          created_at: new Date().toISOString(),
-          folder: 'My Notes',
-        } as Note);
-    setIsDialogOpen(true);
-  };
+  if (!user) {
+    return <Navigate to="/" />;
+  }
 
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-    setSelectedNote(null);
-    setEditingNote(null);
-    setShowSummary(false);
-  };
+  return <>{children}</>;
+};
 
-  const handleNoteChange = (note: Note | null) => {
-    setEditingNote(note ? { ...note } : null);
-  };
-
-  const handleSummaryLevelChange = (level: SummaryLevel) => {
-    setSummaryLevel(level);
-  };
-
-  const handleGenerateSummary = async () => {
-    if (!editingNote) return;
-
-    setSummarizing(true);
-    try {
-      const summary = await generateSummary(editingNote.content, summaryLevel);
-      setEditingNote({ ...editingNote, summary: summary });
-    } catch (error) {
-      console.error("Failed to generate summary:", error);
-    } finally {
-      setSummarizing(false);
-    }
-  };
-
-  const handleToggleSummary = () => {
-    setShowSummary(!showSummary);
-  };
-
-  const handleEnhanceNote = async (enhanceType: 'grammar' | 'structure') => {
-    if (!editingNote) return;
-
-    setEnhancing(true);
-    try {
-      const enhancedContent = await enhanceNote(editingNote.content, enhanceType);
-      setEditingNote({ ...editingNote, content: enhancedContent });
-    } catch (error) {
-      console.error("Failed to enhance note:", error);
-    } finally {
-      setEnhancing(false);
-    }
-  };
-
-  const handleSave = () => {
-    if (!editingNote) return;
-
-    if (selectedNote) {
-      updateNote(editingNote);
-    } else {
-      addNote(editingNote);
-    }
-    handleCloseDialog();
-  };
-
+const AppLayout = ({ children }: { children: React.ReactNode }) => {
+  const isMobile = useIsMobile();
+  
   return (
-    <div className="App">
-      <Routes>
-        <Route path="*" element={
-          <>
-            <h1>My Notes App</h1>
-            <button onClick={() => handleOpenDialog(null)}>Add New Note</button>
-            <ul>
-              {notes.map(note => (
-                <li key={note.id}>
-                  <button onClick={() => handleOpenDialog(note)}>
-                    {note.title}
-                  </button>
-                  <button onClick={() => deleteNote(note.id)}>Delete</button>
-                </li>
-              ))}
-            </ul>
-
-            <EditNoteDialog
-              open={isDialogOpen}
-              onOpenChange={setIsDialogOpen}
-              selectedNote={selectedNote}
-              editingNote={editingNote}
-              showSummary={showSummary}
-              summaryLevel={summaryLevel}
-              summarizing={summarizing}
-              enhancing={enhancing}
-              commonSubjects={commonSubjects}
-              onNoteChange={handleNoteChange}
-              onSummaryLevelChange={handleSummaryLevelChange}
-              onGenerateSummary={handleGenerateSummary}
-              onToggleSummary={handleToggleSummary}
-              onEnhanceNote={handleEnhanceNote}
-              onSave={handleSave}
-            />
-          </>
-        } />
-      </Routes>
+    <div className="min-h-screen">
+      <NavigationBar />
+      <div className={`flex min-h-[calc(100vh-4rem)] pt-16 ${isMobile ? 'pb-16' : ''}`}>
+        <NotesSidebar />
+        <div className="flex-1 relative">
+          <main>{children}</main>
+        </div>
+      </div>
+      {isMobile && <MobileNavigationBar />}
     </div>
   );
-}
+};
+
+const MainLayout = ({ children }: { children: React.ReactNode }) => {
+  const isMobile = useIsMobile();
+  
+  return (
+    <div className="min-h-screen">
+      <NavigationBar />
+      <ResponsiveContainer>
+        {children}
+      </ResponsiveContainer>
+      {isMobile && <MobileNavigationBar />}
+    </div>
+  );
+};
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+      refetchOnWindowFocus: false
+    }
+  }
+});
+
+const App = () => (
+  <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <TooltipProvider>
+            <SidebarProvider>
+              <Toaster />
+              <Sonner />
+              <Routes>
+                <Route path="/" element={<MainLayout><Index /></MainLayout>} />
+                <Route
+                  path="/notes"
+                  element={<ProtectedRoute><AppLayout><Notes /></AppLayout></ProtectedRoute>}
+                />
+                <Route
+                  path="/flashcards"
+                  element={<ProtectedRoute><AppLayout><Flashcards /></AppLayout></ProtectedRoute>}
+                />
+                <Route
+                  path="/flashcards/:id"
+                  element={<ProtectedRoute><AppLayout><FlashcardDeck /></AppLayout></ProtectedRoute>}
+                />
+                <Route
+                  path="/study-groups"
+                  element={<ProtectedRoute><AppLayout><StudyGroups /></AppLayout></ProtectedRoute>}
+                />
+                <Route
+                  path="/study-groups/:id"
+                  element={<ProtectedRoute><AppLayout><StudyGroupDetails /></AppLayout></ProtectedRoute>}
+                />
+                <Route
+                  path="/study-groups/join/:code"
+                  element={<ProtectedRoute><AppLayout><JoinStudyGroup /></AppLayout></ProtectedRoute>}
+                />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </SidebarProvider>
+          </TooltipProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  </ThemeProvider>
+);
 
 export default App;
