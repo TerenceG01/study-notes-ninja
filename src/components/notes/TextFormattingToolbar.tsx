@@ -13,7 +13,8 @@ import {
   Heading2,
   Code,
   Quote,
-  Text
+  Eye,
+  Edit
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -21,10 +22,14 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface TextFormattingToolbarProps {
   onFormatText: (formatType: string) => void;
+  previewMode: boolean;
+  onTogglePreview: () => void;
 }
 
 export const TextFormattingToolbar = ({ 
-  onFormatText 
+  onFormatText, 
+  previewMode,
+  onTogglePreview 
 }: TextFormattingToolbarProps) => {
   // Format buttons configuration
   const textControls = [
@@ -67,6 +72,7 @@ export const TextFormattingToolbar = ({
               onClick={() => onFormatText(control.id)}
               title={control.title}
               className="h-8 px-2 hover:bg-muted"
+              disabled={previewMode}
             >
               {control.icon}
             </Button>
@@ -85,6 +91,7 @@ export const TextFormattingToolbar = ({
               onClick={() => onFormatText(`align-${control.id}`)}
               title={control.title}
               className="h-8 px-2 data-[state=on]:bg-muted"
+              disabled={previewMode}
             >
               {control.icon}
             </ToggleGroupItem>
@@ -102,6 +109,7 @@ export const TextFormattingToolbar = ({
               onClick={() => onFormatText(control.id)}
               title={control.title}
               className="h-8 px-2 hover:bg-muted"
+              disabled={previewMode}
             >
               {control.icon}
             </Button>
@@ -119,6 +127,7 @@ export const TextFormattingToolbar = ({
               onClick={() => onFormatText(`list-${control.id}`)}
               title={control.title}
               className="h-8 px-2 hover:bg-muted"
+              disabled={previewMode}
             >
               {control.icon}
             </Button>
@@ -136,6 +145,7 @@ export const TextFormattingToolbar = ({
               onClick={() => onFormatText(control.id)}
               title={control.title}
               className="h-8 px-2 hover:bg-muted"
+              disabled={previewMode}
             >
               {control.icon}
             </Button>
@@ -143,10 +153,25 @@ export const TextFormattingToolbar = ({
         </div>
       </div>
       
-      <div className="flex items-center">
-        <Text className="h-4 w-4 mr-1 text-muted-foreground" />
-        <span className="text-xs text-muted-foreground">Rich Text Editor</span>
-      </div>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onTogglePreview}
+        title={previewMode ? "Edit" : "Preview"}
+        className="h-8 px-3 ml-auto"
+      >
+        {previewMode ? (
+          <>
+            <Edit className="h-4 w-4 mr-1" />
+            Edit
+          </>
+        ) : (
+          <>
+            <Eye className="h-4 w-4 mr-1" />
+            Preview
+          </>
+        )}
+      </Button>
     </div>
   );
 };

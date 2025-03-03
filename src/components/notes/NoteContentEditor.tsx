@@ -1,10 +1,11 @@
-import { useRef, useState, useEffect } from "react";
+
+import { FileText } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Card } from "@/components/ui/card";
 import { Note } from "@/hooks/useNotes";
+import { useRef, useState, useEffect } from "react";
 import { TextFormattingToolbar } from "./TextFormattingToolbar";
-import { ResizableEditor } from "./editor/ResizableEditor";
-import { EditorFooter } from "./editor/EditorFooter";
-import { SummaryView } from "./editor/SummaryView";
-import { applyFormatting, getEmptyFormatting } from "./editor/TextFormattingUtils";
+import ReactMarkdown from "react-markdown";
 
 interface NoteContentEditorProps {
   editingNote: Note | null;
@@ -30,8 +31,9 @@ export const NoteContentEditor = ({
   // Default heights based on fullscreen mode
   const defaultHeight = isFullscreen ? "calc(100vh - 300px)" : "calc(100vh - 500px)";
   const [textareaHeight, setTextareaHeight] = useState(defaultHeight);
-  const editorRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const resizeStartPosRef = useRef<number | null>(null);
+  const [previewMode, setPreviewMode] = useState(false);
   
   // Update default height when fullscreen mode changes
   useEffect(() => {
@@ -50,10 +52,10 @@ export const NoteContentEditor = ({
 
   // Handle mouse move for resizing
   const handleResize = (e: MouseEvent) => {
-    if (resizeStartPosRef.current === null || !editorRef.current) return;
+    if (resizeStartPosRef.current === null || !textareaRef.current) return;
     
     const deltaY = e.clientY - resizeStartPosRef.current;
-    const currentHeight = editorRef.current.offsetHeight;
+    const currentHeight = textareaRef.current.offsetHeight;
     const newHeight = Math.max(100, currentHeight + deltaY); // Minimum height of 100px
     
     setTextareaHeight(`${newHeight}px`);
@@ -67,115 +69,168 @@ export const NoteContentEditor = ({
     document.removeEventListener('mouseup', handleResizeEnd);
   };
 
-  // Get selection and content manipulation
-  const getSelection = () => {
-    if (!editorRef.current) return null;
-    
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return null;
-    
-    const range = selection.getRangeAt(0);
-    if (!editorRef.current.contains(range.commonAncestorContainer)) return null;
-    
-    return { selection, range };
-  };
-
   // Handles text formatting
   const handleFormatText = (formatType: string) => {
-    if (!editorRef.current || !editingNote) return;
+    if (!textareaRef.current || !editingNote) return;
     
-    const selectionData = getSelection();
-    if (!selectionData) {
-      // If no selection, place cursor and insert empty formatting
-      editorRef.current.focus();
-      const selection = window.getSelection();
-      if (selection && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        let formattedText = getEmptyFormatting(formatType);
-        
-        // Insert the formatted text at cursor position
-        const textNode = document.createTextNode(formattedText);
-        range.insertNode(textNode);
-        
-        // Move cursor to end of inserted text
-        range.setStartAfter(textNode);
-        range.setEndAfter(textNode);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        
-        // Update the note content
-        if (editorRef.current) {
-          // Use the updated content
-          const updatedContent = editorRef.current.innerText;
-          onNoteChange({
-            ...editingNote,
-            content: updatedContent
-          });
-        }
-      }
-      return;
+    const textarea = textareaRef.current;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = editingNote.content.substring(start, end);
+    
+    let formattedText = '';
+    let newCursorPos = end;
+    
+    switch (formatType) {
+      case 'bold':
+        formattedText = `**${selectedText}**`;
+        newCursorPos = end + 4;
+        break;
+      case 'italic':
+        formattedText = `*${selectedText}*`;
+        newCursorPos = end + 2;
+        break;
+      case 'underline':
+        formattedText = `<u>${selectedText}</u>`;
+        newCursorPos = end + 7;
+        break;
+      case 'strikethrough':
+        formattedText = `~~${selectedText}~~`;
+        newCursorPos = end + 4;
+        break;
+      case 'h1':
+        formattedText = `# ${selectedText}`;
+        newCursorPos = end + 2;
+        break;
+      case 'h2':
+        formattedText = `## ${selectedText}`;
+        newCursorPos = end + 3;
+        break;
+      case 'list-bullet':
+        formattedText = selectedText
+          .split('\n')
+          .map(line => `- ${line}`)
+          .join('\n');
+        newCursorPos = end + selectedText.split('\n').length * 2;
+        break;
+      case 'list-numbered':
+        formattedText = selectedText
+          .split('\n')
+          .map((line, i) => `${i + 1}. ${line}`)
+          .join('\n');
+        const numberedListOffset = selectedText.split('\n')
+          .reduce((sum, _, i) => sum + String(i + 1).length + 2, 0);
+        newCursorPos = end + numberedListOffset;
+        break;
+      case 'align-left':
+        formattedText = `<div style="text-align: left">${selectedText}</div>`;
+        newCursorPos = end + 33;
+        break;
+      case 'align-center':
+        formattedText = `<div style="text-align: center">${selectedText}</div>`;
+        newCursorPos = end + 35;
+        break;
+      case 'align-right':
+        formattedText = `<div style="text-align: right">${selectedText}</div>`;
+        newCursorPos = end + 34;
+        break;
+      case 'code':
+        formattedText = `\`\`\`\n${selectedText}\n\`\`\``;
+        newCursorPos = end + 8;
+        break;
+      case 'quote':
+        formattedText = selectedText
+          .split('\n')
+          .map(line => `> ${line}`)
+          .join('\n');
+        newCursorPos = end + selectedText.split('\n').length * 2;
+        break;
+      default:
+        formattedText = selectedText;
     }
     
-    const { selection, range } = selectionData;
-    const selectedText = range.toString();
+    const newContent = 
+      editingNote.content.substring(0, start) + 
+      formattedText + 
+      editingNote.content.substring(end);
     
-    if (selectedText.trim() === '') return;
-    
-    // Apply formatting based on type
-    const formattedText = applyFormatting(formatType, selectedText);
-    
-    // Create a document fragment with the new content
-    const textNode = document.createTextNode(formattedText);
-    
-    // Replace the selected text with formatted text
-    range.deleteContents();
-    range.insertNode(textNode);
-    
-    // Position the cursor after the inserted content
-    range.setStartAfter(textNode);
-    range.setEndAfter(textNode);
-    selection.removeAllRanges();
-    selection.addRange(range);
-    
-    // Update the note content
-    if (editorRef.current) {
-      const updatedContent = editorRef.current.innerText;
-      onNoteChange({
-        ...editingNote,
-        content: updatedContent
-      });
-    }
-  };
-
-  // Handle content change in contentEditable div
-  const handleContentChange = () => {
-    if (!editorRef.current || !editingNote) return;
-    
-    const content = editorRef.current.innerText;
     onNoteChange({
       ...editingNote,
-      content
+      content: newContent
     });
+    
+    // Set the selection and focus after state update
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        textareaRef.current.setSelectionRange(start, start + formattedText.length);
+      }
+    }, 0);
   };
 
   return (
     <div className="mt-4 min-h-[300px] flex flex-col h-full bg-card rounded-lg border border-border shadow-sm">
       {showSummary && editingNote?.summary ? (
-        <SummaryView editingNote={editingNote} />
+        <Card className="p-6 bg-muted h-full overflow-auto rounded-lg border-none shadow-none">
+          <div className="prose max-w-none">
+            {editingNote.summary.split('\n').map((line, index) => (
+              <p key={index} className="mb-3 text-foreground/90">{line}</p>
+            ))}
+          </div>
+        </Card>
       ) : (
         <div className="flex flex-col h-full flex-1">
           {/* Text formatting toolbar */}
-          <TextFormattingToolbar onFormatText={handleFormatText} />
-          
-          <ResizableEditor
-            ref={editorRef}
-            editingNote={editingNote}
-            textareaHeight={textareaHeight}
-            onContentChange={handleContentChange}
-            onResizeStart={handleResizeStart}
+          <TextFormattingToolbar 
+            onFormatText={handleFormatText} 
+            previewMode={previewMode}
+            onTogglePreview={() => setPreviewMode(!previewMode)}
           />
           
-          <EditorFooter wordCount={wordCount} />
+          <div className="relative flex-1 p-2">
+            {previewMode ? (
+              <div 
+                className="flex-grow p-4 h-full overflow-y-auto bg-background rounded-lg prose prose-sm max-w-none dark:prose-invert"
+                style={{ 
+                  height: textareaHeight,
+                  minHeight: "300px" 
+                }}
+              >
+                <ReactMarkdown>
+                  {editingNote?.content || ""}
+                </ReactMarkdown>
+              </div>
+            ) : (
+              <Textarea 
+                ref={textareaRef}
+                value={editingNote?.content || ""} 
+                onChange={e => onNoteChange(editingNote ? {
+                  ...editingNote,
+                  content: e.target.value
+                } : null)} 
+                placeholder="Write your notes here..." 
+                style={{
+                  height: textareaHeight,
+                  minHeight: "300px"
+                }} 
+                className="flex-grow resize-none flex-1 p-4 border-none focus-visible:ring-1 shadow-none bg-background rounded-lg" 
+              />
+            )}
+            <div 
+              className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-muted transition-colors rounded-b-lg"
+              onMouseDown={handleResizeStart}
+              title="Drag to resize"
+            />
+          </div>
+          <div className="flex justify-between text-xs text-muted-foreground pt-3 px-4 pb-2">
+            <div className="flex items-center gap-1">
+              <FileText className="h-3 w-3" />
+              <span>{wordCount} words</span>
+            </div>
+            <div className="italic">
+              Press <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Ctrl+S</kbd> to save
+            </div>
+          </div>
         </div>
       )}
     </div>
