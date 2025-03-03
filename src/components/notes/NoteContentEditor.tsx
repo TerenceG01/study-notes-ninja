@@ -1,4 +1,3 @@
-
 import { FileText } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Note } from "@/hooks/useNotes";
@@ -87,6 +86,12 @@ export const NoteContentEditor = ({
     } else if (command === 'formatCode') {
       document.execCommand('insertHTML', false, '<pre><code>' + 
         window.getSelection()?.toString() + '</code></pre>');
+    } else if (command === 'h1') {
+      document.execCommand('formatBlock', false, '<h1>');
+    } else if (command === 'h2') {
+      document.execCommand('formatBlock', false, '<h2>');
+    } else if (command === 'h3') {
+      document.execCommand('formatBlock', false, '<h3>');
     } else if (value) {
       document.execCommand(command, false, value);
     } else {
@@ -95,6 +100,11 @@ export const NoteContentEditor = ({
     
     // Make sure to update the content after formatting
     handleContentChange();
+    
+    // Ensure editor keeps focus after formatting
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
   };
 
   // Handle keyboard shortcuts
@@ -156,7 +166,7 @@ export const NoteContentEditor = ({
           <div className="relative flex-1 p-2">
             <div 
               ref={editorRef}
-              contentEditable
+              contentEditable={true}
               dangerouslySetInnerHTML={{ __html: editingNote?.content || "" }}
               onInput={handleContentChange}
               className="h-full flex-grow overflow-y-auto flex-1 p-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-background rounded-lg"
@@ -164,7 +174,7 @@ export const NoteContentEditor = ({
                 height: textareaHeight,
                 minHeight: "300px"
               }}
-              placeholder="Write your notes here..."
+              data-placeholder="Write your notes here..."
             />
             <div 
               className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-muted transition-colors rounded-b-lg"

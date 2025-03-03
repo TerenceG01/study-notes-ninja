@@ -1,8 +1,9 @@
 
-[contenteditable=true]:empty:before {
-  content: attr(placeholder);
+[contenteditable=true]:empty:not(:focus)::before {
+  content: attr(data-placeholder);
   color: #9ca3af;
   cursor: text;
+  pointer-events: none;
 }
 
 [contenteditable=true]:focus {
@@ -15,6 +16,13 @@
   overflow-wrap: break-word;
   min-height: 1.5em;
   line-height: 1.5;
+  text-align: left; /* Ensure text always starts from the left */
+  padding: 8px; /* Add some padding for better usability */
+}
+
+/* Ensure cursor position remains with the text */
+[contenteditable=true] * {
+  text-align: inherit;
 }
 
 [contenteditable=true] h1 {
