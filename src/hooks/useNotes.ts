@@ -41,7 +41,9 @@ export const useNotes = () => {
     try {
       setGeneratingFlashcardsForNote(note.id);
       await generateFlashcardsBase(note, (deckId) => {
-        navigate(`/flashcards/${deckId}`);
+        if (navigate) {
+          navigate(`/flashcards/${deckId}`);
+        }
       });
     } finally {
       setGeneratingFlashcardsForNote(null);

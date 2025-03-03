@@ -1,5 +1,7 @@
+
 import React from 'react';
 import { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { Note, useNotes, SummaryLevel } from './hooks/useNotes';
 import { EditNoteDialog } from './components/notes/EditNoteDialog';
 import './App.css';
@@ -98,36 +100,42 @@ function App() {
 
   return (
     <div className="App">
-      <h1>My Notes App</h1>
-      <button onClick={() => handleOpenDialog(null)}>Add New Note</button>
-      <ul>
-        {notes.map(note => (
-          <li key={note.id}>
-            <button onClick={() => handleOpenDialog(note)}>
-              {note.title}
-            </button>
-            <button onClick={() => deleteNote(note.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+      <Routes>
+        <Route path="*" element={
+          <>
+            <h1>My Notes App</h1>
+            <button onClick={() => handleOpenDialog(null)}>Add New Note</button>
+            <ul>
+              {notes.map(note => (
+                <li key={note.id}>
+                  <button onClick={() => handleOpenDialog(note)}>
+                    {note.title}
+                  </button>
+                  <button onClick={() => deleteNote(note.id)}>Delete</button>
+                </li>
+              ))}
+            </ul>
 
-      <EditNoteDialog
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        selectedNote={selectedNote}
-        editingNote={editingNote}
-        showSummary={showSummary}
-        summaryLevel={summaryLevel}
-        summarizing={summarizing}
-        enhancing={enhancing}
-        commonSubjects={commonSubjects}
-        onNoteChange={handleNoteChange}
-        onSummaryLevelChange={handleSummaryLevelChange}
-        onGenerateSummary={handleGenerateSummary}
-        onToggleSummary={handleToggleSummary}
-        onEnhanceNote={handleEnhanceNote}
-        onSave={handleSave}
-      />
+            <EditNoteDialog
+              open={isDialogOpen}
+              onOpenChange={setIsDialogOpen}
+              selectedNote={selectedNote}
+              editingNote={editingNote}
+              showSummary={showSummary}
+              summaryLevel={summaryLevel}
+              summarizing={summarizing}
+              enhancing={enhancing}
+              commonSubjects={commonSubjects}
+              onNoteChange={handleNoteChange}
+              onSummaryLevelChange={handleSummaryLevelChange}
+              onGenerateSummary={handleGenerateSummary}
+              onToggleSummary={handleToggleSummary}
+              onEnhanceNote={handleEnhanceNote}
+              onSave={handleSave}
+            />
+          </>
+        } />
+      </Routes>
     </div>
   );
 }
