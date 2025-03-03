@@ -13,7 +13,7 @@ export const HeroSection = ({
   handleGetStarted,
   handleSignIn
 }: HeroSectionProps) => {
-  return <section id="hero" className="relative pt-20 lg:pt-28 overflow-hidden">
+  return <section id="hero" className="relative pt-20 lg:pt-28">
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl">
         <div className="flex flex-col items-center justify-center text-center">
           <div className={cn("space-y-8 max-w-2xl mx-auto transition-all duration-1000 transform", isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10")}>
@@ -22,20 +22,12 @@ export const HeroSection = ({
               Smart Note-Taking for Students
             </div>
             
-            <div className="relative">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                <span className="block mb-2">Transform Notes into</span>
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-blue-500">
-                  Lasting Knowledge
-                </span>
-              </h1>
-              
-              {/* Diagonal creative element */}
-              <div className="absolute -z-10 inset-0 w-full h-full">
-                <div className="absolute -inset-10 bg-gradient-to-tr from-primary/5 to-transparent transform -rotate-6"></div>
-                <div className="absolute -inset-10 bg-gradient-to-bl from-secondary/10 to-transparent transform rotate-6"></div>
-              </div>
-            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              <span className="block mb-2">Transform Notes into</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-blue-500">
+                Lasting Knowledge
+              </span>
+            </h1>
             
             <p className="text-lg md:text-xl text-muted-foreground">
               The intelligent note-taking platform designed for students. Organize, collaborate, 
