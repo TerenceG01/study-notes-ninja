@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Note } from "@/hooks/useNotes";
 import { useRef, useState, useEffect } from "react";
 import { TextFormattingToolbar } from "./TextFormattingToolbar";
+import ReactMarkdown from "react-markdown";
 
 interface NoteContentEditorProps {
   editingNote: Note | null;
@@ -32,6 +33,7 @@ export const NoteContentEditor = ({
   const [textareaHeight, setTextareaHeight] = useState(defaultHeight);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const resizeStartPosRef = useRef<number | null>(null);
+  const [previewMode, setPreviewMode] = useState(false);
   
   // Update default height when fullscreen mode changes
   useEffect(() => {
@@ -179,23 +181,41 @@ export const NoteContentEditor = ({
       ) : (
         <div className="flex flex-col h-full flex-1">
           {/* Text formatting toolbar */}
-          <TextFormattingToolbar onFormatText={handleFormatText} />
+          <TextFormattingToolbar 
+            onFormatText={handleFormatText} 
+            previewMode={previewMode}
+            onTogglePreview={() => setPreviewMode(!previewMode)}
+          />
           
           <div className="relative flex-1 p-2">
-            <Textarea 
-              ref={textareaRef}
-              value={editingNote?.content || ""} 
-              onChange={e => onNoteChange(editingNote ? {
-                ...editingNote,
-                content: e.target.value
-              } : null)} 
-              placeholder="Write your notes here..." 
-              style={{
-                height: textareaHeight,
-                minHeight: "300px"
-              }} 
-              className="flex-grow resize-none flex-1 p-4 border-none focus-visible:ring-1 shadow-none bg-background rounded-lg" 
-            />
+            {previewMode ? (
+              <div 
+                className="flex-grow p-4 h-full overflow-y-auto bg-background rounded-lg prose prose-sm max-w-none dark:prose-invert"
+                style={{ 
+                  height: textareaHeight,
+                  minHeight: "300px" 
+                }}
+              >
+                <ReactMarkdown>
+                  {editingNote?.content || ""}
+                </ReactMarkdown>
+              </div>
+            ) : (
+              <Textarea 
+                ref={textareaRef}
+                value={editingNote?.content || ""} 
+                onChange={e => onNoteChange(editingNote ? {
+                  ...editingNote,
+                  content: e.target.value
+                } : null)} 
+                placeholder="Write your notes here..." 
+                style={{
+                  height: textareaHeight,
+                  minHeight: "300px"
+                }} 
+                className="flex-grow resize-none flex-1 p-4 border-none focus-visible:ring-1 shadow-none bg-background rounded-lg" 
+              />
+            )}
             <div 
               className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-muted transition-colors rounded-b-lg"
               onMouseDown={handleResizeStart}

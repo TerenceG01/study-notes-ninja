@@ -12,7 +12,9 @@ import {
   Heading1, 
   Heading2,
   Code,
-  Quote
+  Quote,
+  Eye,
+  Edit
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -20,9 +22,15 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface TextFormattingToolbarProps {
   onFormatText: (formatType: string) => void;
+  previewMode: boolean;
+  onTogglePreview: () => void;
 }
 
-export const TextFormattingToolbar = ({ onFormatText }: TextFormattingToolbarProps) => {
+export const TextFormattingToolbar = ({ 
+  onFormatText, 
+  previewMode,
+  onTogglePreview 
+}: TextFormattingToolbarProps) => {
   // Format buttons configuration
   const textControls = [
     { id: 'bold', icon: <Bold className="h-4 w-4" />, title: 'Bold' },
@@ -53,90 +61,117 @@ export const TextFormattingToolbar = ({ onFormatText }: TextFormattingToolbarPro
   ];
 
   return (
-    <div className="bg-muted/40 p-2 rounded-t-lg border-b border-border flex flex-wrap gap-1 items-center">
-      <div className="flex gap-1 items-center">
-        {textControls.map((control) => (
-          <Button
-            key={control.id}
-            variant="ghost"
-            size="sm"
-            onClick={() => onFormatText(control.id)}
-            title={control.title}
-            className="h-8 px-2 hover:bg-muted"
-          >
-            {control.icon}
-          </Button>
-        ))}
-      </div>
-      
-      <Separator orientation="vertical" className="h-6 mx-1" />
-      
-      <ToggleGroup type="single" className="flex gap-1">
-        {alignControls.map((control) => (
-          <ToggleGroupItem
-            key={control.id}
-            value={control.id}
-            variant="outline"
-            size="sm"
-            onClick={() => onFormatText(`align-${control.id}`)}
-            title={control.title}
-            className="h-8 px-2 data-[state=on]:bg-muted"
-          >
-            {control.icon}
-          </ToggleGroupItem>
-        ))}
-      </ToggleGroup>
+    <div className="bg-muted/40 p-2 rounded-t-lg border-b border-border flex flex-wrap gap-1 items-center justify-between">
+      <div className="flex flex-wrap gap-1 items-center">
+        <div className="flex gap-1 items-center">
+          {textControls.map((control) => (
+            <Button
+              key={control.id}
+              variant="ghost"
+              size="sm"
+              onClick={() => onFormatText(control.id)}
+              title={control.title}
+              className="h-8 px-2 hover:bg-muted"
+              disabled={previewMode}
+            >
+              {control.icon}
+            </Button>
+          ))}
+        </div>
+        
+        <Separator orientation="vertical" className="h-6 mx-1" />
+        
+        <ToggleGroup type="single" className="flex gap-1">
+          {alignControls.map((control) => (
+            <ToggleGroupItem
+              key={control.id}
+              value={control.id}
+              variant="outline"
+              size="sm"
+              onClick={() => onFormatText(`align-${control.id}`)}
+              title={control.title}
+              className="h-8 px-2 data-[state=on]:bg-muted"
+              disabled={previewMode}
+            >
+              {control.icon}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
 
-      <Separator orientation="vertical" className="h-6 mx-1" />
-      
-      <div className="flex gap-1 items-center">
-        {headingControls.map((control) => (
-          <Button
-            key={control.id}
-            variant="ghost"
-            size="sm"
-            onClick={() => onFormatText(control.id)}
-            title={control.title}
-            className="h-8 px-2 hover:bg-muted"
-          >
-            {control.icon}
-          </Button>
-        ))}
+        <Separator orientation="vertical" className="h-6 mx-1" />
+        
+        <div className="flex gap-1 items-center">
+          {headingControls.map((control) => (
+            <Button
+              key={control.id}
+              variant="ghost"
+              size="sm"
+              onClick={() => onFormatText(control.id)}
+              title={control.title}
+              className="h-8 px-2 hover:bg-muted"
+              disabled={previewMode}
+            >
+              {control.icon}
+            </Button>
+          ))}
+        </div>
+        
+        <Separator orientation="vertical" className="h-6 mx-1" />
+        
+        <div className="flex gap-1 items-center">
+          {listControls.map((control) => (
+            <Button
+              key={control.id}
+              variant="ghost"
+              size="sm"
+              onClick={() => onFormatText(`list-${control.id}`)}
+              title={control.title}
+              className="h-8 px-2 hover:bg-muted"
+              disabled={previewMode}
+            >
+              {control.icon}
+            </Button>
+          ))}
+        </div>
+        
+        <Separator orientation="vertical" className="h-6 mx-1" />
+        
+        <div className="flex gap-1 items-center">
+          {otherControls.map((control) => (
+            <Button
+              key={control.id}
+              variant="ghost"
+              size="sm"
+              onClick={() => onFormatText(control.id)}
+              title={control.title}
+              className="h-8 px-2 hover:bg-muted"
+              disabled={previewMode}
+            >
+              {control.icon}
+            </Button>
+          ))}
+        </div>
       </div>
       
-      <Separator orientation="vertical" className="h-6 mx-1" />
-      
-      <div className="flex gap-1 items-center">
-        {listControls.map((control) => (
-          <Button
-            key={control.id}
-            variant="ghost"
-            size="sm"
-            onClick={() => onFormatText(`list-${control.id}`)}
-            title={control.title}
-            className="h-8 px-2 hover:bg-muted"
-          >
-            {control.icon}
-          </Button>
-        ))}
-      </div>
-      
-      <Separator orientation="vertical" className="h-6 mx-1" />
-      
-      <div className="flex gap-1 items-center">
-        {otherControls.map((control) => (
-          <Button
-            key={control.id}
-            variant="ghost"
-            size="sm"
-            onClick={() => onFormatText(control.id)}
-            title={control.title}
-            className="h-8 px-2 hover:bg-muted"
-          >
-            {control.icon}
-          </Button>
-        ))}
-      </div>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onTogglePreview}
+        title={previewMode ? "Edit" : "Preview"}
+        className="h-8 px-3 ml-auto"
+      >
+        {previewMode ? (
+          <>
+            <Edit className="h-4 w-4 mr-1" />
+            Edit
+          </>
+        ) : (
+          <>
+            <Eye className="h-4 w-4 mr-1" />
+            Preview
+          </>
+        )}
+      </Button>
     </div>
   );
 };
