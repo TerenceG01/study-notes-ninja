@@ -26,7 +26,7 @@ const features = [
 
 export const Features = () => {
   return (
-    <div className="py-24 bg-secondary/50">
+    <div className="py-24 bg-secondary/20">
       <div className="container">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
           Everything You Need to Excel
@@ -35,7 +35,7 @@ export const Features = () => {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="p-6 rounded-xl bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300 animate-fade-up"
+              className="p-6 rounded-xl bg-card border border-border hover:shadow-md hover:border-primary/20 transition-all duration-300 animate-fade-up"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className="mb-4">{feature.icon}</div>
