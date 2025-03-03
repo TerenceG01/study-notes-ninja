@@ -23,8 +23,9 @@ serve(async (req) => {
       systemPrompt = "You are a helpful assistant specialized in correcting grammar, spelling, and punctuation. Preserve the original meaning and content while fixing errors.";
     } else if (enhanceType === "structure") {
       systemPrompt = "You are a helpful assistant specialized in improving document structure. Add appropriate headings, bullet points, numbered lists, and paragraphs where needed. Organize the content logically without changing the meaning.";
-    } else if (enhanceType === "all") {
-      systemPrompt = "You are a helpful assistant specialized in enhancing documents. Correct grammar, spelling, and punctuation, improve document structure with appropriate headings, bullet points, and improve overall readability. Preserve the original meaning while making it more professional.";
+    } else {
+      // Default case in case an invalid enhanceType is passed
+      systemPrompt = "You are a helpful assistant specialized in improving document quality. Preserve the original meaning while making it more readable.";
     }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {

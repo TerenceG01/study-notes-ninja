@@ -57,7 +57,7 @@ export const NoteEditingSection = ({
     }
   };
 
-  const handleEnhanceNote = async (enhanceType: 'grammar' | 'structure' | 'all') => {
+  const handleEnhanceNote = async (enhanceType: 'grammar' | 'structure') => {
     if (!editingNote) return;
     
     try {
