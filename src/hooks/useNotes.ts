@@ -194,15 +194,13 @@ export const useNotes = () => {
       }
       
       console.log("Creating note:", { ...newNote, user_id: userId }); // Debug log
-      const { error } = await supabase.from("notes").insert([
-        {
-          title: newNote.title,
-          content: newNote.content,
-          tags: newNote.tags,
-          subject: newNote.subject,
-          user_id: userId,
-        },
-      ]);
+      const { error } = await supabase.from("notes").insert({
+        title: newNote.title,
+        content: newNote.content,
+        tags: newNote.tags,
+        subject: newNote.subject,
+        user_id: userId,
+      });
 
       if (error) throw error;
 
@@ -356,14 +354,17 @@ export const useNotes = () => {
       
       // If online, also send to the server
       if (isOnline) {
-        supabase.from("notes").insert([
-          {
-            title: note.title,
-            content: note.content,
-            tags: note.tags || [],
-            subject: note.subject,
-          },
-        ]).then(({ error }) => {
+        // Get current user ID - Using a placeholder for now
+        // In a real app, you would get this from your auth context/state
+        const userId = "current-user-id";
+        
+        supabase.from("notes").insert({
+          title: note.title,
+          content: note.content,
+          tags: note.tags || [],
+          subject: note.subject,
+          user_id: userId, // Adding the required user_id field
+        }).then(({ error }) => {
           if (error) {
             console.error("Error saving note to server:", error);
             toast({
@@ -403,12 +404,16 @@ export const useNotes = () => {
       
       // If online, also update on the server
       if (isOnline) {
+        // Get current user ID - Using a placeholder for now
+        const userId = "current-user-id";
+        
         supabase.from("notes").update({
           title: note.title,
           content: note.content,
           tags: note.tags || [],
           subject: note.subject,
           summary: note.summary,
+          user_id: userId, // Adding the required user_id field
         }).eq("id", note.id).then(({ error }) => {
           if (error) {
             console.error("Error updating note on server:", error);
