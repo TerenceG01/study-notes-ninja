@@ -106,7 +106,7 @@ const Index = () => {
               <div className="flex flex-wrap gap-4 justify-center">
                 <Button 
                   size="lg" 
-                  className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-primary/25 animate-pulse-subtle"
+                  className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-primary/25"
                   onClick={handleGetStarted}
                 >
                   Get Started Free
@@ -286,7 +286,7 @@ const Index = () => {
             </p>
             <Button 
               size="lg" 
-              className="rounded-full bg-primary hover:bg-primary/90 shadow-lg hover:shadow-primary/25 animate-bounce-subtle"
+              className="rounded-full bg-primary hover:bg-primary/90 shadow-lg hover:shadow-primary/25"
               onClick={handleGetStarted}
             >
               Get Started Free
