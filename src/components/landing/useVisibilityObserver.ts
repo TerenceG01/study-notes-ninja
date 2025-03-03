@@ -10,7 +10,7 @@ export const useVisibilityObserver = (sectionIds: string[]) => {
     const observerOptions = {
       root: null,
       rootMargin: '0px',
-      threshold: 0.1
+      threshold: 0.15  // Slightly increased threshold for better timing
     };
 
     const observerCallback: IntersectionObserverCallback = (entries) => {

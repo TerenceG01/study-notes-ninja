@@ -27,20 +27,26 @@ const testimonials = [
 
 export const TestimonialsSection = ({ isVisible }: TestimonialsSectionProps) => {
   return (
-    <section id="testimonials" className="py-24">
+    <section id="testimonials" className="py-24 min-h-screen flex items-center">
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl text-center">
         <div 
           className={cn(
-            "transition-all duration-700",
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+            "transition-all duration-700 transform",
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"
           )}
         >
-          <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20 mb-4">
+          <div className={cn(
+            "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20 mb-4 transition-all duration-500",
+            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
+          )}>
             <Users className="w-4 h-4 mr-2" />
             Student Success Stories
           </div>
           
-          <h2 className="text-3xl md:text-4xl font-bold mb-16">
+          <h2 className={cn(
+            "text-3xl md:text-4xl font-bold mb-16 transition-all duration-700 delay-100",
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          )}>
             Join Thousands of Students Already Excelling
           </h2>
         </div>
@@ -50,21 +56,32 @@ export const TestimonialsSection = ({ isVisible }: TestimonialsSectionProps) => 
             <div 
               key={index} 
               className={cn(
-                "bg-card p-8 rounded-xl shadow-sm border border-border/50 hover:shadow-md transition-all duration-500",
+                "bg-card p-8 rounded-xl shadow-sm border border-border/50 hover:shadow-md transition-all duration-700",
                 "flex flex-col h-full",
                 isVisible 
                   ? "opacity-100 translate-y-0" 
                   : "opacity-0 translate-y-20"
               )}
-              style={{ transitionDelay: `${index * 150}ms` }}
+              style={{ transitionDelay: `${index * 200}ms` }}
             >
-              <div className="text-primary mb-4">
+              <div className={cn(
+                "text-primary mb-4 transition-all duration-500",
+                isVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"
+              )} style={{ transitionDelay: `${index * 200 + 200}ms` }}>
                 {Array(5).fill(0).map((_, i) => (
                   <span key={i} className="text-lg">★</span>
                 ))}
               </div>
-              <p className="text-foreground mb-6 flex-grow italic">"{testimonial.quote}"</p>
-              <div className="flex items-center mt-auto">
+              <p className={cn(
+                "text-foreground mb-6 flex-grow italic transition-all duration-700",
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+              )} style={{ transitionDelay: `${index * 200 + 300}ms` }}>
+                "{testimonial.quote}"
+              </p>
+              <div className={cn(
+                "flex items-center mt-auto transition-all duration-700",
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+              )} style={{ transitionDelay: `${index * 200 + 400}ms` }}>
                 <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center font-bold text-primary mr-3">
                   {testimonial.name[0]}
                 </div>

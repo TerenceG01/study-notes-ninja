@@ -43,26 +43,41 @@ const FeatureCard = ({
   return (
     <div 
       className={cn(
-        "p-6 rounded-xl border border-border hover:shadow-md hover:border-primary/20 transition-all duration-500 bg-card",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        "p-6 rounded-xl border border-border hover:shadow-md hover:border-primary/20 transition-all duration-700 bg-card",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"
       )}
       style={{ transitionDelay: `${index * 150}ms` }}
     >
-      <div className="mb-4 text-primary">{feature.icon}</div>
-      <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-      <p className="text-muted-foreground">{feature.description}</p>
+      <div className={cn(
+        "mb-4 text-primary transition-all duration-500",
+        isVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"
+      )} style={{ transitionDelay: `${(index * 150) + 200}ms` }}>
+        {feature.icon}
+      </div>
+      <h3 className={cn(
+        "text-xl font-semibold mb-2 transition-all duration-500",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+      )} style={{ transitionDelay: `${(index * 150) + 300}ms` }}>
+        {feature.title}
+      </h3>
+      <p className={cn(
+        "text-muted-foreground transition-all duration-500",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+      )} style={{ transitionDelay: `${(index * 150) + 400}ms` }}>
+        {feature.description}
+      </p>
     </div>
   );
 };
 
 export const FeaturesSection = ({ isVisible }: FeaturesSectionProps) => {
   return (
-    <section id="features" className="py-24">
+    <section id="features" className="py-24 min-h-screen flex items-center">
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl">
         <div 
           className={cn(
-            "text-center mb-16 transition-all duration-700",
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+            "text-center mb-16 transition-all duration-700 transform",
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"
           )}
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
