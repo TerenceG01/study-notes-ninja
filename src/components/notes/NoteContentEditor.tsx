@@ -79,71 +79,69 @@ export const NoteContentEditor = ({
     const selectedText = editingNote.content.substring(start, end);
     
     let formattedText = '';
-    let newCursorPos = end;
+    let cursorOffset = 0;
     
     switch (formatType) {
       case 'bold':
         formattedText = `**${selectedText}**`;
-        newCursorPos = end + 4;
+        cursorOffset = 2;
         break;
       case 'italic':
         formattedText = `*${selectedText}*`;
-        newCursorPos = end + 2;
+        cursorOffset = 1;
         break;
       case 'underline':
         formattedText = `<u>${selectedText}</u>`;
-        newCursorPos = end + 7;
+        cursorOffset = 3;
         break;
       case 'strikethrough':
         formattedText = `~~${selectedText}~~`;
-        newCursorPos = end + 4;
+        cursorOffset = 2;
         break;
       case 'h1':
         formattedText = `# ${selectedText}`;
-        newCursorPos = end + 2;
+        cursorOffset = 2;
         break;
       case 'h2':
         formattedText = `## ${selectedText}`;
-        newCursorPos = end + 3;
+        cursorOffset = 3;
         break;
       case 'list-bullet':
         formattedText = selectedText
           .split('\n')
           .map(line => `- ${line}`)
           .join('\n');
-        newCursorPos = end + selectedText.split('\n').length * 2;
+        cursorOffset = 2;
         break;
       case 'list-numbered':
         formattedText = selectedText
           .split('\n')
           .map((line, i) => `${i + 1}. ${line}`)
           .join('\n');
-        const numberedListOffset = selectedText.split('\n')
-          .reduce((sum, _, i) => sum + String(i + 1).length + 2, 0);
-        newCursorPos = end + numberedListOffset;
+        cursorOffset = 3;
         break;
       case 'align-left':
         formattedText = `<div style="text-align: left">${selectedText}</div>`;
-        newCursorPos = end + 33;
+        cursorOffset = 30;
         break;
       case 'align-center':
         formattedText = `<div style="text-align: center">${selectedText}</div>`;
-        newCursorPos = end + 35;
+        cursorOffset = 32;
         break;
       case 'align-right':
         formattedText = `<div style="text-align: right">${selectedText}</div>`;
-        newCursorPos = end + 34;
+        cursorOffset = 31;
         break;
       case 'code':
         formattedText = `\`\`\`\n${selectedText}\n\`\`\``;
-        newCursorPos = end + 8;
+        cursorOffset = 4;
         break;
       case 'quote':
         formattedText = selectedText
           .split('\n')
           .map(line => `> ${line}`)
           .join('\n');
-        newCursorPos = end + selectedText.split('\n').length * 2;
+        cursorOffset = 2;
         break;
       default:
         formattedText = selectedText;
@@ -163,7 +161,12 @@ export const NoteContentEditor = ({
     setTimeout(() => {
       if (textareaRef.current) {
         textareaRef.current.focus();
-        textareaRef.current.setSelectionRange(start, start + formattedText.length);
+        if (selectedText.length > 0) {
+          textareaRef.current.setSelectionRange(start, start + formattedText.length);
+        } else {
+          const newPosition = start + formattedText.length - cursorOffset;
+          textareaRef.current.setSelectionRange(newPosition, newPosition);
+        }
       }
     }, 0);
   };
@@ -201,20 +204,33 @@ export const NoteContentEditor = ({
                 </ReactMarkdown>
               </div>
             ) : (
-              <Textarea 
-                ref={textareaRef}
-                value={editingNote?.content || ""} 
-                onChange={e => onNoteChange(editingNote ? {
-                  ...editingNote,
-                  content: e.target.value
-                } : null)} 
-                placeholder="Write your notes here..." 
-                style={{
-                  height: textareaHeight,
-                  minHeight: "300px"
-                }} 
-                className="flex-grow resize-none flex-1 p-4 border-none focus-visible:ring-1 shadow-none bg-background rounded-lg" 
-              />
+              <div className="flex h-full">
+                <Textarea 
+                  ref={textareaRef}
+                  value={editingNote?.content || ""} 
+                  onChange={e => onNoteChange(editingNote ? {
+                    ...editingNote,
+                    content: e.target.value
+                  } : null)} 
+                  placeholder="Write your notes here..." 
+                  style={{
+                    height: textareaHeight,
+                    minHeight: "300px"
+                  }} 
+                  className="flex-grow resize-none flex-1 p-4 border-none focus-visible:ring-1 shadow-none bg-background rounded-lg font-mono" 
+                />
+                <div 
+                  className="flex-grow p-4 ml-2 h-full overflow-y-auto bg-background rounded-lg prose prose-sm max-w-none dark:prose-invert border border-border/30"
+                  style={{ 
+                    height: textareaHeight,
+                    minHeight: "300px" 
+                  }}
+                >
+                  <ReactMarkdown>
+                    {editingNote?.content || ""}
+                  </ReactMarkdown>
+                </div>
+              </div>
             )}
             <div 
               className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-muted transition-colors rounded-b-lg"

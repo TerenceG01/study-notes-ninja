@@ -14,7 +14,9 @@ import {
   Code,
   Quote,
   Eye,
-  Edit
+  Edit,
+  Columns,
+  Square
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -72,7 +74,6 @@ export const TextFormattingToolbar = ({
               onClick={() => onFormatText(control.id)}
               title={control.title}
               className="h-8 px-2 hover:bg-muted"
-              disabled={previewMode}
             >
               {control.icon}
             </Button>
@@ -91,7 +92,6 @@ export const TextFormattingToolbar = ({
               onClick={() => onFormatText(`align-${control.id}`)}
               title={control.title}
               className="h-8 px-2 data-[state=on]:bg-muted"
-              disabled={previewMode}
             >
               {control.icon}
             </ToggleGroupItem>
@@ -109,7 +109,6 @@ export const TextFormattingToolbar = ({
               onClick={() => onFormatText(control.id)}
               title={control.title}
               className="h-8 px-2 hover:bg-muted"
-              disabled={previewMode}
             >
               {control.icon}
             </Button>
@@ -127,7 +126,6 @@ export const TextFormattingToolbar = ({
               onClick={() => onFormatText(`list-${control.id}`)}
               title={control.title}
               className="h-8 px-2 hover:bg-muted"
-              disabled={previewMode}
             >
               {control.icon}
             </Button>
@@ -145,7 +143,6 @@ export const TextFormattingToolbar = ({
               onClick={() => onFormatText(control.id)}
               title={control.title}
               className="h-8 px-2 hover:bg-muted"
-              disabled={previewMode}
             >
               {control.icon}
             </Button>
@@ -153,25 +150,27 @@ export const TextFormattingToolbar = ({
         </div>
       </div>
       
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={onTogglePreview}
-        title={previewMode ? "Edit" : "Preview"}
-        className="h-8 px-3 ml-auto"
-      >
-        {previewMode ? (
-          <>
-            <Edit className="h-4 w-4 mr-1" />
-            Edit
-          </>
-        ) : (
-          <>
-            <Eye className="h-4 w-4 mr-1" />
-            Preview
-          </>
-        )}
-      </Button>
+      <div className="flex gap-1">
+        <Button
+          variant={previewMode ? "outline" : "secondary"}
+          size="sm"
+          onClick={onTogglePreview}
+          title={previewMode ? "Show both views" : "Show only preview"}
+          className="h-8 px-3"
+        >
+          {previewMode ? (
+            <>
+              <Columns className="h-4 w-4 mr-1" />
+              Split View
+            </>
+          ) : (
+            <>
+              <Square className="h-4 w-4 mr-1" />
+              Preview Only
+            </>
+          )}
+        </Button>
+      </div>
     </div>
   );
 };
