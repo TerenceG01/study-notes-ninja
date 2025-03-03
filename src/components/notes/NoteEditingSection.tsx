@@ -9,8 +9,6 @@ import { CommonSubjects } from "./CommonSubjects";
 
 interface NoteEditingSectionProps {
   onNotesChanged: () => void;
-  newTag: string;
-  setNewTag: (tag: string) => void;
   selectedNote: Note | null;
   setSelectedNote: (note: Note | null) => void;
   editingNote: Note | null;
@@ -19,8 +17,6 @@ interface NoteEditingSectionProps {
 
 export const NoteEditingSection = ({ 
   onNotesChanged, 
-  newTag, 
-  setNewTag, 
   selectedNote, 
   setSelectedNote, 
   editingNote, 
@@ -153,14 +149,12 @@ export const NoteEditingSection = ({
       summaryLevel={summaryLevel}
       summarizing={summarizing}
       enhancing={enhancing}
-      newTag={newTag}
       commonSubjects={CommonSubjects}
       onNoteChange={setEditingNote}
       onSummaryLevelChange={setSummaryLevel}
       onGenerateSummary={handleGenerateSummary}
       onToggleSummary={() => setShowSummary(!showSummary)}
       onEnhanceNote={handleEnhanceNote}
-      onNewTagChange={setNewTag}
       onSave={updateNote}
     />
   );

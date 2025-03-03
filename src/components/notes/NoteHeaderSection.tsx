@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Note } from "@/hooks/useNotes";
+
 interface NoteHeaderSectionProps {
   editingNote: Note | null;
   isFullscreen: boolean;
@@ -15,6 +16,7 @@ interface NoteHeaderSectionProps {
   onToggleFullscreen: () => void;
   onToggleAutoSave: () => void;
 }
+
 export const NoteHeaderSection = ({
   editingNote,
   isFullscreen,
@@ -26,7 +28,7 @@ export const NoteHeaderSection = ({
   onToggleAutoSave
 }: NoteHeaderSectionProps) => {
   return (
-    <div className="bg-card/50 backdrop-blur-sm rounded-lg p-4 shadow-sm border border-border/50 mb-6">
+    <div className="bg-card rounded-lg p-4 shadow-sm border border-border mb-6">
       <div className="flex justify-between items-center">
         <DialogHeader className="flex-grow">
           <DialogTitle>
@@ -37,7 +39,7 @@ export const NoteHeaderSection = ({
                 title: e.target.value
               } : null)} 
               placeholder="Note Title" 
-              className="text-xl font-semibold border-none shadow-none focus-visible:ring-1 bg-transparent placeholder:text-muted-foreground/50"
+              className="text-xl font-semibold border-none shadow-none focus-visible:ring-1 bg-background placeholder:text-muted-foreground/50"
             />
           </DialogTitle>
         </DialogHeader>
@@ -64,7 +66,7 @@ export const NoteHeaderSection = ({
               subject: value
             } : null)}
           >
-            <SelectTrigger className="w-full bg-background/50 border-border/50">
+            <SelectTrigger className="w-full bg-background border-border">
               <SelectValue placeholder="Select subject" />
             </SelectTrigger>
             <SelectContent>

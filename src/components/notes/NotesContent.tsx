@@ -1,7 +1,6 @@
 
 import { useEffect, useState } from "react";
 import { useNotes, Note } from "@/hooks/useNotes";
-import { useNoteEditor } from "@/hooks/useNoteEditor";
 import { useAuth } from "@/contexts/AuthContext";
 import { NotesContainer } from "./NotesContainer";
 import { NotesHeader } from "./NotesHeader";
@@ -18,11 +17,6 @@ export const NotesContent = () => {
     fetchNotes, 
     generateFlashcards 
   } = useNotes();
-  
-  const { 
-    newTag,
-    setNewTag,
-  } = useNoteEditor();
 
   const {
     selectedColor,
@@ -90,8 +84,6 @@ export const NotesContent = () => {
       <div className="mt-6">
         <NoteEditingSection
           onNotesChanged={fetchNotes}
-          newTag={newTag}
-          setNewTag={setNewTag}
           selectedNote={selectedNote}
           setSelectedNote={setSelectedNote}
           editingNote={editingNote}

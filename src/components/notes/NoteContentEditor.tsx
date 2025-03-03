@@ -67,9 +67,9 @@ export const NoteContentEditor = ({
   };
 
   return (
-    <div className="mt-4 min-h-[300px] flex flex-col h-full bg-card/30 rounded-lg border border-border/40 shadow-sm">
+    <div className="mt-4 min-h-[300px] flex flex-col h-full bg-card rounded-lg border border-border shadow-sm">
       {showSummary && editingNote?.summary ? (
-        <Card className="p-6 bg-muted/30 h-full overflow-auto rounded-lg border-none shadow-none">
+        <Card className="p-6 bg-muted h-full overflow-auto rounded-lg border-none shadow-none">
           <div className="prose max-w-none">
             {editingNote.summary.split('\n').map((line, index) => (
               <p key={index} className="mb-3 text-foreground/90">{line}</p>
@@ -91,10 +91,10 @@ export const NoteContentEditor = ({
                 height: textareaHeight,
                 minHeight: "300px"
               }} 
-              className="flex-grow resize-none flex-1 p-4 border-none focus-visible:ring-1 shadow-none bg-transparent rounded-lg" 
+              className="flex-grow resize-none flex-1 p-4 border-none focus-visible:ring-1 shadow-none bg-background rounded-lg" 
             />
             <div 
-              className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-muted/50 transition-colors rounded-b-lg"
+              className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-muted transition-colors rounded-b-lg"
               onMouseDown={handleResizeStart}
               title="Drag to resize"
             />

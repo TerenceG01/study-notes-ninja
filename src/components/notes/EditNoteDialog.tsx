@@ -16,14 +16,12 @@ interface EditNoteDialogProps {
   summaryLevel: SummaryLevel;
   summarizing: boolean;
   enhancing: boolean;
-  newTag: string;
   commonSubjects: string[];
   onNoteChange: (note: Note | null) => void;
   onSummaryLevelChange: (level: SummaryLevel) => void;
   onGenerateSummary: () => void;
   onToggleSummary: () => void;
   onEnhanceNote: (enhanceType: 'grammar' | 'structure' | 'all') => void;
-  onNewTagChange: (tag: string) => void;
   onSave: () => void;
 }
 
@@ -36,14 +34,12 @@ export const EditNoteDialog = ({
   summaryLevel,
   summarizing,
   enhancing,
-  newTag,
   commonSubjects,
   onNoteChange,
   onSummaryLevelChange,
   onGenerateSummary,
   onToggleSummary,
   onEnhanceNote,
-  onNewTagChange,
   onSave
 }: EditNoteDialogProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -120,7 +116,6 @@ export const EditNoteDialog = ({
         summaryLevel={summaryLevel}
         summarizing={summarizing}
         enhancing={enhancing}
-        newTag={newTag}
         commonSubjects={commonSubjects}
         wordCount={wordCount}
         lastSaved={lastSaved}
@@ -132,7 +127,6 @@ export const EditNoteDialog = ({
         onGenerateSummary={onGenerateSummary}
         onToggleSummary={onToggleSummary}
         onEnhanceNote={onEnhanceNote}
-        onNewTagChange={onNewTagChange}
         onToggleFullscreen={toggleFullscreen}
         onToggleAutoSave={toggleAutoSave}
       />
@@ -157,14 +151,14 @@ export const EditNoteDialog = ({
         >
           <SheetContent
             side="top"
-            className="h-screen w-screen p-6 flex flex-col max-h-screen overflow-hidden bg-background/95 backdrop-blur-sm"
+            className="h-screen w-screen p-6 flex flex-col max-h-screen overflow-hidden bg-background"
           >
             {renderDialogContent()}
           </SheetContent>
         </Sheet>
       ) : (
         <Dialog open={open && !isFullscreen} onOpenChange={onOpenChange}>
-          <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col p-6 overflow-hidden bg-background/98 backdrop-blur-sm">
+          <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col p-6 overflow-hidden bg-background">
             {renderDialogContent()}
           </DialogContent>
         </Dialog>

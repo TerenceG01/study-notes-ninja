@@ -14,7 +14,6 @@ interface NoteContentContainerProps {
   summaryLevel: SummaryLevel;
   summarizing: boolean;
   enhancing: boolean;
-  newTag: string;
   commonSubjects: string[];
   wordCount: number;
   lastSaved: Date | null;
@@ -26,7 +25,6 @@ interface NoteContentContainerProps {
   onGenerateSummary: () => void;
   onToggleSummary: () => void;
   onEnhanceNote: (enhanceType: 'grammar' | 'structure' | 'all') => void;
-  onNewTagChange: (tag: string) => void;
   onToggleFullscreen: () => void;
   onToggleAutoSave: () => void;
 }
@@ -38,7 +36,6 @@ export const NoteContentContainer = ({
   summaryLevel,
   summarizing,
   enhancing,
-  newTag,
   commonSubjects,
   wordCount,
   lastSaved,
@@ -50,7 +47,6 @@ export const NoteContentContainer = ({
   onGenerateSummary,
   onToggleSummary,
   onEnhanceNote,
-  onNewTagChange,
   onToggleFullscreen,
   onToggleAutoSave
 }: NoteContentContainerProps) => {
@@ -71,9 +67,7 @@ export const NoteContentContainer = ({
         <div className="space-y-4 pr-4">
           <TagsSection 
             tags={tags}
-            newTag={newTag}
             onTagsChange={onTagsChange}
-            onNewTagChange={onNewTagChange}
             editingNote={editingNote}
             onNoteChange={onNoteChange}
           />
