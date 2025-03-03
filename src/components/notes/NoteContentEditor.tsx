@@ -1,4 +1,3 @@
-
 import { useRef, useState, useEffect } from "react";
 import { Note } from "@/hooks/useNotes";
 import { TextFormattingToolbar } from "./TextFormattingToolbar";

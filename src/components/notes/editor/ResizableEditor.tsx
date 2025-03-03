@@ -18,6 +18,7 @@ export const ResizableEditor = forwardRef<HTMLDivElement, ResizableEditorProps>(
   onResizeStart
 }, ref) => {
   const [markdownContent, setMarkdownContent] = useState<string>('');
+  const [isEditing, setIsEditing] = useState(false);
 
   // Update markdown content when editingNote changes
   useEffect(() => {
@@ -37,27 +38,45 @@ export const ResizableEditor = forwardRef<HTMLDivElement, ResizableEditorProps>(
 
   return (
     <div className="relative flex-1 p-2">
-      <div
-        className={cn(
-          "w-full h-full overflow-y-auto bg-background rounded-lg", 
-          "prose prose-sm max-w-none dark:prose-invert",
-          "px-4 py-3 focus:outline-none border border-input focus-visible:ring-1 focus-visible:ring-ring"
-        )}
-        style={{
-          height: textareaHeight,
-          minHeight: "300px"
-        }}
-        ref={ref}
-        contentEditable={true}
-        suppressContentEditableWarning={true}
-        onInput={handleInput}
-      >
-        {editingNote?.content ? (
-          <ReactMarkdown>{editingNote.content}</ReactMarkdown>
-        ) : (
-          <p>Write your notes here...</p>
-        )}
-      </div>
+      {isEditing ? (
+        <div
+          className={cn(
+            "w-full h-full overflow-y-auto bg-background rounded-lg", 
+            "prose prose-sm max-w-none dark:prose-invert",
+            "px-4 py-3 focus:outline-none border border-input focus-visible:ring-1 focus-visible:ring-ring"
+          )}
+          style={{
+            height: textareaHeight,
+            minHeight: "300px"
+          }}
+          ref={ref}
+          contentEditable={true}
+          suppressContentEditableWarning={true}
+          onInput={handleInput}
+          onBlur={() => setIsEditing(false)}
+        >
+          {markdownContent || "Write your notes here..."}
+        </div>
+      ) : (
+        <div
+          className={cn(
+            "w-full h-full overflow-y-auto bg-background rounded-lg", 
+            "prose prose-sm max-w-none dark:prose-invert",
+            "px-4 py-3 focus:outline-none border border-input focus-visible:ring-1 focus-visible:ring-ring"
+          )}
+          style={{
+            height: textareaHeight,
+            minHeight: "300px"
+          }}
+          onClick={() => setIsEditing(true)}
+        >
+          {markdownContent ? (
+            <ReactMarkdown>{markdownContent}</ReactMarkdown>
+          ) : (
+            <p>Write your notes here...</p>
+          )}
+        </div>
+      )}
       
       <div 
         className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-muted transition-colors rounded-b-lg"
