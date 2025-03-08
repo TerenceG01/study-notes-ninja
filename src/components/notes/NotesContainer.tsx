@@ -43,23 +43,25 @@ export const NotesContainer = ({
 
   return (
     <Card className="shadow-sm">
-      <CardHeader className="bg-muted/40">
-        <div className="flex items-center justify-between">
+      <CardHeader className="bg-muted/40 px-3 sm:px-6 py-3 sm:py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <div>
-            <CardTitle className="text-lg font-medium">Your Notes</CardTitle>
-            <CardDescription>Browse and manage your existing notes</CardDescription>
+            <CardTitle className="text-base sm:text-lg font-medium">Your Notes</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Browse and manage your existing notes</CardDescription>
           </div>
-          <NoteFilters
-            selectedColor={selectedColor}
-            selectedSubject={selectedSubject}
-            selectedDate={selectedDate}
-            uniqueSubjects={uniqueSubjects}
-            uniqueColors={uniqueColors}
-            onColorChange={onColorChange}
-            onSubjectChange={onSubjectChange}
-            onDateChange={onDateChange}
-            onClearFilters={onClearFilters}
-          />
+          <div className="self-end sm:self-auto">
+            <NoteFilters
+              selectedColor={selectedColor}
+              selectedSubject={selectedSubject}
+              selectedDate={selectedDate}
+              uniqueSubjects={uniqueSubjects}
+              uniqueColors={uniqueColors}
+              onColorChange={onColorChange}
+              onSubjectChange={onSubjectChange}
+              onDateChange={onDateChange}
+              onClearFilters={onClearFilters}
+            />
+          </div>
         </div>
       </CardHeader>
       <CardContent className="p-0">

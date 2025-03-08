@@ -36,10 +36,10 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
       className="group hover:bg-muted/50 cursor-pointer transition-colors"
       onClick={() => onNoteClick(note)}
     >
-      <TableCell className="flex items-center gap-2 w-[20%]">
+      <TableCell className="flex items-center gap-1 sm:gap-2 w-[20%] p-2 sm:p-4">
         <div
           className={cn(
-            "flex-1 px-3 py-1 rounded-md font-medium transition-colors text-center",
+            "flex-1 px-2 sm:px-3 py-1 rounded-md font-medium transition-colors text-center text-xs sm:text-sm",
             note.subject_color ? 
               SUBJECT_COLORS.find(c => c.value === note.subject_color)?.class : 
               "bg-primary/5 text-primary hover:bg-primary/10"
@@ -55,7 +55,7 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
           sharingSubject={sharingSubject}
         />
       </TableCell>
-      <TableCell className="font-medium w-[20%]">
+      <TableCell className="font-medium w-[20%] p-2 sm:p-4 text-xs sm:text-sm">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -69,15 +69,15 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
           </Tooltip>
         </TooltipProvider>
       </TableCell>
-      <TableCell className="hidden md:table-cell w-[30%]">
+      <TableCell className="hidden md:table-cell w-[30%] p-2 sm:p-4 text-xs sm:text-sm">
         <div className="truncate">
           {note.content}
         </div>
       </TableCell>
-      <TableCell className="hidden sm:table-cell w-[10%]">
+      <TableCell className="hidden sm:table-cell w-[10%] p-2 sm:p-4 text-xs sm:text-sm">
         {new Date(note.created_at).toLocaleDateString()}
       </TableCell>
-      <TableCell className="w-[20%]">
+      <TableCell className="w-[20%] p-2 sm:p-4">
         <Button
           variant="ghost"
           size="sm"
@@ -86,17 +86,17 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
             onGenerateFlashcards(note);
           }}
           disabled={!!generatingFlashcardsForNote}
-          className="flex items-center gap-2"
+          className="flex items-center gap-1 sm:gap-2 h-8 text-xs sm:text-sm px-2 sm:px-3"
         >
           {generatingFlashcardsForNote === note.id ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Generating...
+              <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+              <span className="truncate">Generating...</span>
             </>
           ) : (
             <>
-              <BookOpen className="h-4 w-4" />
-              Create Flashcards
+              <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="truncate">Create Flashcards</span>
             </>
           )}
         </Button>
