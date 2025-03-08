@@ -18,14 +18,22 @@ serve(async (req) => {
   try {
     const { content, title, enhanceType } = await req.json();
     
+    // Determine if content contains HTML
+    const containsHtml = content.includes('<') && content.includes('>');
+    
     let systemPrompt = "";
     if (enhanceType === "grammar") {
-      systemPrompt = "You are a helpful assistant specialized in correcting grammar, spelling, and punctuation. Preserve the original meaning and content while fixing errors.";
+      systemPrompt = "You are a helpful assistant specialized in correcting grammar, spelling, and punctuation. Preserve the original meaning, structure, and formatting while fixing errors.";
     } else if (enhanceType === "structure") {
-      systemPrompt = "You are a helpful assistant specialized in improving document structure. Add appropriate headings, bullet points, numbered lists, and paragraphs where needed. Organize the content logically without changing the meaning.";
+      // If content contains HTML, we need a different approach for structure enhancement
+      if (containsHtml) {
+        systemPrompt = "You are a helpful assistant specialized in improving document structure. The document contains HTML formatting. Preserve all HTML tags and their attributes but reorganize the content to improve readability. Add appropriate headings (<h1>, <h2>, etc.), bullet points (<ul><li>), numbered lists (<ol><li>), and paragraphs (<p>) where needed. Make sure all HTML is valid and properly structured. DO NOT CONVERT TEXT TO PLAIN TEXT, KEEP ALL HTML TAGS.";
+      } else {
+        systemPrompt = "You are a helpful assistant specialized in improving document structure. Add appropriate headings, bullet points, numbered lists, and paragraphs where needed. Organize the content logically without changing the meaning.";
+      }
     } else {
       // Fallback for any unexpected enhanceType values
-      systemPrompt = "You are a helpful assistant. Review the document and make minor improvements while preserving the original meaning.";
+      systemPrompt = "You are a helpful assistant. Review the document and make minor improvements while preserving the original meaning and formatting.";
     }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -50,6 +58,7 @@ serve(async (req) => {
     }
     
     const enhancedContent = data.choices[0].message.content;
+    console.log("Content enhanced successfully. Contains HTML:", containsHtml);
 
     return new Response(JSON.stringify({ enhancedContent }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

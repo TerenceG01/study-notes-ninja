@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Note } from "@/hooks/useNotes";
 import { EditNoteDialog } from "./EditNoteDialog";
@@ -75,10 +74,9 @@ export const NoteEditingSection = ({
         description: "This may take a few moments.",
       });
 
-      // Strip HTML if content is HTML for the enhancement API
-      const contentToEnhance = typeof editingNote.content === 'string' && editingNote.content.includes('<') 
-        ? new DOMParser().parseFromString(editingNote.content, 'text/html').body.textContent || editingNote.content
-        : editingNote.content;
+      // Send the rich text content as is to preserve HTML formatting
+      // No need to strip HTML for the enhancement API
+      const contentToEnhance = editingNote.content;
 
       const { data, error } = await supabase.functions.invoke('enhance-note', {
         body: {
