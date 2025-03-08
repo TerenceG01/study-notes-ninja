@@ -206,9 +206,9 @@ const FlashcardDeck = () => {
 
           <TabsContent value="manage">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {flashcards?.map(flashcard => <Card key={flashcard.id} className="hover:bg-muted/50 transition-colors">
-                  <CardContent className="pt-6">
-                    {editingId === flashcard.id ? <div className="space-y-4">
+              {flashcards?.map(flashcard => <Card key={flashcard.id} className="hover:bg-muted/50 transition-colors h-[300px]">
+                  <CardContent className="pt-6 h-full flex flex-col">
+                    {editingId === flashcard.id ? <div className="space-y-4 flex-1 overflow-auto">
                         <div>
                           <h3 className="font-medium mb-2">Question:</h3>
                           <Input value={editedQuestion} onChange={e => setEditedQuestion(e.target.value)} placeholder="Enter question" />
@@ -228,7 +228,7 @@ const FlashcardDeck = () => {
                           </Button>
                         </div>
                       </div> : <>
-                        <div className="mb-4">
+                        <div className="mb-4 flex-1 overflow-auto">
                           <div className="flex justify-between items-start mb-2">
                             <h3 className="font-medium">Question:</h3>
                             <div className="flex gap-2">
@@ -240,11 +240,15 @@ const FlashcardDeck = () => {
                               </Button>
                             </div>
                           </div>
-                          <p className="text-muted-foreground">{flashcard.question}</p>
+                          <div className="overflow-auto max-h-[100px] text-muted-foreground">
+                            {flashcard.question}
+                          </div>
                         </div>
-                        <div>
+                        <div className="flex-1 overflow-auto">
                           <h3 className="font-medium mb-2">Answer:</h3>
-                          <p className="text-muted-foreground">{flashcard.answer}</p>
+                          <div className="overflow-auto max-h-[100px] text-muted-foreground">
+                            {flashcard.answer}
+                          </div>
                         </div>
                       </>}
                   </CardContent>

@@ -29,12 +29,12 @@ export const EnhancedFlashcard = ({
   
   return (
     <Card 
-      className="min-h-[300px] cursor-pointer transition-all hover:shadow-lg relative"
+      className="w-full h-[300px] cursor-pointer transition-all hover:shadow-lg relative"
       onClick={() => onFlip(!isFlipped)}
       {...swipeHandlers}
     >
-      <CardContent className="flex items-center justify-center p-8 min-h-[300px]">
-        <div className="text-xl font-medium text-center">
+      <CardContent className="flex items-center justify-center p-8 h-full overflow-auto">
+        <div className="text-xl font-medium text-center max-w-full max-h-full">
           {isFlipped ? card.answer : card.question}
         </div>
       </CardContent>
