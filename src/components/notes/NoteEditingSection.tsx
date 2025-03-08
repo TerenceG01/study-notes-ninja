@@ -37,7 +37,14 @@ export const NoteEditingSection = ({
     if (!selectedNote || !editingNote) return;
     
     try {
-      const summary = await generateSummary(selectedNote);
+      // When sending to summary, strip HTML content if it's HTML
+      const contentToSummarize = typeof editingNote.content === 'string' && editingNote.content.includes('<') 
+        ? new DOMParser().parseFromString(editingNote.content, 'text/html').body.textContent || editingNote.content
+        : editingNote.content;
+      
+      const noteForSummary = { ...selectedNote, content: contentToSummarize };
+      const summary = await generateSummary(noteForSummary);
+      
       if (summary) {
         const updatedNote = { ...editingNote, summary };
         setEditingNote(updatedNote);
@@ -68,9 +75,14 @@ export const NoteEditingSection = ({
         description: "This may take a few moments.",
       });
 
+      // Strip HTML if content is HTML for the enhancement API
+      const contentToEnhance = typeof editingNote.content === 'string' && editingNote.content.includes('<') 
+        ? new DOMParser().parseFromString(editingNote.content, 'text/html').body.textContent || editingNote.content
+        : editingNote.content;
+
       const { data, error } = await supabase.functions.invoke('enhance-note', {
         body: {
-          content: editingNote.content,
+          content: contentToEnhance,
           title: editingNote.title,
           enhanceType
         },

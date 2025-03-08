@@ -1,0 +1,91 @@
+
+/* Base editor styles */
+.ProseMirror {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  min-height: 200px;
+}
+
+.ProseMirror p {
+  margin-bottom: 0.75em;
+}
+
+.ProseMirror h1 {
+  font-size: 1.5em;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+.ProseMirror h2 {
+  font-size: 1.25em;
+  margin-top: 0.75em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+.ProseMirror blockquote {
+  padding-left: 1em;
+  border-left: 2px solid hsl(var(--muted));
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.ProseMirror li {
+  margin-bottom: 0.25em;
+}
+
+.ProseMirror code {
+  background-color: hsl(var(--muted));
+  border-radius: 0.25em;
+  padding: 0.2em 0.4em;
+  font-family: monospace;
+}
+
+.ProseMirror pre {
+  background-color: hsl(var(--muted));
+  border-radius: 0.25em;
+  padding: 0.75em 1em;
+  font-family: monospace;
+  margin-bottom: 0.75em;
+}
+
+.ProseMirror pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.ProseMirror mark {
+  background-color: #fef3c7;
+  border-radius: 0.25em;
+  padding: 0 0.25em;
+}
+
+/* Placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+  height: 0;
+}
+
+/* Text alignment */
+.ProseMirror .text-left {
+  text-align: left;
+}
+
+.ProseMirror .text-center {
+  text-align: center;
+}
+
+.ProseMirror .text-right {
+  text-align: right;
+}

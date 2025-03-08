@@ -30,6 +30,14 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
   onShareNote,
   onNotesChanged,
 }) => {
+  // Function to strip HTML tags for display in table
+  const stripHtml = (html: string) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+  };
+
+  const displayContent = typeof note.content === 'string' ? stripHtml(note.content) : note.content;
+
   return (
     <TableRow 
       key={note.id}
@@ -71,7 +79,7 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
       </TableCell>
       <TableCell className="hidden md:table-cell w-[30%] p-2 sm:p-4 text-xs sm:text-sm">
         <div className="truncate">
-          {note.content}
+          {displayContent}
         </div>
       </TableCell>
       <TableCell className="hidden sm:table-cell w-[10%] p-2 sm:p-4 text-xs sm:text-sm">
