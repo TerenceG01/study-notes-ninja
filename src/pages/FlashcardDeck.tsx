@@ -60,7 +60,7 @@ const FlashcardDeck = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="container mx-auto px-4 sm:px-6 py-4">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <DeckHeader title={deck.title} description={deck.description} />
 
         <Tabs defaultValue="study" className="space-y-6">
