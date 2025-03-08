@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -112,7 +111,7 @@ export const ManageCards = ({ flashcards, deckId }: ManageCardsProps) => {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {flashcards?.map(flashcard => (
-        <Card key={flashcard.id} className="hover:bg-muted/50 transition-colors h-[300px] w-full flex-shrink-0">
+        <Card key={flashcard.id} className="hover:bg-muted/50 transition-colors h-[300px] flex-shrink-0">
           <CardContent className="pt-6 h-full flex flex-col">
             {editingId === flashcard.id ? (
               <div className="space-y-4 flex-1 overflow-auto">

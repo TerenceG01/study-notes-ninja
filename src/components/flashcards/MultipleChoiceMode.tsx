@@ -100,7 +100,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   }
 
   return (
-    <div className="max-w-[800px] w-full mx-auto">
+    <div className="w-[800px] mx-auto">
       <DifficultyToggle
         hardMode={hardMode}
         onToggle={() => {

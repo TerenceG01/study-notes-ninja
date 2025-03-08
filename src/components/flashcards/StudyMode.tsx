@@ -44,14 +44,14 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
 
   if (!currentCard) {
     return (
-      <div className="text-center py-8 w-full max-w-[800px] mx-auto">
+      <div className="text-center py-8 w-[800px] mx-auto">
         <p className="text-lg font-medium mb-4">No flashcards available</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full mx-auto">
+    <div className="w-[800px] mx-auto">
       <StudyModeHeader
         mode={mode}
         setMode={setMode}
