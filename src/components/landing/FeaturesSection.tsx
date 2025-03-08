@@ -1,3 +1,4 @@
+
 import { BookOpen, Brain, Users, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -71,7 +72,7 @@ const FeatureCard = ({
 
 export const FeaturesSection = ({ isVisible }: FeaturesSectionProps) => {
   return (
-    <section id="features" className="py-16 min-h-[80vh] flex items-center">
+    <section id="features" className="py-10 min-h-[60vh] flex items-center">
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl">
         <div 
           className={cn(

@@ -1,3 +1,4 @@
+
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -14,7 +15,7 @@ export const HeroSection = ({
   handleSignIn
 }: HeroSectionProps) => {
   return (
-    <section id="hero" className="relative pt-16 lg:pt-20 min-h-[60vh] flex items-center">
+    <section id="hero" className="relative pt-16 pb-12 lg:pt-20 lg:pb-16 min-h-[85vh] flex items-center">
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl">
         <div className="flex flex-col items-center justify-center text-center">
           <div className={cn(

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -33,31 +32,7 @@ export const useNotes = () => {
   const [generatingFlashcardsForNote, setGeneratingFlashcardsForNote] = useState<string | null>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   
-  // Listen for online/offline events
-  useEffect(() => {
-    const handleOnline = () => {
-      setIsOnline(true);
-      // Attempt to sync any pending changes
-      syncPendingChanges();
-    };
-    
-    const handleOffline = () => {
-      setIsOnline(false);
-      toast({
-        title: "You're offline",
-        description: "Changes will be saved locally and synced when you reconnect.",
-      });
-    };
-    
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
+  // Define fetchNotes function before using it in useEffect
   const fetchNotes = async () => {
     try {
       console.log("Fetching notes..."); // Debug log
@@ -87,6 +62,31 @@ export const useNotes = () => {
       setLoading(false);
     }
   };
+  
+  // Listen for online/offline events
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      // Attempt to sync any pending changes
+      syncPendingChanges();
+    };
+    
+    const handleOffline = () => {
+      setIsOnline(false);
+      toast({
+        title: "You're offline",
+        description: "Changes will be saved locally and synced when you reconnect.",
+      });
+    };
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   // Function to sync pending changes when back online
   const syncPendingChanges = async () => {

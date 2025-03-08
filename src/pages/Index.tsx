@@ -44,13 +44,17 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
       <NavigationBar />
       
+      {/* Hero Section - Transform Notes into Lasting Knowledge */}
       <HeroSection 
         isVisible={isVisible.hero} 
         handleGetStarted={handleGetStarted}
         handleSignIn={handleSignIn}
       />
       
-      <FeaturesSection isVisible={isVisible.features} />
+      {/* Features Section - Everything You Need to Excel (separated from Hero) */}
+      <div className="py-20">
+        <FeaturesSection isVisible={isVisible.features} />
+      </div>
       
       <HowItWorksSection 
         isVisible={isVisible.howItWorks}

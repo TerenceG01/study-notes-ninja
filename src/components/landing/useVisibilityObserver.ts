@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 
 export const useVisibilityObserver = (sectionIds: string[]) => {
@@ -9,7 +10,7 @@ export const useVisibilityObserver = (sectionIds: string[]) => {
     const observerOptions = {
       root: null,
       rootMargin: '0px',
-      threshold: 0.1  // Slightly reduced threshold to trigger animations sooner
+      threshold: 0.15  // Slightly increased threshold to ensure better visibility detection
     };
 
     const observerCallback: IntersectionObserverCallback = (entries) => {
