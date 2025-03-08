@@ -85,9 +85,6 @@ export const NavigationBar = () => {
               </DropdownMenu>
             ) : (
               <>
-                <Button variant="ghost" onClick={handleSignIn}>
-                  Sign In
-                </Button>
                 <Button onClick={handleGetStarted}>
                   Get Started
                 </Button>
