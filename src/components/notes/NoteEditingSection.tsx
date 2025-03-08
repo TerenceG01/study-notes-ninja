@@ -37,6 +37,12 @@ export const NoteEditingSection = ({
     if (!selectedNote || !editingNote) return;
     
     try {
+      // Show loading toast
+      const loadingToastId = toast({
+        title: "Generating summary...",
+        description: "Our AI is analyzing your note to create a concise summary.",
+      }).id;
+      
       // When sending to summary, strip HTML content if it's HTML
       const contentToSummarize = typeof editingNote.content === 'string' && editingNote.content.includes('<') 
         ? new DOMParser().parseFromString(editingNote.content, 'text/html').body.textContent || editingNote.content
@@ -44,6 +50,9 @@ export const NoteEditingSection = ({
       
       const noteForSummary = { ...selectedNote, content: contentToSummarize };
       const summary = await generateSummary(noteForSummary);
+      
+      // Dismiss loading toast
+      toast.dismiss(loadingToastId);
       
       if (summary) {
         const updatedNote = { ...editingNote, summary };
@@ -70,10 +79,14 @@ export const NoteEditingSection = ({
     try {
       setEnhancing(true);
       
-      toast({
-        title: "Enhancing note...",
-        description: "This may take a few moments.",
-      });
+      // Show friendly loading toast with type-specific message
+      const enhanceTypeText = enhanceType === 'grammar' ? 'grammar and spelling' : 
+                             enhanceType === 'structure' ? 'structure and formatting' : 'content';
+      
+      const loadingToastId = toast({
+        title: `Enhancing ${enhanceTypeText}...`,
+        description: "Our AI assistant is polishing your note. This may take a few moments.",
+      }).id;
 
       // Send the rich text content as is to preserve HTML formatting
       const contentToEnhance = editingNote.content;
@@ -86,6 +99,9 @@ export const NoteEditingSection = ({
         },
       });
 
+      // Dismiss loading toast
+      toast.dismiss(loadingToastId);
+
       if (error) throw error;
 
       if (data.enhancedContent) {
@@ -97,7 +113,7 @@ export const NoteEditingSection = ({
         
         toast({
           title: "Note enhanced!",
-          description: "Your note has been successfully enhanced.",
+          description: `Your note's ${enhanceTypeText} has been successfully improved.`,
         });
       }
     } catch (error) {

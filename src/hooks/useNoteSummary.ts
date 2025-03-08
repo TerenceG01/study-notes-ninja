@@ -28,11 +28,7 @@ export const useNoteSummary = () => {
         return data.summary;
       }
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error generating summary",
-        description: "Failed to generate summary. Please try again.",
-      });
+      console.error("Error generating summary:", error);
       return null;
     } finally {
       setSummarizing(false);

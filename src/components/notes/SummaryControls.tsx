@@ -1,5 +1,5 @@
 
-import { Loader2, Wand2 } from "lucide-react";
+import { Loader2, Sparkles, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
@@ -48,11 +48,23 @@ export const SummaryControls = ({
         </SelectContent>
       </Select>
       
-      <Button onClick={onGenerateSummary} disabled={summarizing} variant="secondary">
-        {summarizing ? <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Summarizing...
-          </> : 'Generate Summary'}
+      <Button 
+        onClick={onGenerateSummary} 
+        disabled={summarizing} 
+        variant="secondary"
+        className="relative"
+      >
+        {summarizing ? (
+          <>
+            <div className="absolute inset-0 bg-secondary/80 backdrop-blur-sm rounded-md flex items-center justify-center animate-fade-in">
+              <div className="flex items-center space-x-2">
+                <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                <span className="text-sm font-medium">Summarizing...</span>
+              </div>
+            </div>
+            <span className="opacity-0">Generate Summary</span>
+          </>
+        ) : 'Generate Summary'}
       </Button>
 
       <DropdownMenu>
@@ -60,11 +72,28 @@ export const SummaryControls = ({
           <Button 
             size="sm" 
             variant="outline" 
-            className="gap-1 h-10"
+            className="gap-1 h-10 relative"
             disabled={enhancing || !editingNote?.content}
           >
-            <Wand2 className="h-3.5 w-3.5" />
-            {enhancing ? "Enhancing..." : "Enhance with AI"}
+            {enhancing ? (
+              <>
+                <div className="absolute inset-0 bg-background/95 backdrop-blur-sm rounded-md flex items-center justify-center animate-fade-in">
+                  <div className="flex items-center space-x-2">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                    <span className="text-xs font-medium">Enhancing...</span>
+                  </div>
+                </div>
+                <span className="opacity-0">
+                  <Wand2 className="h-3.5 w-3.5" />
+                  Enhance with AI
+                </span>
+              </>
+            ) : (
+              <>
+                <Wand2 className="h-3.5 w-3.5" />
+                Enhance with AI
+              </>
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
