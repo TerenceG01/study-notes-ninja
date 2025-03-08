@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -39,11 +40,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         },
         bulletList: {
           keepMarks: true,
-          keepAttributes: false,
+          keepAttributes: true,
         },
         orderedList: {
           keepMarks: true,
-          keepAttributes: false,
+          keepAttributes: true,
         },
       }),
       Underline,
