@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -157,7 +156,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
       </div>;
   }
 
-  return <div className={`max-w-3xl mx-auto ${isMobile ? 'px-2' : 'px-4'}`}>
+  return <div className="w-full mx-auto">
       <div className={`${isMobile ? 'flex justify-between items-center mb-4' : 'flex justify-between items-center mb-6'}`}>
         {isMobile ? (
           <>
@@ -214,9 +213,9 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
       )}
 
       {mode === 'standard' ? (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center w-full">
           {!isMobile && (
-            <div className="text-sm text-muted-foreground mb-2 w-full max-w-[500px]">
+            <div className="text-sm text-muted-foreground mb-2 w-full max-w-[500px] px-2">
               Card {currentIndex + 1} of {cards.length}
             </div>
           )}
@@ -230,12 +229,13 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
             {...(isMobile ? swipeHandlers : {})}
           />
 
-          <div className={`${isMobile ? 'mt-4 grid grid-cols-2 gap-2' : 'flex justify-between items-center mt-6'} w-full max-w-[500px]`}>
+          <div className={`${isMobile ? 'mt-4 grid grid-cols-2 gap-2' : 'flex justify-between items-center mt-6'} w-full max-w-[500px] px-2`}>
             <Button 
               variant="outline" 
               onClick={() => navigateCards('prev')} 
               disabled={currentIndex === 0}
               size={isMobile ? "sm" : "default"}
+              className="w-full sm:w-auto"
             >
               <ArrowLeft className="h-4 w-4 mr-1" />
               {isMobile ? "Previous" : "Previous Card"}
@@ -246,13 +246,14 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
               onClick={() => navigateCards('next')} 
               disabled={currentIndex === cards.length - 1}
               size={isMobile ? "sm" : "default"}
+              className="w-full sm:w-auto"
             >
               {isMobile ? "Next" : "Next Card"}
               <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
           
-          <div className="text-center mt-4 text-sm text-muted-foreground w-full max-w-[500px]">
+          <div className="text-center mt-4 text-sm text-muted-foreground w-full max-w-[500px] px-2">
             {isMobile ? 
               "Swipe or use arrow keys • Tap to flip" : 
               "Press Space/Enter to flip • Arrow keys to navigate • Ctrl+F to flip"}
