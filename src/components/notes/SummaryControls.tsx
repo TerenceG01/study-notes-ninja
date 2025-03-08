@@ -74,9 +74,6 @@ export const SummaryControls = ({
           <DropdownMenuItem onClick={() => onEnhanceNote('structure')}>
             Improve Structure & Format
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onEnhanceNote('all')}>
-            Complete Enhancement
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
