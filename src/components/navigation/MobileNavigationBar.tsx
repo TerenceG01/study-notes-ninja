@@ -5,14 +5,12 @@ import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Menu, Home, BookOpen, FileText, Users, User } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Home, BookOpen, FileText, Users, User } from "lucide-react";
 import { ProfileModal } from "@/components/profile/ProfileModal";
 
 export const MobileNavigationBar = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [isOpen, setIsOpen] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const location = useLocation();
 
@@ -30,11 +28,6 @@ export const MobileNavigationBar = () => {
       });
     }
   };
-
-  // Close the menu when route changes
-  useEffect(() => {
-    setIsOpen(false);
-  }, [location.pathname]);
 
   return (
     <>
@@ -62,45 +55,15 @@ export const MobileNavigationBar = () => {
                 <span className="text-xs mt-1">Groups</span>
               </Link>
               
-              <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm" className="p-0 flex flex-col items-center text-muted-foreground">
-                    <Menu className="h-5 w-5" />
-                    <span className="text-xs mt-1">Menu</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-[250px] sm:w-[300px]">
-                  <div className="flex flex-col h-full">
-                    <div className="py-4 border-b">
-                      <Button 
-                        variant="ghost" 
-                        className="flex w-full items-center px-2 py-2 rounded-md hover:bg-muted text-left"
-                        onClick={() => {
-                          setIsOpen(false);
-                          setShowProfileModal(true);
-                        }}
-                      >
-                        <User className="h-5 w-5 mr-3" />
-                        <span>Profile</span>
-                      </Button>
-                    </div>
-                    
-                    <div className="flex-1 py-4">
-                      {/* Additional menu items could go here */}
-                    </div>
-                    
-                    <div className="py-4 border-t">
-                      <Button
-                        variant="destructive"
-                        onClick={handleLogout}
-                        className="w-full"
-                      >
-                        Logout
-                      </Button>
-                    </div>
-                  </div>
-                </SheetContent>
-              </Sheet>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="p-0 flex flex-col items-center text-muted-foreground"
+                onClick={() => setShowProfileModal(true)}
+              >
+                <User className="h-5 w-5" />
+                <span className="text-xs mt-1">Profile</span>
+              </Button>
             </>
           )}
           
