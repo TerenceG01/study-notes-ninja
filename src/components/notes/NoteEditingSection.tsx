@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Note } from "@/hooks/useNotes";
 import { EditNoteDialog } from "./EditNoteDialog";
@@ -75,7 +76,6 @@ export const NoteEditingSection = ({
       });
 
       // Send the rich text content as is to preserve HTML formatting
-      // No need to strip HTML for the enhancement API
       const contentToEnhance = editingNote.content;
 
       const { data, error } = await supabase.functions.invoke('enhance-note', {
@@ -89,6 +89,7 @@ export const NoteEditingSection = ({
       if (error) throw error;
 
       if (data.enhancedContent) {
+        // Update the note with enhanced content, which should be properly formatted HTML
         setEditingNote({
           ...editingNote,
           content: data.enhancedContent
