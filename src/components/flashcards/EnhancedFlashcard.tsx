@@ -29,7 +29,7 @@ export const EnhancedFlashcard = ({
   
   return (
     <Card 
-      className="w-full max-w-[800px] mx-auto h-[350px] cursor-pointer transition-all hover:shadow-lg relative"
+      className="w-full max-w-[800px] mx-auto h-[350px] cursor-pointer transition-all hover:shadow-lg relative flex-shrink-0"
       onClick={() => onFlip(!isFlipped)}
       {...swipeHandlers}
     >
