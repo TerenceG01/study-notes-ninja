@@ -6,8 +6,10 @@ import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
 import Typography from "@tiptap/extension-typography";
 import Highlight from "@tiptap/extension-highlight";
+import TextAlign from "@tiptap/extension-text-align";
 import { RichTextToolbar } from "./RichTextToolbar";
 import { cn } from "@/lib/utils";
+import "./editor.css";
 
 interface RichTextEditorProps {
   content: string;
@@ -51,6 +53,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       }),
       Typography,
       Highlight,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+        alignments: ['left', 'center', 'right'],
+        defaultAlignment: 'left',
+      }),
     ],
     content,
     editable,
