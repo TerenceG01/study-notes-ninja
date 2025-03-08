@@ -214,9 +214,9 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
       )}
 
       {mode === 'standard' ? (
-        <>
+        <div className="flex flex-col items-center">
           {!isMobile && (
-            <div className="text-sm text-muted-foreground mb-2">
+            <div className="text-sm text-muted-foreground mb-2 w-full max-w-[500px]">
               Card {currentIndex + 1} of {cards.length}
             </div>
           )}
@@ -230,7 +230,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
             {...(isMobile ? swipeHandlers : {})}
           />
 
-          <div className={`${isMobile ? 'mt-4 grid grid-cols-2 gap-2' : 'flex justify-between items-center mt-6'}`}>
+          <div className={`${isMobile ? 'mt-4 grid grid-cols-2 gap-2' : 'flex justify-between items-center mt-6'} w-full max-w-[500px]`}>
             <Button 
               variant="outline" 
               onClick={() => navigateCards('prev')} 
@@ -252,12 +252,12 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
             </Button>
           </div>
           
-          <div className="text-center mt-4 text-sm text-muted-foreground">
+          <div className="text-center mt-4 text-sm text-muted-foreground w-full max-w-[500px]">
             {isMobile ? 
               "Swipe or use arrow keys • Tap to flip" : 
               "Press Space/Enter to flip • Arrow keys to navigate • Ctrl+F to flip"}
           </div>
-        </>
+        </div>
       ) : (
         <MultipleChoiceMode flashcards={cards} deckId={deckId} />
       )}
