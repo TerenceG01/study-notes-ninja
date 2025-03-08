@@ -1,5 +1,4 @@
-
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Note } from "@/hooks/useNotes";
 import { EditNoteDialog } from "./EditNoteDialog";
 import { useNoteSummary } from "@/hooks/useNoteSummary";
