@@ -1,15 +1,18 @@
-
 /* Base editor styles */
 .ProseMirror {
   width: 100%;
   height: 100%;
   outline: none;
   min-height: 200px;
+  word-wrap: break-word;    /* Added for better word wrapping */
+  overflow-wrap: break-word; /* Added to ensure words break properly */
+  white-space: pre-wrap;    /* Preserves whitespace but wraps text */
 }
 
 .ProseMirror p {
   margin-bottom: 0.5em; /* Reduced from 0.75em */
   line-height: 1.4; /* Added line height control */
+  max-width: 100%;  /* Ensures content doesn't overflow container */
 }
 
 .ProseMirror h1 {
@@ -90,4 +93,17 @@
 
 .ProseMirror .text-right {
   text-align: right;
+}
+
+/* Add support for tables and other elements that might extend beyond container */
+.ProseMirror table {
+  max-width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+/* Ensure images don't break the layout */
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
 }

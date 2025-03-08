@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -65,6 +64,12 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
+    editorProps: {
+      attributes: {
+        class: 'prose-sm sm:prose max-w-none focus:outline-none',
+        style: 'max-width: 100%', // Ensure content stays within container
+      },
+    },
   });
 
   useEffect(() => {
@@ -102,10 +107,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       {editable && <RichTextToolbar editor={editor} />}
       <EditorContent
         editor={editor}
-        className="prose max-w-none p-4"
+        className="prose max-w-none p-4 overflow-hidden"
         style={{ 
           height: height,
           overflowY: "auto",
+          width: "100%", // Ensure container takes full width
         }}
       />
     </div>
