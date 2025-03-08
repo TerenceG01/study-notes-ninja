@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Menu, User } from "lucide-react";
+import { User } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
@@ -56,11 +56,6 @@ export const NavigationBar = () => {
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
-            {isMobile && user && (
-              <Button variant="ghost" size="icon" onClick={toggleSidebar}>
-                <Menu className="h-5 w-5" />
-              </Button>
-            )}
             <Link to="/" className="text-xl font-bold text-primary">
               StudyNotes
             </Link>
