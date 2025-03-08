@@ -9,6 +9,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Simple in-memory cache
+const enhanceCache = new Map();
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -17,6 +20,17 @@ serve(async (req) => {
 
   try {
     const { content, title, enhanceType } = await req.json();
+    
+    // Generate cache key
+    const cacheKey = `${enhanceType}_${title}_${btoa(content.substring(0, 50))}`;
+    
+    // Check cache
+    if (enhanceCache.has(cacheKey)) {
+      console.log("Using cached enhancement result");
+      return new Response(JSON.stringify({ enhancedContent: enhanceCache.get(cacheKey) }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     
     // Determine if content contains HTML
     const containsHtml = content.includes('<') && content.includes('>');
@@ -53,6 +67,8 @@ Return the improved version with the same HTML structure but better organization
       systemPrompt = "You are a helpful assistant. Review the document and make minor improvements while preserving the original meaning and formatting. If the content contains HTML, preserve all HTML tags and structure.";
     }
 
+    console.log(`Enhancing note with type "${enhanceType}". Content length: ${content.length}`);
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -60,11 +76,13 @@ Return the improved version with the same HTML structure but better organization
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o-mini', // Using the smaller, faster model
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: `Please enhance the following note titled "${title}":\n\n${content}` }
         ],
+        temperature: 0.3, // Lower temperature for more deterministic output
+        max_tokens: 1500, // Limiting tokens for faster response
       }),
     });
 
@@ -92,6 +110,14 @@ Return the improved version with the same HTML structure but better organization
     }
     
     console.log("Content enhanced successfully. Contains HTML:", enhancedContent.includes("<"));
+    
+    // Store in cache (limit cache size to prevent memory issues)
+    if (enhanceCache.size > 30) {
+      // Remove oldest entry if cache gets too large
+      const firstKey = enhanceCache.keys().next().value;
+      enhanceCache.delete(firstKey);
+    }
+    enhanceCache.set(cacheKey, enhancedContent);
 
     return new Response(JSON.stringify({ enhancedContent }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

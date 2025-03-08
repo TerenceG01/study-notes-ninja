@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Note } from "@/hooks/useNotes";
 import { EditNoteDialog } from "./EditNoteDialog";
 import { useNoteSummary } from "@/hooks/useNoteSummary";
@@ -24,6 +24,8 @@ export const NoteEditingSection = ({
 }: NoteEditingSectionProps) => {
   const { toast } = useToast();
   const [enhancing, setEnhancing] = useState(false);
+  const enhanceRequestRef = useRef<AbortController | null>(null);
+  
   const {
     summarizing,
     summaryLevel,
@@ -33,7 +35,10 @@ export const NoteEditingSection = ({
     generateSummary,
   } = useNoteSummary();
 
-  const handleGenerateSummary = async () => {
+  // Cache for enhancement results to avoid redundant API calls
+  const enhancementCache = useRef<Map<string, string>>(new Map());
+
+  const handleGenerateSummary = useCallback(async () => {
     if (!selectedNote || !editingNote) return;
     
     try {
@@ -71,13 +76,39 @@ export const NoteEditingSection = ({
         description: "There was an error generating the summary.",
       });
     }
-  };
+  }, [editingNote, selectedNote, generateSummary, toast, setShowSummary, setEditingNote]);
 
-  const handleEnhanceNote = async (enhanceType: 'grammar' | 'structure' | 'all') => {
+  const handleEnhanceNote = useCallback(async (enhanceType: 'grammar' | 'structure' | 'all') => {
     if (!editingNote) return;
     
     try {
+      // Cancel any pending request
+      if (enhanceRequestRef.current) {
+        enhanceRequestRef.current.abort();
+      }
+      
+      // Create new abort controller
+      enhanceRequestRef.current = new AbortController();
+      
       setEnhancing(true);
+      
+      // Check cache first
+      const cacheKey = `${enhanceType}_${editingNote.id}_${editingNote.content.substring(0, 100)}`;
+      if (enhancementCache.current.has(cacheKey)) {
+        console.log("Using cached enhancement");
+        setEditingNote({
+          ...editingNote,
+          content: enhancementCache.current.get(cacheKey) || editingNote.content
+        });
+        
+        toast({
+          title: "Note enhanced!",
+          description: `Your note has been successfully improved.`,
+        });
+        
+        setEnhancing(false);
+        return;
+      }
       
       // Show friendly loading toast with type-specific message
       const enhanceTypeText = enhanceType === 'grammar' ? 'grammar and spelling' : 
@@ -105,6 +136,9 @@ export const NoteEditingSection = ({
       if (error) throw error;
 
       if (data.enhancedContent) {
+        // Cache the enhanced content
+        enhancementCache.current.set(cacheKey, data.enhancedContent);
+        
         // Update the note with enhanced content, which should be properly formatted HTML
         setEditingNote({
           ...editingNote,
@@ -117,18 +151,21 @@ export const NoteEditingSection = ({
         });
       }
     } catch (error) {
-      console.error("Error enhancing note:", error);
-      toast({
-        variant: "destructive",
-        title: "Enhancement failed",
-        description: "Failed to enhance your note. Please try again later.",
-      });
+      if (error.name !== 'AbortError') {
+        console.error("Error enhancing note:", error);
+        toast({
+          variant: "destructive",
+          title: "Enhancement failed",
+          description: "Failed to enhance your note. Please try again later.",
+        });
+      }
     } finally {
       setEnhancing(false);
+      enhanceRequestRef.current = null;
     }
-  };
+  }, [editingNote, toast, setEditingNote]);
 
-  const updateNote = async () => {
+  const updateNote = useCallback(async () => {
     if (!editingNote) return;
 
     try {
@@ -159,7 +196,17 @@ export const NoteEditingSection = ({
         description: "Failed to update note. Please try again.",
       });
     }
-  };
+  }, [editingNote, toast, onNotesChanged]);
+
+  // Cleanup function to clear cache when component unmounts
+  useEffect(() => {
+    return () => {
+      // Abort any pending requests
+      if (enhanceRequestRef.current) {
+        enhanceRequestRef.current.abort();
+      }
+    };
+  }, []);
 
   return (
     <EditNoteDialog
