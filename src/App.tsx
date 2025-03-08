@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import Index from "./pages/Index";
 import Notes from "./pages/Notes";
@@ -80,44 +80,42 @@ const queryClient = new QueryClient({
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AuthProvider>
-          <TooltipProvider>
-            <SidebarProvider>
-              <Toaster />
-              <Sonner />
-              <Routes>
-                <Route path="/" element={<MainLayout><Index /></MainLayout>} />
-                <Route
-                  path="/notes"
-                  element={<ProtectedRoute><AppLayout><Notes /></AppLayout></ProtectedRoute>}
-                />
-                <Route
-                  path="/flashcards"
-                  element={<ProtectedRoute><AppLayout><Flashcards /></AppLayout></ProtectedRoute>}
-                />
-                <Route
-                  path="/flashcards/:id"
-                  element={<ProtectedRoute><AppLayout><FlashcardDeck /></AppLayout></ProtectedRoute>}
-                />
-                <Route
-                  path="/study-groups"
-                  element={<ProtectedRoute><AppLayout><StudyGroups /></AppLayout></ProtectedRoute>}
-                />
-                <Route
-                  path="/study-groups/:id"
-                  element={<ProtectedRoute><AppLayout><StudyGroupDetails /></AppLayout></ProtectedRoute>}
-                />
-                <Route
-                  path="/study-groups/join/:code"
-                  element={<ProtectedRoute><AppLayout><JoinStudyGroup /></AppLayout></ProtectedRoute>}
-                />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </SidebarProvider>
-          </TooltipProvider>
-        </AuthProvider>
-      </BrowserRouter>
+      <AuthProvider>
+        <TooltipProvider>
+          <SidebarProvider>
+            <Toaster />
+            <Sonner />
+            <Routes>
+              <Route path="/" element={<MainLayout><Index /></MainLayout>} />
+              <Route
+                path="/notes"
+                element={<ProtectedRoute><AppLayout><Notes /></AppLayout></ProtectedRoute>}
+              />
+              <Route
+                path="/flashcards"
+                element={<ProtectedRoute><AppLayout><Flashcards /></AppLayout></ProtectedRoute>}
+              />
+              <Route
+                path="/flashcards/:id"
+                element={<ProtectedRoute><AppLayout><FlashcardDeck /></AppLayout></ProtectedRoute>}
+              />
+              <Route
+                path="/study-groups"
+                element={<ProtectedRoute><AppLayout><StudyGroups /></AppLayout></ProtectedRoute>}
+              />
+              <Route
+                path="/study-groups/:id"
+                element={<ProtectedRoute><AppLayout><StudyGroupDetails /></AppLayout></ProtectedRoute>}
+              />
+              <Route
+                path="/study-groups/join/:code"
+                element={<ProtectedRoute><AppLayout><JoinStudyGroup /></AppLayout></ProtectedRoute>}
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </SidebarProvider>
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   </ThemeProvider>
 );
