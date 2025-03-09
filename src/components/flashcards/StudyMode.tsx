@@ -1,5 +1,4 @@
 
-import { Card, CardContent } from "@/components/ui/card";
 import { useSwipeDetection } from "@/hooks/useSwipeDetection";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MultipleChoiceMode } from "@/components/flashcards/MultipleChoiceMode";

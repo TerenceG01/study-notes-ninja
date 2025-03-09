@@ -42,7 +42,7 @@ export const EnhancedFlashcard = ({
       </CardContent>
       <div className="absolute bottom-2 right-2 text-xs text-muted-foreground">
         <span className="mr-1">•</span>
-        <span>{isMobile ? "Tap to flip" : "Swipe to navigate"}</span>
+        <span>{isMobile ? "Tap to flip" : "Swipe or use arrow keys"}</span>
       </div>
     </Card>
   );
