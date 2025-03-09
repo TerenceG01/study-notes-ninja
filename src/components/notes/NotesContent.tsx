@@ -43,8 +43,8 @@ export const NotesContent = () => {
       fetchNotes();
     }
   }, [user, fetchNotes]);
-  return <div className="flex flex-col h-[calc(100vh-140px)] max-h-[calc(100vh-120px)] w-full max-w-full overflow-hidden">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-3">
+  return <div className="flex flex-col h-[calc(100vh-130px)] max-h-[calc(100vh-110px)] w-full max-w-full overflow-hidden">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-primary">My Notes</h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -57,7 +57,7 @@ export const NotesContent = () => {
         <NotesHeader onSearch={setSearchQuery} />
       </div>
       
-      <div className="rounded-lg border bg-card w-full flex-1 flex flex-col overflow-hidden min-h-0 py-0 my-[4px]">
+      <div className="rounded-lg border bg-card w-full flex-1 flex flex-col overflow-hidden min-h-0 py-0 my-1">
         {loading ? <NotesLoading /> : <NotesContainer notes={filteredNotes} loading={loading} generatingFlashcardsForNote={generatingFlashcardsForNote} selectedColor={selectedColor} selectedSubject={currentSubject} selectedDate={selectedDate} uniqueSubjects={uniqueSubjects} onColorChange={setSelectedColor} onSubjectChange={() => {}} onDateChange={setSelectedDate} onClearFilters={clearFilters} onNoteClick={handleNoteClick} onGenerateFlashcards={generateFlashcards} onNotesChanged={fetchNotes} />}
       </div>
 
