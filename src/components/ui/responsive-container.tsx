@@ -24,10 +24,3 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
         </div>
     );
 };
-
-// Enhancements for mobile responsiveness
-// Use media queries in Tailwind CSS for additional fine-tuning
-// Example media query: '@media (max-width: 640px) { ... }'
-
-// Add ARIA labels for accessibility
-// Example: <div aria-label="responsive container">...</div>

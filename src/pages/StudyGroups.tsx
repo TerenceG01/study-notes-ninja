@@ -1,5 +1,4 @@
 
-import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -48,9 +47,8 @@ const StudyGroups = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <NavigationBar />
       <main className="container mx-auto sm:px-6 lg:px-8 max-w-[1400px] py-[24px] px-[10px]">
-        <div className="flex justify-between items-start mb-8">
+        <div className="flex justify-between items-start mb-8 pt-10">
           <div>
             <h1 className="text-4xl font-bold text-primary">Study Groups</h1>
             <p className="text-muted-foreground mt-2">

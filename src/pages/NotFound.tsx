@@ -1,7 +1,7 @@
 
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { NavigationBar } from "@/components/navigation/NavigationBar";
+import { ProfileButton } from "@/components/navigation/ProfileButton";
 
 const NotFound = () => {
   const location = useLocation();
@@ -15,8 +15,8 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <NavigationBar />
-      <main className="container mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pt-16">
+      <ProfileButton />
+      <main className="container mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="text-center py-12 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
           <h1 className="text-4xl font-bold mb-4">404</h1>
           <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
