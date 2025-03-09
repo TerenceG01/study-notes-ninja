@@ -8,12 +8,14 @@
   word-wrap: break-word;    /* Added for better word wrapping */
   overflow-wrap: break-word; /* Added to ensure words break properly */
   white-space: pre-wrap;    /* Preserves whitespace but wraps text */
+  max-width: 100%;          /* Ensures content doesn't overflow container */
 }
 
 .ProseMirror p {
   margin-bottom: 0.5em; /* Reduced from 0.75em */
   line-height: 1.4; /* Added line height control */
   max-width: 100%;  /* Ensures content doesn't overflow container */
+  overflow-wrap: break-word; /* Forces word wrapping */
 }
 
 .ProseMirror h1 {
@@ -21,6 +23,8 @@
   margin-top: 0.8em; /* Reduced from 1em */
   margin-bottom: 0.4em; /* Reduced from 0.5em */
   font-weight: bold;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 .ProseMirror h2 {
@@ -28,6 +32,8 @@
   margin-top: 0.6em; /* Reduced from 0.75em */
   margin-bottom: 0.4em; /* Reduced from 0.5em */
   font-weight: bold;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 .ProseMirror blockquote {
@@ -36,6 +42,8 @@
   margin-left: 0;
   margin-right: 0;
   margin-bottom: 0.5em; /* Added bottom margin */
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 /* Improve list styling */
@@ -43,6 +51,7 @@
 .ProseMirror ol {
   padding-left: 1.5em;
   margin-bottom: 0.5em; /* Reduced from 0.75em */
+  max-width: 100%;
 }
 
 .ProseMirror ul {
@@ -56,10 +65,13 @@
 .ProseMirror li {
   margin-bottom: 0.2em; /* Reduced from 0.25em */
   padding-left: 0.2em;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 .ProseMirror li p {
   margin: 0;
+  max-width: 100%;
 }
 
 .ProseMirror code {
@@ -67,6 +79,7 @@
   border-radius: 0.25em;
   padding: 0.2em 0.4em;
   font-family: monospace;
+  word-break: break-all;
 }
 
 .ProseMirror pre {
@@ -75,11 +88,14 @@
   padding: 0.75em 1em;
   font-family: monospace;
   margin-bottom: 0.5em; /* Reduced from 0.75em */
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .ProseMirror pre code {
   background-color: transparent;
   padding: 0;
+  word-break: break-all;
 }
 
 .ProseMirror mark {
@@ -115,10 +131,37 @@
   max-width: 100%;
   overflow-x: auto;
   display: block;
+  border-collapse: collapse;
+}
+
+.ProseMirror table td, 
+.ProseMirror table th {
+  border: 1px solid hsl(var(--border));
+  padding: 0.5em;
+  word-break: break-word;
 }
 
 /* Ensure images don't break the layout */
 .ProseMirror img {
   max-width: 100%;
   height: auto;
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .ProseMirror {
+    padding: 0.5em;
+  }
+  
+  .ProseMirror h1 {
+    font-size: 1.3em;
+  }
+  
+  .ProseMirror h2 {
+    font-size: 1.1em;
+  }
+  
+  .ProseMirror pre {
+    padding: 0.5em;
+  }
 }

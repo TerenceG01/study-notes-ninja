@@ -62,8 +62,8 @@ export const NoteContentContainer = ({
         onToggleAutoSave={onToggleAutoSave}
       />
 
-      <ScrollArea className="flex-grow overflow-y-auto">
-        <div className="space-y-4 pr-4">
+      <ScrollArea className="flex-grow overflow-y-auto overflow-x-hidden">
+        <div className="space-y-4 pr-2 sm:pr-4 max-w-full">
           <SummaryControls 
             summaryLevel={summaryLevel}
             summarizing={summarizing}

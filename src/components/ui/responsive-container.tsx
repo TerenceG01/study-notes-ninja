@@ -15,8 +15,8 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
     return (
         <div
             className={cn(
-                "w-full mx-auto max-w-[1400px]",
-                withPadding && "px-4 sm:px-6 lg:px-8 py-4 sm:py-6",
+                "w-full mx-auto max-w-[1400px] overflow-hidden",
+                withPadding && "px-3 sm:px-6 lg:px-8 py-4 sm:py-6",
                 className
             )}
         >

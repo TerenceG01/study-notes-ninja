@@ -62,7 +62,7 @@ export const NotesContainer = ({
 
   return (
     <Card className="shadow-sm h-full flex flex-col overflow-hidden">
-      <CardHeader className="bg-muted/40 px-3 sm:px-6 py-3 sm:py-4 flex-shrink-0">
+      <CardHeader className="bg-muted/40 px-2 sm:px-6 py-3 sm:py-4 flex-shrink-0">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <div>
             <CardTitle className="text-base sm:text-lg font-medium">Your Notes</CardTitle>

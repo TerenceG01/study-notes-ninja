@@ -47,7 +47,7 @@ export const NotesContent = () => {
   }, [user, fetchNotes]);
 
   return (
-    <div className="flex flex-col h-full w-full max-w-full overflow-hidden space-y-6 pb-6">
+    <div className="flex flex-col h-full w-full max-w-full overflow-hidden space-y-4 sm:space-y-6 pb-6">
       <NotesHeader onSearch={setSearchQuery} />
       
       <div className="rounded-lg border bg-card w-full flex-1 flex flex-col overflow-hidden">

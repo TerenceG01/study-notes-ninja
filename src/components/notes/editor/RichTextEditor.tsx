@@ -104,15 +104,16 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   }, [content, editor, isMounted]);
 
   return (
-    <div className={cn("flex flex-col rounded-md border", className)}>
+    <div className={cn("flex flex-col rounded-md border overflow-hidden max-w-full", className)}>
       {editable && <RichTextToolbar editor={editor} />}
       <EditorContent
         editor={editor}
-        className="prose max-w-none p-4 overflow-hidden"
+        className="prose max-w-none p-2 sm:p-4 overflow-hidden"
         style={{ 
           height: height,
           overflowY: "auto",
           width: "100%", // Ensure container takes full width
+          maxWidth: "100%", // Prevent horizontal overflow
         }}
       />
     </div>
