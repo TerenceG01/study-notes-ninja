@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useNotes } from "@/hooks/useNotes";
 import { useAuth } from "@/contexts/AuthContext";
@@ -52,11 +53,11 @@ export const NotesContent = () => {
         </div>
       </div>
       
-      <div className="flex-shrink-0 mb-3">
+      <div className="flex-shrink-0 mb-2">
         <NotesHeader onSearch={setSearchQuery} />
       </div>
       
-      <div className="rounded-lg border bg-card w-full flex-1 flex flex-col overflow-hidden min-h-0 py-0 my-[15px]">
+      <div className="rounded-lg border bg-card w-full flex-1 flex flex-col overflow-hidden min-h-0 py-0 my-[8px]">
         {loading ? <NotesLoading /> : <NotesContainer notes={filteredNotes} loading={loading} generatingFlashcardsForNote={generatingFlashcardsForNote} selectedColor={selectedColor} selectedSubject={currentSubject} selectedDate={selectedDate} uniqueSubjects={uniqueSubjects} onColorChange={setSelectedColor} onSubjectChange={() => {}} onDateChange={setSelectedDate} onClearFilters={clearFilters} onNoteClick={handleNoteClick} onGenerateFlashcards={generateFlashcards} onNotesChanged={fetchNotes} />}
       </div>
 

@@ -41,13 +41,13 @@ export const NotesContainer = ({
   onNotesChanged,
 }: NotesContainerProps) => {
   const uniqueColors = Array.from(new Set(notes.map(note => note.subject_color).filter(Boolean)));
-  const [tableHeight, setTableHeight] = useState("calc(100% - 45px)"); // Reduced from 57px to extend table
+  const [tableHeight, setTableHeight] = useState("calc(100% - 40px)"); // Reduced header height
   
   // Dynamically adjust the table height based on viewport
   useEffect(() => {
     const updateTableHeight = () => {
       const header = document.querySelector('.notes-container-header');
-      const headerHeight = header ? header.getBoundingClientRect().height : 45; // Reduced from 57px
+      const headerHeight = header ? header.getBoundingClientRect().height : 40; // Reduced from 45px
       const container = document.querySelector('.notes-card-container');
       
       if (container) {
@@ -70,8 +70,8 @@ export const NotesContainer = ({
 
   return (
     <Card className="shadow-sm h-full flex flex-col overflow-hidden notes-card-container">
-      <CardHeader className="bg-muted/40 px-2 sm:px-6 py-2 sm:py-3 flex-shrink-0 notes-container-header">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
+      <CardHeader className="bg-muted/40 px-2 sm:px-6 py-1 sm:py-2 flex-shrink-0 notes-container-header">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4">
           <div>
             <CardTitle className="text-base sm:text-lg font-medium">Your Notes</CardTitle>
             <CardDescription className="text-xs sm:text-sm">Browse and manage your existing notes</CardDescription>
@@ -93,7 +93,7 @@ export const NotesContainer = ({
       </CardHeader>
       <CardContent className="p-0 flex-grow overflow-hidden">
         <div className="relative h-full overflow-hidden">
-          <ScrollArea className="h-full min-h-[240px] max-w-full overflow-hidden" style={{ height: tableHeight }}>
+          <ScrollArea className="h-full min-h-[280px] max-w-full overflow-hidden" style={{ height: tableHeight }}>
             {loading ? (
               <TableSkeleton rows={5} />
             ) : (
