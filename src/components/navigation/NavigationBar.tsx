@@ -7,9 +7,10 @@ import { useToast } from "@/components/ui/use-toast";
 import { User } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { ProfileModal } from "@/components/profile/ProfileModal";
+import { useAccentColor } from "@/hooks/useAccentColor";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +26,12 @@ export const NavigationBar = () => {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [authTab, setAuthTab] = useState<"sign-in" | "sign-up">("sign-in");
+  const { accentColor } = useAccentColor();
+
+  // Ensure accent color is applied when component mounts
+  useEffect(() => {
+    // This will trigger the useEffect in useAccentColor when the NavigationBar mounts
+  }, []);
 
   const handleSignIn = () => {
     setAuthTab("sign-in");

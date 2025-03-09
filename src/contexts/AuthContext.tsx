@@ -25,10 +25,66 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Function to apply the user's accent color
+  const applyUserPreferences = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("accent_color, theme_preference")
+        .eq("id", userId)
+        .maybeSingle();
+        
+      if (error) throw error;
+      
+      if (data) {
+        // Apply accent color
+        if (data.accent_color) {
+          const root = document.documentElement;
+          const colorMode = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+          
+          // Map of color values
+          const colorMap: Record<string, { light: string, dark: string }> = {
+            purple: { 
+              light: "271 81% 50%",
+              dark: "240 84% 67%"
+            },
+            blue: { 
+              light: "217 91% 60%",
+              dark: "231 77% 61%"
+            },
+            green: { 
+              light: "158 64% 52%",
+              dark: "160 84% 39%"
+            },
+            orange: { 
+              light: "21 90% 58%",
+              dark: "20 90% 55%"
+            },
+            pink: { 
+              light: "326 78% 60%",
+              dark: "330 81% 60%"
+            }
+          };
+          
+          const colorValue = colorMap[data.accent_color]?.[colorMode] || colorMap.purple[colorMode];
+          root.style.setProperty('--primary', colorValue);
+        }
+      }
+    } catch (err) {
+      console.error("Error applying user preferences:", err);
+    }
+  };
+
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      
+      // Apply user preferences if user is logged in
+      if (session?.user) {
+        applyUserPreferences(session.user.id);
+      }
+      
       setLoading(false);
     });
 
@@ -37,6 +93,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      
+      // Apply user preferences when auth state changes
+      if (session?.user) {
+        applyUserPreferences(session.user.id);
+      }
+      
       setLoading(false);
     });
 
