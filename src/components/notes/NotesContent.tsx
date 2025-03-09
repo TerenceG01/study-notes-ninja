@@ -51,7 +51,7 @@ export const NotesContent = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)] space-y-6 w-full max-w-full px-4 sm:px-0">
+    <div className="flex flex-col h-[calc(100vh-12rem)] space-y-6 w-full max-w-full px-4 sm:px-6 md:px-8">
       <NotesHeader onSearch={setSearchQuery} />
       
       <div className="rounded-lg border bg-card w-full flex-1 flex flex-col">
@@ -83,7 +83,7 @@ export const NotesContent = () => {
         )}
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 w-full">
         <NoteEditingSection
           onNotesChanged={fetchNotes}
           selectedNote={selectedNote}
