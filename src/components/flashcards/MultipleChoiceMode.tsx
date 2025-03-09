@@ -10,6 +10,7 @@ import { MultipleChoiceOptions } from "./MultipleChoiceOptions";
 import { QuizNavigation } from "./quiz/QuizNavigation";
 import { DifficultyToggle } from "./quiz/DifficultyToggle";
 import { useQuizState } from "@/hooks/useQuizState";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface MultipleChoiceModeProps {
   flashcards: any[];
@@ -20,6 +21,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   const [currentIndex, setCurrentIndex] = useState(0);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
 
   const currentCard = flashcards[currentIndex];
   const isLastCard = currentIndex === flashcards.length - 1;
@@ -100,7 +102,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   }
 
   return (
-    <div className="w-[800px] mx-auto">
+    <div className={isMobile ? "w-full max-w-full mx-auto" : "w-[800px] max-w-full mx-auto"}>
       <DifficultyToggle
         hardMode={hardMode}
         onToggle={() => {
@@ -118,9 +120,9 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         totalCards={flashcards.length}
       />
 
-      <Card className="w-full flex-shrink-0">
-        <CardContent className="p-6">
-          <h3 className="text-lg font-medium mb-4">{currentCard.question}</h3>
+      <Card className="w-full flex-shrink-0 max-w-full">
+        <CardContent className="p-4 sm:p-6 overflow-hidden">
+          <h3 className="text-lg font-medium mb-4 break-words">{currentCard.question}</h3>
           <MultipleChoiceOptions
             options={options}
             isAnswered={isAnswered}

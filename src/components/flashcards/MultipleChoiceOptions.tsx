@@ -23,7 +23,7 @@ export const MultipleChoiceOptions = ({
   onSelect 
 }: MultipleChoiceOptionsProps) => {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 w-full max-w-full overflow-hidden">
       {options.slice(0, 5).map((option) => (
         <Button
           key={option.id}
@@ -35,11 +35,11 @@ export const MultipleChoiceOptions = ({
                 : "outline"
             : "outline"
           }
-          className="w-full justify-start text-left h-auto py-4 px-6 whitespace-normal"
+          className="w-full justify-start text-left h-auto py-3 sm:py-4 px-4 sm:px-6 whitespace-normal break-words text-sm sm:text-base"
           onClick={() => onSelect(option.id, option.is_correct)}
           disabled={isAnswered}
         >
-          <div className="flex items-start gap-2">
+          <div className="flex items-start gap-2 w-full">
             <div className="flex-shrink-0 mt-1">
               {isAnswered && option.is_correct && (
                 <Check className="h-4 w-4 text-white" />
@@ -53,8 +53,8 @@ export const MultipleChoiceOptions = ({
         </Button>
       ))}
       {isAnswered && options.find(o => o.id === selectedOption)?.explanation && (
-        <div className="mt-4 p-4 bg-muted rounded-lg">
-          <p className="text-sm">{options.find(o => o.id === selectedOption)?.explanation}</p>
+        <div className="mt-4 p-3 sm:p-4 bg-muted rounded-lg">
+          <p className="text-xs sm:text-sm break-words">{options.find(o => o.id === selectedOption)?.explanation}</p>
         </div>
       )}
     </div>
