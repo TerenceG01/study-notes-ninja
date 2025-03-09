@@ -1,5 +1,4 @@
 
-import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +12,7 @@ import { GroupAbout } from "@/components/study-groups/GroupAbout";
 import { GroupMembersList } from "@/components/study-groups/GroupMembersList";
 import { GroupReminders } from "@/components/study-groups/GroupReminders";
 import { useEffect } from "react";
+import { useSidebar } from "@/components/ui/sidebar";
 
 interface StudyGroup {
   id: string;
@@ -36,6 +36,8 @@ interface StudyGroupMember {
 const StudyGroupDetails = () => {
   const { id } = useParams();
   const { user } = useAuth();
+  const { state } = useSidebar();
+  const isSidebarOpen = state === "expanded";
 
   // Debug logging
   useEffect(() => {
@@ -86,13 +88,10 @@ const StudyGroupDetails = () => {
 
   if (isLoadingGroup || isLoadingMembers) {
     return (
-      <div className="min-h-screen bg-background">
-        <NavigationBar />
-        <main className="container mx-auto px-4 pt-20">
-          <div className="flex justify-center items-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        </main>
+      <div className={`transition-all duration-300 ${isSidebarOpen ? 'ml-40' : 'ml-20'} w-full px-4 sm:px-6 lg:px-8 pt-6`}>
+        <div className="flex justify-center items-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
       </div>
     );
   }
@@ -100,16 +99,13 @@ const StudyGroupDetails = () => {
   if (groupError || !studyGroup) {
     console.error("Error loading study group:", groupError);
     return (
-      <div className="min-h-screen bg-background">
-        <NavigationBar />
-        <main className="container mx-auto px-4 pt-20">
-          <div className="text-center py-12">
-            <h2 className="text-2xl font-bold">Study Group Not Found</h2>
-            <p className="text-muted-foreground mt-2">
-              The study group you're looking for doesn't exist or you don't have access to it.
-            </p>
-          </div>
-        </main>
+      <div className={`transition-all duration-300 ${isSidebarOpen ? 'ml-40' : 'ml-20'} w-full px-4 sm:px-6 lg:px-8 pt-6`}>
+        <div className="text-center py-12">
+          <h2 className="text-2xl font-bold">Study Group Not Found</h2>
+          <p className="text-muted-foreground mt-2">
+            The study group you're looking for doesn't exist or you don't have access to it.
+          </p>
+        </div>
       </div>
     );
   }
@@ -118,65 +114,62 @@ const StudyGroupDetails = () => {
   console.log("User role in group:", userRole);
 
   return (
-    <div className="min-h-screen bg-background">
-      <NavigationBar />
-      <main className="container mx-auto px-4 py-6">
-        <div>
-          <GroupHeader 
-            name={studyGroup.name} 
-            subject={studyGroup.subject} 
-            userRole={userRole} 
-            groupId={id!} // Ensure we pass the ID
-          />
-        </div>
+    <div className={`transition-all duration-300 ${isSidebarOpen ? 'ml-40' : 'ml-20'} w-full px-4 sm:px-6 lg:px-8 pt-6`}>
+      <div>
+        <GroupHeader 
+          name={studyGroup.name} 
+          subject={studyGroup.subject} 
+          userRole={userRole} 
+          groupId={id!} // Ensure we pass the ID
+        />
+      </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="md:col-span-2 space-y-6">
-            <div>
-              <GroupAbout 
-                description={studyGroup.description} 
-                createdAt={studyGroup.created_at} 
-              />
-            </div>
+      <div className="grid gap-6 md:grid-cols-3 mt-6">
+        <div className="md:col-span-2 space-y-6">
+          <div>
+            <GroupAbout 
+              description={studyGroup.description} 
+              createdAt={studyGroup.created_at} 
+            />
+          </div>
 
+          <Card>
+            <CardHeader>
+              <CardTitle>Shared Notes</CardTitle>
+              <CardDescription>
+                Notes shared by group members
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* Key added to force re-render when the ID changes */}
+              <SharedNotes key={`shared-notes-${id}`} groupId={studyGroup.id} />
+            </CardContent>
+          </Card>
+
+          {userRole && (
             <Card>
               <CardHeader>
-                <CardTitle>Shared Notes</CardTitle>
+                <CardTitle>Invite Members</CardTitle>
                 <CardDescription>
-                  Notes shared by group members
+                  Invite other students to join this study group
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {/* Key added to force re-render when the ID changes */}
-                <SharedNotes key={`shared-notes-${id}`} groupId={studyGroup.id} />
+                <InviteMembers groupId={studyGroup.id} />
               </CardContent>
             </Card>
+          )}
+        </div>
 
-            {userRole && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Invite Members</CardTitle>
-                  <CardDescription>
-                    Invite other students to join this study group
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <InviteMembers groupId={studyGroup.id} />
-                </CardContent>
-              </Card>
-            )}
+        <div className="space-y-6">
+          <div>
+            <GroupMembersList members={members || []} />
           </div>
-
-          <div className="space-y-6">
-            <div>
-              <GroupMembersList members={members || []} />
-            </div>
-            <div>
-              <GroupReminders groupId={studyGroup.id} userRole={userRole} />
-            </div>
+          <div>
+            <GroupReminders groupId={studyGroup.id} userRole={userRole} />
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };
