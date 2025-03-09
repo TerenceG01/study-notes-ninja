@@ -276,6 +276,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          accent_color: string | null
           avatar_url: string | null
           created_at: string
           full_name: string | null
@@ -286,6 +287,7 @@ export type Database = {
           username: string | null
         }
         Insert: {
+          accent_color?: string | null
           avatar_url?: string | null
           created_at?: string
           full_name?: string | null
@@ -296,6 +298,7 @@ export type Database = {
           username?: string | null
         }
         Update: {
+          accent_color?: string | null
           avatar_url?: string | null
           created_at?: string
           full_name?: string | null
