@@ -2,8 +2,8 @@
 import { Moon, Sun, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 interface AppearanceCardProps {
   resolvedTheme: string | undefined;
@@ -12,13 +12,13 @@ interface AppearanceCardProps {
   onAccentColorChange: (color: string) => void;
 }
 
-// Available accent colors
+// Available accent colors with improved descriptions and visual properties
 const accentColors = [
-  { name: "Purple", value: "purple", class: "bg-purple-500" },
-  { name: "Blue", value: "blue", class: "bg-blue-500" },
-  { name: "Green", value: "green", class: "bg-green-500" },
-  { name: "Orange", value: "orange", class: "bg-orange-500" },
-  { name: "Pink", value: "pink", class: "bg-pink-500" }
+  { name: "Purple", value: "purple", class: "bg-purple-500", gradient: "from-purple-400 to-purple-600" },
+  { name: "Blue", value: "blue", class: "bg-blue-500", gradient: "from-blue-400 to-blue-600" },
+  { name: "Green", value: "green", class: "bg-green-500", gradient: "from-green-400 to-green-600" },
+  { name: "Orange", value: "orange", class: "bg-orange-500", gradient: "from-orange-400 to-orange-600" },
+  { name: "Pink", value: "pink", class: "bg-pink-500", gradient: "from-pink-400 to-pink-600" }
 ];
 
 export function AppearanceCard({ 
@@ -28,61 +28,74 @@ export function AppearanceCard({
   onAccentColorChange 
 }: AppearanceCardProps) {
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="text-xl">Appearance</CardTitle>
-        <CardDescription>Customize your app appearance</CardDescription>
+    <Card className="w-full overflow-hidden">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-xl flex items-center gap-2">
+          <Palette className="h-5 w-5" />
+          Appearance
+        </CardTitle>
+        <CardDescription>Customize how the app looks for you</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Theme Toggle Section */}
-        <div className="flex items-center justify-between p-4 rounded-lg border hover:shadow-lg transition-all duration-300">
-          <div className="flex items-center gap-2">
-            {resolvedTheme === "light" ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-            <span className="font-medium">
-              {resolvedTheme === "light" ? "Light" : "Dark"} Mode
-            </span>
+        {/* Theme Toggle Section - Enhanced with visual indicators */}
+        <div className="rounded-lg border hover:shadow-lg transition-all duration-300 overflow-hidden">
+          <div className="flex items-center justify-between p-4 bg-secondary/30">
+            <div className="flex items-center gap-2">
+              {resolvedTheme === "light" ? (
+                <Sun className="h-5 w-5 text-yellow-500" />
+              ) : (
+                <Moon className="h-5 w-5 text-blue-400" />
+              )}
+              <span className="font-medium">
+                {resolvedTheme === "light" ? "Light" : "Dark"} Mode
+              </span>
+            </div>
+            <Button variant="outline" onClick={onToggleTheme} className="min-w-[100px]">
+              {resolvedTheme === "light" ? "Dark Mode" : "Light Mode"}
+            </Button>
           </div>
-          <Button variant="outline" onClick={onToggleTheme} className="min-w-[100px]">
-            {resolvedTheme === "light" ? "Dark Mode" : "Light Mode"}
-          </Button>
         </div>
 
-        {/* Accent Color Section */}
-        <div className="flex flex-col space-y-4 p-4 rounded-lg border hover:shadow-lg transition-all duration-300">
-          <div className="flex items-center gap-2">
+        {/* Accent Color Section - Completely redesigned */}
+        <div className="rounded-lg border overflow-hidden">
+          <div className="p-4 bg-secondary/30 flex items-center gap-2 border-b">
             <Palette className="h-5 w-5" />
             <span className="font-medium">Accent Color</span>
           </div>
           
-          <RadioGroup 
-            value={accentColor} 
-            onValueChange={onAccentColorChange}
-            className="flex flex-wrap gap-4 mt-2"
-          >
+          <div className="p-5 grid grid-cols-2 md:grid-cols-5 gap-4">
             {accentColors.map((color) => (
-              <div key={color.value} className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value={color.value}
-                  id={`color-${color.value}`}
-                  className="peer sr-only"
+              <button
+                key={color.value}
+                onClick={() => onAccentColorChange(color.value)}
+                className={cn(
+                  "flex flex-col items-center gap-2 p-3 rounded-lg transition-all",
+                  "hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary",
+                  accentColor === color.value ? "ring-2 ring-primary bg-secondary/40" : "hover:bg-secondary/20"
+                )}
+                aria-label={`Set accent color to ${color.name}`}
+              >
+                <div 
+                  className={cn(
+                    "w-12 h-12 rounded-full bg-gradient-to-br shadow-md", 
+                    color.gradient,
+                    accentColor === color.value ? "ring-2 ring-offset-2 ring-primary" : ""
+                  )}
                 />
-                <Label
-                  htmlFor={`color-${color.value}`}
-                  className="flex flex-col items-center justify-center rounded-full p-1 cursor-pointer border-2 transition-all peer-data-[state=checked]:border-black dark:peer-data-[state=checked]:border-white"
-                >
-                  <div 
-                    className={`${color.class} w-8 h-8 rounded-full`}
-                    aria-label={color.name}
-                  />
-                  <span className="text-xs mt-1">{color.name}</span>
-                </Label>
-              </div>
+                <span className="text-sm font-medium">{color.name}</span>
+              </button>
             ))}
-          </RadioGroup>
+          </div>
+          
+          <div className="p-4 bg-muted/30 border-t">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Selected: <span className="font-medium text-foreground capitalize">{accentColor}</span></span>
+              <div className={cn(
+                "w-6 h-6 rounded-full",
+                `bg-${accentColor}-500`
+              )}></div>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
