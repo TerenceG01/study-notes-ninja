@@ -69,20 +69,17 @@ export const MobileNavigationBar = () => {
                 <span className="text-[10px] sm:text-xs mt-0.5 sm:mt-1">Notes</span>
               </Link>
               
-              {/* Enhanced create note button with improved design */}
+              {/* Create note button with removed animations */}
               <div className="relative">
                 <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
                   <Button 
                     onClick={handleCreateNote}
-                    className="group rounded-full bg-primary hover:bg-primary/90 h-16 w-16 p-0 flex items-center justify-center border-4 border-background shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden animate-pulse-subtle"
+                    className="rounded-full bg-primary hover:bg-primary/90 h-16 w-16 p-0 flex items-center justify-center border-4 border-background shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-primary rounded-full opacity-80 group-hover:opacity-100 transition-opacity"></div>
-                    <span className="absolute inset-0 flex items-center justify-center">
-                      <Plus className="h-7 w-7 text-white relative z-10 transition-transform duration-300 group-hover:rotate-45" />
-                    </span>
-                    <span className="absolute top-0 left-0 w-full h-full rounded-full bg-white/20 animate-spin-slow opacity-0 group-hover:opacity-30"></span>
+                    <Plus className="h-7 w-7 text-white relative z-10" />
                   </Button>
-                  <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">New Note</span>
+                  <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs font-medium text-primary whitespace-nowrap">New Note</span>
                 </div>
               </div>
               
