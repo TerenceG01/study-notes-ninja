@@ -28,10 +28,10 @@ export const NoteHeaderSection = ({
   onToggleAutoSave
 }: NoteHeaderSectionProps) => {
   return (
-    <div className="bg-card rounded-lg p-4 shadow-sm border border-border mb-6">
+    <div className="bg-card rounded-lg p-3 shadow-sm border border-border mb-2">
       <div className="flex justify-between items-center">
-        <DialogHeader className="flex-grow">
-          <DialogTitle>
+        <DialogHeader className="flex-grow space-y-0 p-0">
+          <DialogTitle className="text-base">
             <Input 
               value={editingNote?.title || ""} 
               onChange={e => onNoteChange(editingNote ? {
@@ -39,7 +39,7 @@ export const NoteHeaderSection = ({
                 title: e.target.value
               } : null)} 
               placeholder="Note Title" 
-              className="text-xl font-semibold border-none shadow-none focus-visible:ring-1 bg-background placeholder:text-muted-foreground/50"
+              className="text-base font-semibold border-none shadow-none focus-visible:ring-1 bg-background h-8 px-2"
             />
           </DialogTitle>
         </DialogHeader>
@@ -48,7 +48,7 @@ export const NoteHeaderSection = ({
           variant="ghost" 
           size="icon" 
           onClick={onToggleFullscreen} 
-          className="ml-2 hover:bg-muted"
+          className="ml-2 hover:bg-muted h-8 w-8"
         >
           {isFullscreen ? 
             <Minimize2 className="h-4 w-4" /> : 
@@ -57,7 +57,7 @@ export const NoteHeaderSection = ({
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
         <div className="md:col-span-2">
           <Select 
             value={editingNote?.subject || "General"} 
@@ -66,7 +66,7 @@ export const NoteHeaderSection = ({
               subject: value
             } : null)}
           >
-            <SelectTrigger className="w-full bg-background border-border">
+            <SelectTrigger className="w-full bg-background border-border h-8">
               <SelectValue placeholder="Select subject" />
             </SelectTrigger>
             <SelectContent>
@@ -87,7 +87,7 @@ export const NoteHeaderSection = ({
           <Button 
             variant={autoSaveEnabled ? "secondary" : "outline"} 
             size="sm" 
-            className="text-xs flex-shrink-0 h-9 transition-all"
+            className="text-xs flex-shrink-0 h-8 transition-all"
             onClick={onToggleAutoSave}
           >
             {autoSaveEnabled ? (
@@ -105,7 +105,7 @@ export const NoteHeaderSection = ({
           
           {lastSaved && (
             <span className="text-xs text-muted-foreground whitespace-nowrap">
-              Saved {lastSaved.toLocaleTimeString()}
+              Saved {lastSaved.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
             </span>
           )}
         </div>

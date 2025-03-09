@@ -27,19 +27,20 @@ export const NoteContentEditor = ({
   onNoteChange,
   onToggleAutoSave
 }: NoteContentEditorProps) => {
-  // Default heights based on fullscreen mode and device
+  // Calculate editor height based on available space
   const getDefaultHeight = () => {
-    if (window.innerWidth < 640) { // Mobile
-      return isFullscreen ? "calc(100vh - 200px)" : "calc(100vh - 350px)";
+    if (isFullscreen) {
+      return window.innerWidth < 640 ? "calc(100vh - 180px)" : "calc(100vh - 220px)";
+    } else {
+      return window.innerWidth < 640 ? "300px" : "350px";
     }
-    return isFullscreen ? "calc(100vh - 250px)" : "calc(100vh - 450px)";
   };
   
   const [editorHeight, setEditorHeight] = useState(getDefaultHeight());
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeStartPosRef = useRef<number | null>(null);
   
-  // Update default height when fullscreen mode changes or on resize
+  // Update height when fullscreen mode changes or on resize
   useEffect(() => {
     setEditorHeight(getDefaultHeight());
     
@@ -56,7 +57,6 @@ export const NoteContentEditor = ({
     e.preventDefault();
     resizeStartPosRef.current = e.clientY;
     
-    // Add event listeners for mouse move and mouse up
     document.addEventListener('mousemove', handleResize);
     document.addEventListener('mouseup', handleResizeEnd);
   };
@@ -67,7 +67,7 @@ export const NoteContentEditor = ({
     
     const deltaY = e.clientY - resizeStartPosRef.current;
     const currentHeight = containerRef.current.offsetHeight;
-    const newHeight = Math.max(200, currentHeight + deltaY); // Minimum height of 200px
+    const newHeight = Math.max(150, currentHeight + deltaY); // Min height 150px
     
     setEditorHeight(`${newHeight}px`);
     resizeStartPosRef.current = e.clientY;
@@ -91,12 +91,12 @@ export const NoteContentEditor = ({
   };
 
   return (
-    <div className="mt-4 min-h-[300px] flex flex-col h-full bg-card rounded-lg border border-border shadow-sm max-w-full overflow-hidden">
+    <div className="mt-2 min-h-[150px] max-h-[calc(100%-20px)] flex flex-col bg-card rounded-lg border border-border shadow-sm max-w-full overflow-hidden">
       {showSummary && editingNote?.summary ? (
-        <Card className="p-3 sm:p-6 bg-muted h-full overflow-auto rounded-lg border-none shadow-none">
+        <Card className="p-3 sm:p-4 bg-muted h-full overflow-auto rounded-lg border-none shadow-none">
           <div className="prose max-w-none break-words">
             {editingNote.summary.split('\n').map((line, index) => (
-              <p key={index} className="mb-3 text-foreground/90 text-sm sm:text-base">{line}</p>
+              <p key={index} className="mb-3 text-foreground/90 text-sm">{line}</p>
             ))}
           </div>
         </Card>
@@ -116,13 +116,13 @@ export const NoteContentEditor = ({
             title="Drag to resize"
           />
           
-          <div className="flex justify-between text-xs text-muted-foreground pt-3 px-2 sm:px-4 pb-2 flex-wrap gap-2">
+          <div className="flex justify-between text-xs text-muted-foreground pt-2 px-2 pb-1 flex-wrap gap-2">
             <div className="flex items-center gap-1">
               <FileText className="h-3 w-3" />
               <span>{wordCount} words</span>
             </div>
             <div className="italic text-[10px] sm:text-xs">
-              Press <kbd className="px-1 sm:px-1.5 py-0.5 bg-muted rounded text-[9px] sm:text-[10px] font-mono">Ctrl+S</kbd> to save
+              Press <kbd className="px-1 py-0.5 bg-muted rounded text-[9px] font-mono">Ctrl+S</kbd> to save
             </div>
           </div>
         </div>

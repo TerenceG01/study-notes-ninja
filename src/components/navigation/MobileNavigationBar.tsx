@@ -55,18 +55,18 @@ export const MobileNavigationBar = () => {
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t py-1.5 md:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t py-1 md:hidden">
         <div className="flex justify-around items-center relative">
           <Link to="/" className={`flex flex-col items-center ${location.pathname === '/' ? 'text-primary' : 'text-muted-foreground'}`}>
             <Home className="h-4 w-4 sm:h-5 sm:w-5" />
-            <span className="text-[10px] sm:text-xs mt-0.5 sm:mt-1">Home</span>
+            <span className="text-[10px] sm:text-xs mt-0.5">Home</span>
           </Link>
           
           {user && (
             <>
               <Link to="/notes" className={`flex flex-col items-center ${location.pathname === '/notes' ? 'text-primary' : 'text-muted-foreground'}`}>
                 <FileText className="h-4 w-4 sm:h-5 sm:w-5" />
-                <span className="text-[10px] sm:text-xs mt-0.5 sm:mt-1">Notes</span>
+                <span className="text-[10px] sm:text-xs mt-0.5">Notes</span>
               </Link>
               
               {/* Create note button with removed animations */}
@@ -85,12 +85,12 @@ export const MobileNavigationBar = () => {
               
               <Link to="/flashcards" className={`flex flex-col items-center ${location.pathname === '/flashcards' ? 'text-primary' : 'text-muted-foreground'}`}>
                 <BookOpen className="h-4 w-4 sm:h-5 sm:w-5" />
-                <span className="text-[10px] sm:text-xs mt-0.5 sm:mt-1">Cards</span>
+                <span className="text-[10px] sm:text-xs mt-0.5">Cards</span>
               </Link>
               
               <Link to="/study-groups" className={`flex flex-col items-center ${location.pathname === '/study-groups' ? 'text-primary' : 'text-muted-foreground'}`}>
                 <Users className="h-4 w-4 sm:h-5 sm:w-5" />
-                <span className="text-[10px] sm:text-xs mt-0.5 sm:mt-1">Groups</span>
+                <span className="text-[10px] sm:text-xs mt-0.5">Groups</span>
               </Link>
             </>
           )}
@@ -103,7 +103,7 @@ export const MobileNavigationBar = () => {
               onClick={() => setShowProfileModal(true)}
             >
               <Users className="h-4 w-4 sm:h-5 sm:w-5" />
-              <span className="text-[10px] sm:text-xs mt-0.5 sm:mt-1">Login</span>
+              <span className="text-[10px] sm:text-xs mt-0.5">Login</span>
             </Button>
           )}
         </div>
