@@ -5,6 +5,7 @@ import { NoteFilters } from "./filters/NoteFilters";
 import { Note } from "@/hooks/useNotes";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TableSkeleton } from "@/components/ui/loading-skeletons";
+import { useEffect, useState } from "react";
 
 interface NotesContainerProps {
   notes: Note[];
@@ -40,10 +41,28 @@ export const NotesContainer = ({
   onNotesChanged,
 }: NotesContainerProps) => {
   const uniqueColors = Array.from(new Set(notes.map(note => note.subject_color).filter(Boolean)));
+  const [tableHeight, setTableHeight] = useState("calc(5*56px+56px)");
+  
+  // Dynamically adjust the table height based on viewport
+  useEffect(() => {
+    const updateTableHeight = () => {
+      // Calculate available space
+      // 100vh - header (4rem) - navbar (4rem) - card header (~4rem) - some padding
+      const availableHeight = window.innerHeight - 64 - 64 - 64 - 32; 
+      // Ensure minimum height shows at least a few rows
+      const minHeight = 56 * 3; // 3 rows minimum
+      const newHeight = Math.max(availableHeight, minHeight);
+      setTableHeight(`${newHeight}px`);
+    };
+
+    updateTableHeight();
+    window.addEventListener('resize', updateTableHeight);
+    return () => window.removeEventListener('resize', updateTableHeight);
+  }, []);
 
   return (
-    <Card className="shadow-sm">
-      <CardHeader className="bg-muted/40 px-3 sm:px-6 py-3 sm:py-4">
+    <Card className="shadow-sm h-full flex flex-col">
+      <CardHeader className="bg-muted/40 px-3 sm:px-6 py-3 sm:py-4 flex-shrink-0">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <div>
             <CardTitle className="text-base sm:text-lg font-medium">Your Notes</CardTitle>
@@ -64,9 +83,9 @@ export const NotesContainer = ({
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-0">
-        <div className="relative max-h-[calc(5*56px+56px)] overflow-hidden">
-          <ScrollArea className="h-[calc(5*56px+56px)]" type="always">
+      <CardContent className="p-0 flex-grow overflow-hidden">
+        <div className="relative h-full overflow-hidden">
+          <ScrollArea className={`h-full min-h-[250px]`} style={{ height: tableHeight }}>
             {loading ? (
               <TableSkeleton rows={5} />
             ) : (
