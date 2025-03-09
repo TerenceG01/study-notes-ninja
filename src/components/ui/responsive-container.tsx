@@ -1,3 +1,4 @@
+
 import { cn } from "@/lib/utils";
 
 interface ResponsiveContainerProps {
@@ -12,16 +13,16 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
     withPadding = true
 }) => {
     return (
-          <div
-                  className={cn(
-                            "w-full mx-auto max-w-[1400px]",
-                            withPadding && "px-4 sm:px-6 lg:px-8 py-4 sm:py-6",
-                            className
-                          )}
-                >
+        <div
+            className={cn(
+                "w-full mx-auto max-w-[1400px]",
+                withPadding && "px-4 sm:px-6 lg:px-8 py-4 sm:py-6",
+                className
+            )}
+        >
             {children}
-              </div>div>
-        );
+        </div>
+    );
 };
 
 // Enhancements for mobile responsiveness
@@ -30,4 +31,3 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
 
 // Add ARIA labels for accessibility
 // Example: <div aria-label="responsive container">...</div>
-</div>
