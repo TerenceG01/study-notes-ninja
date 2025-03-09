@@ -48,7 +48,7 @@ export const NotesContainer = ({
     const updateTableHeight = () => {
       // Calculate available space
       // 100vh - header (4rem) - navbar (4rem) - card header (~4rem) - some padding
-      const availableHeight = window.innerHeight - 64 - 64 - 64 - 32; 
+      const availableHeight = window.innerHeight - 64 - 64 - 64 - 64; 
       // Ensure minimum height shows at least a few rows
       const minHeight = 56 * 3; // 3 rows minimum
       const newHeight = Math.max(availableHeight, minHeight);
@@ -61,7 +61,7 @@ export const NotesContainer = ({
   }, []);
 
   return (
-    <Card className="shadow-sm h-full flex flex-col">
+    <Card className="shadow-sm h-full flex flex-col overflow-hidden">
       <CardHeader className="bg-muted/40 px-3 sm:px-6 py-3 sm:py-4 flex-shrink-0">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <div>
@@ -85,7 +85,7 @@ export const NotesContainer = ({
       </CardHeader>
       <CardContent className="p-0 flex-grow overflow-hidden">
         <div className="relative h-full overflow-hidden">
-          <ScrollArea className={`h-full min-h-[250px]`} style={{ height: tableHeight }}>
+          <ScrollArea className="h-full min-h-[250px] max-w-full" style={{ height: tableHeight }}>
             {loading ? (
               <TableSkeleton rows={5} />
             ) : (
