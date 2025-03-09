@@ -10,6 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { NotesGridSkeleton } from "@/components/ui/loading-skeletons";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { ResponsiveContainer } from "@/components/ui/responsive-container";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Flashcards = () => {
   const { user } = useAuth();
@@ -17,6 +19,7 @@ const Flashcards = () => {
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const { state } = useSidebar();
   const isOpen = state === "expanded";
+  const isMobile = useIsMobile();
 
   const { data: decks, isLoading, refetch } = useQuery({
     queryKey: ["flashcard-decks"],
@@ -71,45 +74,48 @@ const Flashcards = () => {
 
   return (
     <div className={cn(
-      "h-full flex-grow overflow-x-hidden pt-6",
-      isOpen ? "ml-40" : "ml-20"
+      "h-full flex-grow overflow-hidden pt-6",
+      isOpen ? "ml-40" : "ml-20",
+      isMobile && "ml-0 pb-16" // Remove sidebar margin and add bottom padding for mobile nav
     )}>
-      <div className="container mx-auto max-w-full px-4 lg:px-8 h-full overflow-hidden">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-primary">My Flashcards</h1>
-            <p className="text-muted-foreground">Create and review flashcards to improve retention</p>
+      <ResponsiveContainer>
+        <div className="flex flex-col h-full overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2">
+            <div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-primary">My Flashcards</h1>
+              <p className="text-sm sm:text-base text-muted-foreground">Create and review flashcards to improve retention</p>
+            </div>
           </div>
+
+          {isLoading ? (
+            <NotesGridSkeleton count={3} />
+          ) : !decks || decks.length === 0 ? (
+            <EmptyDeckState onCreateClick={() => setOpenCreateDialog(true)} />
+          ) : (
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 overflow-y-auto overflow-x-hidden pb-4">
+              {decks.map((deck) => (
+                <DeckCard
+                  key={deck.id}
+                  deck={deck}
+                  cardCount={(deck.flashcards as any)?.[0]?.count || 0}
+                  onDelete={(deckId, e) => {
+                    e.preventDefault(); // Prevent navigation
+                    handleDeleteDeck(deckId);
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
+          <CreateDeckDialog 
+            open={openCreateDialog} 
+            onOpenChange={setOpenCreateDialog}
+            onDeckCreated={() => {
+              refetch();
+            }}
+          />
         </div>
-
-        {isLoading ? (
-          <NotesGridSkeleton count={3} />
-        ) : !decks || decks.length === 0 ? (
-          <EmptyDeckState onCreateClick={() => setOpenCreateDialog(true)} />
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 overflow-hidden">
-            {decks.map((deck) => (
-              <DeckCard
-                key={deck.id}
-                deck={deck}
-                cardCount={(deck.flashcards as any)?.[0]?.count || 0}
-                onDelete={(deckId, e) => {
-                  e.preventDefault(); // Prevent navigation
-                  handleDeleteDeck(deckId);
-                }}
-              />
-            ))}
-          </div>
-        )}
-
-        <CreateDeckDialog 
-          open={openCreateDialog} 
-          onOpenChange={setOpenCreateDialog}
-          onDeckCreated={() => {
-            refetch();
-          }}
-        />
-      </div>
+      </ResponsiveContainer>
     </div>
   );
 };

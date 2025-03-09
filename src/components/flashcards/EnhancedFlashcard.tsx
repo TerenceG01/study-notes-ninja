@@ -1,6 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { useSwipeDetection } from "@/hooks/useSwipeDetection";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface EnhancedFlashcardProps {
   card: {
@@ -21,6 +22,7 @@ export const EnhancedFlashcard = ({
   onNext, 
   onPrev 
 }: EnhancedFlashcardProps) => {
+  const isMobile = useIsMobile();
   const swipeHandlers = useSwipeDetection(
     () => onNext(),       // Swipe left to go to next card
     () => onPrev(),       // Swipe right to go to previous card
@@ -29,7 +31,7 @@ export const EnhancedFlashcard = ({
   
   return (
     <Card 
-      className="w-[800px] h-[350px] cursor-pointer transition-all hover:shadow-lg relative flex-shrink-0"
+      className="w-full max-w-[800px] h-[250px] sm:h-[350px] cursor-pointer transition-all hover:shadow-lg relative flex-shrink-0"
       onClick={() => onFlip(!isFlipped)}
       {...swipeHandlers}
     >
@@ -40,7 +42,7 @@ export const EnhancedFlashcard = ({
       </CardContent>
       <div className="absolute bottom-2 right-2 text-xs text-muted-foreground">
         <span className="mr-1">•</span>
-        <span>Swipe to navigate</span>
+        <span>{isMobile ? "Tap to flip" : "Swipe to navigate"}</span>
       </div>
     </Card>
   );

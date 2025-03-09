@@ -14,6 +14,7 @@ import { EmptyDeckView } from "@/components/flashcards/deck/EmptyDeckView";
 import { DeckLoading } from "@/components/flashcards/deck/DeckLoading";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { ResponsiveContainer } from "@/components/ui/responsive-container";
 
 const FlashcardDeck = () => {
   const { id } = useParams();
@@ -62,19 +63,20 @@ const FlashcardDeck = () => {
   
   return (
     <div className={cn(
-      "h-full flex-grow overflow-x-hidden pt-6",
-      isOpen ? "ml-40" : "ml-20"
+      "h-full flex-grow overflow-hidden pt-6",
+      isOpen ? "ml-40" : "ml-20",
+      isMobile && "ml-0 pb-16" // Remove sidebar margin and add bottom padding for mobile nav
     )}>
-      <div className="container mx-auto max-w-full px-4 lg:px-8 h-full overflow-hidden">
+      <ResponsiveContainer>
         <DeckHeader title={deck.title} description={deck.description} />
 
-        <Tabs defaultValue="study" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="study">
+        <Tabs defaultValue="study" className="space-y-4 sm:space-y-6 overflow-hidden">
+          <TabsList className="w-full max-w-[300px] mx-auto">
+            <TabsTrigger value="study" className="flex-1">
               <BookOpen className="h-4 w-4 mr-2" />
               Study
             </TabsTrigger>
-            <TabsTrigger value="manage">
+            <TabsTrigger value="manage" className="flex-1">
               <Pencil className="h-4 w-4 mr-2" />
               Manage Cards
             </TabsTrigger>
@@ -82,13 +84,9 @@ const FlashcardDeck = () => {
 
           <TabsContent value="study" className="space-y-4 overflow-hidden">
             {flashcards && flashcards.length > 0 ? (
-              isMobile ? (
-                <div className="pb-16 overflow-hidden"> {/* Add padding to account for navigation */}
-                  <StudyMode flashcards={flashcards} deckId={id!} />
-                </div>
-              ) : (
+              <div className="overflow-x-hidden">
                 <StudyMode flashcards={flashcards} deckId={id!} />
-              )
+              </div>
             ) : (
               <EmptyDeckView />
             )}
@@ -102,7 +100,7 @@ const FlashcardDeck = () => {
             )}
           </TabsContent>
         </Tabs>
-      </div>
+      </ResponsiveContainer>
     </div>
   );
 };
