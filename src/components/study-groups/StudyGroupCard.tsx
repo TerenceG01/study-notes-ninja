@@ -20,32 +20,32 @@ interface StudyGroupCardProps {
 export const StudyGroupCard = ({ group, onClick }: StudyGroupCardProps) => {
   return (
     <Card
-      className="group cursor-pointer hover:bg-muted/50 transition-colors duration-200"
+      className="group cursor-pointer hover:bg-muted/50 transition-colors duration-200 max-w-full"
       onClick={onClick}
     >
       <CardHeader>
-        <CardTitle className="flex items-start justify-between gap-4">
-          <span className="line-clamp-1">{group.name}</span>
-          <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-normal">
+        <CardTitle className="flex flex-col sm:flex-row items-start justify-between sm:gap-4">
+          <span className="line-clamp-1 mr-2">{group.name}</span>
+          <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-normal whitespace-nowrap mt-2 sm:mt-0">
             {group.subject}
           </span>
         </CardTitle>
-        <CardDescription className="line-clamp-2">
+        <CardDescription className="line-clamp-2 break-words">
           {group.description || "No description provided"}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap items-center gap-4 sm:gap-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Users className="h-4 w-4" />
+            <Users className="h-4 w-4 flex-shrink-0" />
             <span>Members</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <BookOpen className="h-4 w-4" />
+            <BookOpen className="h-4 w-4 flex-shrink-0" />
             <span>Shared Notes</span>
           </div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground ml-auto">
-            <Calendar className="h-4 w-4" />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground sm:ml-auto">
+            <Calendar className="h-4 w-4 flex-shrink-0" />
             <span>{format(new Date(group.created_at), 'MMM d, yyyy')}</span>
           </div>
         </div>

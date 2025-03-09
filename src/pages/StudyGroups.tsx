@@ -11,6 +11,7 @@ import { CreateStudyGroupForm } from "@/components/study-groups/CreateStudyGroup
 import { EmptyGroupState } from "@/components/study-groups/EmptyGroupState";
 import { StudyGroupCard } from "@/components/study-groups/StudyGroupCard";
 import { useSidebar } from "@/components/ui/sidebar";
+import { ResponsiveContainer } from "@/components/ui/responsive-container";
 
 interface StudyGroup {
   id: string;
@@ -49,7 +50,7 @@ const StudyGroups = () => {
   }
 
   return (
-    <div className={`transition-all duration-300 ${isSidebarOpen ? 'ml-40' : 'ml-20'} w-full px-4 sm:px-6 lg:px-8 pt-6`}>
+    <div className={`transition-all duration-300 ${isSidebarOpen ? 'ml-40' : 'ml-20'} w-[calc(100%-theme(spacing.40))] max-w-full overflow-x-hidden px-4 sm:px-6 lg:px-8 pt-6`}>
       <div className="flex justify-between items-start mb-8">
         <div>
           <h1 className="text-4xl font-bold text-primary">Study Groups</h1>
@@ -87,7 +88,7 @@ const StudyGroups = () => {
       ) : !studyGroups || studyGroups.length === 0 ? (
         <EmptyGroupState onCreateClick={() => setIsOpen(true)} />
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {studyGroups.map(group => (
             <StudyGroupCard 
               key={group.id} 
