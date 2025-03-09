@@ -18,19 +18,17 @@ export const GroupHeader = ({
   groupId
 }: GroupHeaderProps) => {
   const navigate = useNavigate();
-  return (
-    <div className="mb-8">
+  return <div className="mb-8">
       <Button variant="ghost" className="mb-4" onClick={() => navigate('/study-groups')}>
         <ArrowLeft className="h-4 w-4 mr-2" />
         Back to Study Groups
       </Button>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="max-w-full overflow-hidden">
-          <h1 className="text-4xl font-bold text-primary truncate">{name}</h1>
+      <div className="flex justify-between items-start px-[16px]">
+        <div>
+          <h1 className="text-4xl font-bold">{name}</h1>
           <p className="text-lg text-muted-foreground mt-2">{subject}</p>
         </div>
         {userRole && <ShareNote groupId={groupId} />}
       </div>
-    </div>
-  );
+    </div>;
 };

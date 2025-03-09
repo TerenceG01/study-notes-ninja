@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,11 +10,16 @@ import { useState, useEffect } from "react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { ProfileModal } from "@/components/profile/ProfileModal";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
 export const NavigationBar = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const { toggleSidebar } = useSidebar();
+  const {
+    user
+  } = useAuth();
+  const {
+    toast
+  } = useToast();
+  const {
+    toggleSidebar
+  } = useSidebar();
   const isMobile = useIsMobile();
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -46,19 +50,18 @@ export const NavigationBar = () => {
     // Clean up timeouts on unmount
     return resetPointerEvents;
   }, [showProfileModal, showAuthDialog]);
-
   const handleSignIn = () => {
     setAuthTab("sign-in");
     setShowAuthDialog(true);
   };
-
   const handleGetStarted = () => {
     setAuthTab("sign-up");
     setShowAuthDialog(true);
   };
-
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
+    const {
+      error
+    } = await supabase.auth.signOut();
     if (error) {
       toast({
         variant: "destructive",
@@ -71,12 +74,10 @@ export const NavigationBar = () => {
       });
     }
   };
-
   const handleProfileClick = () => {
     // Make sure to use a callback to ensure proper state updates
     setShowProfileModal(prev => !prev);
   };
-
   return <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b">
       
       <AuthDialog open={showAuthDialog} onOpenChange={setShowAuthDialog} defaultTab={authTab} />
