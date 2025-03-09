@@ -2,6 +2,7 @@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface DifficultyToggleProps {
   hardMode: boolean;
@@ -28,7 +29,7 @@ export const DifficultyToggle = ({
           id="hard-mode"
           checked={hardMode}
           onCheckedChange={onToggle}
-          size={isMobile ? "sm" : "default"}
+          className={cn(isMobile ? "h-5 w-9" : "")}
         />
         <Label htmlFor="hard-mode" className="text-xs sm:text-sm">
           Hard Mode
