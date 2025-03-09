@@ -6,7 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { BookOpen, Pencil } from "lucide-react";
+import { BookOpen, Pencil, Search } from "lucide-react";
 import { StudyMode } from "@/components/flashcards/StudyMode";
 import { DeckHeader } from "@/components/flashcards/deck/DeckHeader";
 import { ManageCards } from "@/components/flashcards/deck/ManageCards";
@@ -15,6 +15,8 @@ import { DeckLoading } from "@/components/flashcards/deck/DeckLoading";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { ResponsiveContainer } from "@/components/ui/responsive-container";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 
 const FlashcardDeck = () => {
   const { id } = useParams();
@@ -24,6 +26,7 @@ const FlashcardDeck = () => {
   const isMobile = useIsMobile();
   const { state } = useSidebar();
   const isOpen = state === "expanded";
+  const [searchTerm, setSearchTerm] = useState("");
   
   const { data: deck, isLoading: isDeckLoading } = useQuery({
     queryKey: ['flashcard-deck', id],
@@ -46,6 +49,12 @@ const FlashcardDeck = () => {
     },
     enabled: !!id
   });
+  
+  // Filter flashcards for the manage tab
+  const filteredFlashcards = flashcards?.filter(card => 
+    card.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    card.answer.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   
   if (isDeckLoading || isFlashcardsLoading) {
     return <DeckLoading />;
@@ -70,14 +79,14 @@ const FlashcardDeck = () => {
       <ResponsiveContainer>
         <DeckHeader title={deck.title} description={deck.description} />
 
-        <Tabs defaultValue="study" className="space-y-4 sm:space-y-6 overflow-hidden">
-          <TabsList className="w-full max-w-[300px] mx-auto">
-            <TabsTrigger value="study" className="flex-1">
-              <BookOpen className="h-4 w-4 mr-2" />
+        <Tabs defaultValue="study" className="space-y-3 sm:space-y-4 overflow-hidden">
+          <TabsList className="w-full max-w-[280px] mx-auto">
+            <TabsTrigger value="study" className="flex-1 text-xs sm:text-sm">
+              <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               Study
             </TabsTrigger>
-            <TabsTrigger value="manage" className="flex-1">
-              <Pencil className="h-4 w-4 mr-2" />
+            <TabsTrigger value="manage" className="flex-1 text-xs sm:text-sm">
+              <Pencil className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               Manage Cards
             </TabsTrigger>
           </TabsList>
@@ -94,7 +103,21 @@ const FlashcardDeck = () => {
 
           <TabsContent value="manage" className="overflow-hidden">
             {flashcards && flashcards.length > 0 ? (
-              <ManageCards flashcards={flashcards} deckId={id!} />
+              <>
+                <div className="mb-4 relative">
+                  <div className="relative">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="text"
+                      placeholder="Search cards..."
+                      className="pl-9 h-9 text-sm"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <ManageCards flashcards={filteredFlashcards || []} deckId={id!} />
+              </>
             ) : (
               <EmptyDeckView />
             )}

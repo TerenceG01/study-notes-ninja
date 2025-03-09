@@ -87,16 +87,16 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   if (!currentCard || !options) {
     return (
       <div className="text-center py-8">
-        <p className="text-lg font-medium">No flashcards available</p>
+        <p className="text-sm sm:text-base font-medium">No flashcards available</p>
       </div>
     );
   }
 
   if (isOptionsLoading || generateOptionsMutation.isPending) {
     return (
-      <div className="flex flex-col items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin mb-4" />
-        <p className="text-muted-foreground">Loading multiple choice options...</p>
+      <div className="flex flex-col items-center justify-center py-8 sm:py-12">
+        <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin mb-3 sm:mb-4" />
+        <p className="text-xs sm:text-sm text-muted-foreground">Loading multiple choice options...</p>
       </div>
     );
   }
@@ -121,8 +121,10 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
       />
 
       <Card className="w-full flex-shrink-0 max-w-full">
-        <CardContent className="p-4 sm:p-6 overflow-hidden">
-          <h3 className="text-lg font-medium mb-4 break-words">{currentCard.question}</h3>
+        <CardContent className={isMobile ? "p-3 overflow-hidden" : "p-4 sm:p-6 overflow-hidden"}>
+          <h3 className={`${isMobile ? 'text-sm' : 'text-base sm:text-lg'} font-medium mb-3 sm:mb-4 break-words`}>
+            {currentCard.question}
+          </h3>
           <MultipleChoiceOptions
             options={options}
             isAnswered={isAnswered}
@@ -149,8 +151,8 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         onNavigate={navigateCards}
       />
 
-      <div className="text-center mt-4 text-sm text-muted-foreground">
-        Click an option to answer
+      <div className="text-center mt-2 sm:mt-4 text-xs text-muted-foreground">
+        Select an option to answer
       </div>
     </div>
   );

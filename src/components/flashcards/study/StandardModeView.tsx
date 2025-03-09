@@ -43,7 +43,7 @@ export const StandardModeView = ({
         />
       </div>
 
-      <div className={`${isMobile ? 'mt-4 grid grid-cols-2 gap-2 w-full max-w-full px-2' : 'flex justify-between items-center mt-6 w-full px-2'}`}>
+      <div className={`${isMobile ? 'mt-3 grid grid-cols-2 gap-2 w-full max-w-full px-2' : 'flex justify-between items-center mt-6 w-full px-2'}`}>
         <Button 
           variant="outline" 
           onClick={() => navigateCards('prev')} 
@@ -52,7 +52,7 @@ export const StandardModeView = ({
           className="w-full sm:w-auto"
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
-          {isMobile ? "Previous" : "Previous Card"}
+          {isMobile ? "Prev" : "Previous Card"}
         </Button>
 
         <Button 
@@ -67,10 +67,10 @@ export const StandardModeView = ({
         </Button>
       </div>
       
-      <div className="text-center mt-4 text-xs sm:text-sm text-muted-foreground w-full px-2 break-words">
+      <div className="text-center mt-2 text-[10px] sm:text-xs text-muted-foreground w-full px-2 break-words">
         {isMobile ? 
-          "Swipe or use arrow keys • Tap to flip" : 
-          "Press Space/Enter to flip • Arrow keys to navigate • Ctrl+F to flip"}
+          "Swipe left/right to navigate" : 
+          "Arrow keys to navigate • Space to flip"}
       </div>
     </div>
   );

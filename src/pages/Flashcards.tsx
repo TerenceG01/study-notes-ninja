@@ -12,6 +12,8 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { ResponsiveContainer } from "@/components/ui/responsive-container";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const Flashcards = () => {
   const { user } = useAuth();
@@ -20,6 +22,7 @@ const Flashcards = () => {
   const { state } = useSidebar();
   const isOpen = state === "expanded";
   const isMobile = useIsMobile();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data: decks, isLoading, refetch } = useQuery({
     queryKey: ["flashcard-decks"],
@@ -70,6 +73,11 @@ const Flashcards = () => {
     }
   };
 
+  // Filter decks based on search term
+  const filteredDecks = decks?.filter(deck => 
+    deck.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   if (!user) return null;
 
   return (
@@ -80,20 +88,40 @@ const Flashcards = () => {
     )}>
       <ResponsiveContainer>
         <div className="flex flex-col h-full overflow-hidden">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
             <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-primary">My Flashcards</h1>
-              <p className="text-sm sm:text-base text-muted-foreground">Create and review flashcards to improve retention</p>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 text-primary">My Flashcards</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">Create and review flashcards to improve retention</p>
+            </div>
+          </div>
+          
+          {/* Search Input */}
+          <div className="mb-4 relative">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search decks..."
+                className="pl-9 h-10 text-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
           </div>
 
           {isLoading ? (
             <NotesGridSkeleton count={3} />
-          ) : !decks || decks.length === 0 ? (
-            <EmptyDeckState onCreateClick={() => setOpenCreateDialog(true)} />
+          ) : !filteredDecks || filteredDecks.length === 0 ? (
+            searchTerm && decks?.length > 0 ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No decks found matching "{searchTerm}"</p>
+              </div>
+            ) : (
+              <EmptyDeckState onCreateClick={() => setOpenCreateDialog(true)} />
+            )
           ) : (
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 overflow-y-auto overflow-x-hidden pb-4">
-              {decks.map((deck) => (
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 overflow-y-auto overflow-x-hidden pb-4">
+              {filteredDecks.map((deck) => (
                 <DeckCard
                   key={deck.id}
                   deck={deck}

@@ -2,6 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useSwipeDetection } from "@/hooks/useSwipeDetection";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface EnhancedFlashcardProps {
   card: {
@@ -31,18 +32,44 @@ export const EnhancedFlashcard = ({
   
   return (
     <Card 
-      className="w-full max-w-[100%] h-[250px] sm:h-[350px] cursor-pointer transition-all hover:shadow-lg relative flex-shrink-0 overflow-hidden"
+      className="w-full max-w-[100%] h-[200px] sm:h-[300px] cursor-pointer transition-all hover:shadow-lg relative flex-shrink-0 overflow-hidden"
       onClick={() => onFlip(!isFlipped)}
       {...swipeHandlers}
     >
-      <CardContent className="flex items-center justify-center p-4 sm:p-6 md:p-8 h-full overflow-auto">
-        <div className="text-lg sm:text-xl md:text-2xl font-medium text-center w-full break-words">
+      <CardContent className="flex items-center justify-center p-3 sm:p-6 h-full overflow-auto">
+        <div className="text-base sm:text-lg md:text-xl font-medium text-center w-full break-words">
           {isFlipped ? card.answer : card.question}
         </div>
       </CardContent>
-      <div className="absolute bottom-2 right-2 text-xs text-muted-foreground">
-        <span className="mr-1">•</span>
-        <span>{isMobile ? "Tap to flip" : "Swipe or use arrow keys"}</span>
+      
+      {/* Navigation arrows */}
+      {isMobile && (
+        <>
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              onPrev();
+            }}
+            className="absolute left-1 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full"
+            disabled={false}
+          >
+            <ChevronLeft className="h-4 w-4 text-muted-foreground" />
+          </button>
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              onNext();
+            }}
+            className="absolute right-1 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full"
+            disabled={false}
+          >
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </button>
+        </>
+      )}
+      
+      <div className="absolute bottom-1 right-2 text-[10px] text-muted-foreground">
+        <span>{isMobile ? "Tap to flip" : "Space to flip"}</span>
       </div>
     </Card>
   );
