@@ -48,6 +48,15 @@ export const NotesContent = () => {
 
   return (
     <div className="flex flex-col h-full w-full max-w-full overflow-hidden space-y-4 sm:space-y-6 pb-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-3">
+        <div>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">Notes</h1>
+          <p className="text-sm sm:text-base text-muted-foreground mt-2">
+            Create, edit and organize your notes
+          </p>
+        </div>
+      </div>
+      
       <NotesHeader onSearch={setSearchQuery} />
       
       <div className="rounded-lg border bg-card w-full flex-1 flex flex-col overflow-hidden">
