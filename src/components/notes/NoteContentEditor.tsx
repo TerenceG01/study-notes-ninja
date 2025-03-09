@@ -27,15 +27,28 @@ export const NoteContentEditor = ({
   onNoteChange,
   onToggleAutoSave
 }: NoteContentEditorProps) => {
-  // Default heights based on fullscreen mode
-  const defaultHeight = isFullscreen ? "calc(100vh - 250px)" : "calc(100vh - 450px)";
-  const [editorHeight, setEditorHeight] = useState(defaultHeight);
+  // Default heights based on fullscreen mode and device
+  const getDefaultHeight = () => {
+    if (window.innerWidth < 640) { // Mobile
+      return isFullscreen ? "calc(100vh - 200px)" : "calc(100vh - 350px)";
+    }
+    return isFullscreen ? "calc(100vh - 250px)" : "calc(100vh - 450px)";
+  };
+  
+  const [editorHeight, setEditorHeight] = useState(getDefaultHeight());
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeStartPosRef = useRef<number | null>(null);
   
-  // Update default height when fullscreen mode changes
+  // Update default height when fullscreen mode changes or on resize
   useEffect(() => {
-    setEditorHeight(isFullscreen ? "calc(100vh - 250px)" : "calc(100vh - 450px)");
+    setEditorHeight(getDefaultHeight());
+    
+    const handleResize = () => {
+      setEditorHeight(getDefaultHeight());
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [isFullscreen]);
 
   // Handle mouse down for resize
@@ -78,23 +91,23 @@ export const NoteContentEditor = ({
   };
 
   return (
-    <div className="mt-4 min-h-[300px] flex flex-col h-full bg-card rounded-lg border border-border shadow-sm">
+    <div className="mt-4 min-h-[300px] flex flex-col h-full bg-card rounded-lg border border-border shadow-sm max-w-full overflow-hidden">
       {showSummary && editingNote?.summary ? (
-        <Card className="p-6 bg-muted h-full overflow-auto rounded-lg border-none shadow-none">
-          <div className="prose max-w-none">
+        <Card className="p-3 sm:p-6 bg-muted h-full overflow-auto rounded-lg border-none shadow-none">
+          <div className="prose max-w-none break-words">
             {editingNote.summary.split('\n').map((line, index) => (
-              <p key={index} className="mb-3 text-foreground/90">{line}</p>
+              <p key={index} className="mb-3 text-foreground/90 text-sm sm:text-base">{line}</p>
             ))}
           </div>
         </Card>
       ) : (
-        <div ref={containerRef} className="flex flex-col h-full flex-1 p-2 relative">
+        <div ref={containerRef} className="flex flex-col h-full flex-1 p-2 relative max-w-full overflow-hidden">
           <RichTextEditor
             content={editingNote?.content || ""}
             onChange={handleContentChange}
             placeholder="Start writing your notes here..."
             height={editorHeight}
-            className="flex-grow rounded-lg border-none shadow-none"
+            className="flex-grow rounded-lg border-none shadow-none overflow-hidden max-w-full"
           />
           
           <div 
@@ -103,13 +116,13 @@ export const NoteContentEditor = ({
             title="Drag to resize"
           />
           
-          <div className="flex justify-between text-xs text-muted-foreground pt-3 px-4 pb-2">
+          <div className="flex justify-between text-xs text-muted-foreground pt-3 px-2 sm:px-4 pb-2 flex-wrap gap-2">
             <div className="flex items-center gap-1">
               <FileText className="h-3 w-3" />
               <span>{wordCount} words</span>
             </div>
-            <div className="italic">
-              Press <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">Ctrl+S</kbd> to save
+            <div className="italic text-[10px] sm:text-xs">
+              Press <kbd className="px-1 sm:px-1.5 py-0.5 bg-muted rounded text-[9px] sm:text-[10px] font-mono">Ctrl+S</kbd> to save
             </div>
           </div>
         </div>

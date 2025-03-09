@@ -44,10 +44,10 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
       className="group hover:bg-muted/50 cursor-pointer transition-colors"
       onClick={() => onNoteClick(note)}
     >
-      <TableCell className="flex items-center gap-1 sm:gap-2 w-[20%] p-2 sm:p-4">
+      <TableCell className="flex items-center gap-1 sm:gap-2 w-[20%] p-2 sm:p-4 max-w-[100px]">
         <div
           className={cn(
-            "flex-1 px-2 sm:px-3 py-1 rounded-md font-medium transition-colors text-center text-xs sm:text-sm",
+            "flex-1 px-1 sm:px-3 py-1 rounded-md font-medium transition-colors text-center text-xs sm:text-sm whitespace-normal break-words",
             note.subject_color ? 
               SUBJECT_COLORS.find(c => c.value === note.subject_color)?.class : 
               "bg-primary/5 text-primary hover:bg-primary/10"
@@ -67,7 +67,7 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="truncate" title={note.title}>
+              <div className="truncate max-w-[100px] sm:max-w-full" title={note.title}>
                 {note.title}
               </div>
             </TooltipTrigger>
@@ -94,16 +94,16 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
             onGenerateFlashcards(note);
           }}
           disabled={!!generatingFlashcardsForNote}
-          className="flex items-center gap-1 sm:gap-2 h-8 text-xs sm:text-sm px-2 sm:px-3"
+          className="flex items-center gap-1 sm:gap-2 h-8 text-xs sm:text-sm px-2 sm:px-3 min-w-0 w-full max-w-[110px] sm:max-w-full"
         >
           {generatingFlashcardsForNote === note.id ? (
             <>
-              <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+              <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin flex-shrink-0" />
               <span className="truncate">Generating...</span>
             </>
           ) : (
             <>
-              <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
+              <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
               <span className="truncate">Create Flashcards</span>
             </>
           )}

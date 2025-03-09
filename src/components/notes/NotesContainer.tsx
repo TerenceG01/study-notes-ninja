@@ -47,7 +47,6 @@ export const NotesContainer = ({
   useEffect(() => {
     const updateTableHeight = () => {
       // Calculate available space
-      // 100vh - header (4rem) - navbar (4rem) - card header (~4rem) - some padding
       const availableHeight = window.innerHeight - 64 - 64 - 64 - 64; 
       // Ensure minimum height shows at least a few rows
       const minHeight = 56 * 3; // 3 rows minimum
@@ -85,7 +84,7 @@ export const NotesContainer = ({
       </CardHeader>
       <CardContent className="p-0 flex-grow overflow-hidden">
         <div className="relative h-full overflow-hidden">
-          <ScrollArea className="h-full min-h-[250px] max-w-full" style={{ height: tableHeight }}>
+          <ScrollArea className="h-full min-h-[250px] max-w-full overflow-hidden" style={{ height: tableHeight }}>
             {loading ? (
               <TableSkeleton rows={5} />
             ) : (
