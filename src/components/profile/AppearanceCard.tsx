@@ -2,7 +2,6 @@
 import { Moon, Sun, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 interface AppearanceCardProps {
@@ -27,6 +26,12 @@ export function AppearanceCard({
   accentColor, 
   onAccentColorChange 
 }: AppearanceCardProps) {
+  // Get the current color's background class
+  const getSelectedColorClass = (colorValue: string) => {
+    const color = accentColors.find(c => c.value === colorValue);
+    return color ? color.class : "bg-purple-500";
+  };
+
   return (
     <Card className="w-full overflow-hidden">
       <CardHeader className="pb-4">
@@ -74,6 +79,7 @@ export function AppearanceCard({
                   accentColor === color.value ? "ring-2 ring-primary bg-secondary/40" : "hover:bg-secondary/20"
                 )}
                 aria-label={`Set accent color to ${color.name}`}
+                type="button"
               >
                 <div 
                   className={cn(
@@ -92,7 +98,7 @@ export function AppearanceCard({
               <span className="text-sm text-muted-foreground">Selected: <span className="font-medium text-foreground capitalize">{accentColor}</span></span>
               <div className={cn(
                 "w-6 h-6 rounded-full",
-                `bg-${accentColor}-500`
+                getSelectedColorClass(accentColor)
               )}></div>
             </div>
           </div>
