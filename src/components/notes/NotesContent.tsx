@@ -8,9 +8,13 @@ import { NoteEditingSection } from "./NoteEditingSection";
 import { useNotesFilters } from "@/hooks/useNotesFilters";
 import { NotesLoading } from "./NotesLoading";
 import { useNoteSelection } from "@/hooks/useNoteSelection";
+import { useSidebar } from "@/components/ui/sidebar";
 
 export const NotesContent = () => {
   const { user } = useAuth();
+  const { state } = useSidebar();
+  const isOpen = state === "expanded";
+  
   const { 
     notes: allNotes, 
     loading, 
@@ -47,7 +51,7 @@ export const NotesContent = () => {
   }, [user, fetchNotes]);
 
   return (
-    <div className="flex flex-col h-screen space-y-6 w-full max-w-full px-4 sm:px-0 pt-6">
+    <div className={`flex flex-col h-screen space-y-6 w-full max-w-full px-4 sm:px-0 pt-6 transition-all duration-300 ${isOpen ? 'ml-40' : 'ml-20'}`}>
       <NotesHeader onSearch={setSearchQuery} />
       
       <div className="rounded-lg border bg-card w-full flex-1 flex flex-col">
