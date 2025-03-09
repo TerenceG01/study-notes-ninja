@@ -14,13 +14,13 @@ import StudyGroupDetails from "./pages/StudyGroupDetails";
 import JoinStudyGroup from "./pages/JoinStudyGroup";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "./contexts/AuthContext";
+import { NavigationBar } from "./components/navigation/NavigationBar";
 import { MobileNavigationBar } from "./components/navigation/MobileNavigationBar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { NotesSidebar } from "./components/notes/NotesSidebar";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { ThemeProvider } from "next-themes";
 import { ResponsiveContainer } from "./components/ui/responsive-container";
-import { ProfileButton } from "./components/navigation/ProfileButton";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -40,9 +40,9 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const isMobile = useIsMobile();
   
   return (
-    <div className="min-h-screen relative">
-      <ProfileButton className="fixed top-4 right-4 z-50" />
-      <div className="flex min-h-screen">
+    <div className="min-h-screen">
+      <NavigationBar />
+      <div className={`flex min-h-[calc(100vh-4rem)] mt-16 ${isMobile ? 'pb-14' : ''}`}>
         <NotesSidebar />
         <div className="flex-1 relative">
           <main className="px-2 sm:px-4">{children}</main>
@@ -57,9 +57,9 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const isMobile = useIsMobile();
   
   return (
-    <div className="min-h-screen relative">
-      <ProfileButton className="fixed top-4 right-4 z-50" />
-      <ResponsiveContainer>
+    <div className="min-h-screen">
+      <NavigationBar />
+      <ResponsiveContainer className={`mt-16 ${isMobile ? 'pb-14' : ''}`}>
         {children}
       </ResponsiveContainer>
       {isMobile && <MobileNavigationBar />}
