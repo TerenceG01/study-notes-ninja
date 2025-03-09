@@ -1,12 +1,13 @@
 
-import { useEffect, useState } from "react";
-import { useNotes, Note } from "@/hooks/useNotes";
+import { useEffect } from "react";
+import { useNotes } from "@/hooks/useNotes";
 import { useAuth } from "@/contexts/AuthContext";
 import { NotesContainer } from "./NotesContainer";
 import { NotesHeader } from "./NotesHeader";
 import { NoteEditingSection } from "./NoteEditingSection";
 import { useNotesFilters } from "@/hooks/useNotesFilters";
-import { NoteCardSkeleton } from "@/components/ui/loading-skeletons";
+import { NotesLoading } from "./NotesLoading";
+import { useNoteSelection } from "@/hooks/useNoteSelection";
 
 export const NotesContent = () => {
   const { user } = useAuth();
@@ -31,9 +32,13 @@ export const NotesContent = () => {
     clearFilters,
   } = useNotesFilters(allNotes);
 
-  // Add states for selected and editing notes
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-  const [editingNote, setEditingNote] = useState<Note | null>(null);
+  const {
+    selectedNote,
+    setSelectedNote,
+    editingNote,
+    setEditingNote,
+    handleNoteClick
+  } = useNoteSelection();
 
   useEffect(() => {
     if (user) {
@@ -41,28 +46,13 @@ export const NotesContent = () => {
     }
   }, [user, fetchNotes]);
 
-  // Handle note click to open the editing dialog
-  const handleNoteClick = (note: Note) => {
-    console.log("Note clicked:", note.title);
-    // Make sure note has empty tags array for compatibility
-    note.tags = note.tags || [];
-    setSelectedNote(note);
-    setEditingNote(note);
-  };
-
   return (
     <div className="flex flex-col h-[calc(100vh-12rem)] space-y-6 w-full max-w-full px-4 sm:px-0">
       <NotesHeader onSearch={setSearchQuery} />
       
       <div className="rounded-lg border bg-card w-full flex-1 flex flex-col">
         {loading ? (
-          <div className="p-6">
-            <div className="space-y-2 mb-6">
-              <div className="h-7 w-40 bg-muted rounded-md animate-pulse" />
-              <div className="h-4 w-60 bg-muted/70 rounded-md animate-pulse" />
-            </div>
-            <NoteCardSkeleton />
-          </div>
+          <NotesLoading />
         ) : (
           <NotesContainer
             notes={filteredNotes}
