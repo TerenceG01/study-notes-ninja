@@ -42,7 +42,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen">
       <NavigationBar />
-      <div className={`flex min-h-[calc(100vh-4rem)] pt-12 sm:pt-16 ${isMobile ? 'pb-14 sm:pb-16' : ''}`}>
+      <div className={`flex min-h-[calc(100vh-4rem)] ${isMobile ? 'pb-14' : ''}`}>
         <NotesSidebar />
         <div className="flex-1 relative">
           <main className="px-2 sm:px-4">{children}</main>
@@ -59,7 +59,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen">
       <NavigationBar />
-      <ResponsiveContainer className={`pt-12 sm:pt-16 ${isMobile ? 'pb-14 sm:pb-16' : ''}`}>
+      <ResponsiveContainer className={`${isMobile ? 'pb-14' : ''}`}>
         {children}
       </ResponsiveContainer>
       {isMobile && <MobileNavigationBar />}
