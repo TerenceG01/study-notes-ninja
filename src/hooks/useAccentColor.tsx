@@ -40,15 +40,14 @@ export const useAccentColor = () => {
     const themeMode = resolvedTheme === 'dark' ? 'dark' : 'light';
     const colorValue = colorMap[color]?.[themeMode] || colorMap.purple[themeMode];
     
-    // Update CSS variable safely - only update the primary color variable
-    document.documentElement.style.setProperty('--primary', colorValue);
-    
-    // Make sure we're not affecting other critical CSS variables
-    // This ensures we don't break interactivity
-    document.documentElement.style.removeProperty('--primary-foreground');
-    
-    // Log success for debugging
-    console.log(`Applied accent color: ${color} (${colorValue}) in ${themeMode} mode`);
+    // IMPORTANT: Only update the primary variable, don't touch any other CSS variables
+    if (document.documentElement) {
+      document.documentElement.style.setProperty('--primary', colorValue);
+      
+      // CRITICAL: Make sure we're not removing or modifying any other CSS variables
+      // This ensures user can continue to interact with all elements
+      console.log(`Applied accent color: ${color} (${colorValue}) in ${themeMode} mode`);
+    }
   };
 
   const fetchAccentColor = async () => {

@@ -34,10 +34,11 @@ export function AppearanceCard({
 
   // Handle color selection with better focus management
   const handleColorChange = (color: string) => {
-    // Ensure we finish the click event before applying the color
-    setTimeout(() => {
+    // Use requestAnimationFrame to ensure UI updates first
+    // This helps prevent interaction issues on other pages
+    requestAnimationFrame(() => {
       onAccentColorChange(color);
-    }, 0);
+    });
   };
 
   return (

@@ -44,6 +44,14 @@ export function ProfileModalContent({ user, open }: ProfileModalContentProps) {
     }
   }, [user, open]);
 
+  // Safe color change handler with debounce
+  const handleAccentColorChange = (color: string) => {
+    // Use requestAnimationFrame to ensure UI updates first
+    requestAnimationFrame(() => {
+      updateAccentColor(color);
+    });
+  };
+
   if (!mounted) {
     return null;
   }
@@ -68,7 +76,7 @@ export function ProfileModalContent({ user, open }: ProfileModalContentProps) {
             resolvedTheme={resolvedTheme} 
             onToggleTheme={toggleTheme}
             accentColor={accentColor}
-            onAccentColorChange={updateAccentColor}
+            onAccentColorChange={handleAccentColorChange}
           />
         </div>
         

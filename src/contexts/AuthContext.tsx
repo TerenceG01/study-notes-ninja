@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           
           const colorValue = colorMap[data.accent_color]?.[colorMode] || colorMap.purple[colorMode];
           
-          // Only set the primary color variable, no others to avoid breaking interactivity
+          // IMPORTANT: Only set the primary color variable, don't modify any other CSS properties
           document.documentElement.style.setProperty('--primary', colorValue);
           console.log(`Applied user accent color: ${data.accent_color} in AuthContext`);
         }
