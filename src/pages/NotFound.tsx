@@ -20,7 +20,7 @@ const NotFound = () => {
   return (
     <div className="min-h-screen bg-background">
       <ProfileButton />
-      <main className={`transition-all duration-300 ${isOpen ? 'ml-40' : 'ml-20'}`}>
+      <main className={`transition-all duration-300 ${isOpen ? 'ml-40' : 'ml-20'} w-[calc(100%-theme(spacing.40))] max-w-full overflow-x-hidden`}>
         <ResponsiveContainer>
           <div className="text-center py-12 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
             <h1 className="text-4xl font-bold mb-4">404</h1>

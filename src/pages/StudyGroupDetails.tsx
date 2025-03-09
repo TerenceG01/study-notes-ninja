@@ -1,4 +1,3 @@
-
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -97,7 +96,6 @@ const StudyGroupDetails = () => {
   }
 
   if (groupError || !studyGroup) {
-    console.error("Error loading study group:", groupError);
     return (
       <div className={`transition-all duration-300 ${isSidebarOpen ? 'ml-40' : 'ml-20'} w-[calc(100%-theme(spacing.40))] max-w-full overflow-x-hidden px-4 sm:px-6 lg:px-8 pt-6`}>
         <div className="text-center py-12">

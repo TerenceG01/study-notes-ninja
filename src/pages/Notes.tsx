@@ -8,7 +8,7 @@ const Notes = () => {
   if (!user) return null;
   
   return (
-    <div className="h-full flex-grow">
+    <div className="h-full flex-grow w-full max-w-full overflow-x-hidden">
       <NotesContent />
     </div>
   );

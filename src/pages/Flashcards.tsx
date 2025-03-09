@@ -69,7 +69,7 @@ const Flashcards = () => {
   if (!user) return null;
 
   return (
-    <div className={`transition-all duration-300 ${isOpen ? 'ml-40' : 'ml-20'} w-full px-4 sm:px-6 lg:px-8 pt-6`}>
+    <div className={`transition-all duration-300 ${isOpen ? 'ml-40' : 'ml-20'} w-[calc(100%-theme(spacing.40))] max-w-full overflow-x-hidden px-4 sm:px-6 lg:px-8 pt-6`}>
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-primary">My Flashcards</h1>

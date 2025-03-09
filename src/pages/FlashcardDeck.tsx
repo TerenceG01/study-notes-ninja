@@ -13,6 +13,7 @@ import { DeckHeader } from "@/components/flashcards/deck/DeckHeader";
 import { ManageCards } from "@/components/flashcards/deck/ManageCards";
 import { EmptyDeckView } from "@/components/flashcards/deck/EmptyDeckView";
 import { DeckLoading } from "@/components/flashcards/deck/DeckLoading";
+import { useSidebar } from "@/components/ui/sidebar";
 
 const FlashcardDeck = () => {
   const { id } = useParams();
@@ -20,6 +21,8 @@ const FlashcardDeck = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const { state } = useSidebar();
+  const isOpen = state === "expanded";
   
   const { data: deck, isLoading: isDeckLoading } = useQuery({
     queryKey: ['flashcard-deck', id],
@@ -60,7 +63,7 @@ const FlashcardDeck = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationBar />
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <main className={`transition-all duration-300 ${isOpen ? 'ml-40' : 'ml-20'} w-[calc(100%-theme(spacing.40))] max-w-full overflow-x-hidden px-4 sm:px-6 lg:px-8 py-4`}>
         <DeckHeader title={deck.title} description={deck.description} />
 
         <Tabs defaultValue="study" className="space-y-6">
