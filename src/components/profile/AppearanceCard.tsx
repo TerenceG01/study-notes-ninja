@@ -9,6 +9,29 @@ interface AppearanceCardProps {
 }
 
 export function AppearanceCard({ resolvedTheme, onToggleTheme }: AppearanceCardProps) {
+  const handleThemeToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    // Call the theme toggle function in a safe manner
+    // Use requestAnimationFrame to ensure DOM updates are properly handled
+    requestAnimationFrame(() => {
+      onToggleTheme();
+      
+      // Make sure pointer events are enabled after theme toggle
+      setTimeout(() => {
+        document.body.style.pointerEvents = '';
+        
+        // Also ensure any dialogs have pointer events enabled
+        const dialogs = document.querySelectorAll('[role="dialog"]');
+        dialogs.forEach(dialog => {
+          if (dialog instanceof HTMLElement) {
+            dialog.style.pointerEvents = '';
+          }
+        });
+      }, 50);
+    });
+  };
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -27,7 +50,12 @@ export function AppearanceCard({ resolvedTheme, onToggleTheme }: AppearanceCardP
               {resolvedTheme === "light" ? "Light" : "Dark"} Mode
             </span>
           </div>
-          <Button variant="outline" onClick={onToggleTheme} className="min-w-[100px]">
+          <Button 
+            variant="outline" 
+            onClick={handleThemeToggle} 
+            className="min-w-[100px]"
+            type="button"
+          >
             {resolvedTheme === "light" ? "Dark Mode" : "Light Mode"}
           </Button>
         </div>

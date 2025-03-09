@@ -40,7 +40,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      // Make sure to clean up the subscription to prevent memory leaks
+      subscription.unsubscribe();
+    };
   }, []);
 
   return (
