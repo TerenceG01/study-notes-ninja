@@ -13,10 +13,6 @@ export const useAccentColor = () => {
 
   // Function to apply accent color to CSS variables
   const applyAccentColor = (color: string) => {
-    // Tailwind doesn't support dynamic classes at runtime
-    // So we manually update CSS variables that could be used in the theme
-    const root = document.documentElement;
-    
     // Map color values to Tailwind color values
     const colorMap: Record<string, { light: string, dark: string }> = {
       purple: { 
@@ -37,15 +33,22 @@ export const useAccentColor = () => {
       },
       pink: { 
         light: "326 78% 60%", // #EC4899
-        dark: "330 81% 60%"   // #DB2777
+        dark: "330 81% 55%"   // #DB2777
       }
     };
 
     const themeMode = resolvedTheme === 'dark' ? 'dark' : 'light';
     const colorValue = colorMap[color]?.[themeMode] || colorMap.purple[themeMode];
     
-    // Update primary color variables
-    root.style.setProperty('--primary', colorValue);
+    // Update CSS variable safely - only update the primary color variable
+    document.documentElement.style.setProperty('--primary', colorValue);
+    
+    // Make sure we're not affecting other critical CSS variables
+    // This ensures we don't break interactivity
+    document.documentElement.style.removeProperty('--primary-foreground');
+    
+    // Log success for debugging
+    console.log(`Applied accent color: ${color} (${colorValue}) in ${themeMode} mode`);
   };
 
   const fetchAccentColor = async () => {
@@ -70,12 +73,12 @@ export const useAccentColor = () => {
   };
 
   const updateAccentColor = async (color: string) => {
-    setAccentColor(color);
-    applyAccentColor(color);
-    
-    if (!user) return;
-    
     try {
+      setAccentColor(color);
+      applyAccentColor(color);
+      
+      if (!user) return;
+      
       const { error } = await supabase
         .from("profiles")
         .update({ accent_color: color })

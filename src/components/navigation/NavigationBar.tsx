@@ -28,10 +28,26 @@ export const NavigationBar = () => {
   const [authTab, setAuthTab] = useState<"sign-in" | "sign-up">("sign-in");
   const { accentColor } = useAccentColor();
 
-  // Ensure accent color is applied when component mounts
-  useEffect(() => {
-    // This will trigger the useEffect in useAccentColor when the NavigationBar mounts
-  }, []);
+  // Handle profile modal closing - ensure we clean up any potential style issues
+  const handleProfileModalChange = (open: boolean) => {
+    setShowProfileModal(open);
+    
+    // If modal is closing, ensure we don't have any stray inline styles
+    if (!open) {
+      // Small delay to ensure the modal is fully closed
+      setTimeout(() => {
+        // Ensure proper CSS variable application
+        const root = document.documentElement;
+        const colorMode = root.classList.contains('dark') ? 'dark' : 'light';
+        
+        // Re-apply accent color to ensure it's stable
+        if (accentColor) {
+          const { applyAccentColor } = useAccentColor();
+          applyAccentColor(accentColor);
+        }
+      }, 100);
+    }
+  };
 
   const handleSignIn = () => {
     setAuthTab("sign-in");
@@ -109,4 +125,4 @@ export const NavigationBar = () => {
       />
     </nav>
   );
-};
+}

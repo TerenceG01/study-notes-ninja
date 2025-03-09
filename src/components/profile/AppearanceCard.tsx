@@ -32,6 +32,14 @@ export function AppearanceCard({
     return color ? color.class : "bg-purple-500";
   };
 
+  // Handle color selection with better focus management
+  const handleColorChange = (color: string) => {
+    // Ensure we finish the click event before applying the color
+    setTimeout(() => {
+      onAccentColorChange(color);
+    }, 0);
+  };
+
   return (
     <Card className="w-full overflow-hidden">
       <CardHeader className="pb-4">
@@ -55,7 +63,12 @@ export function AppearanceCard({
                 {resolvedTheme === "light" ? "Light" : "Dark"} Mode
               </span>
             </div>
-            <Button variant="outline" onClick={onToggleTheme} className="min-w-[100px]">
+            <Button 
+              variant="outline" 
+              onClick={onToggleTheme} 
+              className="min-w-[100px]"
+              type="button"
+            >
               {resolvedTheme === "light" ? "Dark Mode" : "Light Mode"}
             </Button>
           </div>
@@ -72,7 +85,7 @@ export function AppearanceCard({
             {accentColors.map((color) => (
               <button
                 key={color.value}
-                onClick={() => onAccentColorChange(color.value)}
+                onClick={() => handleColorChange(color.value)}
                 className={cn(
                   "flex flex-col items-center gap-2 p-3 rounded-lg transition-all",
                   "hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary",

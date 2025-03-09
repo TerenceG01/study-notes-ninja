@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Function to apply the user's accent color
+  // Function to apply the user's accent color safely
   const applyUserPreferences = async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -39,7 +39,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (data) {
         // Apply accent color
         if (data.accent_color) {
-          const root = document.documentElement;
           const colorMode = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
           
           // Map of color values
@@ -62,12 +61,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             },
             pink: { 
               light: "326 78% 60%",
-              dark: "330 81% 60%"
+              dark: "330 81% 55%"
             }
           };
           
           const colorValue = colorMap[data.accent_color]?.[colorMode] || colorMap.purple[colorMode];
-          root.style.setProperty('--primary', colorValue);
+          
+          // Only set the primary color variable, no others to avoid breaking interactivity
+          document.documentElement.style.setProperty('--primary', colorValue);
+          console.log(`Applied user accent color: ${data.accent_color} in AuthContext`);
         }
       }
     } catch (err) {
