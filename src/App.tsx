@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -45,7 +44,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <div className={`flex min-h-screen ${isMobile ? 'pb-14' : ''}`}>
         <NotesSidebar />
         <div className="flex-1 relative">
-          <main className="px-2 sm:px-4">{children}</main>
+          {children}
         </div>
       </div>
       {isMobile && <MobileNavigationBar />}

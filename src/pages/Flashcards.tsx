@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { CreateDeckDialog } from "@/components/flashcards/CreateDeckDialog";
@@ -7,10 +8,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { NotesGridSkeleton } from "@/components/ui/loading-skeletons";
+import { useSidebar } from "@/components/ui/sidebar";
 
 const Flashcards = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { state } = useSidebar();
+  const isOpen = state === "expanded";
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
 
   const { data: decks, isLoading, refetch } = useQuery({
@@ -65,7 +69,7 @@ const Flashcards = () => {
   if (!user) return null;
 
   return (
-    <div className="container mx-auto max-w-[1400px] px-4 lg:px-8 pt-6">
+    <div className={`transition-all duration-300 ${isOpen ? 'ml-40' : 'ml-20'} w-full px-4 sm:px-6 lg:px-8 pt-6`}>
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-primary">My Flashcards</h1>
