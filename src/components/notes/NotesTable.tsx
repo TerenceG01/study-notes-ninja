@@ -53,10 +53,10 @@ export const NotesTable = ({
 
   return (
     <>
-      <div className="relative w-full h-full overflow-hidden">
-        <Table className="w-full table-fixed h-full">
+      <div className="relative w-full h-full overflow-auto">
+        <Table className="w-full h-full">
           <NotesTableHeader />
-          <TableBody className="overflow-y-auto">
+          <TableBody className="relative">
             {notes.length === 0 ? (
               <EmptyNotesRow />
             ) : (

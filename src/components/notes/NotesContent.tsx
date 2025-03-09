@@ -51,10 +51,10 @@ export const NotesContent = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)] space-y-6 w-full max-w-full px-4 sm:px-6 md:px-8">
+    <div className="flex flex-col h-[calc(100vh-10rem)] md:h-[calc(100vh-12rem)] w-full">
       <NotesHeader onSearch={setSearchQuery} />
       
-      <div className="rounded-lg border bg-card w-full flex-1 flex flex-col">
+      <div className="rounded-lg border bg-card w-full flex-1 flex flex-col overflow-hidden mt-4">
         {loading ? (
           <div className="p-6">
             <div className="space-y-2 mb-6">
@@ -83,7 +83,7 @@ export const NotesContent = () => {
         )}
       </div>
 
-      <div className="mt-6 w-full">
+      <div className="mt-4 w-full mb-2">
         <NoteEditingSection
           onNotesChanged={fetchNotes}
           selectedNote={selectedNote}

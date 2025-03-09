@@ -1,6 +1,7 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import { NotesContent } from "@/components/notes/NotesContent";
+import { ResponsiveContainer } from "@/components/ui/responsive-container";
 
 const Notes = () => {
   const { user } = useAuth();
@@ -9,9 +10,9 @@ const Notes = () => {
   
   return (
     <div className="h-full flex-grow w-full">
-      <div className="container mx-auto max-w-[1400px] w-full px-0 sm:px-4 lg:px-8 h-full">
+      <ResponsiveContainer withPadding={false} className="h-full">
         <NotesContent />
-      </div>
+      </ResponsiveContainer>
     </div>
   );
 };
