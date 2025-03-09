@@ -10,6 +10,8 @@ import { Loader2, Plus } from "lucide-react";
 import { CreateStudyGroupForm } from "@/components/study-groups/CreateStudyGroupForm";
 import { EmptyGroupState } from "@/components/study-groups/EmptyGroupState";
 import { StudyGroupCard } from "@/components/study-groups/StudyGroupCard";
+import { useSidebar } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 interface StudyGroup {
   id: string;
@@ -24,6 +26,8 @@ const StudyGroups = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const { state } = useSidebar();
+  const sidebarIsOpen = state === "expanded";
 
   const { data: studyGroups, isLoading, error } = useQuery({
     queryKey: ['study-groups'],
@@ -46,9 +50,12 @@ const StudyGroups = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="container mx-auto sm:px-6 lg:px-8 max-w-[1400px] py-[24px] px-[10px]">
-        <div className="flex justify-between items-start mb-8 pt-10">
+    <div className={cn(
+      "h-full flex-grow overflow-x-hidden pt-6",
+      sidebarIsOpen ? "ml-40" : "ml-20"
+    )}>
+      <div className="container mx-auto max-w-full px-4 lg:px-8 h-full overflow-hidden">
+        <div className="flex justify-between items-start mb-8">
           <div>
             <h1 className="text-4xl font-bold text-primary">Study Groups</h1>
             <p className="text-muted-foreground mt-2">
@@ -73,7 +80,7 @@ const StudyGroups = () => {
 
         {isLoading ? (
           <div className="flex justify-center items-center py-12">
-            <Loader2 className="h-8 w-8 text-muted-foreground" />
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
         ) : error ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -85,7 +92,7 @@ const StudyGroups = () => {
         ) : !studyGroups || studyGroups.length === 0 ? (
           <EmptyGroupState onCreateClick={() => setIsOpen(true)} />
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 overflow-hidden">
             {studyGroups.map(group => (
               <StudyGroupCard 
                 key={group.id} 
@@ -95,7 +102,7 @@ const StudyGroups = () => {
             ))}
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 };

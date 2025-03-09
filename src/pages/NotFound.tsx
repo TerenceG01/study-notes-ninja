@@ -14,9 +14,9 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <ProfileButton />
-      <main className="container mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+      <main className="container mx-auto max-w-full px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="text-center py-12 animate-[fadeSlideIn_0.5s_ease-out_forwards]">
           <h1 className="text-4xl font-bold mb-4">404</h1>
           <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { CreateDeckDialog } from "@/components/flashcards/CreateDeckDialog";
@@ -7,11 +8,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { NotesGridSkeleton } from "@/components/ui/loading-skeletons";
+import { useSidebar } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 const Flashcards = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
+  const { state } = useSidebar();
+  const isOpen = state === "expanded";
 
   const { data: decks, isLoading, refetch } = useQuery({
     queryKey: ["flashcard-decks"],
@@ -65,41 +70,46 @@ const Flashcards = () => {
   if (!user) return null;
 
   return (
-    <div className="container mx-auto max-w-[1400px] px-4 lg:px-8 pt-6">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-primary">My Flashcards</h1>
-          <p className="text-muted-foreground">Create and review flashcards to improve retention</p>
+    <div className={cn(
+      "h-full flex-grow overflow-x-hidden pt-6",
+      isOpen ? "ml-40" : "ml-20"
+    )}>
+      <div className="container mx-auto max-w-full px-4 lg:px-8 h-full overflow-hidden">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-primary">My Flashcards</h1>
+            <p className="text-muted-foreground">Create and review flashcards to improve retention</p>
+          </div>
         </div>
+
+        {isLoading ? (
+          <NotesGridSkeleton count={3} />
+        ) : !decks || decks.length === 0 ? (
+          <EmptyDeckState onCreateClick={() => setOpenCreateDialog(true)} />
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 overflow-hidden">
+            {decks.map((deck) => (
+              <DeckCard
+                key={deck.id}
+                deck={deck}
+                cardCount={(deck.flashcards as any)?.[0]?.count || 0}
+                onDelete={(deckId, e) => {
+                  e.preventDefault(); // Prevent navigation
+                  handleDeleteDeck(deckId);
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        <CreateDeckDialog 
+          open={openCreateDialog} 
+          onOpenChange={setOpenCreateDialog}
+          onDeckCreated={() => {
+            refetch();
+          }}
+        />
       </div>
-
-      {isLoading ? (
-        <NotesGridSkeleton count={3} />
-      ) : !decks || decks.length === 0 ? (
-        <EmptyDeckState onCreateClick={() => setOpenCreateDialog(true)} />
-      ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {decks.map((deck) => (
-            <DeckCard
-              key={deck.id}
-              deck={deck}
-              cardCount={(deck.flashcards as any)?.[0]?.count || 0}
-              onDelete={(deckId, e) => {
-                e.preventDefault(); // Prevent navigation
-                handleDeleteDeck(deckId);
-              }}
-            />
-          ))}
-        </div>
-      )}
-
-      <CreateDeckDialog 
-        open={openCreateDialog} 
-        onOpenChange={setOpenCreateDialog}
-        onDeckCreated={() => {
-          refetch();
-        }}
-      />
     </div>
   );
 };

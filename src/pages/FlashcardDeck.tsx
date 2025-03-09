@@ -1,5 +1,4 @@
 
-import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +12,8 @@ import { DeckHeader } from "@/components/flashcards/deck/DeckHeader";
 import { ManageCards } from "@/components/flashcards/deck/ManageCards";
 import { EmptyDeckView } from "@/components/flashcards/deck/EmptyDeckView";
 import { DeckLoading } from "@/components/flashcards/deck/DeckLoading";
+import { useSidebar } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 const FlashcardDeck = () => {
   const { id } = useParams();
@@ -20,6 +21,8 @@ const FlashcardDeck = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const { state } = useSidebar();
+  const isOpen = state === "expanded";
   
   const { data: deck, isLoading: isDeckLoading } = useQuery({
     queryKey: ['flashcard-deck', id],
@@ -58,9 +61,11 @@ const FlashcardDeck = () => {
   }
   
   return (
-    <div className="min-h-screen bg-background">
-      <NavigationBar />
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div className={cn(
+      "h-full flex-grow overflow-x-hidden pt-6",
+      isOpen ? "ml-40" : "ml-20"
+    )}>
+      <div className="container mx-auto max-w-full px-4 lg:px-8 h-full overflow-hidden">
         <DeckHeader title={deck.title} description={deck.description} />
 
         <Tabs defaultValue="study" className="space-y-6">
@@ -75,10 +80,10 @@ const FlashcardDeck = () => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="study" className="space-y-4">
+          <TabsContent value="study" className="space-y-4 overflow-hidden">
             {flashcards && flashcards.length > 0 ? (
               isMobile ? (
-                <div className="pb-16"> {/* Add padding to account for navigation */}
+                <div className="pb-16 overflow-hidden"> {/* Add padding to account for navigation */}
                   <StudyMode flashcards={flashcards} deckId={id!} />
                 </div>
               ) : (
@@ -89,7 +94,7 @@ const FlashcardDeck = () => {
             )}
           </TabsContent>
 
-          <TabsContent value="manage">
+          <TabsContent value="manage" className="overflow-hidden">
             {flashcards && flashcards.length > 0 ? (
               <ManageCards flashcards={flashcards} deckId={id!} />
             ) : (
@@ -97,7 +102,7 @@ const FlashcardDeck = () => {
             )}
           </TabsContent>
         </Tabs>
-      </main>
+      </div>
     </div>
   );
 };
