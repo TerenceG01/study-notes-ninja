@@ -5,7 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Home, BookOpen, FileText, Users, Plus } from "lucide-react";
+import { Home, BookOpen, FileText, Users, Plus, Sparkles } from "lucide-react";
 import { ProfileModal } from "@/components/profile/ProfileModal";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
 import { useNotes } from "@/hooks/useNotes";
@@ -69,13 +69,22 @@ export const MobileNavigationBar = () => {
                 <span className="text-[10px] sm:text-xs mt-0.5 sm:mt-1">Notes</span>
               </Link>
               
-              {/* Create note button - positioned absolutely to be in the middle and elevated */}
-              <Button 
-                onClick={handleCreateNote}
-                className="absolute -top-7 left-1/2 transform -translate-x-1/2 rounded-full bg-primary hover:bg-primary/90 h-14 w-14 p-0 flex items-center justify-center border-4 border-background shadow-lg"
-              >
-                <Plus className="h-6 w-6 text-primary-foreground" />
-              </Button>
+              {/* Enhanced create note button with improved design */}
+              <div className="relative">
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
+                  <Button 
+                    onClick={handleCreateNote}
+                    className="group rounded-full bg-primary hover:bg-primary/90 h-16 w-16 p-0 flex items-center justify-center border-4 border-background shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden animate-pulse-subtle"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-primary rounded-full opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      <Plus className="h-7 w-7 text-white relative z-10 transition-transform duration-300 group-hover:rotate-45" />
+                    </span>
+                    <span className="absolute top-0 left-0 w-full h-full rounded-full bg-white/20 animate-spin-slow opacity-0 group-hover:opacity-30"></span>
+                  </Button>
+                  <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">New Note</span>
+                </div>
+              </div>
               
               <Link to="/flashcards" className={`flex flex-col items-center ${location.pathname === '/flashcards' ? 'text-primary' : 'text-muted-foreground'}`}>
                 <BookOpen className="h-4 w-4 sm:h-5 sm:w-5" />
