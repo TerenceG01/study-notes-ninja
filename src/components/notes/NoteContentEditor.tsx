@@ -1,4 +1,3 @@
-
 import { FileText, Clock, Save } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Note } from "@/hooks/useNotes";
@@ -178,6 +177,7 @@ export const NoteContentEditor = ({
             });
             document.dispatchEvent(event);
           }}
+          aria-label="Save note"
         >
           <Save className="h-5 w-5 text-primary-foreground" />
         </Button>
