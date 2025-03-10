@@ -30,6 +30,14 @@ export const NoteHeaderSection = ({
 }: NoteHeaderSectionProps) => {
   const isMobile = useIsMobile();
   
+  const handleDismiss = () => {
+    // Find the dismiss button and click it safely
+    const dismissButton = document.querySelector('[data-radix-preferred-dismiss]');
+    if (dismissButton instanceof HTMLElement) {
+      dismissButton.click();
+    }
+  };
+  
   return (
     <div className="bg-card rounded-lg p-2 sm:p-3 shadow-sm border border-border mb-2">
       <div className="flex justify-between items-center">
@@ -37,7 +45,7 @@ export const NoteHeaderSection = ({
           <Button 
             variant="ghost" 
             size="icon" 
-            onClick={() => document.querySelector('[data-radix-preferred-dismiss]')?.click()}
+            onClick={handleDismiss}
             className="mr-1 h-8 w-8 hover:bg-muted"
           >
             <ChevronLeft className="h-4 w-4" />
