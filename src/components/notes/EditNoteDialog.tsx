@@ -6,6 +6,7 @@ import { Note } from "@/hooks/useNotes";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
 import { NoteContentContainer } from "./NoteContentContainer";
 import { DialogFooterActions } from "./DialogFooterActions";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface EditNoteDialogProps {
   open: boolean;
@@ -42,6 +43,7 @@ export const EditNoteDialog = ({
   onEnhanceNote,
   onSave
 }: EditNoteDialogProps) => {
+  const isMobile = useIsMobile();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
@@ -49,6 +51,13 @@ export const EditNoteDialog = ({
   const [tags, setTags] = useState<string[]>([]);
   const [isSaved, setIsSaved] = useState(false);
   const [originalContent, setOriginalContent] = useState("");
+
+  // Automatically use fullscreen on mobile
+  useEffect(() => {
+    if (isMobile && open) {
+      setIsFullscreen(true);
+    }
+  }, [isMobile, open]);
 
   // Handle word count calculation
   useEffect(() => {
@@ -87,7 +96,7 @@ export const EditNoteDialog = ({
     
     const autoSaveTimer = setTimeout(() => {
       handleSave();
-    }, 60000); // Auto-save every 60 seconds
+    }, isMobile ? 30000 : 60000); // Auto-save more frequently on mobile (30s vs 60s)
     
     return () => clearTimeout(autoSaveTimer);
   }, [editingNote, autoSaveEnabled]);
@@ -159,9 +168,26 @@ export const EditNoteDialog = ({
     </>
   );
 
+  // Use Sheet for mobile to provide better UX with bottom sheet interaction
+  if (isMobile) {
+    return (
+      <Sheet 
+        open={open} 
+        onOpenChange={onOpenChange}
+      >
+        <SheetContent
+          side="bottom"
+          className="h-[92vh] p-3 flex flex-col max-h-[92vh] overflow-hidden bg-background rounded-t-xl"
+        >
+          {renderDialogContent()}
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
   return (
     <>
-      {isFullscreen ? (
+      {isFullscreen && !isMobile ? (
         <Sheet 
           open={open && isFullscreen} 
           onOpenChange={(open) => {

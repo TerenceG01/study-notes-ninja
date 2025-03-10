@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Home, BookOpen, FileText, Users, Plus, Sparkles } from "lucide-react";
 import { ProfileModal } from "@/components/profile/ProfileModal";
@@ -12,6 +11,7 @@ import { useNotes } from "@/hooks/useNotes";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { NoteEditor } from "@/components/notes/NoteEditor";
 import { CommonSubjects } from "@/components/notes/CommonSubjects";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 export const MobileNavigationBar = () => {
   const { user } = useAuth();
@@ -46,12 +46,16 @@ export const MobileNavigationBar = () => {
     const success = await createNote(newNote, user.id);
     if (success) {
       resetEditor();
+      setIsEditorExpanded(false);
       toast({
         title: "Success",
         description: "Note created successfully!",
       });
     }
   };
+
+  // Determine if we're currently in the notes section
+  const isNotesActive = location.pathname === '/notes';
 
   return (
     <>
@@ -64,19 +68,19 @@ export const MobileNavigationBar = () => {
           
           {user && (
             <>
-              <Link to="/notes" className={`flex flex-col items-center ${location.pathname === '/notes' ? 'text-primary' : 'text-muted-foreground'}`}>
+              <Link to="/notes" className={`flex flex-col items-center ${isNotesActive ? 'text-primary' : 'text-muted-foreground'}`}>
                 <FileText className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span className="text-[10px] sm:text-xs mt-0.5">Notes</span>
               </Link>
               
-              {/* Create note button with removed animations */}
+              {/* Create note button with smooth pulse animation */}
               <div className="relative">
                 <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
                   <Button 
                     onClick={handleCreateNote}
                     className="rounded-full bg-primary hover:bg-primary/90 h-16 w-16 p-0 flex items-center justify-center border-4 border-background shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-primary rounded-full opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-primary rounded-full opacity-80 hover:opacity-100 transition-opacity"></div>
                     <Plus className="h-7 w-7 text-white relative z-10" />
                   </Button>
                   <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs font-medium text-primary whitespace-nowrap">New Note</span>
@@ -114,11 +118,16 @@ export const MobileNavigationBar = () => {
         onOpenChange={setShowProfileModal}
       />
 
-      <Dialog open={isEditorExpanded} onOpenChange={setIsEditorExpanded}>
-        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Create New Note</DialogTitle>
-          </DialogHeader>
+      {/* Use Sheet instead of Dialog on mobile for better UX */}
+      <Sheet open={isEditorExpanded} onOpenChange={setIsEditorExpanded}>
+        <SheetContent
+          side="bottom"
+          className="h-[85vh] p-4 overflow-y-auto rounded-t-xl"
+        >
+          <SheetHeader className="mb-4">
+            <SheetTitle>Create New Note</SheetTitle>
+          </SheetHeader>
+          
           <NoteEditor
             note={newNote}
             newTag={newTag}
@@ -130,8 +139,8 @@ export const MobileNavigationBar = () => {
             onCancel={() => setIsEditorExpanded(false)}
             onSave={handleSaveNote}
           />
-        </DialogContent>
-      </Dialog>
+        </SheetContent>
+      </Sheet>
     </>
   );
 };

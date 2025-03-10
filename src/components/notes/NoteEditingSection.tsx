@@ -6,6 +6,8 @@ import { useNoteEnhancement } from "@/hooks/useNoteEnhancement";
 import { useNoteOperations } from "@/hooks/useNoteOperations";
 import { NoteSummaryHandler } from "./NoteSummaryHandler";
 import { CommonSubjects } from "./CommonSubjects";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useToast } from "@/hooks/use-toast";
 
 interface NoteEditingSectionProps {
   onNotesChanged: () => void;
@@ -25,6 +27,8 @@ export const NoteEditingSection = ({
   // Use custom hooks for functionality
   const { enhancing, enhanceNote, cleanup } = useNoteEnhancement();
   const { updateNote } = useNoteOperations(onNotesChanged);
+  const isMobile = useIsMobile();
+  const { toast } = useToast();
   
   const [showSummary, setShowSummary] = useState(false);
   
@@ -38,6 +42,27 @@ export const NoteEditingSection = ({
   // Handle note enhancement
   const handleEnhanceNote = (enhanceType: 'grammar' | 'structure' | 'all') => {
     enhanceNote(editingNote, enhanceType, setEditingNote);
+    
+    if (isMobile) {
+      toast({
+        title: "Enhancing note...",
+        description: "Your note is being enhanced. This may take a moment.",
+      });
+    }
+  };
+
+  // Handle save with toast notification for mobile
+  const handleSave = () => {
+    const success = updateNote(editingNote);
+    
+    if (success && isMobile) {
+      toast({
+        title: "Note saved",
+        description: "Your changes have been saved successfully.",
+      });
+    }
+    
+    return success;
   };
 
   // Cleanup on unmount
@@ -69,7 +94,7 @@ export const NoteEditingSection = ({
       onGenerateSummary={summaryHandler.handleGenerateSummary}
       onToggleSummary={summaryHandler.toggleSummary}
       onEnhanceNote={handleEnhanceNote}
-      onSave={() => updateNote(editingNote)}
+      onSave={handleSave}
     />
   );
 };

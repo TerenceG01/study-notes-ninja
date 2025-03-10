@@ -9,6 +9,8 @@
   overflow-wrap: break-word; /* Added to ensure words break properly */
   white-space: pre-wrap;    /* Preserves whitespace but wraps text */
   max-width: 100%;          /* Ensures content doesn't overflow container */
+  font-size: 16px;          /* Better default size for mobile typing */
+  touch-action: manipulation; /* Prevents double-tap zoom on mobile */
 }
 
 .ProseMirror p {
@@ -150,7 +152,9 @@
 /* Mobile adjustments */
 @media (max-width: 640px) {
   .ProseMirror {
-    padding: 0.5em;
+    padding: 0.75em;
+    font-size: 16px; /* Mobile-optimized font size for typing */
+    line-height: 1.5; /* Increased line height for better readability */
   }
   
   .ProseMirror h1 {
@@ -164,4 +168,35 @@
   .ProseMirror pre {
     padding: 0.5em;
   }
+  
+  /* Increase tap targets for better mobile experience */
+  .ProseMirror li {
+    padding: 0.2em 0;
+  }
+  
+  /* Improve link tap targets */
+  .ProseMirror a {
+    padding: 0.1em 0;
+    display: inline-block;
+  }
+}
+
+/* Toolbar button enhancements for touch */
+@media (max-width: 640px) {
+  .rich-text-toolbar button {
+    min-height: 36px;
+    min-width: 36px;
+  }
+}
+
+/* Focus state improvements */
+.ProseMirror:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Make textarea appear more like a native input on mobile */
+.ProseMirror-focused {
+  -webkit-appearance: none;
+  appearance: none;
 }
