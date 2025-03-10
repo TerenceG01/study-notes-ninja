@@ -2,6 +2,8 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface HeroSectionProps {
   isVisible: boolean;
@@ -14,6 +16,13 @@ export const HeroSection = ({
   handleGetStarted,
   handleSignIn
 }: HeroSectionProps) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  
+  const handleNavigateToNotes = () => {
+    navigate('/notes');
+  };
+
   return (
     <section id="hero" className="relative pt-16 pb-12 lg:pt-20 lg:pb-16 min-h-[85vh] flex items-center">
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl">
@@ -52,22 +61,35 @@ export const HeroSection = ({
               "flex flex-wrap gap-4 justify-center transition-all duration-1000 delay-400",
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
             )}>
-              <Button 
-                size="lg" 
-                className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-primary/25" 
-                onClick={handleGetStarted}
-              >
-                Get Started Free
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="rounded-full border-primary/20 hover:bg-primary/5" 
-                onClick={handleSignIn}
-              >
-                Sign In
-              </Button>
+              {user ? (
+                <Button 
+                  size="lg" 
+                  className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-primary/25" 
+                  onClick={handleNavigateToNotes}
+                >
+                  Go to My Notes
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              ) : (
+                <>
+                  <Button 
+                    size="lg" 
+                    className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-primary/25" 
+                    onClick={handleGetStarted}
+                  >
+                    Get Started Free
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="rounded-full border-primary/20 hover:bg-primary/5" 
+                    onClick={handleSignIn}
+                  >
+                    Sign In
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
