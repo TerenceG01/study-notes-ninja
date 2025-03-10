@@ -1,3 +1,4 @@
+
 import { FileText, Clock, Save } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Note } from "@/hooks/useNotes";
@@ -103,7 +104,7 @@ export const NoteContentEditor = ({
       <Button 
         variant="secondary" 
         size="sm" 
-        className="fixed bottom-16 right-4 z-50 rounded-full w-12 h-12 p-0 shadow-lg"
+        className="fixed bottom-20 right-4 z-50 rounded-full w-12 h-12 p-0 shadow-lg bg-primary hover:bg-primary/90"
         onClick={() => {
           // We need to trigger Ctrl+S event
           const event = new KeyboardEvent('keydown', {
@@ -113,8 +114,9 @@ export const NoteContentEditor = ({
           });
           document.dispatchEvent(event);
         }}
+        aria-label="Save note"
       >
-        <Save className="h-5 w-5" />
+        <Save className="h-5 w-5 text-primary-foreground" />
       </Button>
     );
   };
