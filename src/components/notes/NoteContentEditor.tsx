@@ -34,9 +34,9 @@ export const NoteContentEditor = ({
   // Calculate editor height based on available space
   const getDefaultHeight = () => {
     if (isFullscreen) {
-      return isMobile ? "calc(100vh - 180px)" : "calc(100vh - 220px)";
+      return isMobile ? "calc(100vh - 160px)" : "calc(100vh - 200px)";
     } else {
-      return isMobile ? "calc(100vh - 300px)" : "350px";
+      return isMobile ? "calc(100vh - 280px)" : "400px";
     }
   };
   
@@ -127,12 +127,12 @@ export const NoteContentEditor = ({
           <Card className="p-3 sm:p-4 bg-muted h-full overflow-auto rounded-lg border-none shadow-none">
             <div className="prose max-w-none break-words">
               {editingNote.summary.split('\n').map((line, index) => (
-                <p key={index} className="mb-3 text-foreground/90 text-sm">{line}</p>
+                <p key={index} className="mb-2 text-foreground/90 text-sm">{line}</p>
               ))}
             </div>
           </Card>
         ) : (
-          <div ref={containerRef} className="flex flex-col h-full flex-1 p-2 relative max-w-full overflow-hidden">
+          <div ref={containerRef} className="flex flex-col h-full flex-1 relative max-w-full overflow-hidden">
             <RichTextEditor
               content={editingNote?.content || ""}
               onChange={handleContentChange}
@@ -149,21 +149,39 @@ export const NoteContentEditor = ({
               />
             )}
             
-            <div className="flex justify-between text-xs text-muted-foreground pt-2 px-2 pb-1 flex-wrap gap-2">
-              <div className="flex items-center gap-1">
-                <FileText className="h-3 w-3" />
+            <div className="flex justify-between items-center text-xs text-muted-foreground px-3 py-2 border-t border-border bg-card/50">
+              <div className="flex items-center gap-1.5">
+                <FileText className="h-3.5 w-3.5" />
                 <span>{wordCount} words</span>
               </div>
               {!isMobile && (
-                <div className="italic text-[10px] sm:text-xs">
-                  Press <kbd className="px-1 py-0.5 bg-muted rounded text-[9px] font-mono">Ctrl+S</kbd> to save
+                <div className="italic text-[10px] sm:text-xs flex items-center gap-1.5">
+                  <kbd className="px-1.5 py-0.5 bg-muted rounded text-[9px] font-mono">Ctrl+S</kbd>
+                  <span>to save</span>
                 </div>
               )}
             </div>
           </div>
         )}
       </div>
-      {renderMobileSaveButton()}
+      
+      {isMobile && (
+        <Button 
+          variant="secondary" 
+          size="sm" 
+          className="fixed bottom-20 right-4 z-50 rounded-full w-12 h-12 p-0 shadow-lg bg-primary hover:bg-primary/90"
+          onClick={() => {
+            const event = new KeyboardEvent('keydown', {
+              key: 's',
+              ctrlKey: true,
+              bubbles: true
+            });
+            document.dispatchEvent(event);
+          }}
+        >
+          <Save className="h-5 w-5 text-primary-foreground" />
+        </Button>
+      )}
     </>
   );
 };

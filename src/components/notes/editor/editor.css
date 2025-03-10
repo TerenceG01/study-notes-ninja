@@ -5,25 +5,25 @@
   height: 100%;
   outline: none;
   min-height: 200px;
-  word-wrap: break-word;    /* Added for better word wrapping */
-  overflow-wrap: break-word; /* Added to ensure words break properly */
-  white-space: pre-wrap;    /* Preserves whitespace but wraps text */
-  max-width: 100%;          /* Ensures content doesn't overflow container */
-  font-size: 16px;          /* Better default size for mobile typing */
-  touch-action: manipulation; /* Prevents double-tap zoom on mobile */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  max-width: 100%;
+  font-size: 16px;
+  touch-action: manipulation;
+  padding: 1rem;
 }
 
 .ProseMirror p {
-  margin-bottom: 0.5em; /* Reduced from 0.75em */
-  line-height: 1.4; /* Added line height control */
-  max-width: 100%;  /* Ensures content doesn't overflow container */
-  overflow-wrap: break-word; /* Forces word wrapping */
+  margin: 0.5em 0;
+  line-height: 1.5;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 .ProseMirror h1 {
   font-size: 1.5em;
-  margin-top: 0.8em; /* Reduced from 1em */
-  margin-bottom: 0.4em; /* Reduced from 0.5em */
+  margin: 1em 0 0.5em;
   font-weight: bold;
   max-width: 100%;
   overflow-wrap: break-word;
@@ -31,28 +31,27 @@
 
 .ProseMirror h2 {
   font-size: 1.25em;
-  margin-top: 0.6em; /* Reduced from 0.75em */
-  margin-bottom: 0.4em; /* Reduced from 0.5em */
+  margin: 0.8em 0 0.4em;
   font-weight: bold;
   max-width: 100%;
   overflow-wrap: break-word;
 }
 
 .ProseMirror blockquote {
-  padding-left: 1em;
+  padding: 0.5em 1em;
+  margin: 0.5em 0;
   border-left: 2px solid hsl(var(--muted));
-  margin-left: 0;
-  margin-right: 0;
-  margin-bottom: 0.5em; /* Added bottom margin */
+  background-color: hsl(var(--muted));
+  border-radius: 0.25em;
   max-width: 100%;
   overflow-wrap: break-word;
 }
 
-/* Improve list styling */
+/* List styling */
 .ProseMirror ul,
 .ProseMirror ol {
   padding-left: 1.5em;
-  margin-bottom: 0.5em; /* Reduced from 0.75em */
+  margin: 0.5em 0;
   max-width: 100%;
 }
 
@@ -65,8 +64,8 @@
 }
 
 .ProseMirror li {
-  margin-bottom: 0.2em; /* Reduced from 0.25em */
-  padding-left: 0.2em;
+  margin: 0.25em 0;
+  padding-left: 0.25em;
   max-width: 100%;
   overflow-wrap: break-word;
 }
@@ -76,11 +75,13 @@
   max-width: 100%;
 }
 
+/* Code blocks */
 .ProseMirror code {
   background-color: hsl(var(--muted));
   border-radius: 0.25em;
   padding: 0.2em 0.4em;
   font-family: monospace;
+  font-size: 0.9em;
   word-break: break-all;
 }
 
@@ -88,8 +89,7 @@
   background-color: hsl(var(--muted));
   border-radius: 0.25em;
   padding: 0.75em 1em;
-  font-family: monospace;
-  margin-bottom: 0.5em; /* Reduced from 0.75em */
+  margin: 0.5em 0;
   max-width: 100%;
   overflow-x: auto;
 }
@@ -97,64 +97,24 @@
 .ProseMirror pre code {
   background-color: transparent;
   padding: 0;
-  word-break: break-all;
+  font-size: 0.9em;
 }
 
-.ProseMirror mark {
-  background-color: #fef3c7;
-  border-radius: 0.25em;
-  padding: 0 0.25em;
+/* Selection and focus */
+.ProseMirror-focused {
+  outline: none;
 }
 
-/* Placeholder */
-.ProseMirror p.is-editor-empty:first-child::before {
-  content: attr(data-placeholder);
-  float: left;
-  color: hsl(var(--muted-foreground));
-  pointer-events: none;
-  height: 0;
+.ProseMirror ::selection {
+  background-color: hsl(var(--primary)/0.2);
 }
 
-/* Text alignment */
-.ProseMirror .text-left {
-  text-align: left;
-}
-
-.ProseMirror .text-center {
-  text-align: center;
-}
-
-.ProseMirror .text-right {
-  text-align: right;
-}
-
-/* Add support for tables and other elements that might extend beyond container */
-.ProseMirror table {
-  max-width: 100%;
-  overflow-x: auto;
-  display: block;
-  border-collapse: collapse;
-}
-
-.ProseMirror table td, 
-.ProseMirror table th {
-  border: 1px solid hsl(var(--border));
-  padding: 0.5em;
-  word-break: break-word;
-}
-
-/* Ensure images don't break the layout */
-.ProseMirror img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Mobile adjustments */
+/* Mobile optimizations */
 @media (max-width: 640px) {
   .ProseMirror {
     padding: 0.75em;
-    font-size: 16px; /* Mobile-optimized font size for typing */
-    line-height: 1.5; /* Increased line height for better readability */
+    font-size: 16px;
+    line-height: 1.5;
   }
   
   .ProseMirror h1 {
@@ -169,34 +129,26 @@
     padding: 0.5em;
   }
   
-  /* Increase tap targets for better mobile experience */
   .ProseMirror li {
     padding: 0.2em 0;
   }
   
-  /* Improve link tap targets */
-  .ProseMirror a {
-    padding: 0.1em 0;
-    display: inline-block;
+  .ProseMirror blockquote {
+    padding: 0.5em 0.75em;
   }
 }
 
 /* Toolbar button enhancements for touch */
-@media (max-width: 640px) {
-  .rich-text-toolbar button {
-    min-height: 36px;
-    min-width: 36px;
-  }
+.rich-text-toolbar button {
+  min-height: 36px;
+  min-width: 36px;
 }
 
-/* Focus state improvements */
-.ProseMirror:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-/* Make textarea appear more like a native input on mobile */
-.ProseMirror-focused {
-  -webkit-appearance: none;
-  appearance: none;
+/* Placeholder text */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+  height: 0;
 }
