@@ -1,4 +1,3 @@
-
 /* Base editor styles */
 .ProseMirror {
   width: 100%;
@@ -148,9 +147,9 @@
     padding: 0.25rem !important;
   }
   
-  /* Add space at the bottom of the editor to prevent content being hidden behind the floating save button */
+  /* Provide padding at the bottom of the editor to accommodate the fixed footer */
   .ProseMirror {
-    padding-bottom: 80px !important;
+    padding-bottom: 50px !important;
   }
 }
 
@@ -195,16 +194,5 @@
 @media (max-width: 640px) {
   .mobile-note-editor {
     padding-top: 0.25rem;
-  }
-  
-  /* Floating save button styles */
-  .fixed.bottom-20.right-4 {
-    bottom: 5.5rem !important; /* Position above the nav bar */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    transition: transform 0.2s ease-in-out !important;
-  }
-  
-  .fixed.bottom-20.right-4:active {
-    transform: scale(0.95) !important;
   }
 }

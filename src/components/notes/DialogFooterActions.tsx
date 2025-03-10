@@ -26,24 +26,22 @@ export const DialogFooterActions = ({
       >
         Cancel
       </Button>
-      {!isMobile && (
-        <Button 
-          onClick={onSave} 
-          className={`gap-2 transition-all shadow-sm hover:shadow-md ${isSaved ? 'bg-green-600 hover:bg-green-700' : ''}`}
-        >
-          {isSaved ? (
-            <>
-              <Check className="h-4 w-4" />
-              Saved!
-            </>
-          ) : (
-            <>
-              <Save className="h-4 w-4" />
-              Save Changes
-            </>
-          )}
-        </Button>
-      )}
+      <Button 
+        onClick={onSave} 
+        className={`gap-2 transition-all shadow-sm hover:shadow-md ${isSaved ? 'bg-green-600 hover:bg-green-700' : ''}`}
+      >
+        {isSaved ? (
+          <>
+            <Check className="h-4 w-4" />
+            Saved!
+          </>
+        ) : (
+          <>
+            <Save className="h-4 w-4" />
+            Save Changes
+          </>
+        )}
+      </Button>
     </DialogFooter>
   );
 };

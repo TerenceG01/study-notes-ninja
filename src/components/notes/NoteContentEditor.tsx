@@ -96,31 +96,6 @@ export const NoteContentEditor = ({
     });
   };
 
-  // Manual save button for mobile users
-  const renderMobileSaveButton = () => {
-    if (!isMobile) return null;
-    
-    return (
-      <Button 
-        variant="secondary" 
-        size="sm" 
-        className="fixed bottom-20 right-4 z-50 rounded-full w-12 h-12 p-0 shadow-lg bg-primary hover:bg-primary/90"
-        onClick={() => {
-          // We need to trigger Ctrl+S event
-          const event = new KeyboardEvent('keydown', {
-            key: 's',
-            ctrlKey: true,
-            bubbles: true
-          });
-          document.dispatchEvent(event);
-        }}
-        aria-label="Save note"
-      >
-        <Save className="h-5 w-5 text-primary-foreground" />
-      </Button>
-    );
-  };
-
   return (
     <>
       <div className="mt-2 min-h-[150px] max-h-[calc(100%-20px)] flex flex-col bg-card rounded-lg border border-border shadow-sm max-w-full overflow-hidden">
@@ -165,25 +140,6 @@ export const NoteContentEditor = ({
           </div>
         )}
       </div>
-      
-      {isMobile && (
-        <Button 
-          variant="secondary" 
-          size="sm" 
-          className="fixed bottom-20 right-4 z-50 rounded-full w-12 h-12 p-0 shadow-lg bg-primary hover:bg-primary/90"
-          onClick={() => {
-            const event = new KeyboardEvent('keydown', {
-              key: 's',
-              ctrlKey: true,
-              bubbles: true
-            });
-            document.dispatchEvent(event);
-          }}
-          aria-label="Save note"
-        >
-          <Save className="h-5 w-5 text-primary-foreground" />
-        </Button>
-      )}
     </>
   );
 };
