@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Note } from "@/hooks/useNotes";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SummaryControlsProps {
   summaryLevel: SummaryLevel;
@@ -36,9 +37,12 @@ export const SummaryControls = ({
   onToggleSummary,
   onEnhanceNote
 }: SummaryControlsProps) => {
-  return <div className="flex gap-4 items-center mt-4 flex-wrap">
+  const isMobile = useIsMobile();
+  
+  return (
+    <div className={`flex ${isMobile ? 'flex-wrap gap-2' : 'gap-4'} items-center mt-3 mb-1`}>
       <Select value={summaryLevel} onValueChange={onSummaryLevelChange}>
-        <SelectTrigger className="w-[180px] mx-[5px]">
+        <SelectTrigger className={`${isMobile ? 'w-full max-w-[150px] h-9 text-xs' : 'w-[180px]'}`}>
           <SelectValue placeholder="Summary Level" />
         </SelectTrigger>
         <SelectContent>
@@ -52,27 +56,37 @@ export const SummaryControls = ({
         onClick={onGenerateSummary} 
         disabled={summarizing} 
         variant="secondary"
-        className="relative"
+        size={isMobile ? "sm" : "default"}
+        className={`relative ${isMobile ? 'h-9 text-xs px-2' : ''}`}
       >
         {summarizing ? (
           <>
             <div className="absolute inset-0 bg-secondary/80 backdrop-blur-sm rounded-md flex items-center justify-center animate-fade-in">
               <div className="flex items-center space-x-2">
-                <Sparkles className="h-4 w-4 text-primary animate-pulse" />
-                <span className="text-sm font-medium">Summarizing...</span>
+                <Sparkles className={`${isMobile ? 'h-3.5 w-3.5' : 'h-4 w-4'} text-primary animate-pulse`} />
+                <span className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium`}>Summarizing...</span>
               </div>
             </div>
             <span className="opacity-0">Generate Summary</span>
           </>
-        ) : 'Generate Summary'}
+        ) : (
+          <>
+            {isMobile ? (
+              <>
+                <Sparkles className="h-3.5 w-3.5 mr-1" />
+                <span>Summarize</span>
+              </>
+            ) : 'Generate Summary'}
+          </>
+        )}
       </Button>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button 
-            size="sm" 
+            size={isMobile ? "sm" : "sm"} 
             variant="outline" 
-            className="gap-1 h-10 relative"
+            className={`gap-1 ${isMobile ? 'h-9 text-xs px-2' : 'h-10'} relative`}
             disabled={enhancing || !editingNote?.content}
           >
             {enhancing ? (
@@ -85,13 +99,13 @@ export const SummaryControls = ({
                 </div>
                 <span className="opacity-0">
                   <Wand2 className="h-3.5 w-3.5" />
-                  Enhance with AI
+                  Enhance
                 </span>
               </>
             ) : (
               <>
                 <Wand2 className="h-3.5 w-3.5" />
-                Enhance with AI
+                {isMobile ? "Enhance" : "Enhance with AI"}
               </>
             )}
           </Button>
@@ -106,8 +120,16 @@ export const SummaryControls = ({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {hasSummary && <Button variant="outline" onClick={onToggleSummary}>
+      {hasSummary && (
+        <Button 
+          variant="outline" 
+          onClick={onToggleSummary}
+          size={isMobile ? "sm" : "default"}
+          className={isMobile ? 'h-9 text-xs px-2 ml-auto' : ''}
+        >
           {showSummary ? 'Show Original' : 'Show Summary'}
-        </Button>}
-    </div>;
+        </Button>
+      )}
+    </div>
+  );
 };

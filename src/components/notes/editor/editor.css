@@ -113,7 +113,7 @@
 @media (max-width: 640px) {
   .ProseMirror {
     padding: 0.75em;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.5;
   }
   
@@ -136,12 +136,36 @@
   .ProseMirror blockquote {
     padding: 0.5em 0.75em;
   }
+  
+  /* Optimize toolbar spacing for mobile */
+  .rich-text-toolbar {
+    padding: 0.25rem !important;
+    gap: 0.25rem !important;
+  }
+  
+  .rich-text-toolbar button {
+    padding: 0.25rem !important;
+  }
 }
 
 /* Toolbar button enhancements for touch */
 .rich-text-toolbar button {
   min-height: 36px;
   min-width: 36px;
+}
+
+/* On extra small screens, make toolbar buttons even smaller */
+@media (max-width: 370px) {
+  .rich-text-toolbar button {
+    min-height: 30px;
+    min-width: 30px;
+    padding: 0.15rem !important;
+  }
+  
+  .rich-text-toolbar {
+    gap: 0.15rem !important;
+    padding: 0.15rem !important;
+  }
 }
 
 /* Placeholder text */

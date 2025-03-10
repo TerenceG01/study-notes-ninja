@@ -5,6 +5,7 @@ import { SummaryLevel } from "@/hooks/useNoteSummary";
 import { NoteHeaderSection } from "./NoteHeaderSection";
 import { SummaryControls } from "./SummaryControls";
 import { NoteContentEditor } from "./NoteContentEditor";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface NoteContentContainerProps {
   editingNote: Note | null;
@@ -49,6 +50,8 @@ export const NoteContentContainer = ({
   onToggleFullscreen,
   onToggleAutoSave
 }: NoteContentContainerProps) => {
+  const isMobile = useIsMobile();
+  
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <NoteHeaderSection 
@@ -63,7 +66,7 @@ export const NoteContentContainer = ({
       />
 
       <ScrollArea className="flex-grow overflow-y-auto overflow-x-hidden">
-        <div className="space-y-4 pr-2 sm:pr-4 max-w-full">
+        <div className={`space-y-2 ${isMobile ? 'pr-1' : 'pr-2 sm:pr-4'} max-w-full`}>
           <SummaryControls 
             summaryLevel={summaryLevel}
             summarizing={summarizing}
