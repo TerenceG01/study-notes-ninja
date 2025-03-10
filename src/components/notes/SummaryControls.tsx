@@ -86,26 +86,27 @@ export const SummaryControls = ({
           <Button 
             size={isMobile ? "sm" : "sm"} 
             variant="outline" 
-            className={`gap-1 ${isMobile ? 'h-9 text-xs px-2' : 'h-10'} relative`}
+            className={`gap-1 ${isMobile ? 'h-9 px-2 aspect-square' : 'h-10'} relative`}
             disabled={enhancing || !editingNote?.content}
+            title={isMobile ? "Enhance with AI" : ""}
           >
             {enhancing ? (
               <>
                 <div className="absolute inset-0 bg-background/95 backdrop-blur-sm rounded-md flex items-center justify-center animate-fade-in">
                   <div className="flex items-center space-x-2">
                     <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-                    <span className="text-xs font-medium">Enhancing...</span>
+                    {!isMobile && <span className="text-xs font-medium">Enhancing...</span>}
                   </div>
                 </div>
                 <span className="opacity-0">
                   <Wand2 className="h-3.5 w-3.5" />
-                  Enhance
+                  {!isMobile && "Enhance"}
                 </span>
               </>
             ) : (
               <>
                 <Wand2 className="h-3.5 w-3.5" />
-                {isMobile ? "Enhance" : "Enhance with AI"}
+                {!isMobile && "Enhance with AI"}
               </>
             )}
           </Button>
