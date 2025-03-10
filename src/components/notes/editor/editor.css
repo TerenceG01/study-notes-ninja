@@ -1,3 +1,4 @@
+
 /* Base editor styles */
 .ProseMirror {
   width: 100%;
@@ -149,7 +150,7 @@
   
   /* Provide padding at the bottom of the editor to accommodate the fixed footer */
   .ProseMirror {
-    padding-bottom: 50px !important;
+    padding-bottom: 60px !important;
   }
 }
 
