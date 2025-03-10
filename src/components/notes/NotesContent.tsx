@@ -43,7 +43,7 @@ export const NotesContent = () => {
       fetchNotes();
     }
   }, [user, fetchNotes]);
-  return <div className="flex flex-col h-[calc(100vh-130px)] max-h-[calc(100vh-110px)] w-full max-w-full overflow-hidden">
+  return <div className="flex flex-col h-full w-full max-w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-primary">My Notes</h1>

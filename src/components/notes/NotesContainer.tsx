@@ -41,13 +41,13 @@ export const NotesContainer = ({
   onNotesChanged,
 }: NotesContainerProps) => {
   const uniqueColors = Array.from(new Set(notes.map(note => note.subject_color).filter(Boolean)));
-  const [tableHeight, setTableHeight] = useState("calc(100% - 32px)"); // Reduced header height even further
+  const [tableHeight, setTableHeight] = useState("calc(100% - 28px)"); // Further reduced header height
   
   // Dynamically adjust the table height based on viewport
   useEffect(() => {
     const updateTableHeight = () => {
       const header = document.querySelector('.notes-container-header');
-      const headerHeight = header ? header.getBoundingClientRect().height : 32; // Reduced from 36px
+      const headerHeight = header ? header.getBoundingClientRect().height : 28; // Reduced from 32px
       const container = document.querySelector('.notes-card-container');
       
       if (container) {
@@ -93,7 +93,7 @@ export const NotesContainer = ({
       </CardHeader>
       <CardContent className="p-0 flex-grow overflow-hidden">
         <div className="relative h-full overflow-hidden">
-          <ScrollArea className="h-full min-h-[360px] max-w-full overflow-hidden" style={{ height: tableHeight }}>
+          <ScrollArea className="h-full min-h-[400px] max-w-full overflow-hidden" style={{ height: tableHeight }}>
             {loading ? (
               <TableSkeleton rows={5} />
             ) : (
