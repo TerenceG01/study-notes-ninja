@@ -1,9 +1,8 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import Index from "./pages/Index";
 import Notes from "./pages/Notes";
@@ -38,31 +37,35 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const isMobile = useIsMobile();
+  const location = useLocation();
+  const isIndex = location.pathname === '/';
   
   return (
     <div className="min-h-screen">
       <ProfileButton />
-      <div className={`flex min-h-screen ${isMobile ? 'pb-14' : ''}`}>
+      <div className={`flex min-h-screen ${isMobile && !isIndex ? 'pb-14' : ''}`}>
         <NotesSidebar />
         <div className="flex-1 relative">
           <main className="px-2 sm:px-4">{children}</main>
         </div>
       </div>
-      {isMobile && <MobileNavigationBar />}
+      {isMobile && !isIndex && <MobileNavigationBar />}
     </div>
   );
 };
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const isMobile = useIsMobile();
+  const location = useLocation();
+  const isIndex = location.pathname === '/';
   
   return (
     <div className="min-h-screen">
       <ProfileButton />
-      <ResponsiveContainer className={`${isMobile ? 'pb-14' : ''}`}>
+      <ResponsiveContainer className={`${isMobile && !isIndex ? 'pb-14' : ''}`}>
         {children}
       </ResponsiveContainer>
-      {isMobile && <MobileNavigationBar />}
+      {isMobile && !isIndex && <MobileNavigationBar />}
     </div>
   );
 };
