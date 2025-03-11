@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -39,6 +38,33 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+
+  // Reset pointer events when dialog closes
+  useEffect(() => {
+    if (!open) {
+      resetPointerEvents();
+    }
+    return () => {
+      resetPointerEvents();
+    };
+  }, [open]);
+
+  const resetPointerEvents = () => {
+    // Reset pointer-events on body and html
+    document.body.style.pointerEvents = '';
+    document.documentElement.style.pointerEvents = '';
+    
+    // Reset all elements with pointer-events style
+    const elements = document.querySelectorAll('*');
+    elements.forEach(element => {
+      if (element instanceof HTMLElement && element.style.pointerEvents === 'none') {
+        element.style.pointerEvents = '';
+      }
+    });
+    
+    // Force repaint
+    document.body.getBoundingClientRect();
+  };
 
   console.log('ShareNote rendered with groupId:', groupId); // Debug log
 
@@ -126,6 +152,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
       queryClient.invalidateQueries({ queryKey: ['group-shared-notes', groupId] });
       queryClient.invalidateQueries({ queryKey: ['max-note-order', groupId] });
       setOpen(false);
+      resetPointerEvents();
       toast({
         title: "Note shared",
         description: "The note has been shared with the group.",
@@ -138,6 +165,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
         title: "Error sharing note",
         description: error instanceof Error ? error.message : "An unknown error occurred",
       });
+      resetPointerEvents();
     },
   });
 
@@ -159,6 +187,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shared-notes', groupId] });
       queryClient.invalidateQueries({ queryKey: ['group-shared-notes', groupId] });
+      resetPointerEvents();
       toast({
         title: "Note unshared",
         description: "The note has been removed from the group.",
@@ -171,6 +200,7 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
         title: "Error unsharing note",
         description: error instanceof Error ? error.message : "An unknown error occurred",
       });
+      resetPointerEvents();
     },
   });
 
@@ -182,11 +212,18 @@ export const ShareNote = ({ groupId }: ShareNoteProps) => {
     }
   };
 
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
+      resetPointerEvents();
+    }
+  };
+
   // Instead of returning null, we'll disable the button if groupId is missing
   const isDisabled = !groupId;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button disabled={isDisabled}>
           <Share2 className="h-4 w-4 mr-2" />

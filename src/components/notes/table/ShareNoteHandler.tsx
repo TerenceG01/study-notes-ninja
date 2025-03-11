@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,37 @@ export const useShareNoteHandler = ({ studyGroups, onNotesChanged }: ShareNoteHa
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+
+  // Clean up any pointer-event styling when dialog closes
+  useEffect(() => {
+    return () => {
+      resetPointerEvents();
+    };
+  }, []);
+
+  // Also reset pointer events when dialogs close
+  useEffect(() => {
+    if (!showGroupSelector && !isConfirmDialogOpen) {
+      resetPointerEvents();
+    }
+  }, [showGroupSelector, isConfirmDialogOpen]);
+
+  const resetPointerEvents = () => {
+    // Reset pointer-events on body and html
+    document.body.style.pointerEvents = '';
+    document.documentElement.style.pointerEvents = '';
+    
+    // Reset all elements with pointer-events style
+    const elements = document.querySelectorAll('*');
+    elements.forEach(element => {
+      if (element instanceof HTMLElement && element.style.pointerEvents === 'none') {
+        element.style.pointerEvents = '';
+      }
+    });
+    
+    // Force repaint to ensure changes take effect
+    document.body.getBoundingClientRect();
+  };
 
   const handleShareNote = (note: Note) => {
     setSelectedNote(note);
@@ -43,6 +74,7 @@ export const useShareNoteHandler = ({ studyGroups, onNotesChanged }: ShareNoteHa
         description: "Please connect to the internet to share notes.",
       });
       setIsConfirmDialogOpen(false);
+      resetPointerEvents();
       return;
     }
     
@@ -108,7 +140,10 @@ export const useShareNoteHandler = ({ studyGroups, onNotesChanged }: ShareNoteHa
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={() => navigate(`/study-groups/${selectedGroupId}`)}
+                onClick={() => {
+                  resetPointerEvents();
+                  navigate(`/study-groups/${selectedGroupId}`);
+                }}
               >
                 View Study Group
               </Button>
@@ -133,6 +168,7 @@ export const useShareNoteHandler = ({ studyGroups, onNotesChanged }: ShareNoteHa
       setSharingSubject(null);
       setSelectedGroupId(null);
       setSelectedNote(null);
+      resetPointerEvents();
     }
   };
 

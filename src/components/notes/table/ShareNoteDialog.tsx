@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Share } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -36,10 +36,51 @@ export const ShareNoteDialog: React.FC<ShareNoteDialogProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  // Reset pointer events when dialogs close
+  useEffect(() => {
+    if (!showGroupSelector && !isConfirmDialogOpen) {
+      resetPointerEvents();
+    }
+
+    return () => {
+      resetPointerEvents();
+    };
+  }, [showGroupSelector, isConfirmDialogOpen]);
+
+  const resetPointerEvents = () => {
+    // Reset pointer-events on body and html
+    document.body.style.pointerEvents = '';
+    document.documentElement.style.pointerEvents = '';
+    
+    // Reset all elements with pointer-events style
+    const elements = document.querySelectorAll('*');
+    elements.forEach(element => {
+      if (element instanceof HTMLElement && element.style.pointerEvents === 'none') {
+        element.style.pointerEvents = '';
+      }
+    });
+    
+    // Force repaint
+    document.body.getBoundingClientRect();
+  };
+  
+  const handleOpenChange = (open: boolean, setter: (show: boolean) => void) => {
+    setter(open);
+    if (!open) {
+      // Use requestAnimationFrame to ensure the UI has time to update
+      requestAnimationFrame(() => {
+        resetPointerEvents();
+      });
+    }
+  };
+
   return (
     <>
       {/* Study Group Selection Sheet */}
-      <Sheet open={showGroupSelector} onOpenChange={setShowGroupSelector}>
+      <Sheet 
+        open={showGroupSelector} 
+        onOpenChange={(open) => handleOpenChange(open, setShowGroupSelector)}
+      >
         <SheetContent>
           <SheetHeader>
             <SheetTitle>Select Study Group</SheetTitle>
@@ -75,7 +116,10 @@ export const ShareNoteDialog: React.FC<ShareNoteDialogProps> = ({
             ) : (
               <div className="text-center py-8">
                 <p className="text-muted-foreground mb-4">You don't have any study groups yet</p>
-                <Button onClick={() => navigate('/study-groups')}>
+                <Button onClick={() => {
+                  resetPointerEvents();
+                  navigate('/study-groups');
+                }}>
                   Create a Study Group
                 </Button>
               </div>
@@ -85,7 +129,10 @@ export const ShareNoteDialog: React.FC<ShareNoteDialogProps> = ({
       </Sheet>
 
       {/* Confirmation Dialog */}
-      <AlertDialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
+      <AlertDialog 
+        open={isConfirmDialogOpen} 
+        onOpenChange={(open) => handleOpenChange(open, setIsConfirmDialogOpen)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Share Note</AlertDialogTitle>
@@ -94,8 +141,11 @@ export const ShareNoteDialog: React.FC<ShareNoteDialogProps> = ({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmShareToGroup}>Share Note</AlertDialogAction>
+            <AlertDialogCancel onClick={resetPointerEvents}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => {
+              confirmShareToGroup();
+              resetPointerEvents();
+            }}>Share Note</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

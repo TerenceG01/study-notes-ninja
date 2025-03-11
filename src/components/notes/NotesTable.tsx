@@ -9,6 +9,7 @@ import { NotesTableHeader } from "./table/NotesTableHeader";
 import { EmptyNotesRow } from "./table/EmptyNotesRow";
 import { useShareNoteHandler } from "./table/ShareNoteHandler";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 interface NotesTableProps {
   notes: Note[];
@@ -50,6 +51,24 @@ export const NotesTable = ({
     studyGroups,
     onNotesChanged
   });
+
+  // Clean up any pointer-events styling on unmount or route change
+  useEffect(() => {
+    const cleanup = () => {
+      document.body.style.pointerEvents = '';
+      document.documentElement.style.pointerEvents = '';
+      
+      // Reset pointer-events on all elements
+      const elements = document.querySelectorAll('*');
+      elements.forEach(element => {
+        if (element instanceof HTMLElement && element.style.pointerEvents === 'none') {
+          element.style.pointerEvents = '';
+        }
+      });
+    };
+    
+    return cleanup;
+  }, []);
 
   return (
     <>
