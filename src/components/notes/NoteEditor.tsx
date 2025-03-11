@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Plus, BookOpen, Tag } from "lucide-react";
+import { Plus, BookOpen, Tag, Hash } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -46,7 +46,7 @@ export const NoteEditor = ({
       />
 
       <div className="space-y-1">
-        <Label htmlFor="subject" className="flex items-center gap-1.5">
+        <Label htmlFor="subject" className="flex items-center gap-1.5 text-sm">
           <BookOpen className="h-4 w-4" />
           Subject
         </Label>
@@ -56,34 +56,34 @@ export const NoteEditor = ({
             <Button 
               variant="outline" 
               className={cn(
-                "w-full justify-between",
-                note.subject && "text-foreground"
+                "w-full justify-between h-9 px-3",
+                note.subject ? "text-foreground" : "text-muted-foreground"
               )}
             >
-              <div className="flex items-center gap-2">
-                <Tag className="h-4 w-4 text-muted-foreground" />
-                <span>{note.subject || "Select a subject"}</span>
+              <div className="flex items-center gap-2 overflow-hidden">
+                <Tag className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate">{note.subject || "Select a subject"}</span>
               </div>
               {note.subject && (
-                <Badge variant="secondary" className="ml-2">
+                <Badge variant="secondary" className="ml-2 truncate max-w-[120px]">
                   {note.subject}
                 </Badge>
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-60 p-0 max-h-[300px] overflow-y-auto">
-            <div className="p-2 space-y-1">
+          <PopoverContent className="w-full max-w-[300px] p-0 max-h-[300px] overflow-y-auto" align="start">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-0.5 p-1">
               {commonSubjects.map((subject) => (
                 <Button
                   key={subject}
                   variant="ghost"
                   className={cn(
-                    "w-full justify-start text-left",
+                    "justify-start text-left h-8 text-sm",
                     note.subject === subject && "bg-muted font-medium"
                   )}
                   onClick={() => onNoteChange('subject', subject)}
                 >
-                  {subject}
+                  <span className="truncate">{subject}</span>
                 </Button>
               ))}
             </div>
@@ -93,6 +93,60 @@ export const NoteEditor = ({
         <p className="text-xs text-muted-foreground mt-1">
           Assigning a subject helps organize your notes and makes them easier to find
         </p>
+      </div>
+
+      {/* Tags section */}
+      <div className="space-y-2">
+        <Label className="flex items-center gap-1.5 text-sm">
+          <Hash className="h-4 w-4" />
+          Tags
+        </Label>
+        
+        <div className="flex flex-wrap gap-2 mb-2">
+          {note.tags.map((tag) => (
+            <Badge 
+              key={tag}
+              variant="secondary"
+              className="flex items-center gap-1 px-2 py-1"
+            >
+              {tag}
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => onRemoveTag(tag)}
+                className="h-4 w-4 p-0 text-muted-foreground hover:text-foreground rounded-full"
+              >
+                <X className="h-3 w-3" />
+                <span className="sr-only">Remove tag</span>
+              </Button>
+            </Badge>
+          ))}
+        </div>
+        
+        <div className="flex gap-2">
+          <Input
+            placeholder="Add a tag..."
+            value={newTag}
+            onChange={(e) => onTagChange(e.target.value)}
+            className="flex-1"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && newTag.trim()) {
+                e.preventDefault();
+                onAddTag();
+              }
+            }}
+          />
+          <Button
+            type="button"
+            onClick={onAddTag}
+            disabled={!newTag.trim()}
+            size="sm"
+            className="flex-shrink-0"
+          >
+            <Plus className="h-4 w-4" />
+            Add
+          </Button>
+        </div>
       </div>
 
       <Textarea

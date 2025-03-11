@@ -43,7 +43,7 @@ export const NotesContainer = ({
   const uniqueColors = Array.from(new Set(notes.map(note => note.subject_color).filter(Boolean)));
   const [tableHeight, setTableHeight] = useState("calc(100% - 28px)");
   
-  // Dynamically adjust the table height based on viewport
+  // Dynamically adjust the table height based on filters visibility
   useEffect(() => {
     const updateTableHeight = () => {
       const header = document.querySelector('.notes-container-header');
@@ -52,7 +52,8 @@ export const NotesContainer = ({
       
       if (container) {
         const containerHeight = container.getBoundingClientRect().height;
-        setTableHeight(`${containerHeight - headerHeight}px`);
+        // Add some buffer for potential wrapping
+        setTableHeight(`${containerHeight - headerHeight - 4}px`);
       }
     };
 
@@ -62,41 +63,47 @@ export const NotesContainer = ({
     // Run update after a short delay to ensure all elements are rendered
     const timeoutId = setTimeout(updateTableHeight, 100);
     
+    // Update height when filters change
+    const filtersChangeTimeoutId = setTimeout(updateTableHeight, 200);
+    
     return () => {
       window.removeEventListener('resize', updateTableHeight);
       clearTimeout(timeoutId);
+      clearTimeout(filtersChangeTimeoutId);
     };
-  }, []);
+  }, [selectedColor, selectedSubject, selectedDate]);
 
   return (
     <Card className="shadow-sm h-full flex flex-col overflow-hidden notes-card-container">
-      <CardHeader className="bg-muted/40 px-2 sm:px-3 py-0.5 sm:py-0.5 flex-shrink-0 notes-container-header">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-1">
-          <div>
-            <CardTitle className="text-base sm:text-lg font-medium">
-              {selectedSubject ? `${selectedSubject} Notes` : 'Your Notes'}
-            </CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
-              {selectedSubject 
-                ? `Viewing notes for ${selectedSubject}`
-                : 'Browse and manage your existing notes'}
-            </CardDescription>
+      <CardHeader className="bg-muted/40 px-2 py-2 flex-shrink-0 notes-container-header">
+        <div className="flex flex-col space-y-2 w-full">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <CardTitle className="text-base sm:text-lg font-medium">
+                {selectedSubject ? `${selectedSubject} Notes` : 'Your Notes'}
+              </CardTitle>
+              <CardDescription className="text-xs">
+                {selectedSubject 
+                  ? `Viewing notes for ${selectedSubject}`
+                  : 'Browse and manage your existing notes'}
+              </CardDescription>
+            </div>
           </div>
-          <div className="self-end sm:self-auto">
-            <NoteFilters
-              selectedColor={selectedColor}
-              selectedSubject={selectedSubject}
-              selectedDate={selectedDate}
-              uniqueSubjects={uniqueSubjects}
-              uniqueColors={uniqueColors}
-              onColorChange={onColorChange}
-              onSubjectChange={onSubjectChange}
-              onDateChange={onDateChange}
-              onClearFilters={onClearFilters}
-            />
-          </div>
+          
+          <NoteFilters
+            selectedColor={selectedColor}
+            selectedSubject={selectedSubject}
+            selectedDate={selectedDate}
+            uniqueSubjects={uniqueSubjects}
+            uniqueColors={uniqueColors}
+            onColorChange={onColorChange}
+            onSubjectChange={onSubjectChange}
+            onDateChange={onDateChange}
+            onClearFilters={onClearFilters}
+          />
         </div>
       </CardHeader>
+      
       <CardContent className="p-0 flex-grow overflow-hidden">
         <div className="relative h-full overflow-hidden">
           <ScrollArea className="h-full min-h-[400px] max-w-full overflow-hidden" style={{ height: tableHeight }}>

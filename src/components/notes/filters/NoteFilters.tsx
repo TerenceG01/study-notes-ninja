@@ -3,19 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Filter, Palette, X, BookOpen, Tag } from "lucide-react";
+import { Calendar as CalendarIcon, Filter, Palette, X, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CommonSubjects } from "../CommonSubjects";
 import { Badge } from "@/components/ui/badge";
-
-// Base color definitions for reference
-const SUBJECT_COLORS = [
-  { name: 'Blue', value: 'blue', class: 'bg-blue-50 text-blue-600 hover:bg-blue-100' },
-  { name: 'Green', value: 'green', class: 'bg-green-50 text-green-600 hover:bg-green-100' },
-  { name: 'Purple', value: 'purple', class: 'bg-purple-50 text-purple-600 hover:bg-purple-100' },
-  { name: 'Red', value: 'red', class: 'bg-red-50 text-red-600 hover:bg-red-100' },
-  { name: 'Orange', value: 'orange', class: 'bg-orange-50 text-orange-600 hover:bg-orange-100' },
-];
+import { SUBJECT_COLORS } from "./constants/colors";
 
 interface NoteFiltersProps {
   selectedColor: string | null;
@@ -46,8 +38,8 @@ export const NoteFilters = ({
   );
 
   return (
-    <>
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col space-y-2 w-full">
+      <div className="flex flex-wrap items-center gap-2">
         {/* Subject Filter */}
         <Popover>
           <PopoverTrigger asChild>
@@ -55,26 +47,25 @@ export const NoteFilters = ({
               variant="outline"
               size="sm"
               className={cn(
-                "flex items-center gap-2",
+                "flex items-center gap-1.5 h-8",
                 selectedSubject && "border-primary"
               )}
             >
-              <Tag className="h-4 w-4" />
-              {selectedSubject ? 
-                <span className="max-w-[100px] truncate">{selectedSubject}</span> : 
-                <span>Subject</span>
-              }
+              <Tag className="h-3.5 w-3.5" />
+              <span className="truncate max-w-[80px]">
+                {selectedSubject ? selectedSubject : "Subject"}
+              </span>
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-52 p-2">
-            <div className="max-h-64 overflow-y-auto space-y-1">
+          <PopoverContent className="w-52 p-2" align="start">
+            <div className="max-h-[240px] overflow-y-auto space-y-1">
               {uniqueSubjects.length > 0 ? (
                 uniqueSubjects.map(subject => (
                   <Button
                     key={subject}
                     variant="ghost"
                     className={cn(
-                      "w-full justify-start text-left",
+                      "w-full justify-start text-left text-sm h-8",
                       selectedSubject === subject && "bg-muted font-medium"
                     )}
                     onClick={() => onSubjectChange(subject)}
@@ -96,23 +87,27 @@ export const NoteFilters = ({
               variant="outline"
               size="sm"
               className={cn(
-                "flex items-center gap-2",
+                "flex items-center gap-1.5 h-8",
                 selectedColor && "border-primary"
               )}
               disabled={availableColors.length === 0}
             >
-              <Palette className="h-4 w-4" />
-              Color {availableColors.length === 0 && "(None)"}
+              <Palette className="h-3.5 w-3.5" />
+              <span className="truncate max-w-[80px]">
+                {selectedColor 
+                  ? SUBJECT_COLORS.find(c => c.value === selectedColor)?.name 
+                  : "Color"}
+              </span>
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-48 p-2">
+          <PopoverContent className="w-48 p-2" align="start">
             <div className="grid grid-cols-2 gap-1">
               {availableColors.map(color => (
                 <Button
                   key={color.value}
                   variant="ghost"
                   className={cn(
-                    "justify-start",
+                    "justify-start h-8 text-sm",
                     color.class,
                     selectedColor === color.value && "border-2 border-primary"
                   )}
@@ -132,15 +127,17 @@ export const NoteFilters = ({
               variant="outline"
               size="sm"
               className={cn(
-                "flex items-center gap-2",
+                "flex items-center gap-1.5 h-8",
                 selectedDate && "border-primary"
               )}
             >
-              <CalendarIcon className="h-4 w-4" />
-              {selectedDate ? format(selectedDate, 'PP') : 'Date'}
+              <CalendarIcon className="h-3.5 w-3.5" />
+              <span className="truncate max-w-[80px]">
+                {selectedDate ? format(selectedDate, 'MM/dd') : 'Date'}
+              </span>
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="end">
+          <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
               selected={selectedDate}
@@ -156,39 +153,41 @@ export const NoteFilters = ({
             variant="ghost"
             size="sm"
             onClick={onClearFilters}
-            className="text-muted-foreground hover:text-primary"
+            className="text-muted-foreground hover:text-primary h-8"
           >
-            <X className="h-4 w-4" />
-            Clear
+            <X className="h-3.5 w-3.5 mr-1" />
+            <span>Clear</span>
           </Button>
         )}
       </div>
 
-      {/* Active Filters Display */}
+      {/* Active Filters Display - Mobile friendly condensed view */}
       {(selectedColor || selectedSubject || selectedDate) && (
-        <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-          <Filter className="h-4 w-4" />
-          <span>Filtering by:</span>
+        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mt-1">
+          <span className="flex items-center">
+            <Filter className="h-3.5 w-3.5 mr-1" />
+            Filters:
+          </span>
           {selectedColor && (
-            <span className={cn(
-              "px-2 py-1 rounded-md",
+            <Badge variant="outline" className={cn(
+              "px-2 py-0.5 text-xs",
               SUBJECT_COLORS.find(c => c.value === selectedColor)?.class
             )}>
               {SUBJECT_COLORS.find(c => c.value === selectedColor)?.name}
-            </span>
+            </Badge>
           )}
           {selectedSubject && (
-            <Badge variant="secondary">
+            <Badge variant="secondary" className="px-2 py-0.5 text-xs">
               {selectedSubject}
             </Badge>
           )}
           {selectedDate && (
-            <span className="px-2 py-1 bg-secondary rounded-md">
-              {format(selectedDate, 'PP')}
-            </span>
+            <Badge variant="outline" className="px-2 py-0.5 text-xs bg-secondary">
+              {format(selectedDate, 'MM/dd/yyyy')}
+            </Badge>
           )}
         </div>
       )}
-    </>
+    </div>
   );
 };

@@ -78,14 +78,16 @@ export const NotesContent = () => {
         <NotesHeader onSearch={setSearchQuery} />
       </div>
       
-      {/* Active subject filter indicator */}
+      {/* Active subject filter indicator - more compact */}
       {currentSubject && (
-        <div className="flex items-center gap-2 mb-3">
-          <Badge variant="secondary" className="px-3 py-1">
-            <span className="mr-1">Subject:</span> {currentSubject}
+        <div className="flex items-center gap-2 mb-2">
+          <Badge variant="secondary" className="pl-2 pr-1 py-1 flex items-center gap-1">
+            <span className="text-xs">Subject:</span> 
+            <span className="font-medium truncate max-w-[150px]">{currentSubject}</span>
             <button 
-              className="ml-2 h-4 w-4 rounded-full inline-flex items-center justify-center hover:bg-muted"
+              className="ml-1 h-4 w-4 rounded-full inline-flex items-center justify-center hover:bg-muted"
               onClick={handleClearSubject}
+              aria-label="Clear subject filter"
             >
               <X className="h-3 w-3" />
             </button>

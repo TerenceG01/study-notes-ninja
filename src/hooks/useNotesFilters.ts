@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { format } from "date-fns";
 import { Note } from "@/hooks/useNotes";
@@ -12,8 +12,14 @@ export const useNotesFilters = (allNotes: Note[]) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const uniqueSubjects = Array.from(new Set(allNotes.map(note => note.subject).filter(Boolean)));
+  // Extract unique subjects and sort them alphabetically
+  const uniqueSubjects = Array.from(new Set(
+    allNotes
+      .map(note => note.subject)
+      .filter(Boolean)
+  )).sort((a, b) => a.localeCompare(b));
 
+  // Filter notes based on multiple criteria
   const filteredNotes = allNotes.filter(note => {
     const matchesColor = !selectedColor || note.subject_color === selectedColor;
     const matchesSubject = !currentSubject || note.subject === currentSubject;
@@ -27,14 +33,15 @@ export const useNotesFilters = (allNotes: Note[]) => {
     return matchesColor && matchesSubject && matchesDate && matchesSearch;
   });
 
-  const clearFilters = () => {
+  // Clear all active filters
+  const clearFilters = useCallback(() => {
     setSelectedColor(null);
     setSelectedDate(null);
     setSearchQuery("");
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.delete("subject");
     setSearchParams(newSearchParams);
-  };
+  }, [searchParams, setSearchParams]);
 
   return {
     selectedColor,
