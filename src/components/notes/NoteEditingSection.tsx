@@ -8,6 +8,7 @@ import { NoteSummaryHandler } from "./NoteSummaryHandler";
 import { CommonSubjects } from "./CommonSubjects";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
+import { useFullscreenState } from "@/hooks/useFullscreenState";
 
 interface NoteEditingSectionProps {
   onNotesChanged: () => void;
@@ -29,6 +30,7 @@ export const NoteEditingSection = ({
   const { updateNote } = useNoteOperations(onNotesChanged);
   const isMobile = useIsMobile();
   const { toast } = useToast();
+  const { isFullscreen, enableFullscreen } = useFullscreenState(true); // Default to fullscreen
   
   const [showSummary, setShowSummary] = useState(false);
   
@@ -38,6 +40,13 @@ export const NoteEditingSection = ({
     setEditingNote,
     setShowSummary
   });
+
+  // Ensure fullscreen is enabled when a note is selected
+  useEffect(() => {
+    if (selectedNote) {
+      enableFullscreen();
+    }
+  }, [selectedNote]);
 
   // Handle note enhancement
   const handleEnhanceNote = (enhanceType: 'grammar' | 'structure' | 'all') => {
@@ -95,6 +104,7 @@ export const NoteEditingSection = ({
       onToggleSummary={summaryHandler.toggleSummary}
       onEnhanceNote={handleEnhanceNote}
       onSave={handleSave}
+      isFullscreen={isFullscreen}
     />
   );
 };

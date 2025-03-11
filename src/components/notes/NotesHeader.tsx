@@ -5,10 +5,13 @@ import { Button } from "@/components/ui/button";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { NoteEditor } from "./NoteEditor";
 import { CommonSubjects } from "./CommonSubjects";
 import { useNotes } from "@/hooks/useNotes";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFullscreenState } from "@/hooks/useFullscreenState";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface NotesHeaderProps {
   onSearch: (query: string) => void;
@@ -29,9 +32,12 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
     resetEditor
   } = useNoteEditor();
   const { toast } = useToast();
+  const { isFullscreen, enableFullscreen } = useFullscreenState();
+  const isMobile = useIsMobile();
 
   const handleCreateNote = () => {
     setIsEditorExpanded(true);
+    enableFullscreen(); // Always open in fullscreen
     toast({
       title: "Create Note",
       description: "Opening note editor...",
@@ -50,6 +56,25 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
     }
   };
 
+  const renderEditorContent = () => (
+    <>
+      <DialogHeader>
+        <DialogTitle>Create New Note</DialogTitle>
+      </DialogHeader>
+      <NoteEditor
+        note={newNote}
+        newTag={newTag}
+        commonSubjects={CommonSubjects}
+        onNoteChange={handleNoteChange}
+        onTagChange={setNewTag}
+        onAddTag={addTag}
+        onRemoveTag={removeTag}
+        onCancel={() => setIsEditorExpanded(false)}
+        onSave={handleSave}
+      />
+    </>
+  );
+
   return (
     <>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -65,24 +90,23 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
         </div>
       </div>
 
-      <Dialog open={isEditorExpanded} onOpenChange={setIsEditorExpanded}>
-        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Create New Note</DialogTitle>
-          </DialogHeader>
-          <NoteEditor
-            note={newNote}
-            newTag={newTag}
-            commonSubjects={CommonSubjects}
-            onNoteChange={handleNoteChange}
-            onTagChange={setNewTag}
-            onAddTag={addTag}
-            onRemoveTag={removeTag}
-            onCancel={() => setIsEditorExpanded(false)}
-            onSave={handleSave}
-          />
-        </DialogContent>
-      </Dialog>
+      {/* Use Sheet component for fullscreen mode */}
+      {isFullscreen ? (
+        <Sheet open={isEditorExpanded} onOpenChange={setIsEditorExpanded}>
+          <SheetContent
+            side="top"
+            className="h-screen w-screen p-6 flex flex-col max-h-screen overflow-hidden bg-background"
+          >
+            {renderEditorContent()}
+          </SheetContent>
+        </Sheet>
+      ) : (
+        <Dialog open={isEditorExpanded} onOpenChange={setIsEditorExpanded}>
+          <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+            {renderEditorContent()}
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };

@@ -9,6 +9,7 @@ export interface Note {
   tags?: string[];
   subject?: string;
   subject_color?: string;
+  custom_color?: string;
 }
 
 export interface StudyGroup {

@@ -24,6 +24,7 @@ interface EditNoteDialogProps {
   onToggleSummary: () => void;
   onEnhanceNote: (enhanceType: 'grammar' | 'structure' | 'all') => void;
   onSave: () => void;
+  isFullscreen?: boolean;
 }
 
 export const EditNoteDialog = ({
@@ -41,10 +42,11 @@ export const EditNoteDialog = ({
   onGenerateSummary,
   onToggleSummary,
   onEnhanceNote,
-  onSave
+  onSave,
+  isFullscreen = true // Default to fullscreen
 }: EditNoteDialogProps) => {
   const isMobile = useIsMobile();
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [localIsFullscreen, setLocalIsFullscreen] = useState(isFullscreen);
   const [wordCount, setWordCount] = useState(0);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
@@ -52,10 +54,15 @@ export const EditNoteDialog = ({
   const [isSaved, setIsSaved] = useState(false);
   const [originalContent, setOriginalContent] = useState("");
 
+  // Update local fullscreen state when prop changes
+  useEffect(() => {
+    setLocalIsFullscreen(isFullscreen);
+  }, [isFullscreen]);
+
   // Automatically use fullscreen on mobile
   useEffect(() => {
     if (isMobile && open) {
-      setIsFullscreen(true);
+      setLocalIsFullscreen(true);
     }
   }, [isMobile, open]);
 
@@ -123,7 +130,7 @@ export const EditNoteDialog = ({
   };
 
   const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen);
+    setLocalIsFullscreen(!localIsFullscreen);
   };
 
   const toggleAutoSave = () => {
@@ -141,7 +148,7 @@ export const EditNoteDialog = ({
     <>
       <NoteContentContainer
         editingNote={editingNote}
-        isFullscreen={isFullscreen}
+        isFullscreen={localIsFullscreen}
         showSummary={showSummary}
         summaryLevel={summaryLevel}
         summarizing={summarizing}
@@ -168,16 +175,19 @@ export const EditNoteDialog = ({
     </>
   );
 
-  // Use Sheet for mobile to provide better UX with bottom sheet interaction
-  if (isMobile) {
+  // Use Sheet for mobile or fullscreen mode
+  if (isMobile || localIsFullscreen) {
     return (
       <Sheet 
         open={open} 
         onOpenChange={onOpenChange}
       >
         <SheetContent
-          side="bottom"
-          className="h-[92vh] p-3 flex flex-col max-h-[92vh] overflow-hidden bg-background rounded-t-xl"
+          side={isMobile ? "bottom" : "top"}
+          className={isMobile 
+            ? "h-[92vh] p-3 flex flex-col max-h-[92vh] overflow-hidden bg-background rounded-t-xl" 
+            : "h-screen w-screen p-6 flex flex-col max-h-screen overflow-hidden bg-background"
+          }
         >
           {renderDialogContent()}
         </SheetContent>
@@ -185,32 +195,12 @@ export const EditNoteDialog = ({
     );
   }
 
+  // Fallback to dialog for desktop non-fullscreen mode
   return (
-    <>
-      {isFullscreen && !isMobile ? (
-        <Sheet 
-          open={open && isFullscreen} 
-          onOpenChange={(open) => {
-            if (!open) {
-              setIsFullscreen(false);
-              onOpenChange(false);
-            }
-          }}
-        >
-          <SheetContent
-            side="top"
-            className="h-screen w-screen p-6 flex flex-col max-h-screen overflow-hidden bg-background"
-          >
-            {renderDialogContent()}
-          </SheetContent>
-        </Sheet>
-      ) : (
-        <Dialog open={open && !isFullscreen} onOpenChange={onOpenChange}>
-          <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col p-6 overflow-hidden bg-background">
-            {renderDialogContent()}
-          </DialogContent>
-        </Dialog>
-      )}
-    </>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col p-6 overflow-hidden bg-background">
+        {renderDialogContent()}
+      </DialogContent>
+    </Dialog>
   );
 };

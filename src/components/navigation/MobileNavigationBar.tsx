@@ -118,11 +118,11 @@ export const MobileNavigationBar = () => {
         onOpenChange={setShowProfileModal}
       />
 
-      {/* Use Sheet instead of Dialog on mobile for better UX */}
+      {/* Always use Sheet for full screen experience */}
       <Sheet open={isEditorExpanded} onOpenChange={setIsEditorExpanded}>
         <SheetContent
-          side="bottom"
-          className="h-[85vh] p-4 overflow-y-auto rounded-t-xl"
+          side="top"
+          className="h-screen w-screen p-4 overflow-y-auto"
         >
           <SheetHeader className="mb-4">
             <SheetTitle>Create New Note</SheetTitle>
