@@ -36,14 +36,10 @@ export const LectureMode = ({ note, onExit }: LectureModeProps) => {
         <X className="h-5 w-5" />
       </Button>
       
-      <div className="flex-1 p-2 sm:p-4 max-w-4xl mx-auto w-full" style={{ overflowY: "auto" }}>
-        {/* Match the exact styling of the editor content area */}
-        <div 
-          className="ProseMirror prose-sm sm:prose max-w-none focus:outline-none" 
-          dangerouslySetInnerHTML={{ __html: note?.content || "" }}
-          style={{ padding: "1rem", maxWidth: "100%" }}
-        />
-      </div>
+      <ScrollArea className="flex-1 py-8 px-4 md:px-16 md:py-12 max-w-4xl mx-auto w-full">
+        {/* This div is styled to match the editor exactly */}
+        <div className="ProseMirror prose-sm sm:prose max-w-none focus:outline-none" dangerouslySetInnerHTML={{ __html: note?.content || "" }} />
+      </ScrollArea>
     </div>
   );
 };
