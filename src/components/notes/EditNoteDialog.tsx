@@ -6,6 +6,7 @@ import { NoteContentContainer } from "./NoteContentContainer";
 import { DialogFooterActions } from "./DialogFooterActions";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DialogWrapper } from "./dialog/DialogWrapper";
+import { LectureMode } from "./LectureMode";
 
 interface EditNoteDialogProps {
   open: boolean;
@@ -52,6 +53,7 @@ export const EditNoteDialog = ({
   const [tags, setTags] = useState<string[]>([]);
   const [isSaved, setIsSaved] = useState(false);
   const [originalContent, setOriginalContent] = useState("");
+  const [lectureMode, setLectureMode] = useState(false);
 
   // Update local fullscreen state when prop changes
   useEffect(() => {
@@ -98,19 +100,19 @@ export const EditNoteDialog = ({
 
   // Auto-save functionality
   useEffect(() => {
-    if (!autoSaveEnabled || !editingNote) return;
+    if (!autoSaveEnabled || !editingNote || lectureMode) return;
     
     const autoSaveTimer = setTimeout(() => {
       handleSave();
     }, isMobile ? 30000 : 60000); // Auto-save more frequently on mobile (30s vs 60s)
     
     return () => clearTimeout(autoSaveTimer);
-  }, [editingNote, autoSaveEnabled]);
+  }, [editingNote, autoSaveEnabled, lectureMode]);
 
   // Handle keyboard shortcut for save
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 's' && open) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's' && open && !lectureMode) {
         e.preventDefault();
         handleSave();
       }
@@ -118,7 +120,7 @@ export const EditNoteDialog = ({
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [open]);
+  }, [open, lectureMode]);
 
   // Manual save function
   const handleSave = () => {
@@ -136,12 +138,30 @@ export const EditNoteDialog = ({
     setAutoSaveEnabled(!autoSaveEnabled);
   };
 
+  const toggleLectureMode = () => {
+    // Auto-save before entering lecture mode
+    if (!lectureMode && !isSaved) {
+      handleSave();
+    }
+    setLectureMode(!lectureMode);
+  };
+
   const handleNoteChange = (note: Note | null) => {
     onNoteChange(note);
     if (isSaved && note?.content !== originalContent) {
       setIsSaved(false);
     }
   };
+
+  // If lecture mode is enabled, show the lecture mode component
+  if (lectureMode && editingNote) {
+    return (
+      <LectureMode 
+        note={editingNote} 
+        onExit={toggleLectureMode}
+      />
+    );
+  }
 
   return (
     <DialogWrapper 
@@ -169,6 +189,7 @@ export const EditNoteDialog = ({
         onEnhanceNote={onEnhanceNote}
         onToggleFullscreen={toggleFullscreen}
         onToggleAutoSave={toggleAutoSave}
+        onToggleLectureMode={toggleLectureMode}
       />
       <DialogFooterActions 
         onSave={handleSave} 

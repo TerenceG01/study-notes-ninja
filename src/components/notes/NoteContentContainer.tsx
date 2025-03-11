@@ -27,6 +27,7 @@ interface NoteContentContainerProps {
   onEnhanceNote: (enhanceType: 'grammar' | 'structure' | 'all') => void;
   onToggleFullscreen: () => void;
   onToggleAutoSave: () => void;
+  onToggleLectureMode: () => void;
 }
 
 export const NoteContentContainer = ({
@@ -48,7 +49,8 @@ export const NoteContentContainer = ({
   onToggleSummary,
   onEnhanceNote,
   onToggleFullscreen,
-  onToggleAutoSave
+  onToggleAutoSave,
+  onToggleLectureMode
 }: NoteContentContainerProps) => {
   const isMobile = useIsMobile();
   
@@ -63,6 +65,7 @@ export const NoteContentContainer = ({
         onNoteChange={onNoteChange}
         onToggleFullscreen={onToggleFullscreen}
         onToggleAutoSave={onToggleAutoSave}
+        onToggleLectureMode={onToggleLectureMode}
       />
 
       <ScrollArea className="flex-grow overflow-y-auto overflow-x-hidden">

@@ -1,5 +1,5 @@
 
-import { Maximize2, Minimize2, Clock, X, ChevronLeft, FileEdit } from "lucide-react";
+import { Maximize2, Minimize2, Clock, X, ChevronLeft, FileEdit, BookOpen } from "lucide-react";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Note } from "@/hooks/useNotes";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
 import { TitleSubjectEditor } from "./TitleSubjectEditor";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface NoteHeaderSectionProps {
   editingNote: Note | null;
@@ -18,6 +19,7 @@ interface NoteHeaderSectionProps {
   onNoteChange: (note: Note | null) => void;
   onToggleFullscreen: () => void;
   onToggleAutoSave: () => void;
+  onToggleLectureMode: () => void;
 }
 
 export const NoteHeaderSection = ({
@@ -28,7 +30,8 @@ export const NoteHeaderSection = ({
   autoSaveEnabled,
   onNoteChange,
   onToggleFullscreen,
-  onToggleAutoSave
+  onToggleAutoSave,
+  onToggleLectureMode
 }: NoteHeaderSectionProps) => {
   const isMobile = useIsMobile();
   const [editorOpen, setEditorOpen] = useState(false);
@@ -65,6 +68,22 @@ export const NoteHeaderSection = ({
             </div>
             
             <div className="flex items-center">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={onToggleLectureMode}
+                    className="h-8 w-8 hover:bg-muted"
+                  >
+                    <BookOpen className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Lecture Mode</p>
+                </TooltipContent>
+              </Tooltip>
+              
               <Button
                 variant="ghost"
                 size="icon"
@@ -105,17 +124,35 @@ export const NoteHeaderSection = ({
                 </DialogTitle>
               </DialogHeader>
               
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={onToggleFullscreen} 
-                className="ml-2 hover:bg-muted h-8 w-8"
-              >
-                {isFullscreen ? 
-                  <Minimize2 className="h-4 w-4" /> : 
-                  <Maximize2 className="h-4 w-4" />
-                }
-              </Button>
+              <div className="flex items-center gap-1">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      variant="outline"
+                      size="icon" 
+                      onClick={onToggleLectureMode}
+                      className="h-8 w-8"
+                    >
+                      <BookOpen className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Lecture Mode</p>
+                  </TooltipContent>
+                </Tooltip>
+                
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={onToggleFullscreen} 
+                  className="hover:bg-muted h-8 w-8"
+                >
+                  {isFullscreen ? 
+                    <Minimize2 className="h-4 w-4" /> : 
+                    <Maximize2 className="h-4 w-4" />
+                  }
+                </Button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
