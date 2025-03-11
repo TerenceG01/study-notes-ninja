@@ -59,18 +59,25 @@ export const MobileNavigationBar = () => {
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t py-1 md:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t py-2 md:hidden">
         <div className="flex justify-around items-center relative">
-          <Link to="/" className={`flex flex-col items-center ${location.pathname === '/' ? 'text-primary' : 'text-muted-foreground'}`}>
-            <Home className="h-4 w-4 sm:h-5 sm:w-5" />
-            <span className="text-[10px] sm:text-xs mt-0.5">Home</span>
+          {/* Increased touch target area by adjusting padding and making the whole link area clickable */}
+          <Link 
+            to="/" 
+            className={`flex flex-col items-center justify-center py-2 px-5 ${location.pathname === '/' ? 'text-primary' : 'text-muted-foreground'}`}
+          >
+            <Home className="h-5 w-5 sm:h-6 sm:w-6" />
+            <span className="text-xs font-medium mt-1">Home</span>
           </Link>
           
           {user && (
             <>
-              <Link to="/notes" className={`flex flex-col items-center ${isNotesActive ? 'text-primary' : 'text-muted-foreground'}`}>
-                <FileText className="h-4 w-4 sm:h-5 sm:w-5" />
-                <span className="text-[10px] sm:text-xs mt-0.5">Notes</span>
+              <Link 
+                to="/notes" 
+                className={`flex flex-col items-center justify-center py-2 px-5 ${isNotesActive ? 'text-primary' : 'text-muted-foreground'}`}
+              >
+                <FileText className="h-5 w-5 sm:h-6 sm:w-6" />
+                <span className="text-xs font-medium mt-1">Notes</span>
               </Link>
               
               {/* Create note button with smooth pulse animation */}
@@ -87,14 +94,20 @@ export const MobileNavigationBar = () => {
                 </div>
               </div>
               
-              <Link to="/flashcards" className={`flex flex-col items-center ${location.pathname === '/flashcards' ? 'text-primary' : 'text-muted-foreground'}`}>
-                <BookOpen className="h-4 w-4 sm:h-5 sm:w-5" />
-                <span className="text-[10px] sm:text-xs mt-0.5">Cards</span>
+              <Link 
+                to="/flashcards" 
+                className={`flex flex-col items-center justify-center py-2 px-5 ${location.pathname === '/flashcards' ? 'text-primary' : 'text-muted-foreground'}`}
+              >
+                <BookOpen className="h-5 w-5 sm:h-6 sm:w-6" />
+                <span className="text-xs font-medium mt-1">Cards</span>
               </Link>
               
-              <Link to="/study-groups" className={`flex flex-col items-center ${location.pathname === '/study-groups' ? 'text-primary' : 'text-muted-foreground'}`}>
-                <Users className="h-4 w-4 sm:h-5 sm:w-5" />
-                <span className="text-[10px] sm:text-xs mt-0.5">Groups</span>
+              <Link 
+                to="/study-groups" 
+                className={`flex flex-col items-center justify-center py-2 px-5 ${location.pathname === '/study-groups' ? 'text-primary' : 'text-muted-foreground'}`}
+              >
+                <Users className="h-5 w-5 sm:h-6 sm:w-6" />
+                <span className="text-xs font-medium mt-1">Groups</span>
               </Link>
             </>
           )}
@@ -103,11 +116,11 @@ export const MobileNavigationBar = () => {
             <Button 
               variant="ghost" 
               size="sm" 
-              className="p-0 flex flex-col items-center text-muted-foreground"
+              className="p-2 flex flex-col items-center text-muted-foreground min-h-[60px] min-w-[60px]"
               onClick={() => setShowProfileModal(true)}
             >
-              <Users className="h-4 w-4 sm:h-5 sm:w-5" />
-              <span className="text-[10px] sm:text-xs mt-0.5">Login</span>
+              <Users className="h-5 w-5 sm:h-6 sm:w-6" />
+              <span className="text-xs font-medium mt-1">Login</span>
             </Button>
           )}
         </div>
