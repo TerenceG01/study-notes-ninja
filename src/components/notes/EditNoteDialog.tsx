@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Note } from "@/hooks/useNotes";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
@@ -52,6 +53,7 @@ export const EditNoteDialog = ({
   const [tags, setTags] = useState<string[]>([]);
   const [isSaved, setIsSaved] = useState(false);
   const [originalContent, setOriginalContent] = useState("");
+  const [originalSubject, setOriginalSubject] = useState("");
   const [lectureMode, setLectureMode] = useState(false);
 
   useEffect(() => {
@@ -86,10 +88,20 @@ export const EditNoteDialog = ({
   }, [editingNote?.tags]);
   
   useEffect(() => {
-    if (editingNote?.content) {
-      setOriginalContent(editingNote.content);
+    if (editingNote) {
+      if (editingNote.content) {
+        setOriginalContent(editingNote.content);
+      }
+      setOriginalSubject(editingNote.subject || "");
     }
-  }, [selectedNote]);
+  }, [selectedNote, editingNote]);
+
+  // Track subject changes separately from content changes
+  useEffect(() => {
+    if (editingNote?.subject !== undefined && originalSubject !== "" && originalSubject !== editingNote.subject) {
+      setIsSaved(false);
+    }
+  }, [editingNote?.subject, originalSubject]);
 
   useEffect(() => {
     if (!autoSaveEnabled || !editingNote || lectureMode) return;
@@ -117,7 +129,10 @@ export const EditNoteDialog = ({
     onSave();
     setLastSaved(new Date());
     setIsSaved(true);
-    setOriginalContent(editingNote?.content || "");
+    if (editingNote) {
+      setOriginalContent(editingNote.content || "");
+      setOriginalSubject(editingNote.subject || "");
+    }
   };
 
   const toggleFullscreen = () => {
@@ -137,8 +152,10 @@ export const EditNoteDialog = ({
 
   const handleNoteChange = (note: Note | null) => {
     onNoteChange(note);
-    if (isSaved && note?.content !== originalContent) {
-      setIsSaved(false);
+    if (isSaved && note) {
+      if (note.content !== originalContent || (note.subject !== originalSubject)) {
+        setIsSaved(false);
+      }
     }
   };
 

@@ -3,7 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus } from "lucide-react";
+import { Plus, BookOpen } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 interface NoteEditorProps {
   note: {
@@ -42,25 +43,34 @@ export const NoteEditor = ({
         className="text-lg font-medium"
       />
 
-      <Select
-        value={note.subject}
-        onValueChange={(value) => onNoteChange('subject', value)}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select subject" />
-        </SelectTrigger>
-        <SelectContent>
-          {commonSubjects.map((subject) => (
-            <SelectItem 
-              key={subject} 
-              value={subject}
-              className="hover:bg-muted cursor-pointer"
-            >
-              {subject}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="space-y-1">
+        <Label htmlFor="subject" className="flex items-center gap-1.5">
+          <BookOpen className="h-4 w-4" />
+          Subject
+        </Label>
+        <Select
+          value={note.subject}
+          onValueChange={(value) => onNoteChange('subject', value)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select subject" />
+          </SelectTrigger>
+          <SelectContent>
+            {commonSubjects.map((subject) => (
+              <SelectItem 
+                key={subject} 
+                value={subject}
+                className="hover:bg-muted cursor-pointer"
+              >
+                {subject}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-xs text-muted-foreground mt-1">
+          Assigning a subject helps organize your notes and makes them easier to find
+        </p>
+      </div>
 
       <Textarea
         placeholder="Write your note here..."

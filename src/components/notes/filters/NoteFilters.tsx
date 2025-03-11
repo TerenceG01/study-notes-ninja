@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Filter, Palette, X } from "lucide-react";
+import { Calendar as CalendarIcon, Filter, Palette, X, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CommonSubjects } from "../CommonSubjects";
 
 // Base color definitions for reference
 const SUBJECT_COLORS = [
@@ -20,7 +21,7 @@ interface NoteFiltersProps {
   selectedSubject: string | null;
   selectedDate: Date | null;
   uniqueSubjects: string[];
-  uniqueColors: string[]; // New prop for available colors
+  uniqueColors: string[];
   onColorChange: (color: string) => void;
   onSubjectChange: (subject: string) => void;
   onDateChange: (date: Date | null) => void;
@@ -32,7 +33,7 @@ export const NoteFilters = ({
   selectedSubject,
   selectedDate,
   uniqueSubjects,
-  uniqueColors, // New prop
+  uniqueColors,
   onColorChange,
   onSubjectChange,
   onDateChange,
@@ -43,9 +44,46 @@ export const NoteFilters = ({
     uniqueColors.includes(color.value)
   );
 
+  // Combine unique subjects from notes with common subjects
+  const allSubjects = Array.from(new Set([...uniqueSubjects, ...CommonSubjects]));
+
   return (
     <>
       <div className="flex items-center gap-2">
+        {/* Subject Filter */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className={cn(
+                "flex items-center gap-2",
+                selectedSubject && "border-primary"
+              )}
+            >
+              <BookOpen className="h-4 w-4" />
+              Subject
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-52 p-2">
+            <div className="grid grid-cols-1 gap-1 max-h-64 overflow-y-auto">
+              {allSubjects.map(subject => (
+                <Button
+                  key={subject}
+                  variant="ghost"
+                  className={cn(
+                    "justify-start text-left",
+                    selectedSubject === subject && "bg-muted font-medium"
+                  )}
+                  onClick={() => onSubjectChange(subject)}
+                >
+                  {subject}
+                </Button>
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
+
         {/* Color Filter */}
         <Popover>
           <PopoverTrigger asChild>

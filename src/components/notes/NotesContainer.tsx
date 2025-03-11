@@ -41,13 +41,13 @@ export const NotesContainer = ({
   onNotesChanged,
 }: NotesContainerProps) => {
   const uniqueColors = Array.from(new Set(notes.map(note => note.subject_color).filter(Boolean)));
-  const [tableHeight, setTableHeight] = useState("calc(100% - 28px)"); // Further reduced header height
+  const [tableHeight, setTableHeight] = useState("calc(100% - 28px)");
   
   // Dynamically adjust the table height based on viewport
   useEffect(() => {
     const updateTableHeight = () => {
       const header = document.querySelector('.notes-container-header');
-      const headerHeight = header ? header.getBoundingClientRect().height : 28; // Reduced from 32px
+      const headerHeight = header ? header.getBoundingClientRect().height : 28;
       const container = document.querySelector('.notes-card-container');
       
       if (container) {
@@ -73,8 +73,14 @@ export const NotesContainer = ({
       <CardHeader className="bg-muted/40 px-2 sm:px-3 py-0.5 sm:py-0.5 flex-shrink-0 notes-container-header">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-1">
           <div>
-            <CardTitle className="text-base sm:text-lg font-medium">Your Notes</CardTitle>
-            <CardDescription className="text-xs sm:text-sm">Browse and manage your existing notes</CardDescription>
+            <CardTitle className="text-base sm:text-lg font-medium">
+              {selectedSubject ? `${selectedSubject} Notes` : 'Your Notes'}
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              {selectedSubject 
+                ? `Viewing notes for ${selectedSubject}`
+                : 'Browse and manage your existing notes'}
+            </CardDescription>
           </div>
           <div className="self-end sm:self-auto">
             <NoteFilters
