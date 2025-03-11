@@ -22,29 +22,16 @@ export const ProfileButton = () => {
     document.body.style.pointerEvents = '';
     document.documentElement.style.pointerEvents = '';
     
-    // Reset any dialog elements
-    const dialogs = document.querySelectorAll('[role="dialog"]');
-    dialogs.forEach(dialog => {
-      if (dialog instanceof HTMLElement) {
-        dialog.style.pointerEvents = '';
-      }
-    });
-    
-    // Reset any overlay elements
-    const overlays = document.querySelectorAll('[data-radix-portal]');
-    overlays.forEach(overlay => {
-      if (overlay instanceof HTMLElement) {
-        overlay.style.pointerEvents = '';
-      }
-    });
-    
-    // Also check for any elements with pointer-events: none
-    const allElements = document.querySelectorAll('*');
-    allElements.forEach(element => {
+    // Reset all elements with pointer-events style
+    const elements = document.querySelectorAll('*');
+    elements.forEach(element => {
       if (element instanceof HTMLElement && element.style.pointerEvents === 'none') {
         element.style.pointerEvents = '';
       }
     });
+    
+    // Force browser repaint
+    document.body.getBoundingClientRect();
   };
 
   // Effect to clean up any pointer events issues when component mounts/unmounts
@@ -62,7 +49,7 @@ export const ProfileButton = () => {
       resetAllPointerEvents();
       
       // Additional cleanup with a delay to catch any async issues
-      const timeoutId = setTimeout(resetAllPointerEvents, 100);
+      const timeoutId = setTimeout(resetAllPointerEvents, 150);
       return () => clearTimeout(timeoutId);
     }
   }, [showProfileModal]);
@@ -95,25 +82,21 @@ export const ProfileButton = () => {
 
   // Properly handle profile modal state changes
   const handleProfileModalChange = (open: boolean) => {
-    setShowProfileModal(open);
-    
-    // If modal is closing, ensure UI stays interactive
     if (!open) {
+      // Reset UI interaction before state change
       resetAllPointerEvents();
       
-      // Force a repaint to ensure UI is interactive after a short delay
-      setTimeout(() => {
-        resetAllPointerEvents();
+      // Use requestAnimationFrame to ensure DOM updates before state changes
+      requestAnimationFrame(() => {
+        setShowProfileModal(open);
         
-        // Additional force repaint if needed
-        const bodyEl = document.body;
-        if (bodyEl) {
-          const display = bodyEl.style.display;
-          bodyEl.style.display = 'none';
-          void bodyEl.offsetHeight; // Force a repaint
-          bodyEl.style.display = display || '';
-        }
-      }, 50);
+        // Additional cleanup after state change with delays
+        setTimeout(resetAllPointerEvents, 50);
+        setTimeout(resetAllPointerEvents, 150);
+        setTimeout(resetAllPointerEvents, 300);
+      });
+    } else {
+      setShowProfileModal(open);
     }
   };
 

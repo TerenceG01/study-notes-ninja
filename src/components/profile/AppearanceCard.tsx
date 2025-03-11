@@ -20,40 +20,44 @@ export function AppearanceCard({ resolvedTheme, onToggleTheme }: AppearanceCardP
       // Make sure pointer events are enabled after theme toggle
       setTimeout(() => {
         document.body.style.pointerEvents = '';
+        document.documentElement.style.pointerEvents = '';
         
-        // Also ensure any dialogs have pointer events enabled
-        const dialogs = document.querySelectorAll('[role="dialog"]');
-        dialogs.forEach(dialog => {
-          if (dialog instanceof HTMLElement) {
-            dialog.style.pointerEvents = '';
+        // Reset all elements with pointer-events style
+        const elements = document.querySelectorAll('*');
+        elements.forEach(element => {
+          if (element instanceof HTMLElement && element.style.pointerEvents === 'none') {
+            element.style.pointerEvents = '';
           }
         });
-      }, 50);
+        
+        // Force browser repaint
+        document.body.getBoundingClientRect();
+      }, 100);
     });
   };
 
   return (
     <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="text-xl">Appearance</CardTitle>
-        <CardDescription>Customize your app appearance</CardDescription>
+      <CardHeader className="pb-3 sm:pb-4">
+        <CardTitle className="text-lg sm:text-xl">Appearance</CardTitle>
+        <CardDescription className="text-xs sm:text-sm">Customize your app appearance</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex items-center justify-between p-4 rounded-lg border hover:shadow-lg transition-all duration-300">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 sm:p-4 rounded-lg border hover:shadow-lg transition-all duration-300">
+          <div className="flex items-center gap-2 justify-center sm:justify-start">
             {resolvedTheme === "light" ? (
-              <Sun className="h-5 w-5" />
+              <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
             ) : (
-              <Moon className="h-5 w-5" />
+              <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
             )}
-            <span className="font-medium">
+            <span className="text-sm font-medium">
               {resolvedTheme === "light" ? "Light" : "Dark"} Mode
             </span>
           </div>
           <Button 
             variant="outline" 
             onClick={handleThemeToggle} 
-            className="min-w-[100px]"
+            className="min-w-[100px] text-xs sm:text-sm py-1.5 sm:py-2"
             type="button"
           >
             {resolvedTheme === "light" ? "Dark Mode" : "Light Mode"}
