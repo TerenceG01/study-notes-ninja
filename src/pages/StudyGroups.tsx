@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -49,7 +48,6 @@ const StudyGroups = () => {
     staleTime: 1000 * 60 * 5
   });
 
-  // Filter groups based on search term
   const filteredGroups = studyGroups?.filter(group => 
     group.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (group.subject && group.subject.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -62,16 +60,16 @@ const StudyGroups = () => {
 
   return (
     <div className={cn(
-      "h-full flex-grow overflow-hidden pt-6",
+      "h-full flex-grow overflow-hidden pt-2 sm:pt-6",
       sidebarIsOpen ? "ml-40" : "ml-20",
-      isMobile && "ml-0 pb-16" // Remove sidebar margin and add bottom padding for mobile nav
+      isMobile && "ml-0 pb-16"
     )}>
       <ResponsiveContainer>
         <div className="flex flex-col h-full overflow-hidden">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 sm:mb-4 gap-2">
             <div>
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">Study Groups</h1>
-              <p className="text-sm sm:text-base text-muted-foreground mt-2">
+              <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2">
                 Collaborate with other students in study groups
               </p>
             </div>
@@ -91,8 +89,7 @@ const StudyGroups = () => {
             </Dialog>
           </div>
 
-          {/* Search Input */}
-          <div className="mb-4 relative">
+          <div className="mb-3 sm:mb-4 relative">
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input

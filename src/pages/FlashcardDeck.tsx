@@ -72,14 +72,14 @@ const FlashcardDeck = () => {
   
   return (
     <div className={cn(
-      "h-full flex-grow overflow-hidden pt-6",
+      "h-full flex-grow overflow-hidden pt-2 sm:pt-6", // Reduced top padding on mobile
       isOpen ? "ml-40" : "ml-20",
-      isMobile && "ml-0 pb-16" // Remove sidebar margin and add bottom padding for mobile nav
+      isMobile && "ml-0 pb-16" // Adjusted bottom padding for mobile nav
     )}>
       <ResponsiveContainer>
         <DeckHeader title={deck.title} description={deck.description} />
 
-        <Tabs defaultValue="study" className="space-y-3 sm:space-y-4 overflow-hidden">
+        <Tabs defaultValue="study" className="space-y-2 sm:space-y-4 overflow-hidden">
           <TabsList className="w-full max-w-[280px] mx-auto">
             <TabsTrigger value="study" className="flex-1 text-xs sm:text-sm">
               <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
