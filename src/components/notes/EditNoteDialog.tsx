@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Note } from "@/hooks/useNotes";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
@@ -55,34 +54,29 @@ export const EditNoteDialog = ({
   const [originalContent, setOriginalContent] = useState("");
   const [lectureMode, setLectureMode] = useState(false);
 
-  // Update local fullscreen state when prop changes
   useEffect(() => {
     setLocalIsFullscreen(isFullscreen);
   }, [isFullscreen]);
 
-  // Automatically use fullscreen on mobile
   useEffect(() => {
     if (isMobile && open) {
       setLocalIsFullscreen(true);
     }
   }, [isMobile, open]);
 
-  // Handle word count calculation
   useEffect(() => {
-    if (editingNote?.content) {
+    if (editingNote?.content && !lectureMode) {
       const words = editingNote.content.trim().split(/\s+/).filter(Boolean).length;
       setWordCount(words);
       
-      // If content has changed since last save, set isSaved to false
       if (originalContent !== "" && originalContent !== editingNote.content) {
         setIsSaved(false);
       }
     } else {
       setWordCount(0);
     }
-  }, [editingNote?.content, originalContent]);
+  }, [editingNote?.content, originalContent, lectureMode]);
 
-  // Setup tags from editing note
   useEffect(() => {
     if (editingNote?.tags) {
       setTags(editingNote.tags);
@@ -91,25 +85,22 @@ export const EditNoteDialog = ({
     }
   }, [editingNote?.tags]);
   
-  // Store original content when note changes
   useEffect(() => {
     if (editingNote?.content) {
       setOriginalContent(editingNote.content);
     }
   }, [selectedNote]);
 
-  // Auto-save functionality
   useEffect(() => {
     if (!autoSaveEnabled || !editingNote || lectureMode) return;
     
     const autoSaveTimer = setTimeout(() => {
       handleSave();
-    }, isMobile ? 30000 : 60000); // Auto-save more frequently on mobile (30s vs 60s)
+    }, isMobile ? 30000 : 60000);
     
     return () => clearTimeout(autoSaveTimer);
   }, [editingNote, autoSaveEnabled, lectureMode]);
 
-  // Handle keyboard shortcut for save
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's' && open && !lectureMode) {
@@ -122,7 +113,6 @@ export const EditNoteDialog = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [open, lectureMode]);
 
-  // Manual save function
   const handleSave = () => {
     onSave();
     setLastSaved(new Date());
@@ -139,8 +129,7 @@ export const EditNoteDialog = ({
   };
 
   const toggleLectureMode = () => {
-    // Auto-save before entering lecture mode
-    if (!lectureMode && !isSaved) {
+    if (!lectureMode && !isSaved && originalContent !== editingNote?.content) {
       handleSave();
     }
     setLectureMode(!lectureMode);
@@ -153,7 +142,6 @@ export const EditNoteDialog = ({
     }
   };
 
-  // If lecture mode is enabled, show the lecture mode component
   if (lectureMode && editingNote) {
     return (
       <LectureMode 
