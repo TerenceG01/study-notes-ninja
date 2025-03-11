@@ -4,6 +4,7 @@ import { useNotes } from "./useNotes";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useSearchParams } from "react-router-dom";
+import { Note } from "@/components/notes/types";
 
 interface SubjectWithOrder {
   subject: string;
@@ -30,6 +31,19 @@ export function useSubjects() {
     return Array.from(subjectsMap.entries())
       .map(([subject, order]) => ({ subject, order }))
       .sort((a, b) => a.order - b.order);
+  }, [notes]);
+
+  // Get notes with subject colors for the sidebar
+  const notesWithColors = useMemo(() => {
+    const subjectMap = new Map<string, Note>();
+    
+    notes.forEach(note => {
+      if (note.subject && !subjectMap.has(note.subject)) {
+        subjectMap.set(note.subject, note);
+      }
+    });
+    
+    return Array.from(subjectMap.values());
   }, [notes]);
 
   useEffect(() => {
@@ -113,6 +127,7 @@ export function useSubjects() {
 
   return {
     subjects: uniqueSubjectsWithOrder,
+    notesWithColors,
     handleRemoveSubject,
     reorderSubject
   };

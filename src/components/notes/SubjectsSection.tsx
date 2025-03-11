@@ -32,10 +32,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { SUBJECT_COLORS } from "./table/constants/colors";
+import { Note } from "./types";
 
 interface Subject {
   subject: string;
   order: number;
+  color?: string;
+  customColor?: string;
 }
 
 interface SortableSubjectItemProps {
@@ -67,6 +71,31 @@ function SortableSubjectItem({
     transition,
   };
 
+  // Get the appropriate class for the subject color
+  const getSubjectColorClass = () => {
+    if (!subject.color) return "";
+    
+    if (subject.color === 'custom' && subject.customColor) {
+      return "";
+    }
+    
+    const colorObj = SUBJECT_COLORS.find(c => c.value === subject.color);
+    return colorObj?.class || "";
+  };
+
+  // Get the custom style for custom colors
+  const getCustomColorStyle = () => {
+    if (subject.color === 'custom' && subject.customColor) {
+      return {
+        backgroundColor: `${subject.customColor}20`, // Add 20% opacity
+        color: subject.customColor,
+        borderColor: `${subject.customColor}40`, // Add 40% opacity
+      };
+    }
+    
+    return {};
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -83,8 +112,10 @@ function SortableSubjectItem({
           "flex-1 flex items-center relative min-w-0",
           isOpen ? "justify-start px-2" : "justify-center px-0",
           currentSubject === subject.subject && "bg-accent/60",
+          getSubjectColorClass(),
           isDragging && "opacity-50"
         )}
+        style={subject.color === 'custom' ? getCustomColorStyle() : {}}
         onClick={() => onSubjectClick(subject.subject)}
       >
         <div
@@ -148,6 +179,7 @@ interface SubjectsSectionProps {
   onSubjectClick: (subject: string) => void;
   onRemoveSubject: (subject: string) => void;
   onReorder: (subjects: Subject[]) => void;
+  notesWithColors?: Note[];
 }
 
 export function SubjectsSection({
@@ -156,15 +188,30 @@ export function SubjectsSection({
   onSubjectClick,
   onRemoveSubject,
   onReorder,
+  notesWithColors = [],
 }: SubjectsSectionProps) {
   const [searchParams] = useSearchParams();
   const currentSubject = searchParams.get("subject");
   const [activeId, setActiveId] = React.useState<string | null>(null);
 
+  // Enrich subjects with color information
+  const enrichedSubjects = React.useMemo(() => {
+    return subjects.map(subject => {
+      // Find a note with this subject to get its color
+      const noteWithSubject = notesWithColors.find(note => note.subject === subject.subject);
+      
+      return {
+        ...subject,
+        color: noteWithSubject?.subject_color,
+        customColor: noteWithSubject?.custom_color
+      };
+    });
+  }, [subjects, notesWithColors]);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: a8,
       },
     }),
     useSensor(KeyboardSensor, {
@@ -217,7 +264,7 @@ export function SubjectsSection({
             strategy={verticalListSortingStrategy}
           >
             <div className="space-y-1">
-              {subjects.map((subject) => (
+              {enrichedSubjects.map((subject) => (
                 <SortableSubjectItem
                   key={subject.subject}
                   subject={subject}

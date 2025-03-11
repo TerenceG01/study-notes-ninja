@@ -21,7 +21,7 @@ export function NotesSidebar() {
   const isOpen = state === "expanded";
   const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { subjects, handleRemoveSubject, reorderSubject } = useSubjects();
+  const { subjects, notesWithColors, handleRemoveSubject, reorderSubject } = useSubjects();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -69,7 +69,8 @@ export function NotesSidebar() {
           subjects={subjects} 
           onSubjectClick={handleSubjectClick} 
           onRemoveSubject={handleRemoveSubject} 
-          onReorder={reorderSubject} 
+          onReorder={reorderSubject}
+          notesWithColors={notesWithColors}
         />
 
         <div className="p-2 mt-auto">
