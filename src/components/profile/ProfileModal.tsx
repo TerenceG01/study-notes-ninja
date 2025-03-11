@@ -26,16 +26,58 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
     toggleTheme
   } = useProfileData(open);
 
+  // Handle mounting state
   useEffect(() => {
     setMounted(true);
+    return () => {
+      // Ensure body pointer-events are reset when component unmounts
+      document.body.style.pointerEvents = '';
+    };
   }, []);
+
+  // Fix pointer-events issue when dialog closes
+  useEffect(() => {
+    if (!open) {
+      // Reset pointer-events on body and any modal elements
+      document.body.style.pointerEvents = '';
+      const dialogs = document.querySelectorAll('[role="dialog"]');
+      dialogs.forEach(dialog => {
+        if (dialog instanceof HTMLElement) {
+          dialog.style.pointerEvents = '';
+        }
+      });
+      
+      // Also reset any overlay elements that might be causing issues
+      const overlays = document.querySelectorAll('[data-radix-portal]');
+      overlays.forEach(overlay => {
+        if (overlay instanceof HTMLElement) {
+          overlay.style.pointerEvents = '';
+        }
+      });
+    }
+  }, [open]);
+
+  // Handle the dialog close event properly
+  const handleOpenChange = (newOpenState: boolean) => {
+    if (!newOpenState) {
+      // Reset pointer-events before closing
+      document.body.style.pointerEvents = '';
+      
+      // Small delay to ensure cleanup completes before state changes
+      setTimeout(() => {
+        onOpenChange(newOpenState);
+      }, 0);
+    } else {
+      onOpenChange(newOpenState);
+    }
+  };
 
   if (!mounted) {
     return null;
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-[90vw] md:max-w-[80vw] lg:max-w-5xl max-h-[90vh] overflow-y-auto">
         <div className="py-4">
           <div className="mb-6">

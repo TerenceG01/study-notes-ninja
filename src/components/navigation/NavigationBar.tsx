@@ -25,6 +25,22 @@ export const NavigationBar = () => {
   useEffect(() => {
     return () => {
       document.body.style.pointerEvents = ''; // Ensure pointer events are enabled
+      
+      // Clean up any dialogs that might be open
+      const dialogs = document.querySelectorAll('[role="dialog"]');
+      dialogs.forEach(dialog => {
+        if (dialog instanceof HTMLElement) {
+          dialog.style.pointerEvents = '';
+        }
+      });
+      
+      // Clean up overlay elements
+      const overlays = document.querySelectorAll('[data-radix-portal]');
+      overlays.forEach(overlay => {
+        if (overlay instanceof HTMLElement) {
+          overlay.style.pointerEvents = '';
+        }
+      });
     };
   }, []);
 
@@ -38,6 +54,14 @@ export const NavigationBar = () => {
       dialogs.forEach(dialog => {
         if (dialog instanceof HTMLElement) {
           dialog.style.pointerEvents = '';
+        }
+      });
+      
+      // Clean up overlay elements
+      const overlays = document.querySelectorAll('[data-radix-portal]');
+      overlays.forEach(overlay => {
+        if (overlay instanceof HTMLElement) {
+          overlay.style.pointerEvents = '';
         }
       });
     };
@@ -73,8 +97,26 @@ export const NavigationBar = () => {
   };
 
   const handleProfileClick = () => {
-    // Make sure to use a callback to ensure proper state updates
-    setShowProfileModal(prev => !prev);
+    setShowProfileModal(true);
+  };
+  
+  // Properly handle profile modal state changes
+  const handleProfileModalChange = (open: boolean) => {
+    setShowProfileModal(open);
+    if (!open) {
+      // Reset pointer-events when modal closes
+      document.body.style.pointerEvents = '';
+      
+      // Force a small repaint to ensure UI is interactive
+      setTimeout(() => {
+        const bodyEl = document.body;
+        if (bodyEl) {
+          bodyEl.style.display = 'none';
+          void bodyEl.offsetHeight; // Force a repaint
+          bodyEl.style.display = '';
+        }
+      }, 0);
+    }
   };
 
   return (
@@ -119,7 +161,7 @@ export const NavigationBar = () => {
       )}
       
       <AuthDialog open={showAuthDialog} onOpenChange={setShowAuthDialog} defaultTab={authTab} />
-      <ProfileModal open={showProfileModal} onOpenChange={setShowProfileModal} />
+      <ProfileModal open={showProfileModal} onOpenChange={handleProfileModalChange} />
     </nav>
   );
 };

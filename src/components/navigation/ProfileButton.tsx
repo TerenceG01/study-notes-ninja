@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,13 +16,37 @@ export const ProfileButton = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [authTab, setAuthTab] = useState<"sign-in" | "sign-up">("sign-in");
 
+  // Effect to clean up any pointer events issues when component unmounts
+  useEffect(() => {
+    return () => {
+      document.body.style.pointerEvents = '';
+      
+      // Clean up any dialogs that might be open
+      const dialogs = document.querySelectorAll('[role="dialog"]');
+      dialogs.forEach(dialog => {
+        if (dialog instanceof HTMLElement) {
+          dialog.style.pointerEvents = '';
+        }
+      });
+      
+      // Clean up overlay elements
+      const overlays = document.querySelectorAll('[data-radix-portal]');
+      overlays.forEach(overlay => {
+        if (overlay instanceof HTMLElement) {
+          overlay.style.pointerEvents = '';
+        }
+      });
+    };
+  }, []);
+
   const handleSignIn = () => {
     setAuthTab("sign-in");
     setShowAuthDialog(true);
   };
 
   const handleProfileClick = () => {
-    setShowProfileModal(prev => !prev);
+    // Make sure to properly update state
+    setShowProfileModal(true);
   };
   
   const handleLogout = async () => {
@@ -37,6 +61,25 @@ export const ProfileButton = () => {
       toast({
         title: "Signed out successfully"
       });
+    }
+  };
+
+  // Properly handle profile modal state changes
+  const handleProfileModalChange = (open: boolean) => {
+    setShowProfileModal(open);
+    if (!open) {
+      // Reset pointer-events when modal closes
+      document.body.style.pointerEvents = '';
+      
+      // Force a small repaint to ensure UI is interactive
+      setTimeout(() => {
+        const bodyEl = document.body;
+        if (bodyEl) {
+          bodyEl.style.display = 'none';
+          void bodyEl.offsetHeight; // Force a repaint
+          bodyEl.style.display = '';
+        }
+      }, 0);
     }
   };
 
@@ -77,7 +120,7 @@ export const ProfileButton = () => {
       </div>
       
       <AuthDialog open={showAuthDialog} onOpenChange={setShowAuthDialog} defaultTab={authTab} />
-      <ProfileModal open={showProfileModal} onOpenChange={setShowProfileModal} />
+      <ProfileModal open={showProfileModal} onOpenChange={handleProfileModalChange} />
     </>
   );
 };
