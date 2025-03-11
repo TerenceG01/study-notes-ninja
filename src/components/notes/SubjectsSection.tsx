@@ -211,7 +211,7 @@ export function SubjectsSection({
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: a8,
+        distance: 8, // Fixed the undefined a8 to a specific pixel value
       },
     }),
     useSensor(KeyboardSensor, {
