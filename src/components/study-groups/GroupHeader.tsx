@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { ShareNote } from "./ShareNote";
+import { ShareNoteDialog } from "./share-note/ShareNoteDialog";
 
 interface GroupHeaderProps {
   name: string;
@@ -28,7 +28,7 @@ export const GroupHeader = ({
           <h1 className="text-4xl font-bold">{name}</h1>
           <p className="text-lg text-muted-foreground mt-2">{subject}</p>
         </div>
-        {userRole && <ShareNote groupId={groupId} />}
+        {userRole && <ShareNoteDialog groupId={groupId} />}
       </div>
     </div>;
 };
