@@ -1,12 +1,11 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Note } from "@/components/notes/types";
+import { Note } from "@/hooks/useNotes";
 import { SUBJECT_COLORS } from "./constants/colors";
 
 interface NoteColorPickerProps {
@@ -21,8 +20,6 @@ export const NoteColorPicker: React.FC<NoteColorPickerProps> = ({
   updatingNoteId,
 }) => {
   const { toast } = useToast();
-  const [customColor, setCustomColor] = useState(note.custom_color || "#6366f1");
-  const [showCustomColorInput, setShowCustomColorInput] = useState(note.subject_color === "custom");
 
   const handleColorChange = async (e: React.MouseEvent, noteId: string, color: string) => {
     e.stopPropagation();
@@ -37,22 +34,11 @@ export const NoteColorPicker: React.FC<NoteColorPickerProps> = ({
     }
     
     try {
-      // Create a properly typed update object
-      const updateData: Partial<Note> = {
-        subject_color: color,
-      };
-      
-      // If selecting custom color, include the custom color value
-      if (color === "custom") {
-        updateData.custom_color = customColor;
-        setShowCustomColorInput(true);
-      } else {
-        setShowCustomColorInput(false);
-      }
-
       const { error } = await supabase
         .from('notes')
-        .update(updateData)
+        .update({
+          subject_color: color,
+        })
         .eq('id', noteId);
 
       if (error) throw error;
@@ -75,31 +61,6 @@ export const NoteColorPicker: React.FC<NoteColorPickerProps> = ({
     }
   };
 
-  const handleCustomColorChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newColor = e.target.value;
-    setCustomColor(newColor);
-    
-    if (note.subject_color === "custom") {
-      try {
-        // Use Partial<Note> to properly type the update object
-        const updateData: Partial<Note> = {
-          custom_color: newColor,
-        };
-
-        const { error } = await supabase
-          .from('notes')
-          .update(updateData)
-          .eq('id', note.id);
-
-        if (error) throw error;
-
-        onNotesChanged();
-      } catch (error) {
-        console.error("Error updating custom color:", error);
-      }
-    }
-  };
-
   return (
     <>
       <div className="px-2 py-1.5 text-sm font-medium text-muted-foreground">
@@ -113,31 +74,13 @@ export const NoteColorPicker: React.FC<NoteColorPickerProps> = ({
             size="sm"
             className={cn(
               "h-6 w-6 p-0 rounded-full",
-              color.class,
-              note.subject_color === color.value && "ring-2 ring-ring ring-offset-1"
+              color.class
             )}
             onClick={(e) => handleColorChange(e, note.id, color.value)}
             disabled={updatingNoteId === note.id}
           />
         ))}
       </div>
-      
-      {showCustomColorInput && (
-        <div className="p-2 pt-0">
-          <div className="flex items-center space-x-2">
-            <div 
-              className="h-6 w-6 rounded-full" 
-              style={{ backgroundColor: customColor }}
-            />
-            <Input
-              type="color"
-              value={customColor}
-              onChange={handleCustomColorChange}
-              className="h-6 w-full p-0 border-none"
-            />
-          </div>
-        </div>
-      )}
     </>
   );
 };

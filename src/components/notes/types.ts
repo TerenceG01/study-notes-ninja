@@ -1,3 +1,4 @@
+
 export interface Note {
   id: string;
   title: string;
@@ -8,8 +9,6 @@ export interface Note {
   tags?: string[];
   subject?: string;
   subject_color?: string;
-  subject_order?: number;
-  custom_color?: string;
 }
 
 export interface StudyGroup {

@@ -4,7 +4,7 @@ import { TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Note } from "@/components/notes/types";
+import { Note } from "@/hooks/useNotes";
 import { NoteActions } from "./NoteActions";
 import { SUBJECT_COLORS } from "./constants/colors";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -38,23 +38,6 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
 
   const displayContent = typeof note.content === 'string' ? stripHtml(note.content) : note.content;
 
-  // Get the appropriate class for the subject color
-  const getSubjectColorStyle = () => {
-    if (note.subject_color === 'custom' && note.custom_color) {
-      return {
-        backgroundColor: `${note.custom_color}20`, // Add 20% opacity
-        color: note.custom_color,
-        border: `1px solid ${note.custom_color}40`, // Add 40% opacity border
-      };
-    }
-    
-    return {};
-  };
-
-  const subjectColorClass = note.subject_color ? 
-    SUBJECT_COLORS.find(c => c.value === note.subject_color)?.class : 
-    "bg-primary/5 text-primary hover:bg-primary/10";
-
   return (
     <TableRow 
       key={note.id}
@@ -65,9 +48,10 @@ export const NoteTableRow: React.FC<NoteTableRowProps> = ({
         <div
           className={cn(
             "flex-1 px-1 sm:px-3 py-1 rounded-md font-medium transition-colors text-center text-xs sm:text-sm whitespace-normal break-words",
-            note.subject_color !== 'custom' && subjectColorClass
+            note.subject_color ? 
+              SUBJECT_COLORS.find(c => c.value === note.subject_color)?.class : 
+              "bg-primary/5 text-primary hover:bg-primary/10"
           )}
-          style={note.subject_color === 'custom' ? getSubjectColorStyle() : {}}
         >
           {note.subject || 'General'}
         </div>
