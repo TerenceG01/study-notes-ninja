@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
@@ -7,10 +8,9 @@ import { Home, BookOpen, FileText, Users, Plus, Sparkles } from "lucide-react";
 import { ProfileModal } from "@/components/profile/ProfileModal";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
 import { useNotes } from "@/hooks/useNotes";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { NoteEditor } from "@/components/notes/NoteEditor";
 import { CommonSubjects } from "@/components/notes/CommonSubjects";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 export const MobileNavigationBar = () => {
   const { user } = useAuth();
@@ -53,14 +53,16 @@ export const MobileNavigationBar = () => {
   };
 
   const isNotesActive = location.pathname === '/notes';
+  const isFlashcardsActive = location.pathname === '/flashcards';
+  const isStudyGroupsActive = location.pathname === '/study-groups';
 
   return (
     <>
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t py-2 md:hidden">
-        <div className="flex justify-between items-center px-6 relative">
+        <div className="flex justify-evenly items-center px-6 relative">
           <Link 
             to="/" 
-            className={`flex flex-col items-center justify-center py-2 ${location.pathname === '/' ? 'text-primary' : 'text-muted-foreground'}`}
+            className={`flex flex-col items-center justify-center py-2 w-16 ${location.pathname === '/' ? 'text-primary' : 'text-muted-foreground'}`}
           >
             <Home className="h-5 w-5 sm:h-6 sm:w-6" />
             <span className="text-xs font-medium mt-1">Home</span>
@@ -70,7 +72,7 @@ export const MobileNavigationBar = () => {
             <>
               <Link 
                 to="/notes" 
-                className={`flex flex-col items-center justify-center py-2 ${isNotesActive ? 'text-primary' : 'text-muted-foreground'}`}
+                className={`flex flex-col items-center justify-center py-2 w-16 ${isNotesActive ? 'text-primary' : 'text-muted-foreground'}`}
               >
                 <FileText className="h-5 w-5 sm:h-6 sm:w-6" />
                 <span className="text-xs font-medium mt-1">Notes</span>
@@ -91,7 +93,7 @@ export const MobileNavigationBar = () => {
               
               <Link 
                 to="/flashcards" 
-                className={`flex flex-col items-center justify-center py-2 ${location.pathname === '/flashcards' ? 'text-primary' : 'text-muted-foreground'}`}
+                className={`flex flex-col items-center justify-center py-2 w-16 ${isFlashcardsActive ? 'text-primary' : 'text-muted-foreground'}`}
               >
                 <BookOpen className="h-5 w-5 sm:h-6 sm:w-6" />
                 <span className="text-xs font-medium mt-1">Cards</span>
@@ -99,7 +101,7 @@ export const MobileNavigationBar = () => {
               
               <Link 
                 to="/study-groups" 
-                className={`flex flex-col items-center justify-center py-2 ${location.pathname === '/study-groups' ? 'text-primary' : 'text-muted-foreground'}`}
+                className={`flex flex-col items-center justify-center py-2 w-16 ${isStudyGroupsActive ? 'text-primary' : 'text-muted-foreground'}`}
               >
                 <Users className="h-5 w-5 sm:h-6 sm:w-6" />
                 <span className="text-xs font-medium mt-1">Groups</span>
