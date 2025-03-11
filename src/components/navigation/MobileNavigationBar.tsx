@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
@@ -19,7 +18,6 @@ export const MobileNavigationBar = () => {
   const location = useLocation();
   const [showProfileModal, setShowProfileModal] = useState(false);
 
-  // Use the note editor hooks for creating a new note
   const { createNote } = useNotes();
   const { 
     isEditorExpanded, 
@@ -54,17 +52,15 @@ export const MobileNavigationBar = () => {
     }
   };
 
-  // Determine if we're currently in the notes section
   const isNotesActive = location.pathname === '/notes';
 
   return (
     <>
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t py-2 md:hidden">
-        <div className="flex justify-around items-center relative">
-          {/* Increased touch target area by adjusting padding and making the whole link area clickable */}
+        <div className="flex justify-between items-center px-6 relative">
           <Link 
             to="/" 
-            className={`flex flex-col items-center justify-center py-2 px-5 ${location.pathname === '/' ? 'text-primary' : 'text-muted-foreground'}`}
+            className={`flex flex-col items-center justify-center py-2 ${location.pathname === '/' ? 'text-primary' : 'text-muted-foreground'}`}
           >
             <Home className="h-5 w-5 sm:h-6 sm:w-6" />
             <span className="text-xs font-medium mt-1">Home</span>
@@ -74,13 +70,12 @@ export const MobileNavigationBar = () => {
             <>
               <Link 
                 to="/notes" 
-                className={`flex flex-col items-center justify-center py-2 px-5 ${isNotesActive ? 'text-primary' : 'text-muted-foreground'}`}
+                className={`flex flex-col items-center justify-center py-2 ${isNotesActive ? 'text-primary' : 'text-muted-foreground'}`}
               >
                 <FileText className="h-5 w-5 sm:h-6 sm:w-6" />
                 <span className="text-xs font-medium mt-1">Notes</span>
               </Link>
               
-              {/* Create note button with smooth pulse animation */}
               <div className="relative">
                 <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
                   <Button 
@@ -96,7 +91,7 @@ export const MobileNavigationBar = () => {
               
               <Link 
                 to="/flashcards" 
-                className={`flex flex-col items-center justify-center py-2 px-5 ${location.pathname === '/flashcards' ? 'text-primary' : 'text-muted-foreground'}`}
+                className={`flex flex-col items-center justify-center py-2 ${location.pathname === '/flashcards' ? 'text-primary' : 'text-muted-foreground'}`}
               >
                 <BookOpen className="h-5 w-5 sm:h-6 sm:w-6" />
                 <span className="text-xs font-medium mt-1">Cards</span>
@@ -104,7 +99,7 @@ export const MobileNavigationBar = () => {
               
               <Link 
                 to="/study-groups" 
-                className={`flex flex-col items-center justify-center py-2 px-5 ${location.pathname === '/study-groups' ? 'text-primary' : 'text-muted-foreground'}`}
+                className={`flex flex-col items-center justify-center py-2 ${location.pathname === '/study-groups' ? 'text-primary' : 'text-muted-foreground'}`}
               >
                 <Users className="h-5 w-5 sm:h-6 sm:w-6" />
                 <span className="text-xs font-medium mt-1">Groups</span>
@@ -131,7 +126,6 @@ export const MobileNavigationBar = () => {
         onOpenChange={setShowProfileModal}
       />
 
-      {/* Always use Sheet for full screen experience */}
       <Sheet open={isEditorExpanded} onOpenChange={setIsEditorExpanded}>
         <SheetContent
           side="top"
