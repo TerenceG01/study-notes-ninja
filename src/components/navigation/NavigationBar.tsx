@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { User } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
@@ -89,6 +89,31 @@ export const NavigationBar = () => {
             <Button onClick={handleGetStarted}>
               Get Started
             </Button>
+          </div>
+        </div>
+      )}
+      
+      {user && (
+        <div className="container flex items-center justify-between h-16 px-4 sm:px-6">
+          <Link to="/" className="font-semibold text-xl">StudyBuddy</Link>
+          <div className="flex items-center space-x-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon" className="rounded-full">
+                  <User className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem onClick={handleProfileClick}>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       )}
