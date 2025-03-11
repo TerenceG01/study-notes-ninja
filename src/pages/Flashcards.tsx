@@ -90,8 +90,8 @@ const Flashcards = () => {
         <div className="flex flex-col h-full overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
             <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">My Flashcards</h1>
-              <p className="text-sm sm:text-base text-muted-foreground mt-2">Create and review flashcards to improve retention</p>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 text-primary">My Flashcards</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">Create and review flashcards to improve retention</p>
             </div>
           </div>
           

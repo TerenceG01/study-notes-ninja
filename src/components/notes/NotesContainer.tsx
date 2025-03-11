@@ -41,13 +41,13 @@ export const NotesContainer = ({
   onNotesChanged,
 }: NotesContainerProps) => {
   const uniqueColors = Array.from(new Set(notes.map(note => note.subject_color).filter(Boolean)));
-  const [tableHeight, setTableHeight] = useState("calc(100% - 24px)"); // Reduced header height
+  const [tableHeight, setTableHeight] = useState("calc(100% - 28px)"); // Further reduced header height
   
   // Dynamically adjust the table height based on viewport
   useEffect(() => {
     const updateTableHeight = () => {
       const header = document.querySelector('.notes-container-header');
-      const headerHeight = header ? header.getBoundingClientRect().height : 24; // Reduced header height
+      const headerHeight = header ? header.getBoundingClientRect().height : 28; // Reduced from 32px
       const container = document.querySelector('.notes-card-container');
       
       if (container) {
@@ -70,10 +70,10 @@ export const NotesContainer = ({
 
   return (
     <Card className="shadow-sm h-full flex flex-col overflow-hidden notes-card-container">
-      <CardHeader className="bg-muted/40 px-2 py-0.5 flex-shrink-0 notes-container-header">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5">
+      <CardHeader className="bg-muted/40 px-2 sm:px-3 py-0.5 sm:py-0.5 flex-shrink-0 notes-container-header">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-1">
           <div>
-            <CardTitle className="text-sm sm:text-base font-medium">Your Notes</CardTitle>
+            <CardTitle className="text-base sm:text-lg font-medium">Your Notes</CardTitle>
             <CardDescription className="text-xs sm:text-sm">Browse and manage your existing notes</CardDescription>
           </div>
           <div className="self-end sm:self-auto">

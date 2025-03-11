@@ -16,9 +16,9 @@ const Notes = () => {
   
   return (
     <div className={cn(
-      "h-[calc(100vh-60px)] overflow-hidden pt-2 sm:pt-6", // Reduced top padding on mobile
+      "h-[calc(100vh-60px)] overflow-hidden pt-0", // Reduced height calculation from 64px to 60px
       isOpen ? "ml-0 md:ml-40" : "ml-0 md:ml-20",
-      isMobile && "ml-0 pb-16 h-[calc(100vh-80px)]" // Adjusted bottom padding for mobile nav
+      isMobile && "ml-0 pb-2 h-[calc(100vh-80px)]" // Reduced padding and height calculation
     )}>
       <ResponsiveContainer className="h-full max-h-full pb-0 overflow-hidden">
         <NotesContent />

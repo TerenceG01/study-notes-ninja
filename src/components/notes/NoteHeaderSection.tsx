@@ -53,9 +53,9 @@ export const NoteHeaderSection = ({
               variant="ghost" 
               size="icon" 
               onClick={handleDismiss}
-              className="mr-1 h-9 w-9 hover:bg-muted"
+              className="mr-1 h-8 w-8 hover:bg-muted"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-4 w-4" />
             </Button>
             
             <div className="flex-1 mx-1 truncate">
@@ -67,16 +67,16 @@ export const NoteHeaderSection = ({
               </p>
             </div>
             
-            <div className="flex items-center gap-1">
+            <div className="flex items-center">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={onToggleLectureMode}
-                    className="h-9 w-9 hover:bg-muted"
+                    className="h-8 w-8 hover:bg-muted"
                   >
-                    <BookOpen className="h-5 w-5" />
+                    <BookOpen className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -88,21 +88,21 @@ export const NoteHeaderSection = ({
                 variant="ghost"
                 size="icon"
                 onClick={() => setEditorOpen(true)}
-                className="h-9 w-9 hover:bg-muted"
+                className="h-8 w-8 hover:bg-muted"
               >
-                <FileEdit className="h-5 w-5" />
+                <FileEdit className="h-4 w-4" />
               </Button>
               
               <Button 
                 variant={autoSaveEnabled ? "secondary" : "outline"} 
                 size="sm" 
-                className="text-xs h-9 px-2"
+                className="text-xs h-8 ml-1 px-2"
                 onClick={onToggleAutoSave}
               >
                 {autoSaveEnabled ? (
-                  <Clock className="h-4 w-4" />
+                  <Clock className="h-3 w-3" />
                 ) : (
-                  <X className="h-4 w-4" />
+                  <X className="h-3 w-3" />
                 )}
               </Button>
             </div>
