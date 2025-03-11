@@ -47,16 +47,16 @@ export const NotesContent = () => {
   }, [user, fetchNotes]);
   
   return <div className="flex flex-col h-full w-full max-w-full overflow-hidden">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 sm:mb-4 gap-2">
         <div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">My Notes</h1>
-          <p className="text-sm sm:text-base text-muted-foreground mt-2">
+          <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2">
             Create, edit and organize your notes
           </p>
         </div>
       </div>
       
-      <div className="flex-shrink-0 mb-1">
+      <div className="flex-shrink-0 mb-2">
         <NotesHeader onSearch={setSearchQuery} />
       </div>
       

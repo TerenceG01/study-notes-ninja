@@ -148,9 +148,9 @@
     padding: 0.25rem !important;
   }
   
-  /* Provide padding at the bottom of the editor to accommodate the fixed footer */
+  /* Provide better padding at the bottom of the editor to accommodate the fixed footer */
   .ProseMirror {
-    padding-bottom: 60px !important;
+    padding-bottom: 80px !important;
   }
 }
 
@@ -164,15 +164,15 @@
 }
 
 .rich-text-toolbar button {
-  min-height: 36px;
-  min-width: 36px;
+  min-height: 38px;
+  min-width: 38px;
 }
 
 /* On extra small screens, make toolbar buttons even smaller */
 @media (max-width: 370px) {
   .rich-text-toolbar button {
-    min-height: 30px;
-    min-width: 30px;
+    min-height: 32px;
+    min-width: 32px;
     padding: 0.15rem !important;
   }
   

@@ -58,8 +58,8 @@ export const MobileNavigationBar = () => {
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t py-2 md:hidden">
-        <div className="flex justify-evenly items-center px-6 relative">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t py-1.5 md:hidden">
+        <div className="flex justify-between items-center px-4 mx-auto max-w-md relative">
           <Link 
             to="/" 
             className={`flex flex-col items-center justify-center py-2 w-16 ${location.pathname === '/' ? 'text-primary' : 'text-muted-foreground'}`}
@@ -82,12 +82,12 @@ export const MobileNavigationBar = () => {
                 <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
                   <Button 
                     onClick={handleCreateNote}
-                    className="rounded-full bg-primary hover:bg-primary/90 h-16 w-16 p-0 flex items-center justify-center border-4 border-background shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden"
+                    className="rounded-full bg-primary hover:bg-primary/90 h-14 w-14 p-0 flex items-center justify-center border-4 border-background shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-primary rounded-full opacity-80 hover:opacity-100 transition-opacity"></div>
                     <Plus className="h-7 w-7 text-white relative z-10" />
                   </Button>
-                  <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs font-medium text-primary whitespace-nowrap">New Note</span>
+                  <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-[10px] font-medium text-primary whitespace-nowrap">New Note</span>
                 </div>
               </div>
               
@@ -131,9 +131,9 @@ export const MobileNavigationBar = () => {
       <Sheet open={isEditorExpanded} onOpenChange={setIsEditorExpanded}>
         <SheetContent
           side="top"
-          className="h-screen w-screen p-4 overflow-y-auto"
+          className="h-screen w-screen p-3 overflow-y-auto"
         >
-          <SheetHeader className="mb-4">
+          <SheetHeader className="mb-3">
             <SheetTitle>Create New Note</SheetTitle>
           </SheetHeader>
           
