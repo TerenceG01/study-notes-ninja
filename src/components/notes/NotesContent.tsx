@@ -9,8 +9,6 @@ import { useNotesFilters } from "@/hooks/useNotesFilters";
 import { NotesLoading } from "./NotesLoading";
 import { useNoteSelection } from "@/hooks/useNoteSelection";
 import { useSearchParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { CommonSubjects } from "./CommonSubjects";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 
@@ -80,53 +78,17 @@ export const NotesContent = () => {
         <NotesHeader onSearch={setSearchQuery} />
       </div>
       
-      {/* Subject quickfilter section */}
-      {uniqueSubjects.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-3">
-          <div className="text-sm text-muted-foreground mr-1 flex items-center">Filter by:</div>
-          {uniqueSubjects.map(subject => (
-            <Button
-              key={subject}
-              variant={currentSubject === subject ? "secondary" : "outline"}
-              size="sm"
-              className="text-xs"
-              onClick={() => handleSubjectClick(subject)}
-            >
-              {subject}
-            </Button>
-          ))}
-          {CommonSubjects.map(subject => {
-            if (!uniqueSubjects.includes(subject) && subject !== "General") {
-              return (
-                <Button
-                  key={subject}
-                  variant="ghost"
-                  size="sm"
-                  className="text-xs text-muted-foreground"
-                  onClick={() => handleSubjectClick(subject)}
-                >
-                  {subject}
-                </Button>
-              );
-            }
-            return null;
-          })}
-        </div>
-      )}
-      
       {/* Active subject filter indicator */}
       {currentSubject && (
         <div className="flex items-center gap-2 mb-3">
           <Badge variant="secondary" className="px-3 py-1">
             <span className="mr-1">Subject:</span> {currentSubject}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-4 w-4 ml-2 p-0" 
+            <button 
+              className="ml-2 h-4 w-4 rounded-full inline-flex items-center justify-center hover:bg-muted"
               onClick={handleClearSubject}
             >
               <X className="h-3 w-3" />
-            </Button>
+            </button>
           </Badge>
         </div>
       )}

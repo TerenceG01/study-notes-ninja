@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Filter, Palette, X, BookOpen } from "lucide-react";
+import { Calendar as CalendarIcon, Filter, Palette, X, BookOpen, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CommonSubjects } from "../CommonSubjects";
+import { Badge } from "@/components/ui/badge";
 
 // Base color definitions for reference
 const SUBJECT_COLORS = [
@@ -44,9 +45,6 @@ export const NoteFilters = ({
     uniqueColors.includes(color.value)
   );
 
-  // Combine unique subjects from notes with common subjects
-  const allSubjects = Array.from(new Set([...uniqueSubjects, ...CommonSubjects]));
-
   return (
     <>
       <div className="flex items-center gap-2">
@@ -61,25 +59,32 @@ export const NoteFilters = ({
                 selectedSubject && "border-primary"
               )}
             >
-              <BookOpen className="h-4 w-4" />
-              Subject
+              <Tag className="h-4 w-4" />
+              {selectedSubject ? 
+                <span className="max-w-[100px] truncate">{selectedSubject}</span> : 
+                <span>Subject</span>
+              }
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-52 p-2">
-            <div className="grid grid-cols-1 gap-1 max-h-64 overflow-y-auto">
-              {allSubjects.map(subject => (
-                <Button
-                  key={subject}
-                  variant="ghost"
-                  className={cn(
-                    "justify-start text-left",
-                    selectedSubject === subject && "bg-muted font-medium"
-                  )}
-                  onClick={() => onSubjectChange(subject)}
-                >
-                  {subject}
-                </Button>
-              ))}
+            <div className="max-h-64 overflow-y-auto space-y-1">
+              {uniqueSubjects.length > 0 ? (
+                uniqueSubjects.map(subject => (
+                  <Button
+                    key={subject}
+                    variant="ghost"
+                    className={cn(
+                      "w-full justify-start text-left",
+                      selectedSubject === subject && "bg-muted font-medium"
+                    )}
+                    onClick={() => onSubjectChange(subject)}
+                  >
+                    {subject}
+                  </Button>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground p-2">No subjects found</p>
+              )}
             </div>
           </PopoverContent>
         </Popover>
@@ -173,9 +178,9 @@ export const NoteFilters = ({
             </span>
           )}
           {selectedSubject && (
-            <span className="px-2 py-1 bg-secondary rounded-md">
+            <Badge variant="secondary">
               {selectedSubject}
-            </span>
+            </Badge>
           )}
           {selectedDate && (
             <span className="px-2 py-1 bg-secondary rounded-md">
