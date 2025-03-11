@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -7,7 +6,7 @@ import { Calendar as CalendarIcon, Filter, Palette, X, Tag } from "lucide-react"
 import { cn } from "@/lib/utils";
 import { CommonSubjects } from "../CommonSubjects";
 import { Badge } from "@/components/ui/badge";
-import { SUBJECT_COLORS } from "./constants/colors";
+import { SUBJECT_COLORS } from "../table/constants/colors";
 
 interface NoteFiltersProps {
   selectedColor: string | null;
