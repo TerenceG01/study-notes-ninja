@@ -18,23 +18,23 @@ export const DeckCard = ({ deck, cardCount, onDelete }: DeckCardProps) => {
   return (
     <Link to={`/flashcards/${deck.id}`}>
       <Card className="h-full hover:bg-muted/50 transition-colors group">
-        <CardHeader className="relative p-6">
+        <CardHeader className="relative p-3 sm:p-4">
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-4 top-4 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity"
             onClick={(e) => onDelete(deck.id, e)}
           >
-            <Trash2 className="h-4 w-4 text-destructive" />
+            <Trash2 className="h-3 w-3 text-destructive" />
           </Button>
-          <CardTitle className="text-2xl mb-2 line-clamp-1">{deck.title}</CardTitle>
-          <CardDescription className="text-base line-clamp-2">
+          <CardTitle className="text-lg sm:text-xl mb-1 line-clamp-1">{deck.title}</CardTitle>
+          <CardDescription className="text-sm line-clamp-2">
             {deck.description || "No description"}
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-6 pt-0">
-          <div className="flex items-center gap-2 text-base text-muted-foreground">
-            <BookOpen className="h-5 w-5" />
+        <CardContent className="p-3 sm:p-4 pt-0">
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <BookOpen className="h-4 w-4" />
             <span>{cardCount || 0} cards</span>
           </div>
         </CardContent>

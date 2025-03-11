@@ -82,7 +82,7 @@ const Flashcards = () => {
 
   return (
     <div className={cn(
-      "h-full flex-grow overflow-hidden pt-6",
+      "h-full flex-grow overflow-hidden pt-4 sm:pt-6",
       isOpen ? "ml-40" : "ml-20",
       isMobile && "ml-0 pb-16" // Remove sidebar margin and add bottom padding for mobile nav
     )}>
@@ -110,7 +110,7 @@ const Flashcards = () => {
           </div>
 
           {isLoading ? (
-            <NotesGridSkeleton count={3} />
+            <NotesGridSkeleton count={6} />
           ) : !filteredDecks || filteredDecks.length === 0 ? (
             searchTerm && decks?.length > 0 ? (
               <div className="text-center py-8">
@@ -120,7 +120,7 @@ const Flashcards = () => {
               <EmptyDeckState onCreateClick={() => setOpenCreateDialog(true)} />
             )
           ) : (
-            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 overflow-y-auto overflow-x-hidden pb-4">
+            <div className="grid gap-2 sm:gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 overflow-y-auto overflow-x-hidden pb-4">
               {filteredDecks.map((deck) => (
                 <DeckCard
                   key={deck.id}
