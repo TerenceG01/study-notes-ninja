@@ -1,12 +1,11 @@
 
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Note } from "@/hooks/useNotes";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
 import { NoteContentContainer } from "./NoteContentContainer";
 import { DialogFooterActions } from "./DialogFooterActions";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { DialogWrapper } from "./dialog/DialogWrapper";
 
 interface EditNoteDialogProps {
   open: boolean;
@@ -43,7 +42,7 @@ export const EditNoteDialog = ({
   onToggleSummary,
   onEnhanceNote,
   onSave,
-  isFullscreen = true // Default to fullscreen
+  isFullscreen = true
 }: EditNoteDialogProps) => {
   const isMobile = useIsMobile();
   const [localIsFullscreen, setLocalIsFullscreen] = useState(isFullscreen);
@@ -144,8 +143,12 @@ export const EditNoteDialog = ({
     }
   };
 
-  const renderDialogContent = () => (
-    <>
+  return (
+    <DialogWrapper 
+      open={open} 
+      onOpenChange={onOpenChange} 
+      isFullscreen={localIsFullscreen}
+    >
       <NoteContentContainer
         editingNote={editingNote}
         isFullscreen={localIsFullscreen}
@@ -172,35 +175,6 @@ export const EditNoteDialog = ({
         onCancel={() => onOpenChange(false)}
         isSaved={isSaved}
       />
-    </>
-  );
-
-  // Use Sheet for mobile or fullscreen mode
-  if (isMobile || localIsFullscreen) {
-    return (
-      <Sheet 
-        open={open} 
-        onOpenChange={onOpenChange}
-      >
-        <SheetContent
-          side={isMobile ? "bottom" : "top"}
-          className={isMobile 
-            ? "h-[92vh] p-3 flex flex-col max-h-[92vh] overflow-hidden bg-background rounded-t-xl" 
-            : "h-screen w-screen p-6 flex flex-col max-h-screen overflow-hidden bg-background"
-          }
-        >
-          {renderDialogContent()}
-        </SheetContent>
-      </Sheet>
-    );
-  }
-
-  // Fallback to dialog for desktop non-fullscreen mode
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col p-6 overflow-hidden bg-background">
-        {renderDialogContent()}
-      </DialogContent>
-    </Dialog>
+    </DialogWrapper>
   );
 };
