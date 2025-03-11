@@ -30,16 +30,11 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
   useEffect(() => {
     setMounted(true);
     return () => {
-      // Ensure body pointer-events are reset when component unmounts
+      // Force reset any possible pointer-events issues
       document.body.style.pointerEvents = '';
-    };
-  }, []);
-
-  // Fix pointer-events issue when dialog closes
-  useEffect(() => {
-    if (!open) {
-      // Reset pointer-events on body and any modal elements
-      document.body.style.pointerEvents = '';
+      document.documentElement.style.pointerEvents = '';
+      
+      // Reset any dialog elements
       const dialogs = document.querySelectorAll('[role="dialog"]');
       dialogs.forEach(dialog => {
         if (dialog instanceof HTMLElement) {
@@ -47,13 +42,38 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
         }
       });
       
-      // Also reset any overlay elements that might be causing issues
+      // Reset any overlay elements
       const overlays = document.querySelectorAll('[data-radix-portal]');
       overlays.forEach(overlay => {
         if (overlay instanceof HTMLElement) {
           overlay.style.pointerEvents = '';
         }
       });
+    };
+  }, []);
+
+  // Ensure proper cleanup when dialog close state changes
+  useEffect(() => {
+    if (!open) {
+      const cleanup = () => {
+        // Reset all pointer-events styles
+        document.body.style.pointerEvents = '';
+        document.documentElement.style.pointerEvents = '';
+        
+        const elements = document.querySelectorAll('*');
+        elements.forEach(element => {
+          if (element instanceof HTMLElement) {
+            if (element.style.pointerEvents === 'none') {
+              element.style.pointerEvents = '';
+            }
+          }
+        });
+      };
+      
+      // Execute cleanup immediately and after a short delay to catch any async issues
+      cleanup();
+      const timeoutId = setTimeout(cleanup, 100);
+      return () => clearTimeout(timeoutId);
     }
   }, [open]);
 
@@ -62,11 +82,28 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
     if (!newOpenState) {
       // Reset pointer-events before closing
       document.body.style.pointerEvents = '';
+      document.documentElement.style.pointerEvents = '';
       
-      // Small delay to ensure cleanup completes before state changes
-      setTimeout(() => {
+      // Reset any modal-related elements
+      const dialogs = document.querySelectorAll('[role="dialog"]');
+      dialogs.forEach(dialog => {
+        if (dialog instanceof HTMLElement) {
+          dialog.style.pointerEvents = '';
+        }
+      });
+      
+      // Reset any overlay elements
+      const overlays = document.querySelectorAll('[data-radix-portal]');
+      overlays.forEach(overlay => {
+        if (overlay instanceof HTMLElement) {
+          overlay.style.pointerEvents = '';
+        }
+      });
+      
+      // Force a small repaint to ensure UI is interactive
+      requestAnimationFrame(() => {
         onOpenChange(newOpenState);
-      }, 0);
+      });
     } else {
       onOpenChange(newOpenState);
     }

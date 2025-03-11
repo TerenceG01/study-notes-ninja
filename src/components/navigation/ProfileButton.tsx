@@ -16,28 +16,56 @@ export const ProfileButton = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [authTab, setAuthTab] = useState<"sign-in" | "sign-up">("sign-in");
 
-  // Effect to clean up any pointer events issues when component unmounts
+  // Global cleanup function to ensure UI stays interactive
+  const resetAllPointerEvents = () => {
+    // Reset the body and html element pointer-events
+    document.body.style.pointerEvents = '';
+    document.documentElement.style.pointerEvents = '';
+    
+    // Reset any dialog elements
+    const dialogs = document.querySelectorAll('[role="dialog"]');
+    dialogs.forEach(dialog => {
+      if (dialog instanceof HTMLElement) {
+        dialog.style.pointerEvents = '';
+      }
+    });
+    
+    // Reset any overlay elements
+    const overlays = document.querySelectorAll('[data-radix-portal]');
+    overlays.forEach(overlay => {
+      if (overlay instanceof HTMLElement) {
+        overlay.style.pointerEvents = '';
+      }
+    });
+    
+    // Also check for any elements with pointer-events: none
+    const allElements = document.querySelectorAll('*');
+    allElements.forEach(element => {
+      if (element instanceof HTMLElement && element.style.pointerEvents === 'none') {
+        element.style.pointerEvents = '';
+      }
+    });
+  };
+
+  // Effect to clean up any pointer events issues when component mounts/unmounts
   useEffect(() => {
-    return () => {
-      document.body.style.pointerEvents = '';
-      
-      // Clean up any dialogs that might be open
-      const dialogs = document.querySelectorAll('[role="dialog"]');
-      dialogs.forEach(dialog => {
-        if (dialog instanceof HTMLElement) {
-          dialog.style.pointerEvents = '';
-        }
-      });
-      
-      // Clean up overlay elements
-      const overlays = document.querySelectorAll('[data-radix-portal]');
-      overlays.forEach(overlay => {
-        if (overlay instanceof HTMLElement) {
-          overlay.style.pointerEvents = '';
-        }
-      });
-    };
+    // Clean up on mount
+    resetAllPointerEvents();
+    
+    // Clean up on unmount
+    return resetAllPointerEvents;
   }, []);
+
+  // Effect to monitor and clean up pointer events when modal state changes
+  useEffect(() => {
+    if (!showProfileModal) {
+      resetAllPointerEvents();
+      
+      // Additional cleanup with a delay to catch any async issues
+      const timeoutId = setTimeout(resetAllPointerEvents, 100);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [showProfileModal]);
 
   const handleSignIn = () => {
     setAuthTab("sign-in");
@@ -45,7 +73,8 @@ export const ProfileButton = () => {
   };
 
   const handleProfileClick = () => {
-    // Make sure to properly update state
+    // Reset pointer-events before opening modal
+    resetAllPointerEvents();
     setShowProfileModal(true);
   };
   
@@ -67,19 +96,24 @@ export const ProfileButton = () => {
   // Properly handle profile modal state changes
   const handleProfileModalChange = (open: boolean) => {
     setShowProfileModal(open);
+    
+    // If modal is closing, ensure UI stays interactive
     if (!open) {
-      // Reset pointer-events when modal closes
-      document.body.style.pointerEvents = '';
+      resetAllPointerEvents();
       
-      // Force a small repaint to ensure UI is interactive
+      // Force a repaint to ensure UI is interactive after a short delay
       setTimeout(() => {
+        resetAllPointerEvents();
+        
+        // Additional force repaint if needed
         const bodyEl = document.body;
         if (bodyEl) {
+          const display = bodyEl.style.display;
           bodyEl.style.display = 'none';
           void bodyEl.offsetHeight; // Force a repaint
-          bodyEl.style.display = '';
+          bodyEl.style.display = display || '';
         }
-      }, 0);
+      }, 50);
     }
   };
 
