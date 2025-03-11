@@ -37,7 +37,8 @@ export const NoteColorPicker: React.FC<NoteColorPickerProps> = ({
     }
     
     try {
-      const updateData: { subject_color: string; custom_color?: string } = {
+      // Create a properly typed update object
+      const updateData: Partial<Note> = {
         subject_color: color,
       };
       
@@ -80,11 +81,14 @@ export const NoteColorPicker: React.FC<NoteColorPickerProps> = ({
     
     if (note.subject_color === "custom") {
       try {
+        // Use Partial<Note> to properly type the update object
+        const updateData: Partial<Note> = {
+          custom_color: newColor,
+        };
+
         const { error } = await supabase
           .from('notes')
-          .update({
-            custom_color: newColor,
-          })
+          .update(updateData)
           .eq('id', note.id);
 
         if (error) throw error;
