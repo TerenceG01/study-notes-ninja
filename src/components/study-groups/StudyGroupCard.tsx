@@ -44,7 +44,7 @@ export const StudyGroupCard = ({ group, onClick }: StudyGroupCardProps) => {
         <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs">
           <div className="flex items-center gap-1 text-muted-foreground">
             <Users className="h-3 w-3" />
-            <span>{group.member_count || 0}</span>
+            <span>{group.member_count ?? 0}</span>
             <span className="hidden sm:inline">Members</span>
           </div>
           <div className="flex items-center gap-1 text-muted-foreground">

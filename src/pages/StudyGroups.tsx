@@ -50,18 +50,27 @@ const StudyGroups = () => {
       // For each group, get the member count
       const groupsWithMemberCount = await Promise.all(
         groups.map(async (group) => {
-          const { count, error: countError } = await supabase
+          const { data: members, error: countError } = await supabase
             .from('study_group_members')
-            .select('*', { count: 'exact', head: true })
+            .select('*')
             .eq('group_id', group.id);
+          
+          if (countError) {
+            console.error("Error fetching member count:", countError);
+            return {
+              ...group,
+              member_count: 0
+            };
+          }
           
           return {
             ...group,
-            member_count: count || 0
+            member_count: members ? members.length : 0
           };
         })
       );
       
+      console.log("Groups with member count:", groupsWithMemberCount);
       return groupsWithMemberCount as StudyGroup[];
     },
     enabled: !!user,
