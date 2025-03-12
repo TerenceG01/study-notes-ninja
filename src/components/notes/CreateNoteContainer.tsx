@@ -4,6 +4,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { NoteContentEditor } from "./NoteContentEditor";
 import { CreateNoteHeader } from "./CreateNoteHeader";
 import { Note } from "./types";
+import { SummaryControls } from "./SummaryControls";
+import { SummaryLevel } from "@/hooks/useNoteSummary";
 
 interface CreateNoteContainerProps {
   newNote: Note;
@@ -12,10 +14,19 @@ interface CreateNoteContainerProps {
   lastSaved: Date | null;
   autoSaveEnabled: boolean;
   commonSubjects: string[];
+  summarizing: boolean;
+  summaryLevel: SummaryLevel;
+  enhancing: boolean;
+  showSummary: boolean;
   onNoteChange: (field: string, value: string | string[]) => void;
   onNoteContentChange: (content: string) => void;
   onToggleAutoSave: () => void;
   onToggleLectureMode: () => void;
+  onToggleFullscreen?: () => void;
+  onSummaryLevelChange: (level: SummaryLevel) => void;
+  onGenerateSummary: () => void;
+  onToggleSummary: () => void;
+  onEnhanceNote: (enhanceType: 'grammar' | 'structure' | 'all') => void;
 }
 
 export const CreateNoteContainer = ({
@@ -25,10 +36,19 @@ export const CreateNoteContainer = ({
   lastSaved,
   autoSaveEnabled,
   commonSubjects,
+  summarizing,
+  summaryLevel,
+  enhancing,
+  showSummary,
   onNoteChange,
   onNoteContentChange,
   onToggleAutoSave,
-  onToggleLectureMode
+  onToggleLectureMode,
+  onToggleFullscreen,
+  onSummaryLevelChange,
+  onGenerateSummary,
+  onToggleSummary,
+  onEnhanceNote
 }: CreateNoteContainerProps) => {
   const isMobile = useIsMobile();
   
@@ -47,13 +67,27 @@ export const CreateNoteContainer = ({
         onNoteChange={onNoteChange}
         onToggleAutoSave={onToggleAutoSave}
         onToggleLectureMode={onToggleLectureMode}
+        onToggleFullscreen={onToggleFullscreen}
       />
 
       <ScrollArea className="flex-grow overflow-y-auto overflow-x-hidden">
         <div className={`space-y-2 ${isMobile ? 'pr-1' : 'pr-2 sm:pr-4'} max-w-full`}>
+          <SummaryControls 
+            summaryLevel={summaryLevel}
+            summarizing={summarizing}
+            hasSummary={!!newNote?.summary}
+            showSummary={showSummary}
+            editingNote={newNote}
+            enhancing={enhancing}
+            onSummaryLevelChange={onSummaryLevelChange}
+            onGenerateSummary={onGenerateSummary}
+            onToggleSummary={onToggleSummary}
+            onEnhanceNote={onEnhanceNote}
+          />
+
           <NoteContentEditor 
             editingNote={newNote}
-            showSummary={false}
+            showSummary={showSummary}
             isFullscreen={isFullscreen}
             wordCount={wordCount}
             autoSaveEnabled={autoSaveEnabled}

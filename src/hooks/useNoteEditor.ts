@@ -8,6 +8,7 @@ interface NoteEditorStore {
     title: string;
     content: string;
     subject: string;
+    summary?: string;
   };
   handleNoteChange: (field: string, value: string | string[]) => void;
   resetEditor: () => void;
@@ -19,7 +20,8 @@ export const useNoteEditor = create<NoteEditorStore>((set) => ({
   newNote: {
     title: "",
     content: "",
-    subject: "General"
+    subject: "General",
+    summary: undefined
   },
   handleNoteChange: (field, value) =>
     set((state) => ({
@@ -27,7 +29,7 @@ export const useNoteEditor = create<NoteEditorStore>((set) => ({
     })),
   resetEditor: () =>
     set({
-      newNote: { title: "", content: "", subject: "General" },
+      newNote: { title: "", content: "", subject: "General", summary: undefined },
       isEditorExpanded: false
     })
 }));

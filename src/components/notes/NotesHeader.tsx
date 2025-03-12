@@ -10,9 +10,12 @@ import { useNotes } from "@/hooks/useNotes";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFullscreenState } from "@/hooks/useFullscreenState";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { CreateNoteContainer } from "./CreateNoteContainer";
 import { DialogFooterActions } from "./DialogFooterActions";
+import { useNoteSummary, SummaryLevel } from "@/hooks/useNoteSummary";
+import { useNoteEnhancement } from "@/hooks/useNoteEnhancement";
+import { LectureMode } from "./LectureMode";
 
 interface NotesHeaderProps {
   onSearch: (query: string) => void;
@@ -36,6 +39,17 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
   const [lectureMode, setLectureMode] = useState(false);
+  
+  // AI Enhancement & Summary features
+  const { enhancing, enhanceNote } = useNoteEnhancement();
+  const {
+    summarizing,
+    summaryLevel,
+    showSummary,
+    setSummaryLevel,
+    setShowSummary,
+    generateSummary,
+  } = useNoteSummary();
 
   const handleCreateNote = () => {
     setIsEditorExpanded(true);
@@ -71,6 +85,7 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
         resetEditor();
         setIsEditorExpanded(false);
         setIsSaved(false);
+        setShowSummary(false);
       }, 1000);
     }
   };
@@ -82,6 +97,84 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
   const toggleLectureMode = () => {
     setLectureMode(!lectureMode);
   };
+  
+  const handleGenerateSummary = useCallback(async () => {
+    if (!newNote) return;
+    
+    try {
+      // Show loading toast
+      const loadingToastId = toast({
+        title: "Generating summary...",
+        description: "Our AI is analyzing your note to create a concise summary.",
+      }).id;
+      
+      // When sending to summary, strip HTML content if it's HTML
+      const contentToSummarize = typeof newNote.content === 'string' && newNote.content.includes('<') 
+        ? new DOMParser().parseFromString(newNote.content, 'text/html').body.textContent || newNote.content
+        : newNote.content;
+      
+      const noteForSummary = { ...newNote, content: contentToSummarize };
+      const summary = await generateSummary(noteForSummary);
+      
+      // Dismiss loading toast
+      toast.dismiss(loadingToastId);
+      
+      if (summary) {
+        handleNoteChange('summary', summary);
+        setShowSummary(true);
+        
+        toast({
+          title: "Summary generated",
+          description: "Your note has been summarized successfully.",
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Summary generation failed",
+        description: "There was an error generating the summary.",
+      });
+    }
+  }, [newNote, generateSummary, toast, setShowSummary]);
+
+  const handleToggleSummary = () => {
+    setShowSummary(!showSummary);
+  };
+  
+  const handleEnhanceNote = async (enhanceType: 'grammar' | 'structure' | 'all') => {
+    const fullNote = {
+      id: '',
+      title: newNote.title,
+      content: newNote.content,
+      subject: newNote.subject,
+      created_at: new Date().toISOString(),
+      folder: 'My Notes'
+    };
+    
+    await enhanceNote(fullNote, enhanceType, (enhancedNote) => {
+      if (enhancedNote) {
+        handleNoteChange('content', enhancedNote.content);
+      }
+    });
+  };
+
+  if (lectureMode && newNote) {
+    const fullNote = {
+      id: '',
+      title: newNote.title,
+      content: newNote.content,
+      subject: newNote.subject,
+      created_at: new Date().toISOString(),
+      folder: 'My Notes'
+    };
+    
+    return (
+      <LectureMode 
+        note={fullNote} 
+        onExit={toggleLectureMode}
+      />
+    );
+  }
 
   return (
     <>
@@ -111,17 +204,27 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
                 content: newNote.content,
                 subject: newNote.subject,
                 created_at: new Date().toISOString(),
-                folder: 'My Notes'
+                folder: 'My Notes',
+                summary: newNote.summary
               }}
               isFullscreen={isFullscreen}
               wordCount={wordCount}
               lastSaved={lastSaved}
               autoSaveEnabled={autoSaveEnabled}
               commonSubjects={CommonSubjects}
+              summarizing={summarizing}
+              summaryLevel={summaryLevel}
+              enhancing={enhancing}
+              showSummary={showSummary}
               onNoteChange={handleNoteChange}
               onNoteContentChange={handleNoteContentChange}
               onToggleAutoSave={toggleAutoSave}
               onToggleLectureMode={toggleLectureMode}
+              onToggleFullscreen={toggleFullscreen}
+              onSummaryLevelChange={setSummaryLevel}
+              onGenerateSummary={handleGenerateSummary}
+              onToggleSummary={handleToggleSummary}
+              onEnhanceNote={handleEnhanceNote}
             />
             
             <DialogFooterActions
