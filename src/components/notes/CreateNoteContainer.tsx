@@ -1,48 +1,83 @@
 
-import { useRef } from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { NoteEditor } from "./NoteEditor";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { SummaryLevel } from "@/hooks/useNoteSummary";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { NoteContentEditor } from "./NoteContentEditor";
+import { CreateNoteHeader } from "./CreateNoteHeader";
 
 interface CreateNoteContainerProps {
-  isExpanded: boolean;
-  note: {
+  newNote: {
     title: string;
     content: string;
     subject: string;
   };
+  isFullscreen: boolean;
+  wordCount: number;
+  lastSaved: Date | null;
+  autoSaveEnabled: boolean;
   commonSubjects: string[];
   onNoteChange: (field: string, value: string | string[]) => void;
-  onCancel: () => void;
-  onSave: () => void;
+  onNoteContentChange: (content: string) => void;
+  onToggleAutoSave: () => void;
+  onToggleLectureMode: () => void;
 }
 
 export const CreateNoteContainer = ({
-  isExpanded,
-  note,
+  newNote,
+  isFullscreen,
+  wordCount,
+  lastSaved,
+  autoSaveEnabled,
   commonSubjects,
   onNoteChange,
-  onCancel,
-  onSave,
+  onNoteContentChange,
+  onToggleAutoSave,
+  onToggleLectureMode
 }: CreateNoteContainerProps) => {
-  const editorRef = useRef<HTMLDivElement>(null);
-
-  if (!isExpanded) return null;
-
+  const isMobile = useIsMobile();
+  
+  const handleContentChange = (html: string) => {
+    onNoteContentChange(html);
+  };
+  
   return (
-    <Card className="mb-6 border-primary/20 animate-fade-in max-w-5xl mx-auto">
-      <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
-        <CardTitle className="text-lg font-medium">Create New Note</CardTitle>
-        <CardDescription>Add a new note to your collection</CardDescription>
-      </CardHeader>
-      <CardContent className="p-6" ref={editorRef}>
-        <NoteEditor
-          note={note}
-          commonSubjects={commonSubjects}
-          onNoteChange={onNoteChange}
-          onCancel={onCancel}
-          onSave={onSave}
-        />
-      </CardContent>
-    </Card>
+    <div className="flex flex-col h-full overflow-hidden">
+      <CreateNoteHeader 
+        newNote={newNote}
+        isFullscreen={isFullscreen}
+        commonSubjects={commonSubjects}
+        lastSaved={lastSaved}
+        autoSaveEnabled={autoSaveEnabled}
+        onNoteChange={onNoteChange}
+        onToggleAutoSave={onToggleAutoSave}
+        onToggleLectureMode={onToggleLectureMode}
+      />
+
+      <ScrollArea className="flex-grow overflow-y-auto overflow-x-hidden">
+        <div className={`space-y-2 ${isMobile ? 'pr-1' : 'pr-2 sm:pr-4'} max-w-full`}>
+          <NoteContentEditor 
+            editingNote={{
+              id: '',
+              title: newNote.title,
+              content: newNote.content,
+              subject: newNote.subject
+            }}
+            showSummary={false}
+            isFullscreen={isFullscreen}
+            wordCount={wordCount}
+            autoSaveEnabled={autoSaveEnabled}
+            lastSaved={lastSaved}
+            onNoteChange={(note) => {
+              if (note) {
+                onNoteChange('title', note.title || '');
+                onNoteContentChange(note.content || '');
+                onNoteChange('subject', note.subject || 'General');
+              }
+            }}
+            onToggleAutoSave={onToggleAutoSave}
+          />
+        </div>
+      </ScrollArea>
+    </div>
   );
 };
