@@ -113,7 +113,17 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
         ? new DOMParser().parseFromString(newNote.content, 'text/html').body.textContent || newNote.content
         : newNote.content;
       
-      const noteForSummary = { ...newNote, content: contentToSummarize };
+      // Create a properly formatted Note object with all required properties
+      const noteForSummary = { 
+        id: 'new-note-temp-id',
+        title: newNote.title,
+        content: contentToSummarize,
+        subject: newNote.subject || 'General',
+        created_at: new Date().toISOString(),
+        folder: 'My Notes',
+        summary: newNote.summary
+      };
+      
       const summary = await generateSummary(noteForSummary);
       
       // Dismiss loading toast
@@ -142,11 +152,12 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
   };
   
   const handleEnhanceNote = async (enhanceType: 'grammar' | 'structure' | 'all') => {
+    // Create a properly formatted Note object
     const fullNote = {
-      id: '',
+      id: 'new-note-temp-id',
       title: newNote.title,
       content: newNote.content,
-      subject: newNote.subject,
+      subject: newNote.subject || 'General',
       created_at: new Date().toISOString(),
       folder: 'My Notes'
     };
@@ -160,10 +171,10 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
 
   if (lectureMode && newNote) {
     const fullNote = {
-      id: '',
+      id: 'new-note-temp-id',
       title: newNote.title,
       content: newNote.content,
-      subject: newNote.subject,
+      subject: newNote.subject || 'General',
       created_at: new Date().toISOString(),
       folder: 'My Notes'
     };
