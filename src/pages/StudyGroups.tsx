@@ -54,23 +54,23 @@ const StudyGroups = () => {
 
   return (
     <div className={cn(
-      "h-full flex-grow overflow-hidden pt-6",
+      "h-full flex-grow overflow-hidden pt-4 sm:pt-6",
       sidebarIsOpen ? "ml-40" : "ml-20",
       isMobile && "ml-0 pb-16" // Remove sidebar margin and add bottom padding for mobile nav
     )}>
-      <ResponsiveContainer>
+      <ResponsiveContainer withPadding={!isMobile}>
         <div className="flex flex-col h-full overflow-hidden">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-3">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 sm:mb-6 gap-2 sm:gap-3">
             <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">Study Groups</h1>
-              <p className="text-sm sm:text-base text-muted-foreground mt-2">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">Study Groups</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">
                 Collaborate with other students in study groups
               </p>
             </div>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger asChild>
-                <Button className="flex items-center gap-2 self-start">
-                  <Plus className="h-4 w-4" />
+                <Button className="flex items-center gap-1 sm:gap-2 text-sm h-8 sm:h-9 px-2 sm:px-3 self-start">
+                  <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   Create Group
                 </Button>
               </DialogTrigger>
@@ -84,11 +84,11 @@ const StudyGroups = () => {
           </div>
 
           {isLoading ? (
-            <div className="flex justify-center items-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            <div className="flex justify-center items-center py-8 sm:py-12">
+              <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-muted-foreground" />
             </div>
           ) : error ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="flex flex-col items-center justify-center py-8 sm:py-12 text-center">
               <p className="text-destructive mb-4">Error loading study groups</p>
               <Button variant="outline" onClick={() => window.location.reload()}>
                 Try Again
@@ -97,7 +97,7 @@ const StudyGroups = () => {
           ) : !studyGroups || studyGroups.length === 0 ? (
             <EmptyGroupState onCreateClick={() => setIsOpen(true)} />
           ) : (
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 overflow-y-auto overflow-x-hidden pb-4">
+            <div className="grid gap-2 sm:gap-3 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 overflow-y-auto overflow-x-hidden pb-4">
               {studyGroups.map(group => (
                 <StudyGroupCard 
                   key={group.id} 
