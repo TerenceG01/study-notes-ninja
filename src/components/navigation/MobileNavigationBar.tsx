@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
@@ -7,10 +8,9 @@ import { Home, BookOpen, FileText, Users, Plus, Sparkles } from "lucide-react";
 import { ProfileModal } from "@/components/profile/ProfileModal";
 import { useNoteEditor } from "@/hooks/useNoteEditor";
 import { useNotes } from "@/hooks/useNotes";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { NoteEditor } from "@/components/notes/NoteEditor";
 import { CommonSubjects } from "@/components/notes/CommonSubjects";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 export const MobileNavigationBar = () => {
   const { user } = useAuth();
@@ -53,6 +53,9 @@ export const MobileNavigationBar = () => {
   };
 
   const isNotesActive = location.pathname === '/notes';
+  const isFlashcardsActive = location.pathname.startsWith('/flashcards');
+  const isGroupsActive = location.pathname.startsWith('/study-groups');
+  const isHomeActive = location.pathname === '/';
 
   return (
     <>
@@ -60,9 +63,9 @@ export const MobileNavigationBar = () => {
         <div className="flex justify-between items-center px-6 relative">
           <Link 
             to="/" 
-            className={`flex flex-col items-center justify-center py-2 ${location.pathname === '/' ? 'text-primary' : 'text-muted-foreground'}`}
+            className={`flex flex-col items-center justify-center py-2 ${isHomeActive ? 'text-primary' : 'text-muted-foreground'}`}
           >
-            <Home className="h-5 w-5 sm:h-6 sm:w-6" />
+            <Home className="h-5 w-5" />
             <span className="text-xs font-medium mt-1">Home</span>
           </Link>
           
@@ -72,7 +75,7 @@ export const MobileNavigationBar = () => {
                 to="/notes" 
                 className={`flex flex-col items-center justify-center py-2 ${isNotesActive ? 'text-primary' : 'text-muted-foreground'}`}
               >
-                <FileText className="h-5 w-5 sm:h-6 sm:w-6" />
+                <FileText className="h-5 w-5" />
                 <span className="text-xs font-medium mt-1">Notes</span>
               </Link>
               
@@ -91,17 +94,17 @@ export const MobileNavigationBar = () => {
               
               <Link 
                 to="/flashcards" 
-                className={`flex flex-col items-center justify-center py-2 ${location.pathname === '/flashcards' ? 'text-primary' : 'text-muted-foreground'}`}
+                className={`flex flex-col items-center justify-center py-2 ${isFlashcardsActive ? 'text-primary' : 'text-muted-foreground'}`}
               >
-                <BookOpen className="h-5 w-5 sm:h-6 sm:w-6" />
+                <BookOpen className="h-5 w-5" />
                 <span className="text-xs font-medium mt-1">Cards</span>
               </Link>
               
               <Link 
                 to="/study-groups" 
-                className={`flex flex-col items-center justify-center py-2 ${location.pathname === '/study-groups' ? 'text-primary' : 'text-muted-foreground'}`}
+                className={`flex flex-col items-center justify-center py-2 ${isGroupsActive ? 'text-primary' : 'text-muted-foreground'}`}
               >
-                <Users className="h-5 w-5 sm:h-6 sm:w-6" />
+                <Users className="h-5 w-5" />
                 <span className="text-xs font-medium mt-1">Groups</span>
               </Link>
             </>
@@ -114,7 +117,7 @@ export const MobileNavigationBar = () => {
               className="p-2 flex flex-col items-center text-muted-foreground min-h-[60px] min-w-[60px]"
               onClick={() => setShowProfileModal(true)}
             >
-              <Users className="h-5 w-5 sm:h-6 sm:w-6" />
+              <Users className="h-5 w-5" />
               <span className="text-xs font-medium mt-1">Login</span>
             </Button>
           )}
