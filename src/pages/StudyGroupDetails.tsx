@@ -1,5 +1,4 @@
 
-import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +12,10 @@ import { GroupAbout } from "@/components/study-groups/GroupAbout";
 import { GroupMembersList } from "@/components/study-groups/GroupMembersList";
 import { GroupReminders } from "@/components/study-groups/GroupReminders";
 import { useEffect } from "react";
+import { useSidebar } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
+import { ResponsiveContainer } from "@/components/ui/responsive-container";
 
 interface StudyGroup {
   id: string;
@@ -36,6 +39,9 @@ interface StudyGroupMember {
 const StudyGroupDetails = () => {
   const { id } = useParams();
   const { user } = useAuth();
+  const { state } = useSidebar();
+  const sidebarIsOpen = state === "expanded";
+  const isMobile = useIsMobile();
 
   // Debug logging
   useEffect(() => {
@@ -86,13 +92,16 @@ const StudyGroupDetails = () => {
 
   if (isLoadingGroup || isLoadingMembers) {
     return (
-      <div className="min-h-screen bg-background">
-        <NavigationBar />
-        <main className="container mx-auto px-4 pt-20">
+      <div className={cn(
+        "h-full flex-grow overflow-hidden pt-4 sm:pt-6",
+        sidebarIsOpen ? "ml-40" : "ml-20",
+        isMobile && "ml-0 pb-16" // Remove sidebar margin and add bottom padding for mobile nav
+      )}>
+        <ResponsiveContainer withPadding={!isMobile}>
           <div className="flex justify-center items-center py-12">
             <Loader2 className="h-8 w-8 animate-spin" />
           </div>
-        </main>
+        </ResponsiveContainer>
       </div>
     );
   }
@@ -100,16 +109,19 @@ const StudyGroupDetails = () => {
   if (groupError || !studyGroup) {
     console.error("Error loading study group:", groupError);
     return (
-      <div className="min-h-screen bg-background">
-        <NavigationBar />
-        <main className="container mx-auto px-4 pt-20">
+      <div className={cn(
+        "h-full flex-grow overflow-hidden pt-4 sm:pt-6",
+        sidebarIsOpen ? "ml-40" : "ml-20",
+        isMobile && "ml-0 pb-16" // Remove sidebar margin and add bottom padding for mobile nav
+      )}>
+        <ResponsiveContainer withPadding={!isMobile}>
           <div className="text-center py-12">
             <h2 className="text-2xl font-bold">Study Group Not Found</h2>
             <p className="text-muted-foreground mt-2">
               The study group you're looking for doesn't exist or you don't have access to it.
             </p>
           </div>
-        </main>
+        </ResponsiveContainer>
       </div>
     );
   }
@@ -118,9 +130,12 @@ const StudyGroupDetails = () => {
   console.log("User role in group:", userRole);
 
   return (
-    <div className="min-h-screen bg-background">
-      <NavigationBar />
-      <main className="container mx-auto px-4 py-6">
+    <div className={cn(
+      "h-full flex-grow overflow-hidden pt-4 sm:pt-6",
+      sidebarIsOpen ? "ml-40" : "ml-20",
+      isMobile && "ml-0 pb-16" // Remove sidebar margin and add bottom padding for mobile nav
+    )}>
+      <ResponsiveContainer withPadding={!isMobile}>
         <div>
           <GroupHeader 
             name={studyGroup.name} 
@@ -130,8 +145,8 @@ const StudyGroupDetails = () => {
           />
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="md:col-span-2 space-y-6">
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="md:col-span-2 space-y-4">
             <div>
               <GroupAbout 
                 description={studyGroup.description} 
@@ -140,7 +155,7 @@ const StudyGroupDetails = () => {
             </div>
 
             <Card>
-              <CardHeader>
+              <CardHeader className="pb-3">
                 <CardTitle>Shared Notes</CardTitle>
                 <CardDescription>
                   Notes shared by group members
@@ -154,7 +169,7 @@ const StudyGroupDetails = () => {
 
             {userRole && (
               <Card>
-                <CardHeader>
+                <CardHeader className="pb-3">
                   <CardTitle>Invite Members</CardTitle>
                   <CardDescription>
                     Invite other students to join this study group
@@ -167,7 +182,7 @@ const StudyGroupDetails = () => {
             )}
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div>
               <GroupMembersList members={members || []} />
             </div>
@@ -176,7 +191,7 @@ const StudyGroupDetails = () => {
             </div>
           </div>
         </div>
-      </main>
+      </ResponsiveContainer>
     </div>
   );
 };
