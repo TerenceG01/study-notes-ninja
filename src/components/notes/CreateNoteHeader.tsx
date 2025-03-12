@@ -1,4 +1,5 @@
-import { FileEdit, BookOpen, Clock, X } from "lucide-react";
+
+import { FileEdit, BookOpen, Clock, X, ChevronLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -7,6 +8,7 @@ import { useState } from "react";
 import { TitleSubjectEditor } from "./TitleSubjectEditor";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Note } from "./types";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface CreateNoteHeaderProps {
   newNote: Note;
@@ -178,7 +180,9 @@ export const CreateNoteHeader = ({
           id: '',
           title: newNote.title,
           content: newNote.content,
-          subject: newNote.subject
+          subject: newNote.subject,
+          created_at: newNote.created_at,
+          folder: newNote.folder
         }}
         commonSubjects={commonSubjects}
         onNoteChange={(note) => {
