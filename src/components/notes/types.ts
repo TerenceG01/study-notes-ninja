@@ -1,4 +1,3 @@
-
 export interface Note {
   id: string;
   title: string;
@@ -6,7 +5,6 @@ export interface Note {
   created_at: string;
   folder: string;
   summary?: string;
-  tags?: string[];
   subject?: string;
   subject_color?: string;
   custom_color?: string;
