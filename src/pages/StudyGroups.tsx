@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,7 +37,6 @@ const StudyGroups = () => {
     queryFn: async () => {
       if (!user?.id) throw new Error("User not authenticated");
       
-      // First get the user's study groups
       const { data: groups, error: groupsError } = await supabase.rpc('get_user_study_groups', {
         p_user_id: user.id
       });
@@ -47,7 +45,6 @@ const StudyGroups = () => {
       
       if (!groups || groups.length === 0) return [];
       
-      // For each group, get the member count
       const groupsWithMemberCount = await Promise.all(
         groups.map(async (group) => {
           const { data: members, error: countError } = await supabase
@@ -87,16 +84,14 @@ const StudyGroups = () => {
     <div className={cn(
       "h-full flex-grow overflow-hidden pt-4 sm:pt-6",
       sidebarIsOpen ? "ml-40" : "ml-20",
-      isMobile && "ml-0 pb-16" // Remove sidebar margin and add bottom padding for mobile nav
+      isMobile && "ml-0 pb-20"
     )}>
       <ResponsiveContainer withPadding={!isMobile}>
         <div className="flex flex-col h-full overflow-hidden">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 sm:mb-6 gap-2 sm:gap-3">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
             <div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">Study Groups</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">
-                Collaborate with other students in study groups
-              </p>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 text-primary">Study Groups</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">Collaborate with other students in study groups</p>
             </div>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger asChild>
