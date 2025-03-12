@@ -24,11 +24,7 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
     isEditorExpanded, 
     setIsEditorExpanded, 
     newNote, 
-    newTag,
-    setNewTag,
     handleNoteChange,
-    addTag,
-    removeTag,
     resetEditor
   } = useNoteEditor();
   const { toast } = useToast();
@@ -63,12 +59,8 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
       </DialogHeader>
       <NoteEditor
         note={newNote}
-        newTag={newTag}
         commonSubjects={CommonSubjects}
         onNoteChange={handleNoteChange}
-        onTagChange={setNewTag}
-        onAddTag={addTag}
-        onRemoveTag={removeTag}
         onCancel={() => setIsEditorExpanded(false)}
         onSave={handleSave}
       />

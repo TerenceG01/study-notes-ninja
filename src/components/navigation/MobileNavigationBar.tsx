@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
@@ -23,11 +24,7 @@ export const MobileNavigationBar = () => {
     isEditorExpanded, 
     setIsEditorExpanded, 
     newNote, 
-    newTag,
-    setNewTag,
     handleNoteChange,
-    addTag,
-    removeTag,
     resetEditor
   } = useNoteEditor();
 
@@ -137,12 +134,8 @@ export const MobileNavigationBar = () => {
           
           <NoteEditor
             note={newNote}
-            newTag={newTag}
             commonSubjects={CommonSubjects}
             onNoteChange={handleNoteChange}
-            onTagChange={setNewTag}
-            onAddTag={addTag}
-            onRemoveTag={removeTag}
             onCancel={() => setIsEditorExpanded(false)}
             onSave={handleSaveNote}
           />

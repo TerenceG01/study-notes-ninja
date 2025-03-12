@@ -11,7 +11,6 @@ export type Note = {
   created_at: string;
   folder: string;
   summary?: string;
-  tags?: string[];
   subject?: string;
   subject_color?: string;
   subject_order?: number;
@@ -20,7 +19,6 @@ export type Note = {
 export type NewNote = {
   title: string;
   content: string;
-  tags: string[];
   subject: string;
 };
 
@@ -32,19 +30,17 @@ export const useNotes = () => {
   const [generatingFlashcardsForNote, setGeneratingFlashcardsForNote] = useState<string | null>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   
-  // Define fetchNotes function before using it in useEffect
   const fetchNotes = async () => {
     try {
-      console.log("Fetching notes..."); // Debug log
+      console.log("Fetching notes...");
       const { data, error } = await supabase
         .from("notes")
         .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      console.log("Fetched notes:", data); // Debug log
-      
-      // If we're offline, merge with any offline notes
+      console.log("Fetched notes:", data);
+
       if (!navigator.onLine) {
         const offlineNotes = getOfflineNotes();
         setNotes([...offlineNotes, ...(data || [])]);
@@ -52,7 +48,7 @@ export const useNotes = () => {
         setNotes(data || []);
       }
     } catch (error) {
-      console.error("Error fetching notes:", error); // Debug log
+      console.error("Error fetching notes:", error);
       toast({
         variant: "destructive",
         title: "Error fetching notes",
@@ -62,12 +58,10 @@ export const useNotes = () => {
       setLoading(false);
     }
   };
-  
-  // Listen for online/offline events
+
   useEffect(() => {
     const handleOnline = () => {
       setIsOnline(true);
-      // Attempt to sync any pending changes
       syncPendingChanges();
     };
     
@@ -88,7 +82,6 @@ export const useNotes = () => {
     };
   }, []);
 
-  // Function to sync pending changes when back online
   const syncPendingChanges = async () => {
     const offlineNotes = getOfflineNotes();
     
@@ -106,7 +99,6 @@ export const useNotes = () => {
             {
               title: note.title,
               content: note.content,
-              tags: note.tags,
               subject: note.subject,
               user_id: note.user_id,
             },
@@ -120,19 +112,15 @@ export const useNotes = () => {
         }
       }
       
-      // Clear offline notes after sync attempt
       localStorage.removeItem('offlineNotes');
       
-      // Dismiss the syncing toast
       toast.dismiss(syncToastId);
       
-      // Show result toast
       toast({
         title: "Sync complete",
         description: `Successfully synced ${syncedCount} of ${offlineNotes.length} notes.`,
       });
       
-      // Refresh notes to include synced items
       await fetchNotes();
     } else {
       toast({
@@ -140,15 +128,13 @@ export const useNotes = () => {
         description: "Your connection has been restored.",
       });
       
-      // Refresh notes
       await fetchNotes();
     }
   };
-  
+
   useEffect(() => {
     fetchNotes();
 
-    // Subscribe to real-time changes
     const channel = supabase
       .channel('notes_changes')
       .on(
@@ -160,7 +146,7 @@ export const useNotes = () => {
         },
         (payload) => {
           console.log("Realtime update received:", payload);
-          fetchNotes(); // Refresh notes when changes occur
+          fetchNotes();
         }
       )
       .subscribe();
@@ -182,7 +168,6 @@ export const useNotes = () => {
 
     try {
       if (!isOnline) {
-        // Save to local storage for offline use
         saveOfflineNote(newNote, userId);
         
         toast({
@@ -192,12 +177,11 @@ export const useNotes = () => {
         return true;
       }
       
-      console.log("Creating note:", { ...newNote, user_id: userId }); // Debug log
+      console.log("Creating note:", { ...newNote, user_id: userId });
       const { error } = await supabase.from("notes").insert([
         {
           title: newNote.title,
           content: newNote.content,
-          tags: newNote.tags,
           subject: newNote.subject,
           user_id: userId,
         },
@@ -205,15 +189,14 @@ export const useNotes = () => {
 
       if (error) throw error;
 
-      console.log("Note created successfully"); // Debug log
-
+      console.log("Note created successfully");
       toast({
         title: "Success",
         description: "Note created successfully!",
       });
       return true;
     } catch (error) {
-      console.error("Error creating note:", error); // Debug log
+      console.error("Error creating note:", error);
       toast({
         variant: "destructive",
         title: "Error creating note",
@@ -223,7 +206,6 @@ export const useNotes = () => {
     }
   };
 
-  // Define offline storage helpers
   const saveOfflineNote = (note: NewNote, userId: string) => {
     try {
       const offlineNotes = getOfflineNotes();
@@ -236,7 +218,6 @@ export const useNotes = () => {
       });
       localStorage.setItem('offlineNotes', JSON.stringify(offlineNotes));
       
-      // Update local state to include the new offline note
       setNotes(prevNotes => [{
         ...note,
         id: `offline_${Date.now()}`,
@@ -248,7 +229,7 @@ export const useNotes = () => {
       console.error("Error saving offline note:", error);
     }
   };
-  
+
   const getOfflineNotes = (): any[] => {
     try {
       return JSON.parse(localStorage.getItem('offlineNotes') || '[]');

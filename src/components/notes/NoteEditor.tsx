@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Plus, BookOpen, Tag, Hash, X } from "lucide-react";
+import { Plus, BookOpen, Tag } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -12,27 +12,18 @@ interface NoteEditorProps {
   note: {
     title: string;
     content: string;
-    tags: string[];
     subject: string;
   };
-  newTag: string;
   commonSubjects: string[];
   onNoteChange: (field: string, value: string | string[]) => void;
-  onTagChange: (value: string) => void;
-  onAddTag: () => void;
-  onRemoveTag: (tag: string) => void;
   onCancel: () => void;
   onSave: () => void;
 }
 
 export const NoteEditor = ({
   note,
-  newTag,
   commonSubjects,
   onNoteChange,
-  onTagChange,
-  onAddTag,
-  onRemoveTag,
   onCancel,
   onSave,
 }: NoteEditorProps) => {
@@ -93,60 +84,6 @@ export const NoteEditor = ({
         <p className="text-xs text-muted-foreground mt-1">
           Assigning a subject helps organize your notes and makes them easier to find
         </p>
-      </div>
-
-      {/* Tags section */}
-      <div className="space-y-2">
-        <Label className="flex items-center gap-1.5 text-sm">
-          <Hash className="h-4 w-4" />
-          Tags
-        </Label>
-        
-        <div className="flex flex-wrap gap-2 mb-2">
-          {note.tags.map((tag) => (
-            <Badge 
-              key={tag}
-              variant="secondary"
-              className="flex items-center gap-1 px-2 py-1"
-            >
-              {tag}
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => onRemoveTag(tag)}
-                className="h-4 w-4 p-0 text-muted-foreground hover:text-foreground rounded-full"
-              >
-                <X className="h-3 w-3" />
-                <span className="sr-only">Remove tag</span>
-              </Button>
-            </Badge>
-          ))}
-        </div>
-        
-        <div className="flex gap-2">
-          <Input
-            placeholder="Add a tag..."
-            value={newTag}
-            onChange={(e) => onTagChange(e.target.value)}
-            className="flex-1"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && newTag.trim()) {
-                e.preventDefault();
-                onAddTag();
-              }
-            }}
-          />
-          <Button
-            type="button"
-            onClick={onAddTag}
-            disabled={!newTag.trim()}
-            size="sm"
-            className="flex-shrink-0"
-          >
-            <Plus className="h-4 w-4" />
-            Add
-          </Button>
-        </div>
       </div>
 
       <Textarea

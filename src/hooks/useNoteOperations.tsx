@@ -17,8 +17,6 @@ export const useNoteOperations = (onNotesChanged: () => void) => {
           title: editingNote.title,
           content: editingNote.content,
           summary: editingNote.summary,
-          // Still send empty array for tags to maintain database compatibility
-          tags: [],
           subject: editingNote.subject,
         })
         .eq("id", editingNote.id);
