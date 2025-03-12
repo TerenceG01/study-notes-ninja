@@ -3,13 +3,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { NoteContentEditor } from "./NoteContentEditor";
 import { CreateNoteHeader } from "./CreateNoteHeader";
+import { Note } from "./types";
 
 interface CreateNoteContainerProps {
-  newNote: {
-    title: string;
-    content: string;
-    subject: string;
-  };
+  newNote: Note;
   isFullscreen: boolean;
   wordCount: number;
   lastSaved: Date | null;
@@ -39,20 +36,10 @@ export const CreateNoteContainer = ({
     onNoteContentChange(html);
   };
   
-  // Create a complete Note object with all required properties
-  const noteWithRequiredProps = {
-    id: '',
-    title: newNote.title,
-    content: newNote.content,
-    subject: newNote.subject,
-    created_at: new Date().toISOString(),
-    folder: 'My Notes'
-  };
-  
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <CreateNoteHeader 
-        newNote={noteWithRequiredProps}
+        newNote={newNote}
         isFullscreen={isFullscreen}
         commonSubjects={commonSubjects}
         lastSaved={lastSaved}
@@ -65,7 +52,7 @@ export const CreateNoteContainer = ({
       <ScrollArea className="flex-grow overflow-y-auto overflow-x-hidden">
         <div className={`space-y-2 ${isMobile ? 'pr-1' : 'pr-2 sm:pr-4'} max-w-full`}>
           <NoteContentEditor 
-            editingNote={noteWithRequiredProps}
+            editingNote={newNote}
             showSummary={false}
             isFullscreen={isFullscreen}
             wordCount={wordCount}

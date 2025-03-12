@@ -29,7 +29,7 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
     resetEditor
   } = useNoteEditor();
   const { toast } = useToast();
-  const { isFullscreen, enableFullscreen } = useFullscreenState();
+  const { isFullscreen, enableFullscreen, toggleFullscreen } = useFullscreenState();
   const isMobile = useIsMobile();
   const [wordCount, setWordCount] = useState(0);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
@@ -105,7 +105,14 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
         >
           <div className="flex flex-col h-full overflow-hidden">
             <CreateNoteContainer
-              newNote={newNote}
+              newNote={{
+                id: '',
+                title: newNote.title,
+                content: newNote.content,
+                subject: newNote.subject,
+                created_at: new Date().toISOString(),
+                folder: 'My Notes'
+              }}
               isFullscreen={isFullscreen}
               wordCount={wordCount}
               lastSaved={lastSaved}

@@ -1,5 +1,5 @@
 
-import { FileEdit, BookOpen, Clock, X, ChevronLeft } from "lucide-react";
+import { FileEdit, BookOpen, Clock, X, ChevronLeft, Maximize2, Minimize2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -19,6 +19,7 @@ interface CreateNoteHeaderProps {
   onNoteChange: (field: string, value: string | string[]) => void;
   onToggleAutoSave: () => void;
   onToggleLectureMode: () => void;
+  onToggleFullscreen?: () => void;
 }
 
 export const CreateNoteHeader = ({
@@ -29,7 +30,8 @@ export const CreateNoteHeader = ({
   autoSaveEnabled,
   onNoteChange,
   onToggleAutoSave,
-  onToggleLectureMode
+  onToggleLectureMode,
+  onToggleFullscreen
 }: CreateNoteHeaderProps) => {
   const isMobile = useIsMobile();
   const [editorOpen, setEditorOpen] = useState(false);
@@ -117,6 +119,38 @@ export const CreateNoteHeader = ({
                   />
                 </DialogTitle>
               </DialogHeader>
+              
+              {onToggleFullscreen && (
+                <div className="flex items-center gap-1">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button 
+                        variant="outline"
+                        size="icon" 
+                        onClick={onToggleLectureMode}
+                        className="h-8 w-8"
+                      >
+                        <BookOpen className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Lecture Mode</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={onToggleFullscreen} 
+                    className="hover:bg-muted h-8 w-8"
+                  >
+                    {isFullscreen ? 
+                      <Minimize2 className="h-4 w-4" /> : 
+                      <Maximize2 className="h-4 w-4" />
+                    }
+                  </Button>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
