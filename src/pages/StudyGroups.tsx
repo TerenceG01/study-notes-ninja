@@ -97,7 +97,7 @@ const StudyGroups = () => {
           ) : !studyGroups || studyGroups.length === 0 ? (
             <EmptyGroupState onCreateClick={() => setIsOpen(true)} />
           ) : (
-            <div className="grid gap-2 sm:gap-3 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 overflow-y-auto overflow-x-hidden pb-4">
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 overflow-y-auto pb-6">
               {studyGroups.map(group => (
                 <StudyGroupCard 
                   key={group.id} 
