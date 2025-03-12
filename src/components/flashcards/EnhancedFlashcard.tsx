@@ -37,7 +37,7 @@ export const EnhancedFlashcard = ({
       {...swipeHandlers}
     >
       <CardContent className="flex items-center justify-center p-3 sm:p-6 h-full overflow-auto">
-        <div className="text-base sm:text-lg md:text-xl font-medium text-center w-full break-words">
+        <div className="text-base sm:text-lg md:text-xl font-medium text-center w-full break-words text-primary">
           {isFlipped ? card.answer : card.question}
         </div>
       </CardContent>

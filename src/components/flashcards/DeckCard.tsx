@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Trash2 } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface DeckCardProps {
   deck: {
@@ -15,6 +16,8 @@ interface DeckCardProps {
 }
 
 export const DeckCard = ({ deck, cardCount, onDelete }: DeckCardProps) => {
+  const isMobile = useIsMobile();
+  
   return (
     <Link to={`/flashcards/${deck.id}`}>
       <Card className="h-full hover:bg-muted/50 transition-colors group">
@@ -27,12 +30,16 @@ export const DeckCard = ({ deck, cardCount, onDelete }: DeckCardProps) => {
           >
             <Trash2 className="h-3 w-3 text-destructive" />
           </Button>
-          <CardTitle className="text-lg sm:text-xl mb-1 line-clamp-1">{deck.title}</CardTitle>
-          <CardDescription className="text-sm line-clamp-2">
+          <div className="flex flex-col gap-1">
+            <CardTitle className={`line-clamp-2 ${isMobile ? "text-base" : "text-lg sm:text-xl"} font-semibold text-primary`}>
+              {deck.title}
+            </CardTitle>
+          </div>
+          <CardDescription className={`line-clamp-${isMobile ? "1" : "2"} text-xs sm:text-sm mt-1`}>
             {deck.description || "No description"}
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-3 sm:p-4 pt-0">
+        <CardContent className={`${isMobile ? "p-3 pt-0" : "p-4 pt-0"} mt-auto`}>
           <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
             <BookOpen className="h-4 w-4" />
             <span>{cardCount || 0} cards</span>
