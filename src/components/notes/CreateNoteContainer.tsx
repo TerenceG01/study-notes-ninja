@@ -8,15 +8,10 @@ interface CreateNoteContainerProps {
   note: {
     title: string;
     content: string;
-    tags: string[];
     subject: string;
   };
-  newTag: string;
   commonSubjects: string[];
   onNoteChange: (field: string, value: string | string[]) => void;
-  onTagChange: (value: string) => void;
-  onAddTag: () => void;
-  onRemoveTag: (tag: string) => void;
   onCancel: () => void;
   onSave: () => void;
 }
@@ -24,12 +19,8 @@ interface CreateNoteContainerProps {
 export const CreateNoteContainer = ({
   isExpanded,
   note,
-  newTag,
   commonSubjects,
   onNoteChange,
-  onTagChange,
-  onAddTag,
-  onRemoveTag,
   onCancel,
   onSave,
 }: CreateNoteContainerProps) => {
@@ -46,12 +37,8 @@ export const CreateNoteContainer = ({
       <CardContent className="p-6" ref={editorRef}>
         <NoteEditor
           note={note}
-          newTag={newTag}
           commonSubjects={commonSubjects}
           onNoteChange={onNoteChange}
-          onTagChange={onTagChange}
-          onAddTag={onAddTag}
-          onRemoveTag={onRemoveTag}
           onCancel={onCancel}
           onSave={onSave}
         />

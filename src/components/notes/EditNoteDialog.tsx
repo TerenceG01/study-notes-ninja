@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Note } from "@/hooks/useNotes";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
@@ -50,7 +49,6 @@ export const EditNoteDialog = ({
   const [wordCount, setWordCount] = useState(0);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
-  const [tags, setTags] = useState<string[]>([]);
   const [isSaved, setIsSaved] = useState(false);
   const [originalContent, setOriginalContent] = useState("");
   const [originalSubject, setOriginalSubject] = useState("");
@@ -78,14 +76,6 @@ export const EditNoteDialog = ({
       setWordCount(0);
     }
   }, [editingNote?.content, originalContent, lectureMode]);
-
-  useEffect(() => {
-    if (editingNote?.tags) {
-      setTags(editingNote.tags);
-    } else {
-      setTags([]);
-    }
-  }, [editingNote?.tags]);
   
   useEffect(() => {
     if (editingNote) {
@@ -96,7 +86,6 @@ export const EditNoteDialog = ({
     }
   }, [selectedNote, editingNote]);
 
-  // Track subject changes separately from content changes
   useEffect(() => {
     if (editingNote?.subject !== undefined && originalSubject !== "" && originalSubject !== editingNote.subject) {
       setIsSaved(false);
@@ -185,8 +174,6 @@ export const EditNoteDialog = ({
         wordCount={wordCount}
         lastSaved={lastSaved}
         autoSaveEnabled={autoSaveEnabled}
-        tags={tags}
-        onTagsChange={setTags}
         onNoteChange={handleNoteChange}
         onSummaryLevelChange={onSummaryLevelChange}
         onGenerateSummary={onGenerateSummary}
