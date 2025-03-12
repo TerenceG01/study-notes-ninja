@@ -22,6 +22,7 @@ interface StudyGroup {
   description: string | null;
   created_by: string;
   created_at: string;
+  member_count?: number;
 }
 
 const StudyGroups = () => {
@@ -36,11 +37,32 @@ const StudyGroups = () => {
     queryKey: ['study-groups'],
     queryFn: async () => {
       if (!user?.id) throw new Error("User not authenticated");
-      const { data, error } = await supabase.rpc('get_user_study_groups', {
+      
+      // First get the user's study groups
+      const { data: groups, error: groupsError } = await supabase.rpc('get_user_study_groups', {
         p_user_id: user.id
       });
-      if (error) throw error;
-      return (data || []) as StudyGroup[];
+      
+      if (groupsError) throw groupsError;
+      
+      if (!groups || groups.length === 0) return [];
+      
+      // For each group, get the member count
+      const groupsWithMemberCount = await Promise.all(
+        groups.map(async (group) => {
+          const { count, error: countError } = await supabase
+            .from('study_group_members')
+            .select('*', { count: 'exact', head: true })
+            .eq('group_id', group.id);
+          
+          return {
+            ...group,
+            member_count: count || 0
+          };
+        })
+      );
+      
+      return groupsWithMemberCount as StudyGroup[];
     },
     enabled: !!user,
     retry: 1,
