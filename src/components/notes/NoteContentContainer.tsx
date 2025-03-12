@@ -18,8 +18,6 @@ interface NoteContentContainerProps {
   wordCount: number;
   lastSaved: Date | null;
   autoSaveEnabled: boolean;
-  tags: string[];
-  onTagsChange: (tags: string[]) => void;
   onNoteChange: (note: Note | null) => void;
   onSummaryLevelChange: (level: SummaryLevel) => void;
   onGenerateSummary: () => void;
@@ -41,8 +39,6 @@ export const NoteContentContainer = ({
   wordCount,
   lastSaved,
   autoSaveEnabled,
-  tags,
-  onTagsChange,
   onNoteChange,
   onSummaryLevelChange,
   onGenerateSummary,
