@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
@@ -11,6 +10,7 @@ import { useNotes } from "@/hooks/useNotes";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { NoteEditor } from "@/components/notes/NoteEditor";
 import { CommonSubjects } from "@/components/notes/CommonSubjects";
+import { navigationItems } from "./NavigationItems";
 
 export const MobileNavigationBar = () => {
   const { user } = useAuth();
@@ -60,10 +60,10 @@ export const MobileNavigationBar = () => {
   return (
     <>
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t py-2 md:hidden">
-        <div className="flex justify-between items-center px-6 relative">
+        <div className="flex justify-between items-center px-4 max-w-screen-xl mx-auto">
           <Link 
             to="/" 
-            className={`flex flex-col items-center justify-center py-2 ${isHomeActive ? 'text-primary' : 'text-muted-foreground'}`}
+            className={`flex flex-col items-center justify-center py-1 w-16 ${isHomeActive ? 'text-primary' : 'text-muted-foreground'}`}
           >
             <Home className="h-5 w-5" />
             <span className="text-xs font-medium mt-1">Home</span>
@@ -73,28 +73,25 @@ export const MobileNavigationBar = () => {
             <>
               <Link 
                 to="/notes" 
-                className={`flex flex-col items-center justify-center py-2 ${isNotesActive ? 'text-primary' : 'text-muted-foreground'}`}
+                className={`flex flex-col items-center justify-center py-1 w-16 ${isNotesActive ? 'text-primary' : 'text-muted-foreground'}`}
               >
                 <FileText className="h-5 w-5" />
                 <span className="text-xs font-medium mt-1">Notes</span>
               </Link>
               
-              <div className="relative">
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
-                  <Button 
-                    onClick={handleCreateNote}
-                    className="rounded-full bg-primary hover:bg-primary/90 h-16 w-16 p-0 flex items-center justify-center border-4 border-background shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-primary rounded-full opacity-80 hover:opacity-100 transition-opacity"></div>
-                    <Plus className="h-7 w-7 text-white relative z-10" />
-                  </Button>
-                  <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs font-medium text-primary whitespace-nowrap">New Note</span>
-                </div>
+              <div className="relative w-16 flex justify-center">
+                <Button 
+                  onClick={handleCreateNote}
+                  className="rounded-full bg-primary hover:bg-primary/90 h-14 w-14 p-0 flex items-center justify-center border-4 border-background shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-primary rounded-full opacity-80 hover:opacity-100 transition-opacity"></div>
+                  <Plus className="h-6 w-6 text-white relative z-10" />
+                </Button>
               </div>
               
               <Link 
                 to="/flashcards" 
-                className={`flex flex-col items-center justify-center py-2 ${isFlashcardsActive ? 'text-primary' : 'text-muted-foreground'}`}
+                className={`flex flex-col items-center justify-center py-1 w-16 ${isFlashcardsActive ? 'text-primary' : 'text-muted-foreground'}`}
               >
                 <BookOpen className="h-5 w-5" />
                 <span className="text-xs font-medium mt-1">Cards</span>
@@ -102,7 +99,7 @@ export const MobileNavigationBar = () => {
               
               <Link 
                 to="/study-groups" 
-                className={`flex flex-col items-center justify-center py-2 ${isGroupsActive ? 'text-primary' : 'text-muted-foreground'}`}
+                className={`flex flex-col items-center justify-center py-1 w-16 ${isGroupsActive ? 'text-primary' : 'text-muted-foreground'}`}
               >
                 <Users className="h-5 w-5" />
                 <span className="text-xs font-medium mt-1">Groups</span>

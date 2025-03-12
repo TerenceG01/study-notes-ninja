@@ -84,7 +84,7 @@ const Flashcards = () => {
     <div className={cn(
       "h-full flex-grow overflow-hidden pt-4 sm:pt-6",
       isOpen ? "ml-40" : "ml-20",
-      isMobile && "ml-0 pb-16" // Remove sidebar margin and add bottom padding for mobile nav
+      isMobile && "ml-0 pb-20" // Increased bottom padding for mobile nav
     )}>
       <ResponsiveContainer>
         <div className="flex flex-col h-full overflow-hidden">
@@ -120,7 +120,7 @@ const Flashcards = () => {
               <EmptyDeckState onCreateClick={() => setOpenCreateDialog(true)} />
             )
           ) : (
-            <div className="grid gap-2 sm:gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 overflow-y-auto overflow-x-hidden pb-4">
+            <div className="grid gap-2 sm:gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 overflow-y-auto pb-8">
               {filteredDecks.map((deck) => (
                 <DeckCard
                   key={deck.id}
