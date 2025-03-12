@@ -1,6 +1,4 @@
-
-import { Maximize2, Minimize2, Clock, X, ChevronLeft, FileEdit, BookOpen } from "lucide-react";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { FileEdit, BookOpen, Clock, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -8,13 +6,10 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
 import { TitleSubjectEditor } from "./TitleSubjectEditor";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Note } from "./types";
 
 interface CreateNoteHeaderProps {
-  newNote: {
-    title: string;
-    content: string;
-    subject: string;
-  };
+  newNote: Note;
   isFullscreen: boolean;
   commonSubjects: string[];
   lastSaved: Date | null;
@@ -38,7 +33,6 @@ export const CreateNoteHeader = ({
   const [editorOpen, setEditorOpen] = useState(false);
   
   const handleDismiss = () => {
-    // Find the dismiss button and click it safely
     const dismissButton = document.querySelector('[data-radix-preferred-dismiss]');
     if (dismissButton instanceof HTMLElement) {
       dismissButton.click();
