@@ -69,21 +69,21 @@ export const CreateNoteContainer = ({
         onToggleFullscreen={onToggleFullscreen}
       />
 
-      <div className="flex-grow overflow-y-auto overflow-x-hidden no-scrollbar mb-16">
-        <div className={`space-y-2 ${isMobile ? 'px-1' : 'px-2 sm:px-4'} max-w-full`}>
-          <SummaryControls 
-            summaryLevel={summaryLevel}
-            summarizing={summarizing}
-            hasSummary={!!newNote?.summary}
-            showSummary={showSummary}
-            editingNote={newNote}
-            enhancing={enhancing}
-            onSummaryLevelChange={onSummaryLevelChange}
-            onGenerateSummary={onGenerateSummary}
-            onToggleSummary={onToggleSummary}
-            onEnhanceNote={onEnhanceNote}
-          />
+      <div className="flex-grow overflow-y-auto overflow-x-hidden no-scrollbar">
+        <SummaryControls 
+          summaryLevel={summaryLevel}
+          summarizing={summarizing}
+          hasSummary={!!newNote?.summary}
+          showSummary={showSummary}
+          editingNote={newNote}
+          enhancing={enhancing}
+          onSummaryLevelChange={onSummaryLevelChange}
+          onGenerateSummary={onGenerateSummary}
+          onToggleSummary={onToggleSummary}
+          onEnhanceNote={onEnhanceNote}
+        />
 
+        <div className="mb-16">
           <NoteContentEditor 
             editingNote={newNote}
             showSummary={showSummary}
