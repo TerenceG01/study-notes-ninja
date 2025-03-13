@@ -1,11 +1,9 @@
-
 import { Note } from "@/hooks/useNotes";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
 import { NoteHeaderSection } from "./NoteHeaderSection";
 import { SummaryControls } from "./SummaryControls";
 import { NoteContentEditor } from "./NoteContentEditor";
 import { useIsMobile } from "@/hooks/use-mobile";
-
 interface NoteContentContainerProps {
   editingNote: Note | null;
   isFullscreen: boolean;
@@ -26,7 +24,6 @@ interface NoteContentContainerProps {
   onToggleAutoSave: () => void;
   onToggleLectureMode: () => void;
 }
-
 export const NoteContentContainer = ({
   editingNote,
   isFullscreen,
@@ -48,48 +45,15 @@ export const NoteContentContainer = ({
   onToggleLectureMode
 }: NoteContentContainerProps) => {
   const isMobile = useIsMobile();
-  
-  return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <NoteHeaderSection 
-        editingNote={editingNote}
-        isFullscreen={isFullscreen}
-        commonSubjects={commonSubjects}
-        lastSaved={lastSaved}
-        autoSaveEnabled={autoSaveEnabled}
-        onNoteChange={onNoteChange}
-        onToggleFullscreen={onToggleFullscreen}
-        onToggleAutoSave={onToggleAutoSave}
-        onToggleLectureMode={onToggleLectureMode}
-      />
+  return <div className="flex flex-col h-full overflow-hidden">
+      <NoteHeaderSection editingNote={editingNote} isFullscreen={isFullscreen} commonSubjects={commonSubjects} lastSaved={lastSaved} autoSaveEnabled={autoSaveEnabled} onNoteChange={onNoteChange} onToggleFullscreen={onToggleFullscreen} onToggleAutoSave={onToggleAutoSave} onToggleLectureMode={onToggleLectureMode} />
 
       <div className="flex-grow overflow-y-auto overflow-x-hidden no-scrollbar">
-        <div className={`space-y-2 ${isMobile ? 'px-1' : 'px-2 sm:px-4'} max-w-full`}>
-          <SummaryControls 
-            summaryLevel={summaryLevel}
-            summarizing={summarizing}
-            hasSummary={!!editingNote?.summary}
-            showSummary={showSummary}
-            editingNote={editingNote}
-            enhancing={enhancing}
-            onSummaryLevelChange={onSummaryLevelChange}
-            onGenerateSummary={onGenerateSummary}
-            onToggleSummary={onToggleSummary}
-            onEnhanceNote={onEnhanceNote}
-          />
+        <div className="">
+          <SummaryControls summaryLevel={summaryLevel} summarizing={summarizing} hasSummary={!!editingNote?.summary} showSummary={showSummary} editingNote={editingNote} enhancing={enhancing} onSummaryLevelChange={onSummaryLevelChange} onGenerateSummary={onGenerateSummary} onToggleSummary={onToggleSummary} onEnhanceNote={onEnhanceNote} />
 
-          <NoteContentEditor 
-            editingNote={editingNote}
-            showSummary={showSummary}
-            isFullscreen={isFullscreen}
-            wordCount={wordCount}
-            autoSaveEnabled={autoSaveEnabled}
-            lastSaved={lastSaved}
-            onNoteChange={onNoteChange}
-            onToggleAutoSave={onToggleAutoSave}
-          />
+          <NoteContentEditor editingNote={editingNote} showSummary={showSummary} isFullscreen={isFullscreen} wordCount={wordCount} autoSaveEnabled={autoSaveEnabled} lastSaved={lastSaved} onNoteChange={onNoteChange} onToggleAutoSave={onToggleAutoSave} />
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
