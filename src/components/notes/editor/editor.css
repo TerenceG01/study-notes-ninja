@@ -1,3 +1,4 @@
+
 /* Base editor styles */
 .ProseMirror {
   width: 100%;
@@ -115,6 +116,7 @@
     font-size: 15px;
     line-height: 1.5;
     padding-top: 1em; /* Add extra space at the top for mobile */
+    padding-bottom: 4em; /* Add extra padding at the bottom to ensure content doesn't get hidden by the footer */
   }
   
   .ProseMirror h1 {
@@ -149,7 +151,7 @@
   
   /* Provide padding at the bottom of the editor to accommodate the fixed footer */
   .ProseMirror {
-    padding-bottom: 60px !important;
+    padding-bottom: 70px !important;
   }
 }
 

@@ -31,12 +31,12 @@ export const NoteContentEditor = ({
 }: NoteContentEditorProps) => {
   const isMobile = useIsMobile();
   
-  // Calculate editor height based on available space
+  // Calculate editor height based on available space and add padding for the bottom bar
   const getDefaultHeight = () => {
     if (isFullscreen) {
-      return isMobile ? "calc(100vh - 160px)" : "calc(100vh - 200px)";
+      return isMobile ? "calc(100vh - 210px)" : "calc(100vh - 240px)";
     } else {
-      return isMobile ? "calc(100vh - 280px)" : "400px";
+      return isMobile ? "calc(100vh - 320px)" : "400px";
     }
   };
   
@@ -98,7 +98,7 @@ export const NoteContentEditor = ({
 
   return (
     <>
-      <div className="mt-2 min-h-[150px] max-h-[calc(100%-20px)] flex flex-col bg-card rounded-lg border border-border shadow-sm max-w-full overflow-hidden">
+      <div className="mt-2 mb-16 min-h-[150px] max-h-[calc(100%-70px)] flex flex-col bg-card rounded-lg border border-border shadow-sm max-w-full overflow-hidden">
         {showSummary && editingNote?.summary ? (
           <Card className="p-3 sm:p-4 bg-muted h-full overflow-auto rounded-lg border-none shadow-none">
             <div className="prose max-w-none break-words">
