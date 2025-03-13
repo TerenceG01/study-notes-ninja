@@ -41,8 +41,6 @@ export const NoteContentEditor = ({
   };
   
   const [editorHeight, setEditorHeight] = useState(getDefaultHeight());
-  const containerRef = useRef<HTMLDivElement>(null);
-  const resizeStartPosRef = useRef<number | null>(null);
   
   // Update height when fullscreen mode changes or on resize
   useEffect(() => {
@@ -55,36 +53,6 @@ export const NoteContentEditor = ({
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [isFullscreen]);
-
-  // Handle mouse down for resize
-  const handleResizeStart = (e: React.MouseEvent) => {
-    if (isMobile) return; // Disable resize on mobile
-    
-    e.preventDefault();
-    resizeStartPosRef.current = e.clientY;
-    
-    document.addEventListener('mousemove', handleResize);
-    document.addEventListener('mouseup', handleResizeEnd);
-  };
-
-  // Handle mouse move for resizing
-  const handleResize = (e: MouseEvent) => {
-    if (resizeStartPosRef.current === null || !containerRef.current) return;
-    
-    const deltaY = e.clientY - resizeStartPosRef.current;
-    const currentHeight = containerRef.current.offsetHeight;
-    const newHeight = Math.max(150, currentHeight + deltaY); // Min height 150px
-    
-    setEditorHeight(`${newHeight}px`);
-    resizeStartPosRef.current = e.clientY;
-  };
-
-  // Handle mouse up to end resize
-  const handleResizeEnd = () => {
-    resizeStartPosRef.current = null;
-    document.removeEventListener('mousemove', handleResize);
-    document.removeEventListener('mouseup', handleResizeEnd);
-  };
 
   // Handle content change from editor
   const handleContentChange = (html: string) => {
@@ -108,7 +76,7 @@ export const NoteContentEditor = ({
             </div>
           </Card>
         ) : (
-          <div ref={containerRef} className="flex flex-col h-full flex-1 relative max-w-full overflow-hidden">
+          <div className="flex flex-col h-full flex-1 relative max-w-full overflow-hidden">
             <RichTextEditor
               content={editingNote?.content || ""}
               onChange={handleContentChange}
@@ -116,14 +84,6 @@ export const NoteContentEditor = ({
               height={editorHeight}
               className="flex-grow rounded-lg border-none shadow-none overflow-hidden max-w-full"
             />
-            
-            {!isMobile && (
-              <div 
-                className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-muted transition-colors rounded-b-lg"
-                onMouseDown={handleResizeStart}
-                title="Drag to resize"
-              />
-            )}
             
             <div className="flex justify-between items-center text-xs text-muted-foreground px-3 py-2 border-t border-border bg-card/50">
               <div className="flex items-center gap-1.5">
