@@ -110,7 +110,7 @@ export const NoteHeaderSection = ({
         ) : (
           <>
             <div className="flex justify-between items-center">
-              <DialogHeader className="flex-grow space-y-0 p-0">
+              <DialogHeader className="flex-grow space-y-0 p-0 max-w-[calc(100%-100px)]">
                 <DialogTitle className="text-base">
                   <Input 
                     value={editingNote?.title || ""} 
@@ -119,12 +119,12 @@ export const NoteHeaderSection = ({
                       title: e.target.value
                     } : null)} 
                     placeholder="Note Title" 
-                    className="text-base font-semibold border-none shadow-none focus-visible:ring-1 bg-background h-8 px-2"
+                    className="text-base font-semibold border-none shadow-none focus-visible:ring-1 bg-background h-8 px-2 w-full"
                   />
                 </DialogTitle>
               </DialogHeader>
               
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 ml-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button 
