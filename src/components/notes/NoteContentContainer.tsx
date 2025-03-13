@@ -77,7 +77,7 @@ export const NoteContentContainer = ({
           onEnhanceNote={onEnhanceNote} 
         />
 
-        <div className="mb-16">
+        <div className="mb-16 flex justify-center">
           <NoteContentEditor 
             editingNote={editingNote} 
             showSummary={showSummary} 
