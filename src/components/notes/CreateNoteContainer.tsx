@@ -69,7 +69,7 @@ export const CreateNoteContainer = ({
         onToggleFullscreen={onToggleFullscreen}
       />
 
-      <div className="flex-grow overflow-y-auto overflow-x-hidden">
+      <div className="flex-grow overflow-y-auto overflow-x-hidden no-scrollbar">
         <div className={`space-y-2 ${isMobile ? 'px-1' : 'px-2 sm:px-4'} max-w-full`}>
           <SummaryControls 
             summaryLevel={summaryLevel}
