@@ -1,4 +1,3 @@
-
 import { Note } from "@/hooks/useNotes";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
 import { NoteHeaderSection } from "./NoteHeaderSection";
@@ -50,7 +49,7 @@ export const NoteContentContainer = ({
       <NoteHeaderSection editingNote={editingNote} isFullscreen={isFullscreen} commonSubjects={commonSubjects} lastSaved={lastSaved} autoSaveEnabled={autoSaveEnabled} onNoteChange={onNoteChange} onToggleFullscreen={onToggleFullscreen} onToggleAutoSave={onToggleAutoSave} onToggleLectureMode={onToggleLectureMode} />
 
       <div className="flex-grow overflow-y-auto overflow-x-hidden no-scrollbar mb-16">
-        <div className={`space-y-2 ${isMobile ? 'px-1' : 'px-2 sm:px-4'} max-w-full`}>
+        <div className="">
           <SummaryControls summaryLevel={summaryLevel} summarizing={summarizing} hasSummary={!!editingNote?.summary} showSummary={showSummary} editingNote={editingNote} enhancing={enhancing} onSummaryLevelChange={onSummaryLevelChange} onGenerateSummary={onGenerateSummary} onToggleSummary={onToggleSummary} onEnhanceNote={onEnhanceNote} />
 
           <NoteContentEditor editingNote={editingNote} showSummary={showSummary} isFullscreen={isFullscreen} wordCount={wordCount} autoSaveEnabled={autoSaveEnabled} lastSaved={lastSaved} onNoteChange={onNoteChange} onToggleAutoSave={onToggleAutoSave} />
