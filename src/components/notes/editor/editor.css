@@ -1,3 +1,4 @@
+
 /* Base editor styles */
 .ProseMirror {
   width: 100%;
@@ -11,7 +12,6 @@
   font-size: 16px;
   touch-action: manipulation;
   padding: 1rem;
-  padding-bottom: 3rem; /* Extra space for fixed footer */
 }
 
 .ProseMirror p {
@@ -207,9 +207,4 @@
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;             /* Chrome, Safari and Opera */
-}
-
-/* Ensure the editor content doesn't scroll under the fixed word count bar */
-.ProseMirror {
-  scroll-padding-bottom: 40px;
 }

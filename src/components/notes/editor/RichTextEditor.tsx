@@ -114,8 +114,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           overflowY: "auto",
           width: "100%",
           maxWidth: "100%",
-          paddingBottom: "40px", // Add padding at the bottom to account for the fixed word count bar
-          scrollPaddingBottom: "40px", // Ensure content doesn't scroll under the fixed bar
+          scrollPaddingTop: "44px", // Add padding to account for sticky toolbar
         }}
       />
     </div>
