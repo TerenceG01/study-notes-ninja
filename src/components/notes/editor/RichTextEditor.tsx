@@ -104,19 +104,20 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   }, [content, editor, isMounted]);
 
   return (
-    <div className={cn("flex flex-col rounded-md border overflow-hidden max-w-full relative", className)}>
+    <div className={cn("flex flex-col rounded-md border overflow-hidden max-w-full relative editor-content-container", className)}>
       {editable && <RichTextToolbar editor={editor} />}
-      <EditorContent
-        editor={editor}
-        className="prose max-w-none p-2 sm:p-4 overflow-hidden"
+      <div 
+        className="flex-grow overflow-auto"
         style={{ 
           height: height,
-          overflowY: "auto",
-          width: "100%",
-          maxWidth: "100%",
-          scrollPaddingTop: "44px", // Add padding to account for sticky toolbar
+          maxHeight: height,
         }}
-      />
+      >
+        <EditorContent
+          editor={editor}
+          className="prose max-w-none p-2 sm:p-4 h-full"
+        />
+      </div>
     </div>
   );
 };

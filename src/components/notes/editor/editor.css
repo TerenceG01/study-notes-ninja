@@ -12,6 +12,7 @@
   outline: none;
   min-height: 150px;
   padding: 1rem;
+  padding-top: 0.75rem;
   width: 100%;
 }
 
@@ -91,4 +92,23 @@
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* Ensure editor content scrolls properly without affecting toolbar */
+.editor-content-container {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Bottom status bar */
+.editor-status-bar {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40; 
+  border-top: 1px solid var(--border);
 }
