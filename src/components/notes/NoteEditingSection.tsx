@@ -27,7 +27,7 @@ export const NoteEditingSection = ({
 }: NoteEditingSectionProps) => {
   // Use custom hooks for functionality
   const { enhancing, enhanceNote, cleanup } = useNoteEnhancement();
-  const { updateNote } = useNoteOperations(onNotesChanged);
+  const { updateNote, silentSave } = useNoteOperations(onNotesChanged);
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const { isFullscreen, enableFullscreen } = useFullscreenState(true); // Default to fullscreen
@@ -73,6 +73,11 @@ export const NoteEditingSection = ({
     
     return success;
   };
+  
+  // Silent save function without notifications
+  const handleSilentSave = () => {
+    return silentSave(editingNote);
+  };
 
   // Cleanup on unmount
   useEffect(() => {
@@ -104,6 +109,7 @@ export const NoteEditingSection = ({
       onToggleSummary={summaryHandler.toggleSummary}
       onEnhanceNote={handleEnhanceNote}
       onSave={handleSave}
+      onSilentSave={handleSilentSave}
       isFullscreen={isFullscreen}
     />
   );

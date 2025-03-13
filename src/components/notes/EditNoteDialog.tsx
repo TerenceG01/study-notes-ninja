@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Note } from "@/hooks/useNotes";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
@@ -23,6 +24,7 @@ interface EditNoteDialogProps {
   onToggleSummary: () => void;
   onEnhanceNote: (enhanceType: 'grammar' | 'structure' | 'all') => void;
   onSave: () => void;
+  onSilentSave?: () => void;
   isFullscreen?: boolean;
 }
 
@@ -42,6 +44,7 @@ export const EditNoteDialog = ({
   onToggleSummary,
   onEnhanceNote,
   onSave,
+  onSilentSave,
   isFullscreen = true
 }: EditNoteDialogProps) => {
   const isMobile = useIsMobile();
@@ -53,6 +56,8 @@ export const EditNoteDialog = ({
   const [originalContent, setOriginalContent] = useState("");
   const [originalSubject, setOriginalSubject] = useState("");
   const [lectureMode, setLectureMode] = useState(false);
+  const [changesMade, setChangesMade] = useState(false);
+  const [autoSaveTimeout, setAutoSaveTimeout] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setLocalIsFullscreen(isFullscreen);
@@ -71,6 +76,7 @@ export const EditNoteDialog = ({
       
       if (originalContent !== "" && originalContent !== editingNote.content) {
         setIsSaved(false);
+        setChangesMade(true);
       }
     } else {
       setWordCount(0);
@@ -89,18 +95,33 @@ export const EditNoteDialog = ({
   useEffect(() => {
     if (editingNote?.subject !== undefined && originalSubject !== "" && originalSubject !== editingNote.subject) {
       setIsSaved(false);
+      setChangesMade(true);
     }
   }, [editingNote?.subject, originalSubject]);
 
+  // Real-time auto-save implementation
   useEffect(() => {
-    if (!autoSaveEnabled || !editingNote || lectureMode) return;
+    // Cancel any existing timeout
+    if (autoSaveTimeout) {
+      clearTimeout(autoSaveTimeout);
+      setAutoSaveTimeout(null);
+    }
     
-    const autoSaveTimer = setTimeout(() => {
-      handleSave();
-    }, isMobile ? 30000 : 60000);
+    // If auto-save is enabled and there are changes, schedule a save
+    if (autoSaveEnabled && changesMade && !lectureMode && editingNote && onSilentSave) {
+      const timeout = setTimeout(() => {
+        handleSilentSave();
+      }, 2000); // Save after 2 seconds of inactivity
+      
+      setAutoSaveTimeout(timeout);
+    }
     
-    return () => clearTimeout(autoSaveTimer);
-  }, [editingNote, autoSaveEnabled, lectureMode]);
+    return () => {
+      if (autoSaveTimeout) {
+        clearTimeout(autoSaveTimeout);
+      }
+    };
+  }, [changesMade, editingNote, autoSaveEnabled, lectureMode]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -118,9 +139,22 @@ export const EditNoteDialog = ({
     onSave();
     setLastSaved(new Date());
     setIsSaved(true);
+    setChangesMade(false);
     if (editingNote) {
       setOriginalContent(editingNote.content || "");
       setOriginalSubject(editingNote.subject || "");
+    }
+  };
+  
+  const handleSilentSave = () => {
+    if (onSilentSave && changesMade) {
+      onSilentSave();
+      setLastSaved(new Date());
+      setChangesMade(false);
+      if (editingNote) {
+        setOriginalContent(editingNote.content || "");
+        setOriginalSubject(editingNote.subject || "");
+      }
     }
   };
 
@@ -130,6 +164,11 @@ export const EditNoteDialog = ({
 
   const toggleAutoSave = () => {
     setAutoSaveEnabled(!autoSaveEnabled);
+    
+    // If enabling auto-save and there are unsaved changes, save immediately
+    if (!autoSaveEnabled && changesMade && onSilentSave) {
+      handleSilentSave();
+    }
   };
 
   const toggleLectureMode = () => {
@@ -144,6 +183,7 @@ export const EditNoteDialog = ({
     if (isSaved && note) {
       if (note.content !== originalContent || (note.subject !== originalSubject)) {
         setIsSaved(false);
+        setChangesMade(true);
       }
     }
   };
