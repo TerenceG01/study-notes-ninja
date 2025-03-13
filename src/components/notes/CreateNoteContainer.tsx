@@ -1,5 +1,4 @@
 
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { NoteContentEditor } from "./NoteContentEditor";
 import { CreateNoteHeader } from "./CreateNoteHeader";
@@ -70,8 +69,8 @@ export const CreateNoteContainer = ({
         onToggleFullscreen={onToggleFullscreen}
       />
 
-      <ScrollArea className="flex-grow overflow-y-auto overflow-x-hidden">
-        <div className={`space-y-2 ${isMobile ? 'pr-1' : 'pr-2 sm:pr-4'} max-w-full`}>
+      <div className="flex-grow overflow-y-auto overflow-x-hidden">
+        <div className={`space-y-2 ${isMobile ? 'px-1' : 'px-2 sm:px-4'} max-w-full`}>
           <SummaryControls 
             summaryLevel={summaryLevel}
             summarizing={summarizing}
@@ -102,7 +101,7 @@ export const CreateNoteContainer = ({
             onToggleAutoSave={onToggleAutoSave}
           />
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 };
