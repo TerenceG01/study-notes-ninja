@@ -84,7 +84,7 @@ export const NoteContentEditor = ({
             className="flex-grow rounded-lg border-none shadow-none overflow-hidden max-w-full"
           />
           
-          <div className="flex justify-between items-center text-xs text-muted-foreground px-3 py-2 border-t border-border bg-card/50 absolute bottom-0 left-0 right-0 z-10">
+          <div className="flex justify-between items-center text-xs text-muted-foreground px-3 py-2 border-t border-border bg-card absolute bottom-0 left-0 right-0 z-10">
             <div className="flex items-center gap-1.5">
               <FileText className="h-3.5 w-3.5" />
               <span>{wordCount} words</span>
