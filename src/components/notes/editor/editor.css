@@ -1,94 +1,210 @@
 
-.rich-text-toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background-color: var(--background);
-  border-top-left-radius: 0.375rem;
-  border-top-right-radius: 0.375rem;
-}
-
+/* Base editor styles */
 .ProseMirror {
-  outline: none;
-  min-height: 150px;
-  padding: 1rem;
   width: 100%;
-}
-
-.ProseMirror > * + * {
-  margin-top: 0.75em;
-}
-
-.ProseMirror ul,
-.ProseMirror ol {
-  padding: 0 1rem;
-}
-
-.ProseMirror h1,
-.ProseMirror h2,
-.ProseMirror h3,
-.ProseMirror h4,
-.ProseMirror h5,
-.ProseMirror h6 {
-  line-height: 1.1;
-}
-
-.ProseMirror code {
-  background-color: rgba(97, 97, 97, 0.1);
-  color: #616161;
-}
-
-.ProseMirror pre {
-  background: #0d0d0d;
-  color: #fff;
-  font-family: "JetBrainsMono", monospace;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-}
-
-.ProseMirror pre code {
-  color: inherit;
-  padding: 0;
-  background: none;
-}
-
-.ProseMirror mark {
-  background-color: rgba(255, 235, 59, 0.3);
-  color: inherit;
-}
-
-.ProseMirror img {
+  height: 100%;
+  outline: none;
+  min-height: 200px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
   max-width: 100%;
-  height: auto;
+  font-size: 16px;
+  touch-action: manipulation;
+  padding: 1rem;
+}
+
+.ProseMirror p {
+  margin: 0.5em 0;
+  line-height: 1.5;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.ProseMirror h1 {
+  font-size: 1.5em;
+  margin: 1em 0 0.5em;
+  font-weight: bold;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.ProseMirror h2 {
+  font-size: 1.25em;
+  margin: 0.8em 0 0.4em;
+  font-weight: bold;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 .ProseMirror blockquote {
-  padding-left: 1rem;
-  border-left: 3px solid rgba(13, 13, 13, 0.1);
-  color: rgba(13, 13, 13, 0.5);
-  font-style: italic;
+  padding: 0.5em 1em;
+  margin: 0.5em 0;
+  border-left: 2px solid hsl(var(--muted));
+  background-color: hsl(var(--muted));
+  border-radius: 0.25em;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
-.ProseMirror hr {
-  border: none;
-  border-top: 2px solid rgba(13, 13, 13, 0.1);
-  margin: 2rem 0;
+/* List styling */
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+  max-width: 100%;
 }
 
-/* Placeholder (at the top) */
+.ProseMirror ul {
+  list-style-type: disc;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.ProseMirror li {
+  margin: 0.25em 0;
+  padding-left: 0.25em;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.ProseMirror li p {
+  margin: 0;
+  max-width: 100%;
+}
+
+/* Code blocks */
+.ProseMirror code {
+  background-color: hsl(var(--muted));
+  border-radius: 0.25em;
+  padding: 0.2em 0.4em;
+  font-family: monospace;
+  font-size: 0.9em;
+  word-break: break-all;
+}
+
+.ProseMirror pre {
+  background-color: hsl(var(--muted));
+  border-radius: 0.25em;
+  padding: 0.75em 1em;
+  margin: 0.5em 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.ProseMirror pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 0.9em;
+}
+
+/* Selection and focus */
+.ProseMirror-focused {
+  outline: none;
+}
+
+.ProseMirror ::selection {
+  background-color: hsl(var(--primary)/0.2);
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .ProseMirror {
+    padding: 0.75em;
+    font-size: 15px;
+    line-height: 1.5;
+    padding-top: 1em; /* Add extra space at the top for mobile */
+    padding-bottom: 4em; /* Add extra padding at the bottom to ensure content doesn't get hidden by the footer */
+  }
+  
+  .ProseMirror h1 {
+    font-size: 1.3em;
+  }
+  
+  .ProseMirror h2 {
+    font-size: 1.1em;
+  }
+  
+  .ProseMirror pre {
+    padding: 0.5em;
+  }
+  
+  .ProseMirror li {
+    padding: 0.2em 0;
+  }
+  
+  .ProseMirror blockquote {
+    padding: 0.5em 0.75em;
+  }
+  
+  /* Optimize toolbar spacing for mobile */
+  .rich-text-toolbar {
+    padding: 0.25rem !important;
+    gap: 0.25rem !important;
+  }
+  
+  .rich-text-toolbar button {
+    padding: 0.25rem !important;
+  }
+  
+  /* Provide padding at the bottom of the editor to accommodate the fixed footer */
+  .ProseMirror {
+    padding-bottom: 70px !important;
+  }
+}
+
+/* Toolbar button enhancements for touch */
+.rich-text-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: hsl(var(--background));
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.rich-text-toolbar button {
+  min-height: 36px;
+  min-width: 36px;
+}
+
+/* On extra small screens, make toolbar buttons even smaller */
+@media (max-width: 370px) {
+  .rich-text-toolbar button {
+    min-height: 30px;
+    min-width: 30px;
+    padding: 0.15rem !important;
+  }
+  
+  .rich-text-toolbar {
+    gap: 0.15rem !important;
+    padding: 0.15rem !important;
+  }
+}
+
+/* Placeholder text */
 .ProseMirror p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;
-  color: #adb5bd;
+  color: hsl(var(--muted-foreground));
   pointer-events: none;
   height: 0;
 }
 
+/* Add more space at the top of the editor on mobile when we have the compact header */
+@media (max-width: 640px) {
+  .mobile-note-editor {
+    padding-top: 0.25rem;
+  }
+}
+
+/* Hide scrollbar but keep functionality */
 .no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }
 
 .no-scrollbar::-webkit-scrollbar {
-  display: none;
+  display: none;             /* Chrome, Safari and Opera */
 }

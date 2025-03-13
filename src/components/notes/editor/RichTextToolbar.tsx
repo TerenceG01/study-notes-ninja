@@ -209,7 +209,7 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({ editor }) => {
   // Mobile toolbar with sections and navigation
   if (isMobile && toolbarSections) {
     return (
-      <div className="sticky top-0 z-10 flex flex-col rounded-t-md border-b bg-background rich-text-toolbar select-none">
+      <div className="sticky top-0 z-10 flex flex-col rounded-t-md border-b bg-background rich-text-toolbar">
         <div className="flex items-center justify-between px-1 py-1 border-b">
           <Button
             variant="ghost"
@@ -265,9 +265,9 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({ editor }) => {
     );
   }
 
-  // Desktop toolbar (updated with fixed positioning)
+  // Desktop toolbar (unchanged)
   return (
-    <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 rounded-t-md border-b bg-background p-1 px-3 rich-text-toolbar select-none">
+    <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 rounded-t-md border-b bg-background p-1 px-3 rich-text-toolbar">
       <Button
         variant="ghost"
         size="sm"
