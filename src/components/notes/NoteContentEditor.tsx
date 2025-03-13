@@ -66,7 +66,7 @@ export const NoteContentEditor = ({
 
   return (
     <>
-      <div className="mt-2 mb-16 min-h-[150px] max-h-[calc(100%-70px)] flex flex-col bg-card rounded-lg border border-border shadow-sm max-w-full overflow-hidden">
+      <div className="mt-2 mb-16 min-h-[150px] max-h-[calc(100%-70px)] flex flex-col bg-card rounded-lg border border-border shadow-sm max-w-full overflow-hidden relative">
         {showSummary && editingNote?.summary ? (
           <Card className="p-3 sm:p-4 bg-muted h-full overflow-auto rounded-lg border-none shadow-none">
             <div className="prose max-w-none break-words">
@@ -85,7 +85,7 @@ export const NoteContentEditor = ({
               className="flex-grow rounded-lg border-none shadow-none overflow-hidden max-w-full"
             />
             
-            <div className="flex justify-between items-center text-xs text-muted-foreground px-3 py-2 border-t border-border bg-card/50">
+            <div className="flex justify-between items-center text-xs text-muted-foreground px-3 py-2 border-t border-border bg-card fixed bottom-0 left-0 right-0 z-10">
               <div className="flex items-center gap-1.5">
                 <FileText className="h-3.5 w-3.5" />
                 <span>{wordCount} words</span>

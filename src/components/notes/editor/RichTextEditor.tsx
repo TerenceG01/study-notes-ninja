@@ -115,6 +115,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           width: "100%",
           maxWidth: "100%",
           scrollPaddingTop: "44px", // Add padding to account for sticky toolbar
+          paddingBottom: "40px", // Add padding to ensure content doesn't get hidden behind the fixed footer
         }}
       />
     </div>
