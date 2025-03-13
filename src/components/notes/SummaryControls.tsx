@@ -39,7 +39,7 @@ export const SummaryControls = ({
   const isMobile = useIsMobile();
   
   return (
-    <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm py-2 border-b border-border flex flex-wrap items-center justify-between">
+    <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm py-2 border-b border-border flex flex-wrap items-center justify-between">
       <div className={`flex ${isMobile ? 'flex-wrap gap-2' : 'gap-4'} items-center`}>
         {!isMobile && (
           <Select value={summaryLevel} onValueChange={onSummaryLevelChange}>
