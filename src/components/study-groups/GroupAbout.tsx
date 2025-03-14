@@ -1,14 +1,13 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AboutDescription } from "./group-about/AboutDescription";
 import { AboutDescriptionEditor } from "./group-about/AboutDescriptionEditor";
-import { useGroupNotifications } from "./group-about/useGroupNotifications";
-import { useGroupDescription } from "./group-about/useGroupDescription";
-import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 interface GroupAboutProps {
   description: string | null;
@@ -17,79 +16,64 @@ interface GroupAboutProps {
   userRole?: string;
 }
 
-export const GroupAbout = ({ description: initialDescription, createdAt, groupId, userRole }: GroupAboutProps) => {
+export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupAboutProps) => {
   const canEdit = userRole === 'admin' || userRole === 'moderator';
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedDescription, setEditedDescription] = useState(description || "");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
   
-  // Get group data for notifications
-  const { data: groupData } = useGroupNotifications(groupId);
+  // Handle starting the editing process
+  const handleStartEditing = () => {
+    setEditedDescription(description || "");
+    setIsEditing(true);
+  };
   
-  // Fetch the latest description directly from the database with aggressive refetching strategy
-  const { data: latestDescription, isLoading: isLoadingDescription, refetch } = useQuery({
-    queryKey: ['group-description', groupId],
-    queryFn: async () => {
-      console.log("Fetching latest group description for:", groupId);
+  // Handle canceling the edit
+  const handleCancelEditing = () => {
+    setEditedDescription(description || "");
+    setIsEditing(false);
+  };
+  
+  // Handle description changes in the editor
+  const handleDescriptionChange = (value: string) => {
+    setEditedDescription(value);
+  };
+  
+  // Handle saving the description
+  const handleSave = async () => {
+    if (isSubmitting) return;
+    
+    try {
+      setIsSubmitting(true);
+      console.log(`Updating description for group ${groupId} to: "${editedDescription}"`);
+      
+      // Direct update to database
       const { data, error } = await supabase
         .from('study_groups')
-        .select('description')
+        .update({ description: editedDescription })
         .eq('id', groupId)
-        .single();
+        .select();
         
       if (error) {
-        console.error("Error fetching description:", error);
         throw error;
       }
       
-      console.log("Latest description fetched:", data);
-      return data.description;
-    },
-    refetchOnWindowFocus: true,
-    staleTime: 0, // Don't cache this data
-    refetchInterval: 3000, // Refetch every 3 seconds to ensure fresh data
-    retry: 3,
-    retryDelay: 1000
-  });
-
-  // Force a refresh when the component mounts to ensure we have fresh data
-  useEffect(() => {
-    // Initial fetch
-    refetch();
-    
-    // Set up regular refetching interval
-    const intervalId = setInterval(() => {
-      refetch();
-    }, 5000);
-    
-    // Clean up the interval on component unmount
-    return () => clearInterval(intervalId);
-  }, [refetch, groupId]);
-  
-  // Use the latest description from the database, or fall back to the prop if not loaded yet
-  const currentDescription = isLoadingDescription ? initialDescription : latestDescription;
-  
-  // Handle description editing state and mutations
-  const {
-    isEditing,
-    editedDescription,
-    isPending,
-    handleStartEditing,
-    handleCancelEditing,
-    handleSave,
-    handleDescriptionChange
-  } = useGroupDescription(groupId, currentDescription, groupData?.groupName);
-
-  // Debug what's displayed
-  console.log("GroupAbout rendering with description:", {
-    initialDescription,
-    latestDescription,
-    currentDescription,
-    editedDescription,
-    isEditing
-  });
-  
-  // Add null check for createdAt
-  if (!createdAt) {
-    return null;
-  }
+      console.log("Description updated successfully:", data);
+      
+      // Force immediate invalidation of all related queries
+      queryClient.invalidateQueries({ queryKey: ['study-group', groupId] });
+      
+      // Close the editor
+      setIsEditing(false);
+      toast.success("Group description updated");
+    } catch (error) {
+      console.error("Error updating description:", error);
+      toast.error("Failed to update description. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <Card>
@@ -109,11 +93,11 @@ export const GroupAbout = ({ description: initialDescription, createdAt, groupId
             onChange={handleDescriptionChange}
             onSave={handleSave}
             onCancel={handleCancelEditing}
-            isLoading={isPending}
+            isLoading={isSubmitting}
           />
         ) : (
           <AboutDescription
-            description={currentDescription}
+            description={description}
             createdAt={createdAt}
           />
         )}

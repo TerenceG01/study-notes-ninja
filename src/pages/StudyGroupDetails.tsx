@@ -9,6 +9,7 @@ import { LoadingState } from "@/components/study-groups/details/LoadingState";
 import { ErrorState } from "@/components/study-groups/details/ErrorState";
 import { StudyGroupContent } from "@/components/study-groups/details/StudyGroupContent";
 import { useStudyGroupData } from "@/hooks/useStudyGroupData";
+import { useEffect } from "react";
 
 const StudyGroupDetails = () => {
   const { id } = useParams();
@@ -17,7 +18,24 @@ const StudyGroupDetails = () => {
   const sidebarIsOpen = state === "expanded";
   const isMobile = useIsMobile();
 
-  const { studyGroup, members, isLoading, error } = useStudyGroupData(id);
+  const { studyGroup, members, isLoading, error, refetchGroup } = useStudyGroupData(id);
+  
+  // Set up a regular refetch interval for extra reliability
+  useEffect(() => {
+    // Initial fetch on mount
+    if (!isLoading && !error) {
+      refetchGroup();
+    }
+    
+    // Refetch regularly
+    const intervalId = setInterval(() => {
+      if (!isLoading && !error) {
+        refetchGroup();
+      }
+    }, 5000); // Every 5 seconds
+    
+    return () => clearInterval(intervalId);
+  }, [refetchGroup, isLoading, error]);
 
   if (isLoading) {
     return <LoadingState sidebarIsOpen={sidebarIsOpen} isMobile={isMobile} />;
@@ -27,6 +45,9 @@ const StudyGroupDetails = () => {
     console.error("Error loading study group:", error);
     return <ErrorState sidebarIsOpen={sidebarIsOpen} isMobile={isMobile} />;
   }
+
+  console.log("StudyGroupDetails rendering with study group:", studyGroup);
+  console.log("Description in details page:", studyGroup.description);
 
   const userRole = members?.find(member => member.user_id === user?.id)?.role;
 

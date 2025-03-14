@@ -1,5 +1,4 @@
 
-import { CalendarDays } from "lucide-react";
 import { format } from "date-fns";
 
 interface AboutDescriptionProps {
@@ -8,25 +7,29 @@ interface AboutDescriptionProps {
 }
 
 export const AboutDescription = ({ description, createdAt }: AboutDescriptionProps) => {
-  // Improved empty check that's more visible in debugging
-  const isEmpty = description === null || description === "" || description.trim() === "";
+  const isEmpty = !description || description.trim() === '';
   
-  // Debug what we're rendering
   console.log("AboutDescription rendering with:", { 
     description, 
     isEmpty, 
     createdAt 
   });
-  
+
   return (
-    <>
-      <p className="text-muted-foreground whitespace-pre-line">
-        {isEmpty ? "No description provided." : description}
-      </p>
-      <div className="flex items-center text-sm text-muted-foreground mt-4">
-        <CalendarDays className="h-4 w-4 mr-2" />
-        Created {format(new Date(createdAt), 'PPP')}
+    <div className="space-y-4">
+      <div className="min-h-[80px]">
+        {isEmpty ? (
+          <p className="text-muted-foreground italic">
+            No description available. {canEdit ? 'Click the edit button to add one.' : ''}
+          </p>
+        ) : (
+          <p className="text-sm whitespace-pre-wrap">{description}</p>
+        )}
       </div>
-    </>
+      
+      <div className="text-xs text-muted-foreground">
+        Created on {format(new Date(createdAt), 'MMMM d, yyyy')}
+      </div>
+    </div>
   );
 };

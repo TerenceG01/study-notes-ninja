@@ -1,5 +1,5 @@
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 
@@ -24,16 +24,43 @@ interface StudyGroupMember {
 }
 
 export const useStudyGroupData = (groupId: string | undefined) => {
+  const queryClient = useQueryClient();
+  
   useEffect(() => {
     if (groupId) {
       console.log("StudyGroupDetails mounted with id:", groupId);
+      
+      // Set up subscription to study_groups table for real-time updates
+      const studyGroupsChannel = supabase
+        .channel('study_group_changes')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'study_groups',
+            filter: `id=eq.${groupId}`
+          },
+          (payload) => {
+            console.log('Study group updated in real-time:', payload);
+            // Force refetch of the study group data when a change is detected
+            queryClient.invalidateQueries({ queryKey: ['study-group', groupId] });
+          }
+        )
+        .subscribe();
+        
+      // Clean up subscription on unmount
+      return () => {
+        supabase.removeChannel(studyGroupsChannel);
+      };
     }
-  }, [groupId]);
+  }, [groupId, queryClient]);
 
   const { 
     data: studyGroup, 
     isLoading: isLoadingGroup, 
-    error: groupError 
+    error: groupError,
+    refetch: refetchGroup
   } = useQuery({
     queryKey: ['study-group', groupId],
     queryFn: async () => {
@@ -49,7 +76,8 @@ export const useStudyGroupData = (groupId: string | undefined) => {
       return data as StudyGroup;
     },
     enabled: !!groupId,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: true,
+    staleTime: 0, // Don't cache this data
   });
 
   const { 
@@ -76,13 +104,14 @@ export const useStudyGroupData = (groupId: string | undefined) => {
       return data as StudyGroupMember[];
     },
     enabled: !!groupId && !!studyGroup,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: true
   });
 
   return {
     studyGroup,
     members,
     isLoading: isLoadingGroup || isLoadingMembers,
-    error: groupError
+    error: groupError,
+    refetchGroup
   };
 };

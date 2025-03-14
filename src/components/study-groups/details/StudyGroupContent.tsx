@@ -43,6 +43,8 @@ export const StudyGroupContent = ({
 }: StudyGroupContentProps) => {
   const isAdmin = userRole === 'admin';
   console.log("User role in group:", userRole);
+  console.log("Study group data in content:", studyGroup);
+  console.log("Description in content:", studyGroup.description);
 
   return (
     <div>
