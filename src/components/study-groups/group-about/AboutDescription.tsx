@@ -4,15 +4,17 @@ import { format } from "date-fns";
 interface AboutDescriptionProps {
   description: string | null;
   createdAt: string;
+  canEdit?: boolean; // Add this prop with optional flag
 }
 
-export const AboutDescription = ({ description, createdAt }: AboutDescriptionProps) => {
+export const AboutDescription = ({ description, createdAt, canEdit = false }: AboutDescriptionProps) => {
   const isEmpty = !description || description.trim() === '';
   
   console.log("AboutDescription rendering with:", { 
     description, 
     isEmpty, 
-    createdAt 
+    createdAt,
+    canEdit 
   });
 
   return (

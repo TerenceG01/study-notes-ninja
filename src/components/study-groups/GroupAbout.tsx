@@ -99,6 +99,7 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
           <AboutDescription
             description={description}
             createdAt={createdAt}
+            canEdit={canEdit}
           />
         )}
       </CardContent>
