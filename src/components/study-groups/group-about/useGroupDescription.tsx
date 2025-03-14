@@ -62,8 +62,8 @@ export const useGroupDescription = (
       setIsEditing(false);
       
       // Force update the cache with the new data
-      queryClient.setQueryData(['study-group', groupId], oldData => {
-        if (!oldData) return data[0];
+      queryClient.setQueryData(['study-group', groupId], (oldData: any) => {
+        if (!oldData) return data?.[0] || null;
         return { ...oldData, description: editedDescription };
       });
       
