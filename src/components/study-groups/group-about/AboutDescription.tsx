@@ -8,8 +8,15 @@ interface AboutDescriptionProps {
 }
 
 export const AboutDescription = ({ description, createdAt }: AboutDescriptionProps) => {
-  // Simpler and more reliable empty check
+  // Improved empty check that's more visible in debugging
   const isEmpty = description === null || description === "" || description.trim() === "";
+  
+  // Debug what we're rendering
+  console.log("AboutDescription rendering with:", { 
+    description, 
+    isEmpty, 
+    createdAt 
+  });
   
   return (
     <>

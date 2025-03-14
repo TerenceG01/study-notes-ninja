@@ -24,8 +24,8 @@ export const useGroupDescription = (
 
   const updateDescriptionMutation = useMutation({
     mutationFn: async () => {
-      console.log("Updating description for group:", groupId);
-      console.log("New description:", editedDescription);
+      console.log("MUTATION START: Updating description for group:", groupId);
+      console.log("New description to save:", editedDescription);
       
       // Force fetch current state before updating to ensure we're operating on latest data
       const currentState = await supabase
@@ -34,7 +34,7 @@ export const useGroupDescription = (
         .eq('id', groupId)
         .single();
       
-      console.log("Current state before update:", currentState.data);
+      console.log("Current database state before update:", currentState.data);
       
       const { data, error } = await supabase
         .from('study_groups')
@@ -47,7 +47,7 @@ export const useGroupDescription = (
         throw error;
       }
       
-      console.log("Description updated successfully", data);
+      console.log("Description updated successfully:", data);
       
       // Get current user email
       const { data: { user } } = await supabase.auth.getUser();
@@ -76,13 +76,15 @@ export const useGroupDescription = (
       
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setIsEditing(false);
+      console.log("MUTATION SUCCESS: Updated with data:", data);
       
-      // Immediately update the cache with the new description
+      // Clear stale cache and immediately update with new description
+      queryClient.removeQueries({ queryKey: ['group-description', groupId] });
       queryClient.setQueryData(['group-description', groupId], editedDescription);
       
-      // Also invalidate both group queries to fetch fresh data
+      // Invalidate and refetch all related queries
       queryClient.invalidateQueries({ 
         queryKey: ['study-group', groupId]
       });
@@ -91,10 +93,11 @@ export const useGroupDescription = (
         queryKey: ['group-description', groupId]
       });
       
-      // Force refetch to ensure we have the latest data
+      // Force immediate refetch of the data
       queryClient.refetchQueries({
         queryKey: ['group-description', groupId],
         type: 'active',
+        exact: true
       });
       
       toast.success("Group description updated");

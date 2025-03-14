@@ -8,6 +8,7 @@ import { useGroupNotifications } from "./group-about/useGroupNotifications";
 import { useGroupDescription } from "./group-about/useGroupDescription";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 interface GroupAboutProps {
   description: string | null;
@@ -22,8 +23,8 @@ export const GroupAbout = ({ description: initialDescription, createdAt, groupId
   // Get group data for notifications
   const { data: groupData } = useGroupNotifications(groupId);
   
-  // Fetch the latest description directly from the database with shorter staleTime and refetchInterval
-  const { data: latestDescription, isLoading: isLoadingDescription } = useQuery({
+  // Fetch the latest description directly from the database with aggressive refetching strategy
+  const { data: latestDescription, isLoading: isLoadingDescription, refetch } = useQuery({
     queryKey: ['group-description', groupId],
     queryFn: async () => {
       console.log("Fetching latest group description for:", groupId);
@@ -44,7 +45,23 @@ export const GroupAbout = ({ description: initialDescription, createdAt, groupId
     refetchOnWindowFocus: true,
     staleTime: 0, // Don't cache this data
     refetchInterval: 3000, // Refetch every 3 seconds to ensure fresh data
+    retry: 3,
+    retryDelay: 1000
   });
+
+  // Force a refresh when the component mounts to ensure we have fresh data
+  useEffect(() => {
+    // Initial fetch
+    refetch();
+    
+    // Set up regular refetching interval
+    const intervalId = setInterval(() => {
+      refetch();
+    }, 5000);
+    
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [refetch, groupId]);
   
   // Use the latest description from the database, or fall back to the prop if not loaded yet
   const currentDescription = isLoadingDescription ? initialDescription : latestDescription;
