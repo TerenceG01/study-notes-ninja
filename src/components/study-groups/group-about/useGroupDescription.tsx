@@ -27,6 +27,15 @@ export const useGroupDescription = (
       console.log("Updating description for group:", groupId);
       console.log("New description:", editedDescription);
       
+      // Force fetch current state before updating to ensure we're operating on latest data
+      const currentState = await supabase
+        .from('study_groups')
+        .select('description')
+        .eq('id', groupId)
+        .single();
+      
+      console.log("Current state before update:", currentState.data);
+      
       const { data, error } = await supabase
         .from('study_groups')
         .update({ description: editedDescription })
@@ -70,16 +79,22 @@ export const useGroupDescription = (
     onSuccess: () => {
       setIsEditing(false);
       
-      // Update both queries to ensure consistency
+      // Immediately update the cache with the new description
       queryClient.setQueryData(['group-description', groupId], editedDescription);
       
-      // Invalidate both queries to fetch fresh data
+      // Also invalidate both group queries to fetch fresh data
       queryClient.invalidateQueries({ 
         queryKey: ['study-group', groupId]
       });
       
       queryClient.invalidateQueries({ 
         queryKey: ['group-description', groupId]
+      });
+      
+      // Force refetch to ensure we have the latest data
+      queryClient.refetchQueries({
+        queryKey: ['group-description', groupId],
+        type: 'active',
       });
       
       toast.success("Group description updated");

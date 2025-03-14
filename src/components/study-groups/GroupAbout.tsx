@@ -6,7 +6,7 @@ import { AboutDescription } from "./group-about/AboutDescription";
 import { AboutDescriptionEditor } from "./group-about/AboutDescriptionEditor";
 import { useGroupNotifications } from "./group-about/useGroupNotifications";
 import { useGroupDescription } from "./group-about/useGroupDescription";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 interface GroupAboutProps {
@@ -18,12 +18,11 @@ interface GroupAboutProps {
 
 export const GroupAbout = ({ description: initialDescription, createdAt, groupId, userRole }: GroupAboutProps) => {
   const canEdit = userRole === 'admin' || userRole === 'moderator';
-  const queryClient = useQueryClient();
   
   // Get group data for notifications
   const { data: groupData } = useGroupNotifications(groupId);
   
-  // Fetch the latest description directly from the database
+  // Fetch the latest description directly from the database with shorter staleTime and refetchInterval
   const { data: latestDescription, isLoading: isLoadingDescription } = useQuery({
     queryKey: ['group-description', groupId],
     queryFn: async () => {
@@ -42,8 +41,9 @@ export const GroupAbout = ({ description: initialDescription, createdAt, groupId
       console.log("Latest description fetched:", data);
       return data.description;
     },
-    refetchOnWindowFocus: false,
-    staleTime: 0 // Don't cache this data
+    refetchOnWindowFocus: true,
+    staleTime: 0, // Don't cache this data
+    refetchInterval: 3000, // Refetch every 3 seconds to ensure fresh data
   });
   
   // Use the latest description from the database, or fall back to the prop if not loaded yet

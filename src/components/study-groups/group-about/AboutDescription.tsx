@@ -8,15 +8,13 @@ interface AboutDescriptionProps {
 }
 
 export const AboutDescription = ({ description, createdAt }: AboutDescriptionProps) => {
-  // Super simple display logic - if description is null, empty, or only whitespace, show "No description provided"
-  const displayText = !description || description.trim() === "" 
-    ? "No description provided." 
-    : description;
+  // Simpler and more reliable empty check
+  const isEmpty = description === null || description === "" || description.trim() === "";
   
   return (
     <>
       <p className="text-muted-foreground whitespace-pre-line">
-        {displayText}
+        {isEmpty ? "No description provided." : description}
       </p>
       <div className="flex items-center text-sm text-muted-foreground mt-4">
         <CalendarDays className="h-4 w-4 mr-2" />
