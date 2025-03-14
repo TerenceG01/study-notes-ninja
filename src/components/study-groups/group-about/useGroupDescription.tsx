@@ -67,7 +67,7 @@ export const useGroupDescription = (
         return { ...oldData, description: editedDescription };
       });
       
-      // Also invalidate the query to ensure fresh data on next fetch
+      // Always invalidate the query to force a refetch on next mount
       queryClient.invalidateQueries({ queryKey: ['study-group', groupId] });
       
       toast.success("Group description updated");

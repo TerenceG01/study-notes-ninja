@@ -21,6 +21,7 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
   
   // Update local state when prop changes
   useEffect(() => {
+    console.log("GroupAbout description prop changed:", description);
     setCurrentDescription(description);
   }, [description]);
   
@@ -44,8 +45,8 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
   } = useGroupDescription(groupId, currentDescription, groupData?.groupName);
 
   useEffect(() => {
-    console.log("GroupAbout rendered with description:", description);
-  }, [description]);
+    console.log("GroupAbout rendered with description:", currentDescription);
+  }, [currentDescription]);
 
   return (
     <Card>
