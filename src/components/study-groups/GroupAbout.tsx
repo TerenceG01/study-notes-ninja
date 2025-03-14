@@ -80,8 +80,9 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
         .map(member => {
           // Ensure member is defined and has user_id before accessing
           if (member && member.user_id) {
-            const userEmail = userEmails.users.find(user => user.id === member.user_id)?.email;
-            return userEmail;
+            // Need to properly type the userEmails.users array
+            const userEmailObj = userEmails?.users?.find(user => user.id === member.user_id);
+            return userEmailObj?.email;
           }
           return null;
         })
@@ -102,17 +103,18 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
       console.log("Updating description for group:", groupId);
       console.log("New description:", editedDescription);
       
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('study_groups')
         .update({ description: editedDescription })
-        .eq('id', groupId);
+        .eq('id', groupId)
+        .select("*");
       
       if (error) {
         console.error("Error updating description:", error);
         throw error;
       }
       
-      console.log("Description updated successfully");
+      console.log("Description updated successfully", data);
       
       // Get current user email
       const { data: { user } } = await supabase.auth.getUser();
@@ -139,10 +141,11 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
         }
       }
       
-      return true;
+      return data;
     },
     onSuccess: () => {
       setIsEditing(false);
+      // Update the local state as well
       queryClient.invalidateQueries({ queryKey: ['study-group', groupId] });
       toast.success("Group description updated");
     },
