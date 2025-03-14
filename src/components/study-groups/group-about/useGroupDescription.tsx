@@ -60,8 +60,16 @@ export const useGroupDescription = (
     },
     onSuccess: (data) => {
       setIsEditing(false);
-      // Make sure we have the updated description in the local state
+      
+      // Force update the cache with the new data
+      queryClient.setQueryData(['study-group', groupId], oldData => {
+        if (!oldData) return data[0];
+        return { ...oldData, description: editedDescription };
+      });
+      
+      // Also invalidate the query to ensure fresh data on next fetch
       queryClient.invalidateQueries({ queryKey: ['study-group', groupId] });
+      
       toast.success("Group description updated");
     },
     onError: (error) => {

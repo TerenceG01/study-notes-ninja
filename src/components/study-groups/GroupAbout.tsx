@@ -6,7 +6,7 @@ import { AboutDescription } from "./group-about/AboutDescription";
 import { AboutDescriptionEditor } from "./group-about/AboutDescriptionEditor";
 import { useGroupNotifications } from "./group-about/useGroupNotifications";
 import { useGroupDescription } from "./group-about/useGroupDescription";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface GroupAboutProps {
   description: string | null;
@@ -17,6 +17,12 @@ interface GroupAboutProps {
 
 export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupAboutProps) => {
   const canEdit = userRole === 'admin' || userRole === 'moderator';
+  const [currentDescription, setCurrentDescription] = useState(description);
+  
+  // Update local state when prop changes
+  useEffect(() => {
+    setCurrentDescription(description);
+  }, [description]);
   
   // Add null check for createdAt
   if (!createdAt) {
@@ -35,7 +41,7 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
     handleCancelEditing,
     handleSave,
     handleDescriptionChange
-  } = useGroupDescription(groupId, description, groupData?.groupName);
+  } = useGroupDescription(groupId, currentDescription, groupData?.groupName);
 
   useEffect(() => {
     console.log("GroupAbout rendered with description:", description);
@@ -63,7 +69,7 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
           />
         ) : (
           <AboutDescription
-            description={description}
+            description={currentDescription}
             createdAt={createdAt}
           />
         )}
