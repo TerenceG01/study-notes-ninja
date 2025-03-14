@@ -13,9 +13,11 @@ export const useGroupDescription = (
   const [editedDescription, setEditedDescription] = useState(initialDescription || "");
   const queryClient = useQueryClient();
 
-  // Update edited description when initialDescription changes and not editing
+  // Sync editedDescription when initialDescription changes and not editing
   useEffect(() => {
-    if (!isEditing && initialDescription !== editedDescription) {
+    // Only sync when not actively editing
+    if (!isEditing) {
+      console.log("Syncing edited description with initial:", initialDescription);
       setEditedDescription(initialDescription || "");
     }
   }, [initialDescription, isEditing]);
@@ -29,7 +31,7 @@ export const useGroupDescription = (
         .from('study_groups')
         .update({ description: editedDescription })
         .eq('id', groupId)
-        .select("*");
+        .select();
       
       if (error) {
         console.error("Error updating description:", error);
@@ -65,19 +67,13 @@ export const useGroupDescription = (
       
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       setIsEditing(false);
       
-      // Update the detailed study group data if it exists in cache
-      queryClient.setQueryData(['study-group', groupId], (oldData: any) => {
-        if (!oldData) return null;
-        return { ...oldData, description: editedDescription };
-      });
-      
-      // Update the description-specific query data directly with the new value
+      // Update both queries to ensure consistency
       queryClient.setQueryData(['group-description', groupId], editedDescription);
       
-      // Invalidate both queries to ensure consistency
+      // Invalidate both queries to fetch fresh data
       queryClient.invalidateQueries({ 
         queryKey: ['study-group', groupId]
       });
@@ -94,16 +90,26 @@ export const useGroupDescription = (
     }
   });
 
-  const handleStartEditing = () => setIsEditing(true);
+  const handleStartEditing = () => {
+    console.log("Starting edit with description:", initialDescription);
+    setIsEditing(true);
+  };
   
   const handleCancelEditing = () => {
+    console.log("Canceling edit, resetting to:", initialDescription);
     setEditedDescription(initialDescription || "");
     setIsEditing(false);
   };
   
-  const handleSave = () => updateDescriptionMutation.mutate();
+  const handleSave = () => {
+    console.log("Saving description:", editedDescription);
+    updateDescriptionMutation.mutate();
+  };
   
-  const handleDescriptionChange = (value: string) => setEditedDescription(value);
+  const handleDescriptionChange = (value: string) => {
+    console.log("Description changed to:", value);
+    setEditedDescription(value);
+  };
 
   return {
     isEditing,

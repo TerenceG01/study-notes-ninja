@@ -6,7 +6,6 @@ import { AboutDescription } from "./group-about/AboutDescription";
 import { AboutDescriptionEditor } from "./group-about/AboutDescriptionEditor";
 import { useGroupNotifications } from "./group-about/useGroupNotifications";
 import { useGroupDescription } from "./group-about/useGroupDescription";
-import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -17,7 +16,7 @@ interface GroupAboutProps {
   userRole?: string;
 }
 
-export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupAboutProps) => {
+export const GroupAbout = ({ description: initialDescription, createdAt, groupId, userRole }: GroupAboutProps) => {
   const canEdit = userRole === 'admin' || userRole === 'moderator';
   const queryClient = useQueryClient();
   
@@ -25,7 +24,7 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
   const { data: groupData } = useGroupNotifications(groupId);
   
   // Fetch the latest description directly from the database
-  const { data: latestDescription } = useQuery({
+  const { data: latestDescription, isLoading: isLoadingDescription } = useQuery({
     queryKey: ['group-description', groupId],
     queryFn: async () => {
       console.log("Fetching latest group description for:", groupId);
@@ -43,8 +42,12 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
       console.log("Latest description fetched:", data);
       return data.description;
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    staleTime: 0 // Don't cache this data
   });
+  
+  // Use the latest description from the database, or fall back to the prop if not loaded yet
+  const currentDescription = isLoadingDescription ? initialDescription : latestDescription;
   
   // Handle description editing state and mutations
   const {
@@ -55,15 +58,16 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
     handleCancelEditing,
     handleSave,
     handleDescriptionChange
-  } = useGroupDescription(groupId, latestDescription ?? description, groupData?.groupName);
-  
-  // Always show the latest description from the query, falling back to props if query hasn't loaded
-  const displayDescription = latestDescription !== undefined ? latestDescription : description;
-  
-  // Debug rendered description
-  useEffect(() => {
-    console.log("GroupAbout displaying description:", displayDescription);
-  }, [displayDescription]);
+  } = useGroupDescription(groupId, currentDescription, groupData?.groupName);
+
+  // Debug what's displayed
+  console.log("GroupAbout rendering with description:", {
+    initialDescription,
+    latestDescription,
+    currentDescription,
+    editedDescription,
+    isEditing
+  });
   
   // Add null check for createdAt
   if (!createdAt) {
@@ -92,7 +96,7 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
           />
         ) : (
           <AboutDescription
-            description={displayDescription}
+            description={currentDescription}
             createdAt={createdAt}
           />
         )}

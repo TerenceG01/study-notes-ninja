@@ -8,7 +8,7 @@ interface AboutDescriptionProps {
 }
 
 export const AboutDescription = ({ description, createdAt }: AboutDescriptionProps) => {
-  // Simplified display logic - if description is null, empty, or only whitespace, show "No description provided"
+  // Super simple display logic - if description is null, empty, or only whitespace, show "No description provided"
   const displayText = !description || description.trim() === "" 
     ? "No description provided." 
     : description;
