@@ -12,3 +12,6 @@ verify_jwt = true
 
 [summarize-note]
 verify_jwt = true
+
+[study-group-notifications]
+verify_jwt = true

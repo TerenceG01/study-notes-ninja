@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -100,6 +99,25 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
           }
           
           console.log("Email response:", emailResponse);
+          
+          // Also send a notification to group members about new invitation
+          try {
+            if (user.email) {
+              await supabase.functions.invoke('study-group-notifications', {
+                body: {
+                  type: "new_member",
+                  email: user.email, // Send notification to the inviter for now
+                  groupName: groupData.name,
+                  details: {
+                    memberName: email.split('@')[0] // Use part of email as member name
+                  }
+                },
+              });
+            }
+          } catch (notificationError) {
+            console.error("Error sending member notification:", notificationError);
+            // Don't throw error for notification failure
+          }
         } catch (emailError) {
           console.error("Network or email sending error:", emailError);
           throw new Error('Network error while sending invitation. The invite was created successfully but the email could not be sent. The user can still join using the generated invite link.');

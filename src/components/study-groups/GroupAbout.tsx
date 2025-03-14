@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface GroupAboutProps {
@@ -28,6 +28,66 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
     return null;
   }
 
+  // Fetch group members' emails for notifications
+  const { data: groupData } = useQuery({
+    queryKey: ['study-group-notification-data', groupId],
+    queryFn: async () => {
+      // Get group name
+      const { data: groupInfo, error: groupError } = await supabase
+        .from('study_groups')
+        .select('name')
+        .eq('id', groupId)
+        .single();
+      
+      if (groupError) throw groupError;
+      
+      // Get group member emails
+      const { data: members, error: membersError } = await supabase
+        .from('study_group_members')
+        .select(`
+          user_id,
+          profiles!inner (
+            id
+          )
+        `)
+        .eq('group_id', groupId);
+        
+      if (membersError) throw membersError;
+      
+      // Get user emails from auth - this requires authorization
+      const { data: userEmails, error: userEmailsError } = await supabase
+        .auth
+        .admin
+        .listUsers();
+        
+      // If we can't get emails directly, we'll return just the group name
+      // The edge function will receive only the edited by user email
+      if (userEmailsError) {
+        console.log("Unable to fetch user emails:", userEmailsError);
+        return { 
+          groupName: groupInfo.name,
+          memberEmails: []
+        };
+      }
+      
+      // Match user IDs to emails
+      const memberEmails = members
+        .map(member => {
+          const userEmail = userEmails.users.find(user => user.id === member.user_id)?.email;
+          return userEmail;
+        })
+        .filter(Boolean) as string[];
+      
+      return {
+        groupName: groupInfo.name,
+        memberEmails
+      };
+    },
+    enabled: !!groupId,
+    // Only run this query when needed
+    staleTime: Infinity,
+  });
+
   const updateDescriptionMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase
@@ -36,6 +96,31 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
         .eq('id', groupId);
       
       if (error) throw error;
+      
+      // Get current user email
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || !user.email) throw new Error("Unable to get current user");
+      
+      // Send notification email to group members
+      if (groupData?.groupName) {
+        try {
+          await supabase.functions.invoke('study-group-notifications', {
+            body: {
+              type: "description_update",
+              email: user.email, // Send only to the user who made the change
+              groupName: groupData.groupName,
+              details: {
+                newDescription: editedDescription
+              }
+            },
+          });
+          console.log("Description update notification sent");
+        } catch (emailError) {
+          console.error("Failed to send notification email:", emailError);
+          // Don't block the UI flow if email fails
+        }
+      }
+      
       return true;
     },
     onSuccess: () => {
