@@ -61,18 +61,17 @@ export const useGroupDescription = (
     onSuccess: () => {
       setIsEditing(false);
       
-      // Update study-group query cache
+      // Immediately update both caches with the new description
       queryClient.setQueryData(['study-group', groupId], (oldData: any) => {
         if (!oldData) return null;
         return { ...oldData, description: editedDescription };
       });
       
-      // Update group-description query cache
       queryClient.setQueryData(['group-description', groupId], {
         description: editedDescription
       });
       
-      // Invalidate both queries to ensure consistency
+      // Also invalidate the queries to ensure consistency
       queryClient.invalidateQueries({ 
         queryKey: ['study-group', groupId]
       });
@@ -90,12 +89,20 @@ export const useGroupDescription = (
   });
 
   const handleStartEditing = () => setIsEditing(true);
+  
   const handleCancelEditing = () => {
     setEditedDescription(initialDescription || "");
     setIsEditing(false);
   };
+  
   const handleSave = () => updateDescriptionMutation.mutate();
+  
   const handleDescriptionChange = (value: string) => setEditedDescription(value);
+
+  // Update local state when initialDescription prop changes
+  if (initialDescription !== null && initialDescription !== editedDescription && !isEditing) {
+    setEditedDescription(initialDescription);
+  }
 
   return {
     isEditing,

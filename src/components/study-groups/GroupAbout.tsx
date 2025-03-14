@@ -19,7 +19,10 @@ interface GroupAboutProps {
 
 export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupAboutProps) => {
   const canEdit = userRole === 'admin' || userRole === 'moderator';
-  const [currentDescription, setCurrentDescription] = useState(description);
+  const [currentDescription, setCurrentDescription] = useState<string | null>(description);
+  
+  // Get group data for notifications
+  const { data: groupData } = useGroupNotifications(groupId);
   
   // Fetch the latest description directly from the database
   const { data: latestGroupData } = useQuery({
@@ -39,32 +42,9 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
       
       console.log("Latest description fetched:", data);
       return data;
-    }
+    },
+    refetchOnWindowFocus: false
   });
-  
-  // Handle the success case from query data updates
-  useEffect(() => {
-    if (latestGroupData?.description !== undefined) {
-      console.log("Setting description from query:", latestGroupData.description);
-      setCurrentDescription(latestGroupData.description);
-    }
-  }, [latestGroupData]);
-  
-  // Update local state when prop changes
-  useEffect(() => {
-    console.log("GroupAbout description prop changed:", description);
-    if (description !== currentDescription) {
-      setCurrentDescription(description);
-    }
-  }, [description]);
-  
-  // Add null check for createdAt
-  if (!createdAt) {
-    return null;
-  }
-
-  // Get group data for notifications
-  const { data: groupData } = useGroupNotifications(groupId);
   
   // Handle description editing state and mutations
   const {
@@ -76,10 +56,32 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
     handleSave,
     handleDescriptionChange
   } = useGroupDescription(groupId, currentDescription, groupData?.groupName);
-
+  
+  // Update from query data
+  useEffect(() => {
+    if (latestGroupData?.description !== undefined) {
+      console.log("Setting description from query:", latestGroupData.description);
+      setCurrentDescription(latestGroupData.description);
+    }
+  }, [latestGroupData]);
+  
+  // Update from props when they change
+  useEffect(() => {
+    console.log("GroupAbout description prop changed:", description);
+    if (description !== currentDescription) {
+      setCurrentDescription(description);
+    }
+  }, [description]);
+  
+  // Debug rendered description
   useEffect(() => {
     console.log("GroupAbout rendered with description:", currentDescription);
   }, [currentDescription]);
+  
+  // Add null check for createdAt
+  if (!createdAt) {
+    return null;
+  }
 
   return (
     <Card>

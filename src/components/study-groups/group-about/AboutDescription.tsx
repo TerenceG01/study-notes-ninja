@@ -8,8 +8,10 @@ interface AboutDescriptionProps {
 }
 
 export const AboutDescription = ({ description, createdAt }: AboutDescriptionProps) => {
-  // Only show "No description provided" when description is null or empty string
-  const displayText = description?.trim() ? description : "No description provided.";
+  // Only show "No description provided" when description is null or empty string after trimming
+  const displayText = description && description.trim() !== "" 
+    ? description 
+    : "No description provided.";
   
   return (
     <>
