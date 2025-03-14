@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Plus, Calendar as CalendarIcon, Trash2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -125,31 +126,31 @@ export function GroupReminders({ groupId, userRole }: GroupRemindersProps) {
               e.preventDefault();
               createReminder.mutate();
             }}
-            className="flex flex-col sm:flex-row gap-2 mb-4"
+            className="flex flex-col gap-3"
           >
-            <div className="flex-1">
-              <Input
-                placeholder="Add a new reminder..."
+            <div className="w-full">
+              <Textarea
+                placeholder="Add a new reminder or important date..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full"
+                className="w-full min-h-[80px] resize-y"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 justify-end">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     className={cn(
-                      "justify-start text-left font-normal w-[100px] sm:w-[90px]",
+                      "justify-start text-left font-normal w-[120px]",
                       !date && "text-muted-foreground"
                     )}
                   >
-                    <CalendarIcon className="mr-1 h-4 w-4" />
-                    {date ? format(date, "MMM d") : <span>Date</span>}
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? format(date, "MMM d") : <span>Select date</span>}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent className="w-auto p-0" align="end">
                   <Calendar
                     mode="single"
                     selected={date}
@@ -158,23 +159,24 @@ export function GroupReminders({ groupId, userRole }: GroupRemindersProps) {
                   />
                 </PopoverContent>
               </Popover>
-              <Button type="submit" size="icon" className="shrink-0">
-                <Plus className="h-4 w-4" />
+              <Button type="submit" className="shrink-0">
+                <Plus className="h-4 w-4 mr-2" />
+                Add
               </Button>
             </div>
           </form>
         )}
 
-        <div className="space-y-2">
+        <div className="space-y-3 mt-2">
           {reminders.map((reminder) => (
             <div
               key={reminder.id}
-              className="flex items-center justify-between p-2 rounded-md bg-muted/50"
+              className="flex items-center justify-between p-3 rounded-md bg-muted/50"
             >
               <div className="flex-1 min-w-0">
-                <p className="font-medium truncate">{reminder.title}</p>
+                <p className="font-medium">{reminder.title}</p>
                 <p className="text-sm text-muted-foreground">
-                  {format(new Date(reminder.due_date), "MMM d, yyyy")}
+                  {format(new Date(reminder.due_date), "MMMM d, yyyy")}
                 </p>
               </div>
               {userRole && (
@@ -190,7 +192,7 @@ export function GroupReminders({ groupId, userRole }: GroupRemindersProps) {
             </div>
           ))}
           {!isLoading && reminders.length === 0 && (
-            <p className="text-sm text-muted-foreground text-center py-4">
+            <p className="text-sm text-muted-foreground text-center py-6">
               No reminders yet
             </p>
           )}

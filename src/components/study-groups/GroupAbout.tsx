@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarDays, Edit2, Save, X } from "lucide-react";
@@ -16,6 +15,11 @@ interface GroupAboutProps {
   userRole?: string;
 }
 
+interface GroupData {
+  groupName: string;
+  memberEmails: string[];
+}
+
 export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupAboutProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedDescription, setEditedDescription] = useState(description || "");
@@ -29,7 +33,7 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
   }
 
   // Fetch group members' emails for notifications
-  const { data: groupData } = useQuery({
+  const { data: groupData } = useQuery<GroupData>({
     queryKey: ['study-group-notification-data', groupId],
     queryFn: async () => {
       // Get group name
@@ -161,7 +165,7 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
               value={editedDescription} 
               onChange={(e) => setEditedDescription(e.target.value)}
               placeholder="Add a description for your study group..."
-              className="min-h-[100px]"
+              className="min-h-[120px] resize-y"
             />
             <div className="flex justify-end gap-2">
               <Button 
