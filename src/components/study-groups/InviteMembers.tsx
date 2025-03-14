@@ -80,6 +80,9 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
             description: "Please wait while we send the invitation email.",
           }).id;
           
+          // Add a timeout to make sure the invite is registered in the database
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
           const emailResponse = await supabase.functions.invoke('send-group-invite', {
             body: {
               email,
@@ -95,9 +98,11 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
             console.error("Error sending invitation email:", emailResponse.error);
             throw new Error('Failed to send invitation email. Please try again later.');
           }
+          
+          console.log("Email response:", emailResponse);
         } catch (emailError) {
           console.error("Network or email sending error:", emailError);
-          throw new Error('Network error while sending invitation. Please check your connection and try again.');
+          throw new Error('Network error while sending invitation. The invite was created successfully but the email could not be sent. The user can still join using the generated invite link.');
         }
       }
 

@@ -25,14 +25,24 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { email, inviteCode, groupName }: InviteEmailRequest = await req.json();
     
-    // Construct the invite URL using the request origin
-    const origin = new URL(req.url).origin;
-    // Remove the /functions/send-group-invite part from the URL
-    const baseOrigin = origin.replace(/\/functions\/send-group-invite$/, "");
-    const inviteUrl = `${baseOrigin}/study-groups/join/${inviteCode}`;
+    // Get the frontend URL from environment or request
+    // Extract the frontend origin from the request's referrer or origin header
+    const referrer = req.headers.get("referer");
+    const originHeader = req.headers.get("origin");
+    
+    // Prefer the referrer, fall back to origin header, then to a default
+    let frontendOrigin = referrer 
+      ? new URL(referrer).origin 
+      : originHeader 
+        ? originHeader 
+        : "https://your-app-url.com"; // Fallback default
+    
+    const inviteUrl = `${frontendOrigin}/study-groups/join/${inviteCode}`;
 
     console.log("Sending invite email to:", email, "for group:", groupName);
+    console.log("Frontend origin used:", frontendOrigin);
     console.log("Invite URL:", inviteUrl);
+    console.log("Request headers:", Object.fromEntries(req.headers.entries()));
 
     const emailResponse = await resend.emails.send({
       from: "Study Groups <onboarding@resend.dev>",
