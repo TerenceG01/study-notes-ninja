@@ -12,6 +12,8 @@ import * as z from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ForgotPasswordForm } from "@/components/auth/ForgotPasswordForm";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -28,6 +30,7 @@ export function AuthDialog({
   defaultTab?: "sign-in" | "sign-up";
 }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,6 +67,24 @@ export function AuthDialog({
       setIsLoading(false);
     }
   };
+
+  const handleBackToSignIn = () => {
+    setShowForgotPassword(false);
+  };
+
+  // If showing forgot password form, render that instead of the regular tabs
+  if (showForgotPassword) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Reset Your Password</DialogTitle>
+          </DialogHeader>
+          <ForgotPasswordForm onBackToSignIn={handleBackToSignIn} />
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -105,6 +126,16 @@ export function AuthDialog({
                     </FormItem>
                   )}
                 />
+                <div className="flex justify-end">
+                  <Button 
+                    type="button" 
+                    variant="link" 
+                    className="p-0 h-auto text-sm text-primary"
+                    onClick={() => setShowForgotPassword(true)}
+                  >
+                    Forgot password?
+                  </Button>
+                </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Signing in..." : "Sign In"}
                 </Button>

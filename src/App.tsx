@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,6 +12,7 @@ import FlashcardDeck from "./pages/FlashcardDeck";
 import StudyGroups from "./pages/StudyGroups";
 import StudyGroupDetails from "./pages/StudyGroupDetails";
 import JoinStudyGroup from "./pages/JoinStudyGroup";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "./contexts/AuthContext";
 import { MobileNavigationBar } from "./components/navigation/MobileNavigationBar";
@@ -90,6 +92,7 @@ const App = () => (
             <Sonner />
             <Routes>
               <Route path="/" element={<MainLayout><Index /></MainLayout>} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route
                 path="/notes"
                 element={<ProtectedRoute><AppLayout><Notes /></AppLayout></ProtectedRoute>}
