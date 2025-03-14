@@ -40,11 +40,16 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
       console.log("Latest description fetched:", data);
       return data;
     },
-    onSuccess: (data) => {
-      console.log("Setting description from query:", data?.description);
-      setCurrentDescription(data?.description || null);
-    }
+    // Move the success callback handling outside of the query options
   });
+  
+  // Handle the success case from query data updates
+  useEffect(() => {
+    if (latestGroupData?.description !== undefined) {
+      console.log("Setting description from query:", latestGroupData.description);
+      setCurrentDescription(latestGroupData.description);
+    }
+  }, [latestGroupData]);
   
   // Update local state when prop changes
   useEffect(() => {
