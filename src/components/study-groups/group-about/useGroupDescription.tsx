@@ -61,14 +61,17 @@ export const useGroupDescription = (
     onSuccess: (data) => {
       setIsEditing(false);
       
-      // Force update the cache with the new data
+      // Important: Update the cache with the new description
       queryClient.setQueryData(['study-group', groupId], (oldData: any) => {
-        if (!oldData) return data?.[0] || null;
+        if (!oldData) return null;
         return { ...oldData, description: editedDescription };
       });
       
-      // Always invalidate the query to force a refetch on next mount
-      queryClient.invalidateQueries({ queryKey: ['study-group', groupId] });
+      // Explicitly invalidate the query to force a refetch
+      queryClient.invalidateQueries({ 
+        queryKey: ['study-group', groupId],
+        exact: true
+      });
       
       toast.success("Group description updated");
     },

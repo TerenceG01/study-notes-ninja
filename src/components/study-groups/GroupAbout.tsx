@@ -7,6 +7,8 @@ import { AboutDescriptionEditor } from "./group-about/AboutDescriptionEditor";
 import { useGroupNotifications } from "./group-about/useGroupNotifications";
 import { useGroupDescription } from "./group-about/useGroupDescription";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface GroupAboutProps {
   description: string | null;
@@ -18,6 +20,31 @@ interface GroupAboutProps {
 export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupAboutProps) => {
   const canEdit = userRole === 'admin' || userRole === 'moderator';
   const [currentDescription, setCurrentDescription] = useState(description);
+  
+  // Fetch the latest description directly from the database
+  const { data: latestGroupData } = useQuery({
+    queryKey: ['group-description', groupId],
+    queryFn: async () => {
+      console.log("Fetching latest group description for:", groupId);
+      const { data, error } = await supabase
+        .from('study_groups')
+        .select('description')
+        .eq('id', groupId)
+        .single();
+        
+      if (error) {
+        console.error("Error fetching description:", error);
+        throw error;
+      }
+      
+      console.log("Latest description fetched:", data);
+      return data;
+    },
+    onSuccess: (data) => {
+      console.log("Setting description from query:", data?.description);
+      setCurrentDescription(data?.description || null);
+    }
+  });
   
   // Update local state when prop changes
   useEffect(() => {
