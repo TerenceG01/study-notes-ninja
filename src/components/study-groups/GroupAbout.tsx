@@ -39,8 +39,7 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
       
       console.log("Latest description fetched:", data);
       return data;
-    },
-    // Move the success callback handling outside of the query options
+    }
   });
   
   // Handle the success case from query data updates
@@ -54,7 +53,9 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
   // Update local state when prop changes
   useEffect(() => {
     console.log("GroupAbout description prop changed:", description);
-    setCurrentDescription(description);
+    if (description !== currentDescription) {
+      setCurrentDescription(description);
+    }
   }, [description]);
   
   // Add null check for createdAt

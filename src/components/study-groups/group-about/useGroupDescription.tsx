@@ -58,17 +58,16 @@ export const useGroupDescription = (
       
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       setIsEditing(false);
       
-      // Update both study-group and group-description query caches
-      // Update main study group data
+      // Update study-group query cache
       queryClient.setQueryData(['study-group', groupId], (oldData: any) => {
         if (!oldData) return null;
         return { ...oldData, description: editedDescription };
       });
       
-      // Update the specific description query
+      // Update group-description query cache
       queryClient.setQueryData(['group-description', groupId], {
         description: editedDescription
       });
