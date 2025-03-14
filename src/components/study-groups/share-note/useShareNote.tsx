@@ -118,8 +118,6 @@ export const useShareNote = (groupId: string) => {
     },
     onSuccess: () => {
       invalidateQueries();
-      setOpen(false);
-      resetPointerEvents();
       toast({
         title: "Note shared",
         description: "The note has been shared with the group.",
@@ -130,6 +128,50 @@ export const useShareNote = (groupId: string) => {
       toast({
         variant: "destructive",
         title: "Error sharing note",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+      });
+      resetPointerEvents();
+    },
+  });
+
+  // Share multiple notes mutation
+  const shareMultipleNotesMutation = useMutation({
+    mutationFn: async (noteIds: string[]) => {
+      if (!groupId || !user?.id || noteIds.length === 0) {
+        throw new Error('Cannot share notes: Missing required data');
+      }
+
+      const currentMaxOrder = (maxOrder || 0);
+      
+      const insertData = noteIds.map((noteId, index) => ({
+        group_id: groupId,
+        note_id: noteId,
+        shared_by: user.id,
+        display_order: currentMaxOrder + index + 1,
+      }));
+      
+      const { data, error } = await supabase
+        .from('study_group_notes')
+        .insert(insertData)
+        .select();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (_, variables) => {
+      invalidateQueries();
+      setOpen(false);
+      resetPointerEvents();
+      toast({
+        title: "Notes shared",
+        description: `${variables.length} notes have been shared with the group.`,
+      });
+    },
+    onError: (error) => {
+      console.error('Error sharing multiple notes:', error);
+      toast({
+        variant: "destructive",
+        title: "Error sharing notes",
         description: error instanceof Error ? error.message : "An unknown error occurred",
       });
       resetPointerEvents();
@@ -184,6 +226,19 @@ export const useShareNote = (groupId: string) => {
     }
   };
 
+  const handleShareMultiple = (noteIds: string[]) => {
+    // Filter out already shared notes
+    const unsharedNoteIds = noteIds.filter(id => !sharedNotes?.includes(id));
+    if (unsharedNoteIds.length === 0) {
+      toast({
+        title: "No new notes to share",
+        description: "All selected notes are already shared with the group."
+      });
+      return;
+    }
+    shareMultipleNotesMutation.mutate(unsharedNoteIds);
+  };
+
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
     if (!newOpen) {
@@ -197,8 +252,9 @@ export const useShareNote = (groupId: string) => {
     open,
     loadingNotes,
     loadingSharedNotes,
-    isPending: shareNoteMutation.isPending || unshareNoteMutation.isPending,
+    isPending: shareNoteMutation.isPending || unshareNoteMutation.isPending || shareMultipleNotesMutation.isPending,
     handleShareToggle,
+    handleShareMultiple,
     handleOpenChange,
     setOpen,
     isDisabled: !groupId
