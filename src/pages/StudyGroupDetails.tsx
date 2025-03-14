@@ -1,4 +1,3 @@
-
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -43,7 +42,6 @@ const StudyGroupDetails = () => {
   const sidebarIsOpen = state === "expanded";
   const isMobile = useIsMobile();
 
-  // Debug logging
   useEffect(() => {
     console.log("StudyGroupDetails mounted with id:", id);
   }, [id]);
@@ -150,7 +148,9 @@ const StudyGroupDetails = () => {
             <div>
               <GroupAbout 
                 description={studyGroup.description} 
-                createdAt={studyGroup.created_at} 
+                createdAt={studyGroup.created_at}
+                groupId={studyGroup.id}
+                userRole={userRole}
               />
             </div>
 
@@ -162,7 +162,6 @@ const StudyGroupDetails = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {/* Key added to force re-render when the ID changes */}
                 <SharedNotes key={`shared-notes-${id}`} groupId={studyGroup.id} />
               </CardContent>
             </Card>
