@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -12,6 +12,13 @@ export const useGroupDescription = (
   const [isEditing, setIsEditing] = useState(false);
   const [editedDescription, setEditedDescription] = useState(initialDescription || "");
   const queryClient = useQueryClient();
+
+  // Update edited description when initialDescription changes and not editing
+  useEffect(() => {
+    if (!isEditing && initialDescription !== editedDescription) {
+      setEditedDescription(initialDescription || "");
+    }
+  }, [initialDescription, isEditing]);
 
   const updateDescriptionMutation = useMutation({
     mutationFn: async () => {
@@ -58,20 +65,19 @@ export const useGroupDescription = (
       
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setIsEditing(false);
       
-      // Immediately update both caches with the new description
+      // Update the detailed study group data if it exists in cache
       queryClient.setQueryData(['study-group', groupId], (oldData: any) => {
         if (!oldData) return null;
         return { ...oldData, description: editedDescription };
       });
       
-      queryClient.setQueryData(['group-description', groupId], {
-        description: editedDescription
-      });
+      // Update the description-specific query data directly with the new value
+      queryClient.setQueryData(['group-description', groupId], editedDescription);
       
-      // Also invalidate the queries to ensure consistency
+      // Invalidate both queries to ensure consistency
       queryClient.invalidateQueries({ 
         queryKey: ['study-group', groupId]
       });
@@ -98,11 +104,6 @@ export const useGroupDescription = (
   const handleSave = () => updateDescriptionMutation.mutate();
   
   const handleDescriptionChange = (value: string) => setEditedDescription(value);
-
-  // Update local state when initialDescription prop changes
-  if (initialDescription !== null && initialDescription !== editedDescription && !isEditing) {
-    setEditedDescription(initialDescription);
-  }
 
   return {
     isEditing,
