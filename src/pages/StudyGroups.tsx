@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -5,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, BookOpen, Users } from "lucide-react";
 import { CreateStudyGroupForm } from "@/components/study-groups/CreateStudyGroupForm";
 import { EmptyGroupState } from "@/components/study-groups/EmptyGroupState";
 import { StudyGroupCard } from "@/components/study-groups/StudyGroupCard";
@@ -88,15 +89,21 @@ const StudyGroups = () => {
     )}>
       <ResponsiveContainer withPadding={!isMobile}>
         <div className="flex flex-col h-full overflow-hidden">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-3">
             <div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 text-primary">Study Groups</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground">Collaborate with other students in study groups</p>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 text-primary flex items-center gap-2">
+                <Users className="h-6 w-6 md:h-7 md:w-7 text-primary" />
+                Study Groups
+              </h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Collaborate with other students in interactive study groups
+              </p>
             </div>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger asChild>
-                <Button className="flex items-center gap-1 sm:gap-2 text-sm h-8 sm:h-9 px-2 sm:px-3 self-start">
-                  <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <Button className="flex items-center gap-2 text-sm h-9 sm:h-10 px-3 sm:px-4 self-start 
+                               hover:scale-105 transition-transform duration-200">
+                  <Plus className="h-4 w-4" />
                   Create Group
                 </Button>
               </DialogTrigger>
@@ -111,7 +118,10 @@ const StudyGroups = () => {
 
           {isLoading ? (
             <div className="flex justify-center items-center py-8 sm:py-12">
-              <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-muted-foreground" />
+              <div className="flex flex-col items-center gap-3">
+                <Loader2 className="h-7 w-7 sm:h-8 sm:w-8 animate-spin text-primary" />
+                <p className="text-sm text-muted-foreground animate-pulse">Loading your study groups...</p>
+              </div>
             </div>
           ) : error ? (
             <div className="flex flex-col items-center justify-center py-8 sm:py-12 text-center">
@@ -123,7 +133,7 @@ const StudyGroups = () => {
           ) : !studyGroups || studyGroups.length === 0 ? (
             <EmptyGroupState onCreateClick={() => setIsOpen(true)} />
           ) : (
-            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 overflow-y-auto pb-6">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 overflow-y-auto pb-8 animate-fade-in">
               {studyGroups.map(group => (
                 <StudyGroupCard 
                   key={group.id} 

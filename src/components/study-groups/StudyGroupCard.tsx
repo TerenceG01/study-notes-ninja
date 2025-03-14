@@ -1,8 +1,9 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, BookOpen, Calendar } from "lucide-react";
+import { Users, BookOpen, Calendar, Book } from "lucide-react";
 import { format } from "date-fns";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "@/components/ui/badge";
 
 interface StudyGroup {
   id: string;
@@ -24,36 +25,36 @@ export const StudyGroupCard = ({ group, onClick }: StudyGroupCardProps) => {
   
   return (
     <Card
-      className="group cursor-pointer hover:bg-muted/50 transition-colors duration-200 h-full flex flex-col"
+      className="group cursor-pointer hover:bg-muted/50 transition-all duration-300 h-full flex flex-col 
+                hover:shadow-md hover:-translate-y-1 border-muted"
       onClick={onClick}
     >
-      <CardHeader className={isMobile ? "p-3" : undefined}>
-        <div className="flex flex-col gap-1">
-          <CardTitle className={`flex items-start justify-between gap-2 ${isMobile ? "text-base" : ""}`}>
-            <span className="font-semibold text-primary line-clamp-2">{group.name}</span>
-          </CardTitle>
-          <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-xs font-normal shrink-0 self-start">
+      <CardHeader className={`pb-2 ${isMobile ? "p-4" : undefined}`}>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-start justify-between gap-2">
+            <CardTitle className={`text-primary line-clamp-2 ${isMobile ? "text-base" : ""}`}>
+              {group.name}
+            </CardTitle>
+          </div>
+          <Badge variant="outline" className="bg-primary/10 text-primary px-2 py-0.5 w-fit hover:bg-primary/20">
+            <BookOpen className="h-3 w-3 mr-1" />
             {group.subject}
-          </span>
+          </Badge>
         </div>
-        <CardDescription className={`line-clamp-${isMobile ? "1" : "2"} text-xs sm:text-sm`}>
+        <CardDescription className={`line-clamp-${isMobile ? "2" : "3"} text-xs sm:text-sm mt-1`}>
           {group.description || "No description provided"}
         </CardDescription>
       </CardHeader>
-      <CardContent className={`${isMobile ? "p-3 pt-0" : ""} mt-auto`}>
-        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs">
+      <CardContent className={`${isMobile ? "p-4 pt-0" : "pt-0"} mt-auto`}>
+        <div className="flex justify-between items-center gap-2 text-xs border-t border-border/50 pt-3 mt-2">
           <div className="flex items-center gap-1 text-muted-foreground">
-            <Users className="h-3 w-3" />
-            <span>{group.member_count ?? 0}</span>
-            <span className="hidden sm:inline">Members</span>
+            <Users className="h-3.5 w-3.5" />
+            <span className="font-medium">{group.member_count ?? 0}</span>
+            <span className="hidden sm:inline">member{(group.member_count !== 1) ? 's' : ''}</span>
           </div>
           <div className="flex items-center gap-1 text-muted-foreground">
-            <BookOpen className="h-3 w-3" />
-            <span className="hidden sm:inline">Notes</span>
-          </div>
-          <div className="flex items-center gap-1 text-muted-foreground ml-auto">
-            <Calendar className="h-3 w-3" />
-            <span>{format(new Date(group.created_at), isMobile ? 'MM/dd' : 'MMM d, yyyy')}</span>
+            <Calendar className="h-3.5 w-3.5" />
+            <span>{format(new Date(group.created_at), isMobile ? 'MM/dd/yy' : 'MMM d, yyyy')}</span>
           </div>
         </div>
       </CardContent>

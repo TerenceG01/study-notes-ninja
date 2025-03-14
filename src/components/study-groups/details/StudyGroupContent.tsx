@@ -6,6 +6,7 @@ import { GroupReminders } from "@/components/study-groups/GroupReminders";
 import { NotificationSettings } from "@/components/study-groups/NotificationSettings";
 import { SharedNotes } from "@/components/study-groups/SharedNotes";
 import { InviteMembers } from "@/components/study-groups/InviteMembers";
+import { BookOpen, Users, Bell } from "lucide-react";
 
 interface StudyGroup {
   id: string;
@@ -45,7 +46,7 @@ export const StudyGroupContent = ({
   console.log("Study group data in content:", studyGroup);
 
   return (
-    <div>
+    <div className="space-y-6 animate-fade-in">
       <GroupHeader 
         name={studyGroup.name} 
         subject={studyGroup.subject} 
@@ -53,13 +54,16 @@ export const StudyGroupContent = ({
         groupId={studyGroup.id}
       />
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="md:col-span-2 space-y-4">
-          <Card>
+      <div className="grid gap-6 md:grid-cols-3">
+        <div className="md:col-span-2 space-y-6">
+          <Card className="border-primary/10 shadow-sm">
             <CardHeader className="pb-3">
-              <CardTitle>Shared Notes</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-primary" />
+                Shared Notes
+              </CardTitle>
               <CardDescription>
-                Notes shared by group members
+                Notes shared by group members for collaborative studying
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -68,9 +72,12 @@ export const StudyGroupContent = ({
           </Card>
 
           {userRole && (
-            <Card>
+            <Card className="border-primary/10">
               <CardHeader className="pb-3">
-                <CardTitle>Invite Members</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-primary" />
+                  Invite Members
+                </CardTitle>
                 <CardDescription>
                   Invite other students to join this study group
                 </CardDescription>
@@ -82,21 +89,43 @@ export const StudyGroupContent = ({
           )}
         </div>
 
-        <div className="space-y-4">
-          <div>
-            <GroupMembersList members={members || []} />
-          </div>
-          <div>
-            <GroupReminders groupId={studyGroup.id} userRole={userRole} />
-          </div>
+        <div className="space-y-6">
+          <Card className="border-primary/10">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-medium flex items-center gap-2">
+                <Users className="h-4 w-4 text-primary" />
+                Group Members
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <GroupMembersList members={members || []} />
+            </CardContent>
+          </Card>
+          
+          <Card className="border-primary/10">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-medium flex items-center gap-2">
+                <Bell className="h-4 w-4 text-primary" />
+                Reminders
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <GroupReminders groupId={studyGroup.id} userRole={userRole} />
+            </CardContent>
+          </Card>
           
           {isAdmin && (
-            <div>
-              <NotificationSettings 
-                groupId={studyGroup.id} 
-                initialEnabled={studyGroup.notification_enabled} 
-              />
-            </div>
+            <Card className="border-primary/10">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base font-medium">Settings</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <NotificationSettings 
+                  groupId={studyGroup.id} 
+                  initialEnabled={studyGroup.notification_enabled} 
+                />
+              </CardContent>
+            </Card>
           )}
         </div>
       </div>
