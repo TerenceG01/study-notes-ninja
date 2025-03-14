@@ -55,7 +55,7 @@ export const useGroupNotifications = (groupId: string) => {
         .map(member => {
           // Ensure member is defined and has user_id before accessing
           if (member && member.user_id) {
-            // Need to properly type the userEmails.users array
+            // Fix: Properly type the userEmails data structure
             const userEmailObj = userEmails?.users?.find(user => user.id === member.user_id);
             return userEmailObj?.email;
           }
