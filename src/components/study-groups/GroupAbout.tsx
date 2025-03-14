@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarDays, Edit2, Save, X } from "lucide-react";
@@ -77,8 +78,12 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
       // Match user IDs to emails
       const memberEmails = members
         .map(member => {
-          const userEmail = userEmails.users.find(user => user.id === member.user_id)?.email;
-          return userEmail;
+          // Ensure member is defined and has user_id before accessing
+          if (member && member.user_id) {
+            const userEmail = userEmails.users.find(user => user.id === member.user_id)?.email;
+            return userEmail;
+          }
+          return null;
         })
         .filter(Boolean) as string[];
       
@@ -94,12 +99,20 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
 
   const updateDescriptionMutation = useMutation({
     mutationFn: async () => {
+      console.log("Updating description for group:", groupId);
+      console.log("New description:", editedDescription);
+      
       const { error } = await supabase
         .from('study_groups')
         .update({ description: editedDescription })
         .eq('id', groupId);
       
-      if (error) throw error;
+      if (error) {
+        console.error("Error updating description:", error);
+        throw error;
+      }
+      
+      console.log("Description updated successfully");
       
       // Get current user email
       const { data: { user } } = await supabase.auth.getUser();
@@ -134,6 +147,7 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
       toast.success("Group description updated");
     },
     onError: (error) => {
+      console.error("Mutation error:", error);
       toast.error("Failed to update description: " + (error instanceof Error ? error.message : "Unknown error"));
     }
   });
@@ -146,6 +160,9 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
     setEditedDescription(description || "");
     setIsEditing(false);
   };
+
+  console.log("Rendering GroupAbout with description:", description);
+  console.log("Editing state:", isEditing, "Edited description:", editedDescription);
 
   return (
     <Card>
@@ -194,7 +211,7 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
             </div>
           </div>
         ) : (
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground whitespace-pre-line">
             {description || "No description provided."}
           </p>
         )}
