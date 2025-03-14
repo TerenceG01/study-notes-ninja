@@ -1,10 +1,8 @@
 
-import { useIsMobile } from "@/hooks/use-mobile";
-import { NoteContentEditor } from "./NoteContentEditor";
 import { CreateNoteHeader } from "./CreateNoteHeader";
 import { Note } from "./types";
-import { SummaryControls } from "./SummaryControls";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
+import { NoteContentScrollArea } from "./editor/NoteContentScrollArea";
 
 interface CreateNoteContainerProps {
   newNote: Note;
@@ -49,10 +47,12 @@ export const CreateNoteContainer = ({
   onToggleSummary,
   onEnhanceNote
 }: CreateNoteContainerProps) => {
-  const isMobile = useIsMobile();
-  
-  const handleContentChange = (html: string) => {
-    onNoteContentChange(html);
+  const handleNoteChangeAdapter = (note: Note | null) => {
+    if (note) {
+      onNoteChange('title', note.title || '');
+      onNoteContentChange(note.content || '');
+      onNoteChange('subject', note.subject || 'General');
+    }
   };
   
   return (
@@ -69,39 +69,31 @@ export const CreateNoteContainer = ({
         onToggleFullscreen={onToggleFullscreen}
       />
 
-      <div className="flex-grow overflow-y-auto overflow-x-hidden no-scrollbar">
-        <SummaryControls 
-          summaryLevel={summaryLevel}
-          summarizing={summarizing}
-          hasSummary={!!newNote?.summary}
-          showSummary={showSummary}
-          editingNote={newNote}
-          enhancing={enhancing}
-          onSummaryLevelChange={onSummaryLevelChange}
-          onGenerateSummary={onGenerateSummary}
-          onToggleSummary={onToggleSummary}
-          onEnhanceNote={onEnhanceNote}
-        />
-
-        <div className="mb-16">
-          <NoteContentEditor 
-            editingNote={newNote}
-            showSummary={showSummary}
-            isFullscreen={isFullscreen}
-            wordCount={wordCount}
-            autoSaveEnabled={autoSaveEnabled}
-            lastSaved={lastSaved}
-            onNoteChange={(note) => {
-              if (note) {
-                onNoteChange('title', note.title || '');
-                onNoteContentChange(note.content || '');
-                onNoteChange('subject', note.subject || 'General');
-              }
-            }}
-            onToggleAutoSave={onToggleAutoSave}
-          />
-        </div>
-      </div>
+      <NoteContentScrollArea 
+        editingNote={{
+          id: '',
+          title: newNote.title,
+          content: newNote.content,
+          subject: newNote.subject,
+          created_at: new Date().toISOString(),
+          folder: 'My Notes',
+          summary: newNote.summary
+        }}
+        isFullscreen={isFullscreen}
+        showSummary={showSummary}
+        summaryLevel={summaryLevel}
+        summarizing={summarizing}
+        enhancing={enhancing}
+        wordCount={wordCount}
+        autoSaveEnabled={autoSaveEnabled}
+        lastSaved={lastSaved}
+        onNoteChange={handleNoteChangeAdapter}
+        onSummaryLevelChange={onSummaryLevelChange}
+        onGenerateSummary={onGenerateSummary}
+        onToggleSummary={onToggleSummary}
+        onEnhanceNote={onEnhanceNote}
+        onToggleAutoSave={onToggleAutoSave}
+      />
     </div>
   );
 };
