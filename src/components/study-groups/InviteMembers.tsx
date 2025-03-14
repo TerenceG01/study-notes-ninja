@@ -81,6 +81,7 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
         });
 
         if (emailResponse.error) {
+          console.error("Error sending invitation email:", emailResponse.error);
           throw new Error('Failed to send invitation email');
         }
       }
@@ -98,6 +99,7 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
       }
     },
     onError: (error) => {
+      console.error("Invitation error:", error);
       toast({
         variant: "destructive",
         title: "Error sending invite",
@@ -142,7 +144,7 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
                       disabled={createInviteMutation.isPending}
                     >
                       {createInviteMutation.isPending && (
-                        <Loader2 className="h-4 w-4 mr-2" />
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       )}
                       <Mail className="h-4 w-4 mr-2" />
                       Send
@@ -175,7 +177,7 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
             disabled={createInviteMutation.isPending}
           >
             {createInviteMutation.isPending && (
-              <Loader2 className="h-4 w-4 mr-2" />
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
             )}
             Generate Invite Link
           </Button>

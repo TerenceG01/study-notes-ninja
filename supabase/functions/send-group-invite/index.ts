@@ -24,9 +24,13 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { email, inviteCode, groupName }: InviteEmailRequest = await req.json();
-    const inviteUrl = `${new URL(req.url).origin}/study-groups/join/${inviteCode}`;
+    
+    // Construct the invite URL using the request origin
+    const origin = new URL(req.url).origin;
+    const inviteUrl = `${origin}/study-groups/join/${inviteCode}`;
 
     console.log("Sending invite email to:", email, "for group:", groupName);
+    console.log("Invite URL:", inviteUrl);
 
     const emailResponse = await resend.emails.send({
       from: "Study Groups <onboarding@resend.dev>",
