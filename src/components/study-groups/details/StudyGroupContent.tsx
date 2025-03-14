@@ -1,7 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { GroupHeader } from "@/components/study-groups/GroupHeader";
-import { GroupAbout } from "@/components/study-groups/GroupAbout";
 import { GroupMembersList } from "@/components/study-groups/GroupMembersList";
 import { GroupReminders } from "@/components/study-groups/GroupReminders";
 import { NotificationSettings } from "@/components/study-groups/NotificationSettings";
@@ -44,7 +43,6 @@ export const StudyGroupContent = ({
   const isAdmin = userRole === 'admin';
   console.log("User role in group:", userRole);
   console.log("Study group data in content:", studyGroup);
-  console.log("Description in content:", studyGroup.description);
 
   return (
     <div>
@@ -57,15 +55,6 @@ export const StudyGroupContent = ({
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="md:col-span-2 space-y-4">
-          <div>
-            <GroupAbout 
-              description={studyGroup.description} 
-              createdAt={studyGroup.created_at}
-              groupId={studyGroup.id}
-              userRole={userRole}
-            />
-          </div>
-
           <Card>
             <CardHeader className="pb-3">
               <CardTitle>Shared Notes</CardTitle>
