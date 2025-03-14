@@ -8,6 +8,7 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 interface InviteEmailRequest {
@@ -25,7 +26,6 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { email, inviteCode, groupName }: InviteEmailRequest = await req.json();
     
-    // Get the frontend URL from environment or request
     // Extract the frontend origin from the request's referrer or origin header
     const referrer = req.headers.get("referer");
     const originHeader = req.headers.get("origin");
@@ -35,7 +35,7 @@ const handler = async (req: Request): Promise<Response> => {
       ? new URL(referrer).origin 
       : originHeader 
         ? originHeader 
-        : "https://your-app-url.com"; // Fallback default
+        : "https://study-notes-ninja.lovable.app"; // Better fallback default
     
     const inviteUrl = `${frontendOrigin}/study-groups/join/${inviteCode}`;
 
