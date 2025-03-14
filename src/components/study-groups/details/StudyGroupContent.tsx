@@ -6,8 +6,6 @@ import { GroupReminders } from "@/components/study-groups/GroupReminders";
 import { NotificationSettings } from "@/components/study-groups/NotificationSettings";
 import { SharedNotes } from "@/components/study-groups/SharedNotes";
 import { InviteMembers } from "@/components/study-groups/InviteMembers";
-import { ShareNoteDialog } from "@/components/study-groups/share-note/ShareNoteDialog";
-import { MultiShareDialog } from "@/components/study-groups/share-note/MultiShareDialog";
 import { BookOpen, Users, Bell } from "lucide-react";
 
 interface StudyGroup {
@@ -60,23 +58,13 @@ export const StudyGroupContent = ({
         <div className="md:col-span-2 space-y-6">
           <Card className="border-primary/10 shadow-sm">
             <CardHeader className="pb-3">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <BookOpen className="h-5 w-5 text-primary" />
-                    Shared Notes
-                  </CardTitle>
-                  <CardDescription>
-                    Notes shared by group members for collaborative studying
-                  </CardDescription>
-                </div>
-                {userRole && (
-                  <div className="flex gap-2 flex-wrap sm:flex-nowrap">
-                    <ShareNoteDialog key={`share-note-${studyGroup.id}`} groupId={studyGroup.id} />
-                    <MultiShareDialog key={`multi-share-${studyGroup.id}`} groupId={studyGroup.id} />
-                  </div>
-                )}
-              </div>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-primary" />
+                Shared Notes
+              </CardTitle>
+              <CardDescription>
+                Notes shared by group members for collaborative studying
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <SharedNotes key={`shared-notes-${studyGroup.id}`} groupId={studyGroup.id} />

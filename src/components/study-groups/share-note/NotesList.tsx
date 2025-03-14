@@ -12,9 +12,6 @@ interface NotesListProps {
   isLoading: boolean;
   isPending: boolean;
   onShareToggle: (noteId: string, isShared: boolean) => void;
-  multiSelectMode?: boolean;
-  selectedNotes?: string[];
-  onSelectNote?: (noteId: string, selected: boolean) => void;
 }
 
 export const NotesList: React.FC<NotesListProps> = ({
@@ -22,10 +19,7 @@ export const NotesList: React.FC<NotesListProps> = ({
   sharedNotes,
   isLoading,
   isPending,
-  onShareToggle,
-  multiSelectMode = false,
-  selectedNotes = [],
-  onSelectNote
+  onShareToggle
 }) => {
   if (isLoading) {
     return <LoadingState />;
@@ -37,7 +31,6 @@ export const NotesList: React.FC<NotesListProps> = ({
         {notes?.length ? (
           notes.map((note) => {
             const isShared = sharedNotes?.includes(note.id);
-            const isSelected = selectedNotes?.includes(note.id);
             return (
               <NoteCard
                 key={note.id}
@@ -45,9 +38,6 @@ export const NotesList: React.FC<NotesListProps> = ({
                 isShared={!!isShared}
                 isPending={isPending}
                 onShareToggle={onShareToggle}
-                multiSelectMode={multiSelectMode}
-                isSelected={isSelected}
-                onSelectNote={onSelectNote}
               />
             );
           })
