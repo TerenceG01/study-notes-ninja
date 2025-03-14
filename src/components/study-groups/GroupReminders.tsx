@@ -5,7 +5,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Calendar as CalendarIcon, Trash2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -141,13 +140,14 @@ export function GroupReminders({ groupId, userRole }: GroupRemindersProps) {
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
+                    size="sm"
                     className={cn(
-                      "justify-start text-left font-normal w-[120px]",
+                      "justify-start text-left font-normal",
                       !date && "text-muted-foreground"
                     )}
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "MMM d") : <span>Select date</span>}
+                    <CalendarIcon className="mr-1 h-4 w-4" />
+                    {date ? format(date, "MMM d") : <span>Date</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="end">
@@ -156,11 +156,12 @@ export function GroupReminders({ groupId, userRole }: GroupRemindersProps) {
                     selected={date}
                     onSelect={setDate}
                     initialFocus
+                    className="p-3 pointer-events-auto"
                   />
                 </PopoverContent>
               </Popover>
-              <Button type="submit" className="shrink-0">
-                <Plus className="h-4 w-4 mr-2" />
+              <Button type="submit" size="sm" className="shrink-0">
+                <Plus className="h-4 w-4 mr-1" />
                 Add
               </Button>
             </div>
