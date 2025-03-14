@@ -58,6 +58,7 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
     mutationFn: async ({ email, withCode }: { email?: string; withCode: boolean }) => {
       if (!user?.id) throw new Error("User not authenticated");
 
+      // First create the invite in the database
       const { data, error } = await supabase
         .from('study_group_invites')
         .insert({
@@ -70,19 +71,33 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
 
       if (error) throw error;
       
-      // If email is provided, send the invitation email
+      // If email is provided and we have group data, send the invitation email
       if (email && data.invite_code && groupData) {
-        const emailResponse = await supabase.functions.invoke('send-group-invite', {
-          body: {
-            email,
-            inviteCode: data.invite_code,
-            groupName: groupData.name,
-          },
-        });
+        try {
+          // Show a loading toast while sending the email
+          const loadingToastId = toast({
+            title: "Sending invitation...",
+            description: "Please wait while we send the invitation email.",
+          }).id;
+          
+          const emailResponse = await supabase.functions.invoke('send-group-invite', {
+            body: {
+              email,
+              inviteCode: data.invite_code,
+              groupName: groupData.name,
+            },
+          });
 
-        if (emailResponse.error) {
-          console.error("Error sending invitation email:", emailResponse.error);
-          throw new Error('Failed to send invitation email');
+          // Dismiss the loading toast
+          toast.dismiss(loadingToastId);
+
+          if (emailResponse.error) {
+            console.error("Error sending invitation email:", emailResponse.error);
+            throw new Error('Failed to send invitation email. Please try again later.');
+          }
+        } catch (emailError) {
+          console.error("Network or email sending error:", emailError);
+          throw new Error('Network error while sending invitation. Please check your connection and try again.');
         }
       }
 
@@ -103,7 +118,7 @@ export const InviteMembers = ({ groupId }: InviteMembersProps) => {
       toast({
         variant: "destructive",
         title: "Error sending invite",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Unknown error occurred",
       });
     },
   });

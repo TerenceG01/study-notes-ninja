@@ -27,7 +27,9 @@ const handler = async (req: Request): Promise<Response> => {
     
     // Construct the invite URL using the request origin
     const origin = new URL(req.url).origin;
-    const inviteUrl = `${origin}/study-groups/join/${inviteCode}`;
+    // Remove the /functions/send-group-invite part from the URL
+    const baseOrigin = origin.replace(/\/functions\/send-group-invite$/, "");
+    const inviteUrl = `${baseOrigin}/study-groups/join/${inviteCode}`;
 
     console.log("Sending invite email to:", email, "for group:", groupName);
     console.log("Invite URL:", inviteUrl);
