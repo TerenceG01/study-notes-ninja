@@ -6,6 +6,7 @@ import { AboutDescription } from "./group-about/AboutDescription";
 import { AboutDescriptionEditor } from "./group-about/AboutDescriptionEditor";
 import { useGroupNotifications } from "./group-about/useGroupNotifications";
 import { useGroupDescription } from "./group-about/useGroupDescription";
+import { useEffect } from "react";
 
 interface GroupAboutProps {
   description: string | null;
@@ -36,8 +37,9 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
     handleDescriptionChange
   } = useGroupDescription(groupId, description, groupData?.groupName);
 
-  console.log("Rendering GroupAbout with description:", description);
-  console.log("Editing state:", isEditing, "Edited description:", editedDescription);
+  useEffect(() => {
+    console.log("GroupAbout rendered with description:", description);
+  }, [description]);
 
   return (
     <Card>

@@ -7,6 +7,15 @@ interface GroupData {
   memberEmails: string[];
 }
 
+interface UserEmail {
+  id: string;
+  email?: string;
+}
+
+interface UserEmailsResponse {
+  users?: UserEmail[];
+}
+
 export const useGroupNotifications = (groupId: string) => {
   // Fetch group members' emails for notifications
   return useQuery<GroupData>({
@@ -56,7 +65,7 @@ export const useGroupNotifications = (groupId: string) => {
           // Ensure member is defined and has user_id before accessing
           if (member && member.user_id) {
             // Fix: Properly type the userEmails data structure
-            const userEmailObj = userEmails?.users?.find(user => user.id === member.user_id);
+            const userEmailObj = userEmails?.users?.find((user: UserEmail) => user.id === member.user_id);
             return userEmailObj?.email;
           }
           return null;

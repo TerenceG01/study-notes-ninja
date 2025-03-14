@@ -58,9 +58,9 @@ export const useGroupDescription = (
       
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setIsEditing(false);
-      // Update the local state as well
+      // Make sure we have the updated description in the local state
       queryClient.invalidateQueries({ queryKey: ['study-group', groupId] });
       toast.success("Group description updated");
     },
