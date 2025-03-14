@@ -484,6 +484,7 @@ export type Database = {
           description: string | null
           id: string
           name: string
+          notification_enabled: boolean | null
           subject: string
         }
         Insert: {
@@ -492,6 +493,7 @@ export type Database = {
           description?: string | null
           id?: string
           name: string
+          notification_enabled?: boolean | null
           subject: string
         }
         Update: {
@@ -500,6 +502,7 @@ export type Database = {
           description?: string | null
           id?: string
           name?: string
+          notification_enabled?: boolean | null
           subject?: string
         }
         Relationships: []
@@ -530,6 +533,7 @@ export type Database = {
           description: string | null
           id: string
           name: string
+          notification_enabled: boolean | null
           subject: string
         }
       }
@@ -543,6 +547,7 @@ export type Database = {
           description: string | null
           id: string
           name: string
+          notification_enabled: boolean | null
           subject: string
         }[]
       }

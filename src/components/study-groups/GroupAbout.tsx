@@ -109,6 +109,7 @@ export const GroupAbout = ({ description, createdAt, groupId, userRole }: GroupA
               type: "description_update",
               email: user.email, // Send only to the user who made the change
               groupName: groupData.groupName,
+              groupId: groupId, // Pass groupId to check notification settings
               details: {
                 newDescription: editedDescription
               }

@@ -15,6 +15,7 @@ interface NotificationRequest {
   type: "new_member" | "new_reminder" | "new_note" | "description_update";
   email: string;
   groupName: string;
+  groupId: string; // Added groupId to check notification settings
   details?: {
     memberName?: string;
     reminderTitle?: string;
@@ -30,7 +31,35 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { type, email, groupName, details }: NotificationRequest = await req.json();
+    const { type, email, groupName, groupId, details }: NotificationRequest = await req.json();
+    
+    // Check if notifications are enabled for this group
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+    const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY") || "";
+    
+    // Make a request to Supabase to check if notifications are enabled
+    const response = await fetch(`${supabaseUrl}/rest/v1/study_groups?id=eq.${groupId}&select=notification_enabled`, {
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": supabaseKey,
+        "Authorization": `Bearer ${supabaseKey}`
+      }
+    });
+    
+    const groupData = await response.json();
+    console.log("Group notification settings:", groupData);
+    
+    // If notifications are disabled for this group, return early
+    if (groupData.length > 0 && groupData[0].notification_enabled === false) {
+      console.log(`Notifications are disabled for group ${groupId}, skipping email`);
+      return new Response(
+        JSON.stringify({ message: "Notifications are disabled for this group" }), 
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json", ...corsHeaders }
+        }
+      );
+    }
     
     console.log(`Sending ${type} notification to ${email} for group ${groupName}`);
     

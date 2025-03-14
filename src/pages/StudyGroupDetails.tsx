@@ -1,3 +1,4 @@
+
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +11,7 @@ import { GroupHeader } from "@/components/study-groups/GroupHeader";
 import { GroupAbout } from "@/components/study-groups/GroupAbout";
 import { GroupMembersList } from "@/components/study-groups/GroupMembersList";
 import { GroupReminders } from "@/components/study-groups/GroupReminders";
+import { NotificationSettings } from "@/components/study-groups/NotificationSettings";
 import { useEffect } from "react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -23,6 +25,7 @@ interface StudyGroup {
   description: string | null;
   created_by: string;
   created_at: string;
+  notification_enabled: boolean;
 }
 
 interface StudyGroupMember {
@@ -125,6 +128,7 @@ const StudyGroupDetails = () => {
   }
 
   const userRole = members?.find(member => member.user_id === user?.id)?.role;
+  const isAdmin = userRole === 'admin';
   console.log("User role in group:", userRole);
 
   return (
@@ -188,6 +192,15 @@ const StudyGroupDetails = () => {
             <div>
               <GroupReminders groupId={studyGroup.id} userRole={userRole} />
             </div>
+            
+            {isAdmin && (
+              <div>
+                <NotificationSettings 
+                  groupId={studyGroup.id} 
+                  initialEnabled={studyGroup.notification_enabled} 
+                />
+              </div>
+            )}
           </div>
         </div>
       </ResponsiveContainer>
