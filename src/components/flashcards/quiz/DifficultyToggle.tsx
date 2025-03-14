@@ -1,19 +1,13 @@
 
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
 interface DifficultyToggleProps {
-  hardMode: boolean;
-  onToggle: () => void;
   currentIndex: number;
   totalCards: number;
 }
 
 export const DifficultyToggle = ({
-  hardMode,
-  onToggle,
   currentIndex,
   totalCards
 }: DifficultyToggleProps) => {
@@ -23,17 +17,6 @@ export const DifficultyToggle = ({
     <div className="flex justify-between items-center mb-3 sm:mb-4">
       <div className="text-xs sm:text-sm text-muted-foreground">
         {currentIndex + 1}/{totalCards}
-      </div>
-      <div className="flex items-center space-x-2">
-        <Switch
-          id="hard-mode"
-          checked={hardMode}
-          onCheckedChange={onToggle}
-          className={cn(isMobile ? "h-5 w-9" : "")}
-        />
-        <Label htmlFor="hard-mode" className="text-xs sm:text-sm">
-          Hard Mode
-        </Label>
       </div>
     </div>
   );

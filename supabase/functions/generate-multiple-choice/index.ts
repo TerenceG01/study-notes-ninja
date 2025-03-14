@@ -15,7 +15,7 @@ serve(async (req) => {
   }
 
   try {
-    const { flashcardId, hardMode = false } = await req.json();
+    const { flashcardId } = await req.json();
 
     // Initialize Supabase client with service role
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -60,7 +60,7 @@ serve(async (req) => {
             {"options":[{"content":"wrong1","explanation":"why wrong"},{"content":"wrong2","explanation":"why wrong"},{"content":"wrong3","explanation":"why wrong"},{"content":"wrong4","explanation":"why wrong"}]}`
           }
         ],
-        temperature: hardMode ? 0.7 : 0.3,
+        temperature: 0.3,
         max_tokens: 500,
         response_format: { type: "json_object" }  // Force JSON response
       }),

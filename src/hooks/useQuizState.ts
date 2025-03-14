@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -9,13 +9,8 @@ export const useQuizState = (flashcards: any[], currentCardId: string) => {
   const [totalAttempted, setTotalAttempted] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
-  const [hardMode, setHardMode] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    setHardMode(false);
-  }, [currentCardId]);
 
   const submitAnswerMutation = useMutation({
     mutationFn: async ({ flashcardId, optionId, isCorrect }: { flashcardId: string, optionId: string, isCorrect: boolean }) => {
@@ -71,7 +66,6 @@ export const useQuizState = (flashcards: any[], currentCardId: string) => {
     setIsAnswered(false);
     setCorrectAnswers(0);
     setTotalAttempted(0);
-    setHardMode(false);
   };
 
   return {
@@ -79,8 +73,6 @@ export const useQuizState = (flashcards: any[], currentCardId: string) => {
     totalAttempted,
     selectedOption,
     isAnswered,
-    hardMode,
-    setHardMode,
     handleOptionSelect,
     resetQuiz,
     setIsAnswered,

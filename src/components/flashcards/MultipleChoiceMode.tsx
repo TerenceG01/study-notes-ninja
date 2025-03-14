@@ -31,8 +31,6 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     totalAttempted,
     selectedOption,
     isAnswered,
-    hardMode,
-    setHardMode,
     handleOptionSelect,
     resetQuiz,
     setIsAnswered,
@@ -56,8 +54,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     mutationFn: async () => {
       const { error } = await supabase.functions.invoke('generate-multiple-choice', {
         body: { 
-          flashcardId: currentCard.id,
-          hardMode: hardMode 
+          flashcardId: currentCard.id
         },
       });
       if (error) throw error;
@@ -104,18 +101,6 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   return (
     <div className={isMobile ? "w-full max-w-full mx-auto" : "w-[800px] max-w-full mx-auto"}>
       <DifficultyToggle
-        hardMode={hardMode}
-        onToggle={() => {
-          const newMode = !hardMode;
-          setHardMode(newMode);
-          generateOptionsMutation.mutate();
-          toast({
-            title: newMode ? "Hard Mode Enabled" : "Standard Mode Enabled",
-            description: newMode 
-              ? "Questions will now be more challenging"
-              : "Questions will now be standard difficulty",
-          });
-        }}
         currentIndex={currentIndex}
         totalCards={flashcards.length}
       />
