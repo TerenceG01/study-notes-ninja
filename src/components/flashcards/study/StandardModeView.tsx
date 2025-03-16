@@ -27,12 +27,12 @@ export const StandardModeView = ({
   return (
     <div className="flex flex-col items-center w-full max-w-full overflow-hidden">
       {!isMobile && (
-        <div className="text-sm text-muted-foreground mb-2 w-full px-2">
+        <div className="text-sm text-muted-foreground mb-2 w-full px-0">
           Card {currentIndex + 1} of {cardsLength}
         </div>
       )}
       
-      <div className="w-full max-w-full mx-auto flex-shrink-0 px-2 sm:px-0 overflow-hidden">
+      <div className="w-full max-w-full mx-auto flex-shrink-0 px-0 overflow-hidden">
         <EnhancedFlashcard 
           card={currentCard}
           isFlipped={isFlipped}
@@ -43,7 +43,7 @@ export const StandardModeView = ({
         />
       </div>
 
-      <div className={`${isMobile ? 'mt-3 grid grid-cols-2 gap-2 w-full max-w-full px-2' : 'flex justify-between items-center mt-6 w-full px-2'}`}>
+      <div className={`${isMobile ? 'mt-3 grid grid-cols-2 gap-2 w-full max-w-full px-0' : 'flex justify-between items-center mt-6 w-full px-0'}`}>
         <Button 
           variant="outline" 
           onClick={() => navigateCards('prev')} 
@@ -67,7 +67,7 @@ export const StandardModeView = ({
         </Button>
       </div>
       
-      <div className="text-center mt-2 text-[10px] sm:text-xs text-muted-foreground w-full px-2 break-words">
+      <div className="text-center mt-2 text-[10px] sm:text-xs text-muted-foreground w-full px-0 break-words">
         {isMobile ? 
           "Swipe left/right to navigate" : 
           "Arrow keys to navigate • Space to flip"}

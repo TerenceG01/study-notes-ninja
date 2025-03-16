@@ -50,7 +50,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
   }
 
   return (
-    <div className="w-full mx-auto px-2 sm:px-0 max-w-full overflow-hidden">
+    <div className="w-full mx-auto px-0 max-w-full overflow-hidden">
       <StudyModeHeader
         mode={mode}
         setMode={setMode}
@@ -72,7 +72,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
           swipeHandlers={isMobile ? swipeHandlers : {}}
         />
       ) : (
-        <div className="w-full max-w-full overflow-hidden px-2 sm:px-0">
+        <div className="w-full max-w-full overflow-hidden px-0">
           <MultipleChoiceMode flashcards={cards} deckId={deckId} />
         </div>
       )}
