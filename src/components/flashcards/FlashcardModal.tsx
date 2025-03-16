@@ -1,7 +1,7 @@
 
 import { useEffect } from "react";
-import { Drawer, DrawerContent, DrawerClose } from "@/components/ui/drawer";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X, ArrowLeft, ArrowRight, Maximize2, Minimize2 } from "lucide-react";
 import { EnhancedFlashcard } from "@/components/flashcards/EnhancedFlashcard";
@@ -92,11 +92,9 @@ export const FlashcardModal = ({
             {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
           </Button>
           {!isMobile && (
-            <DrawerClose asChild>
-              <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
-                <X className="h-4 w-4" />
-              </Button>
-            </DrawerClose>
+            <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
+              <X className="h-4 w-4" />
+            </Button>
           )}
         </div>
       </div>

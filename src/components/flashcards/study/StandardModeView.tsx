@@ -25,7 +25,7 @@ export const StandardModeView = ({
   isMobile,
   swipeHandlers = {}
 }: StandardModeViewProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   return (
     <div className="flex flex-col items-center w-full min-w-full max-w-full overflow-hidden">
