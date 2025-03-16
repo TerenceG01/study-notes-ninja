@@ -26,7 +26,7 @@ export const MultipleChoiceOptions = ({
   const isMobile = useIsMobile();
   
   return (
-    <div className="space-y-2 sm:space-y-3 w-full max-w-full overflow-hidden">
+    <div className="space-y-2 sm:space-y-3 w-full max-w-full overflow-y-auto max-h-[250px] sm:max-h-[300px] pr-2">
       {options.slice(0, 5).map((option) => (
         <Button
           key={option.id}
@@ -38,7 +38,7 @@ export const MultipleChoiceOptions = ({
                 : "outline"
             : "outline"
           }
-          className={`w-full justify-start text-left h-auto ${isMobile ? 'py-2 px-3 text-xs' : 'py-3 sm:py-4 px-4 sm:px-6 text-sm sm:text-base'} whitespace-normal break-words`}
+          className={`w-full justify-start text-left h-auto ${isMobile ? 'py-2 px-3 text-xs' : 'py-3 sm:py-4 px-4 sm:px-6 text-sm sm:text-base'} whitespace-normal`}
           onClick={() => onSelect(option.id, option.is_correct)}
           disabled={isAnswered}
         >
@@ -51,7 +51,7 @@ export const MultipleChoiceOptions = ({
                 <X className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-white`} />
               )}
             </div>
-            <span className="break-words">{option.content}</span>
+            <span className="break-words line-clamp-3">{option.content}</span>
           </div>
         </Button>
       ))}
