@@ -32,7 +32,7 @@ export const StandardModeView = ({
         </div>
       )}
       
-      <div className="w-full min-w-full max-w-full mx-0 flex-shrink-0 px-0 overflow-hidden">
+      <div className="w-full min-w-full max-w-full mx-auto flex-shrink-0 px-0 overflow-hidden">
         <EnhancedFlashcard 
           card={currentCard}
           isFlipped={isFlipped}
