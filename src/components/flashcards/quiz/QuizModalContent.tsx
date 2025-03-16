@@ -60,10 +60,10 @@ export const QuizModalContent = ({
 
       <Card className="w-full flex-shrink-0 max-w-full h-[350px] sm:h-[400px] flex items-center">
         <CardContent className={`${isMobile ? "p-3" : "p-4 sm:p-6"} h-full w-full flex flex-col`}>
-          <h3 className={`${isMobile ? 'text-sm' : 'text-base sm:text-lg'} font-medium mb-3 sm:mb-4 break-words text-center`}>
+          <h3 className={`${isMobile ? 'text-sm' : 'text-base sm:text-lg'} font-medium mb-2 sm:mb-3 break-words text-center line-clamp-2 max-h-16`}>
             {currentCard.question}
           </h3>
-          <div className="flex-grow flex items-center justify-center w-full">
+          <div className="flex-grow flex items-center justify-center w-full overflow-y-auto py-2">
             <MultipleChoiceOptions
               options={options}
               isAnswered={isAnswered}

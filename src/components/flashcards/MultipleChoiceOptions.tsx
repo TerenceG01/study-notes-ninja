@@ -26,7 +26,7 @@ export const MultipleChoiceOptions = ({
   const isMobile = useIsMobile();
   
   return (
-    <div className="space-y-2 sm:space-y-3 w-full max-w-full overflow-hidden">
+    <div className="space-y-2 sm:space-y-3 w-full max-w-full">
       {options.slice(0, 5).map((option) => (
         <Button
           key={option.id}
@@ -38,12 +38,12 @@ export const MultipleChoiceOptions = ({
                 : "outline"
             : "outline"
           }
-          className={`w-full justify-start text-left h-auto ${isMobile ? 'py-2 px-3 text-xs' : 'py-3 sm:py-4 px-4 sm:px-6 text-sm sm:text-base'} whitespace-normal break-words`}
+          className={`w-full justify-start text-left h-auto ${isMobile ? 'py-2 px-3 text-xs' : 'py-2 sm:py-3 px-3 sm:px-4'} whitespace-normal break-words`}
           onClick={() => onSelect(option.id, option.is_correct)}
           disabled={isAnswered}
         >
           <div className="flex items-start gap-2 w-full">
-            <div className="flex-shrink-0 mt-1">
+            <div className="flex-shrink-0 mt-0.5">
               {isAnswered && option.is_correct && (
                 <Check className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-white`} />
               )}
@@ -51,13 +51,13 @@ export const MultipleChoiceOptions = ({
                 <X className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-white`} />
               )}
             </div>
-            <span className="break-words">{option.content}</span>
+            <span className="break-words line-clamp-3">{option.content}</span>
           </div>
         </Button>
       ))}
       {isAnswered && options.find(o => o.id === selectedOption)?.explanation && (
-        <div className="mt-3 p-2 sm:p-4 bg-muted rounded-lg">
-          <p className="text-xs break-words">{options.find(o => o.id === selectedOption)?.explanation}</p>
+        <div className="mt-2 p-2 sm:p-3 bg-muted rounded-lg">
+          <p className="text-xs break-words max-h-24 overflow-y-auto">{options.find(o => o.id === selectedOption)?.explanation}</p>
         </div>
       )}
     </div>
