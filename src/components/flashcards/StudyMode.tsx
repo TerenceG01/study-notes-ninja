@@ -1,3 +1,4 @@
+
 import { StudyModeHeader } from "@/components/flashcards/study/StudyModeHeader";
 import { Flashcard } from "@/components/flashcards/Flashcard";
 import { useFlashcardStudy } from "@/hooks/useFlashcardStudy";
@@ -51,7 +52,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [navigateCards, setIsFlipped]);
+  }, [navigateCards, setIsFlipped, isFlipped]);
   
   return (
     <div className="w-full max-w-full space-y-4">
