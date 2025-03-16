@@ -44,7 +44,7 @@ export const QuizModalContent = ({
   
   return (
     <>
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-4">
         <div className="text-sm text-muted-foreground">
           Card {currentIndex + 1} of {totalCards}
         </div>
@@ -58,7 +58,7 @@ export const QuizModalContent = ({
         </Button>
       </div>
 
-      <Card className="w-full flex-shrink-0 max-w-full h-[250px] sm:h-[300px] flex items-center">
+      <Card className="w-full flex-shrink-0 max-w-full h-[350px] sm:h-[400px] flex items-center">
         <CardContent className={`${isMobile ? "p-3" : "p-4 sm:p-6"} h-full w-full flex flex-col`}>
           <h3 className={`${isMobile ? 'text-sm' : 'text-base sm:text-lg'} font-medium mb-2 sm:mb-3 break-words text-center line-clamp-2 max-h-16`}>
             {currentCard.question}
@@ -75,13 +75,13 @@ export const QuizModalContent = ({
       </Card>
 
       {isLastCard && isAnswered && (
-        <div className="my-2">
-          <QuizCompletionCard
-            correctAnswers={correctAnswers}
-            totalAttempted={totalAttempted}
-            onRestart={resetQuiz}
-          />
-        </div>
+        <QuizCompletionCard
+          correctAnswers={correctAnswers}
+          totalAttempted={totalAttempted}
+          onRestart={() => {
+            resetQuiz();
+          }}
+        />
       )}
 
       <QuizNavigation
@@ -90,7 +90,7 @@ export const QuizModalContent = ({
         onNavigate={onNavigate}
       />
 
-      <div className="text-center mt-2 text-xs text-muted-foreground">
+      <div className="text-center mt-2 sm:mt-4 text-xs text-muted-foreground">
         {isMobile ? "Tap to answer" : "Click to answer • Arrow keys to navigate • F for fullscreen"}
       </div>
     </>
