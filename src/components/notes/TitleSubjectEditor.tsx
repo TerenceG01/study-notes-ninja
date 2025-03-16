@@ -42,6 +42,10 @@ export const TitleSubjectEditor = ({
     }
     onOpenChange(false);
   };
+
+  const handleSubjectChange = (value: string) => {
+    setLocalSubject(value);
+  };
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -70,7 +74,7 @@ export const TitleSubjectEditor = ({
             </label>
             <Select
               value={localSubject}
-              onValueChange={setLocalSubject}
+              onValueChange={handleSubjectChange}
             >
               <SelectTrigger className="h-9">
                 <SelectValue placeholder="Select subject" />

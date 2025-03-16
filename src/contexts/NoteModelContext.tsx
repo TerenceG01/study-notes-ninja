@@ -7,6 +7,8 @@ interface NoteModelContextType {
   openModel: (noteId?: string) => void;
   closeModel: () => void;
   currentNoteId: string | null;
+  selectedSubject: string;
+  setSelectedSubject: (subject: string) => void;
 }
 
 // Create the context with default values
@@ -14,7 +16,9 @@ const NoteModelContext = createContext<NoteModelContextType>({
   isOpen: false,
   openModel: () => {},
   closeModel: () => {},
-  currentNoteId: null
+  currentNoteId: null,
+  selectedSubject: "General",
+  setSelectedSubject: () => {}
 });
 
 // Export a hook for easy use of the context
@@ -24,6 +28,7 @@ export const useNoteModel = () => useContext(NoteModelContext);
 export const NoteModelProvider = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentNoteId, setCurrentNoteId] = useState<string | null>(null);
+  const [selectedSubject, setSelectedSubject] = useState<string>("General");
 
   const openModel = (noteId?: string) => {
     if (noteId) {
@@ -34,8 +39,8 @@ export const NoteModelProvider = ({ children }: { children: React.ReactNode }) =
 
   const closeModel = () => {
     setIsOpen(false);
-    // Optional: Reset currentNoteId when closing
-    // setCurrentNoteId(null);
+    // Reset currentNoteId when closing
+    setCurrentNoteId(null);
   };
 
   return (
@@ -44,7 +49,9 @@ export const NoteModelProvider = ({ children }: { children: React.ReactNode }) =
         isOpen,
         openModel,
         closeModel,
-        currentNoteId
+        currentNoteId,
+        selectedSubject,
+        setSelectedSubject
       }}
     >
       {children}
