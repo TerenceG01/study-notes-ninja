@@ -1,10 +1,10 @@
+
 import { Button } from "@/components/ui/button";
 import { 
   Maximize2, 
   RefreshCw, 
   ChevronLeft, 
-  ChevronRight, 
-  BookOpen,
+  ChevronRight,
   Info
 } from "lucide-react";
 import { useState } from "react";
@@ -93,7 +93,7 @@ export const StandardModeView = ({
 
         {/* Controls */}
         <div className="flex flex-col sm:flex-row gap-2 justify-between">
-          <div className="flex gap-2 w-full sm:w-auto">
+          <div className="flex gap-2 w-full">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -101,7 +101,7 @@ export const StandardModeView = ({
                     variant="outline" 
                     onClick={() => navigateCards('prev')} 
                     disabled={currentIndex === 0}
-                    className="flex-1 sm:flex-none"
+                    className="flex-1"
                   >
                     <ChevronLeft className="h-4 w-4 mr-1" />
                     Previous
@@ -120,7 +120,7 @@ export const StandardModeView = ({
                     variant="outline" 
                     onClick={() => navigateCards('next')} 
                     disabled={currentIndex === cardsLength - 1}
-                    className="flex-1 sm:flex-none"
+                    className="flex-1"
                   >
                     Next
                     <ChevronRight className="h-4 w-4 ml-1" />
@@ -128,44 +128,6 @@ export const StandardModeView = ({
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Next card (→)</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          
-          <div className="flex gap-2 w-full sm:w-auto">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setIsFlipped(!isFlipped)}
-                    className="flex-1 sm:flex-none"
-                  >
-                    <RefreshCw className="h-4 w-4 mr-1" />
-                    Flip Card
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Flip card (Spacebar)</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="default" 
-                    onClick={() => setIsModalOpen(true)}
-                    className="flex-1 sm:flex-none"
-                  >
-                    <BookOpen className="h-4 w-4 mr-1" />
-                    Study
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Open detailed study view</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
