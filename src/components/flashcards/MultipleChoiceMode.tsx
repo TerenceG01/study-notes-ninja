@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Loader2, Maximize2, Minimize2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
@@ -11,6 +11,9 @@ import { QuizNavigation } from "./quiz/QuizNavigation";
 import { DifficultyToggle } from "./quiz/DifficultyToggle";
 import { useQuizState } from "@/hooks/useQuizState";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 
 interface MultipleChoiceModeProps {
   flashcards: any[];
@@ -22,6 +25,8 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const currentCard = flashcards[currentIndex];
   const isLastCard = currentIndex === flashcards.length - 1;
@@ -71,6 +76,20 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     },
   });
 
+  // Handle fullscreen toggling
+  const toggleFullscreen = () => {
+    if (isFullscreen) {
+      document.exitFullscreen().catch(e => {
+        console.error("Error exiting fullscreen:", e);
+      });
+    } else {
+      document.documentElement.requestFullscreen().catch(e => {
+        console.error("Error entering fullscreen:", e);
+      });
+    }
+    setIsFullscreen(!isFullscreen);
+  };
+
   const navigateCards = (direction: 'prev' | 'next') => {
     setIsAnswered(false);
     setSelectedOption(null);
@@ -98,12 +117,21 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     );
   }
 
-  return (
-    <div className={isMobile ? "w-full max-w-full mx-auto" : "w-[800px] max-w-full mx-auto"}>
-      <DifficultyToggle
-        currentIndex={currentIndex}
-        totalCards={flashcards.length}
-      />
+  const modalContent = (
+    <>
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-sm text-muted-foreground">
+          Card {currentIndex + 1} of {flashcards.length}
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleFullscreen}
+          className="h-8 w-8"
+        >
+          {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+        </Button>
+      </div>
 
       <Card className="w-full flex-shrink-0 max-w-full">
         <CardContent className={isMobile ? "p-3 overflow-hidden" : "p-4 sm:p-6 overflow-hidden"}>
@@ -137,8 +165,41 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
       />
 
       <div className="text-center mt-2 sm:mt-4 text-xs text-muted-foreground">
-        Select an option to answer
+        {isMobile ? "Tap to answer" : "Click to answer • Arrow keys to navigate • F for fullscreen"}
       </div>
+    </>
+  );
+
+  return (
+    <div className={isMobile ? "w-full max-w-full mx-auto" : "w-[800px] max-w-full mx-auto"}>
+      <DifficultyToggle
+        currentIndex={currentIndex}
+        totalCards={flashcards.length}
+      />
+      
+      <div className="w-full min-w-full max-w-full flex items-center justify-center mt-8">
+        <Button 
+          onClick={() => setIsModalOpen(true)}
+          className="flex items-center gap-2"
+        >
+          <Maximize2 className="h-4 w-4" />
+          Open Multiple Choice Card
+        </Button>
+      </div>
+
+      {isMobile ? (
+        <Drawer open={isModalOpen} onOpenChange={(open) => setIsModalOpen(open)}>
+          <DrawerContent className="max-h-[92vh] p-4 pb-6 flex flex-col">
+            {modalContent}
+          </DrawerContent>
+        </Drawer>
+      ) : (
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent className="sm:max-w-[800px] h-[90vh] flex flex-col p-6">
+            {modalContent}
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
