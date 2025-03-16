@@ -39,6 +39,9 @@ export const NoteContentScrollArea = ({
   onEnhanceNote,
   onToggleAutoSave
 }: NoteContentScrollAreaProps) => {
+  // Check if we have content to work with for the AI features
+  const hasContent = editingNote && editingNote.content && editingNote.content.trim().length > 0;
+  
   return (
     <div className="flex-grow overflow-y-auto overflow-x-hidden no-scrollbar">
       <SummaryControls 

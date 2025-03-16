@@ -52,7 +52,7 @@ export const CreateNoteContainer = ({
       if (note.title !== undefined) onNoteChange('title', note.title || '');
       if (note.content !== undefined) onNoteContentChange(note.content || '');
       if (note.subject !== undefined) onNoteChange('subject', note.subject || 'General');
-      if (note.summary !== undefined) onNoteChange('summary', note.summary);
+      if (note.summary !== undefined) onNoteChange('summary', note.summary || '');
     }
   };
   
@@ -72,13 +72,13 @@ export const CreateNoteContainer = ({
 
       <NoteContentScrollArea 
         editingNote={{
-          id: '',
+          id: 'new-note-temp-id',
           title: newNote.title,
           content: newNote.content,
-          subject: newNote.subject,
+          subject: newNote.subject || 'General',
           created_at: new Date().toISOString(),
           folder: 'My Notes',
-          summary: newNote.summary
+          summary: newNote.summary || ''
         }}
         isFullscreen={isFullscreen}
         showSummary={showSummary}

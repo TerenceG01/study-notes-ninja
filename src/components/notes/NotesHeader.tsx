@@ -79,7 +79,7 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
         <div className="flex flex-col h-full overflow-hidden">
           <CreateNoteContainer
             newNote={{
-              id: '',
+              id: 'new-note-temp-id',
               title: newNote.title,
               content: newNote.content,
               subject: newNote.subject,
