@@ -1,19 +1,15 @@
 
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, Maximize2, Minimize2, ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { QuizCompletionCard } from "./QuizCompletionCard";
-import { MultipleChoiceOptions } from "./MultipleChoiceOptions";
-import { QuizNavigation } from "./quiz/QuizNavigation";
-import { DifficultyToggle } from "./quiz/DifficultyToggle";
-import { useQuizState } from "@/hooks/useQuizState";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useQuizState } from "@/hooks/useQuizState";
+import { useMultipleChoiceOptions } from "@/hooks/useMultipleChoiceOptions";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
+import { DifficultyToggle } from "./quiz/DifficultyToggle";
+import { QuizCardPreview } from "./quiz/QuizCardPreview";
+import { QuizModalContent } from "./quiz/QuizModalContent";
 
 interface MultipleChoiceModeProps {
   flashcards: any[];
@@ -23,7 +19,6 @@ interface MultipleChoiceModeProps {
 export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModeProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
   const isMobile = useIsMobile();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -42,39 +37,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
     setSelectedOption,
   } = useQuizState(flashcards, currentCard?.id);
 
-  const { data: options, isLoading: isOptionsLoading } = useQuery({
-    queryKey: ['multiple-choice-options', currentCard?.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('multiple_choice_options')
-        .select('*')
-        .eq('flashcard_id', currentCard.id);
-      if (error) throw error;
-      return data || [];
-    },
-    enabled: !!currentCard?.id,
-  });
-
-  const generateOptionsMutation = useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase.functions.invoke('generate-multiple-choice', {
-        body: { 
-          flashcardId: currentCard.id
-        },
-      });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['multiple-choice-options', currentCard.id] });
-    },
-    onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Error generating options",
-        description: error.message,
-      });
-    },
-  });
+  const { options, isOptionsLoading, generateOptionsMutation } = useMultipleChoiceOptions(currentCard?.id);
 
   // Handle fullscreen toggling
   const toggleFullscreen = () => {
@@ -118,56 +81,25 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
   }
 
   const modalContent = (
-    <>
-      <div className="flex items-center justify-between mb-4">
-        <div className="text-sm text-muted-foreground">
-          Card {currentIndex + 1} of {flashcards.length}
-        </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleFullscreen}
-          className="h-8 w-8"
-        >
-          {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-        </Button>
-      </div>
-
-      <Card className="w-full flex-shrink-0 max-w-full">
-        <CardContent className={isMobile ? "p-3 overflow-hidden" : "p-4 sm:p-6 overflow-hidden"}>
-          <h3 className={`${isMobile ? 'text-sm' : 'text-base sm:text-lg'} font-medium mb-3 sm:mb-4 break-words`}>
-            {currentCard.question}
-          </h3>
-          <MultipleChoiceOptions
-            options={options}
-            isAnswered={isAnswered}
-            selectedOption={selectedOption}
-            onSelect={handleOptionSelect}
-          />
-        </CardContent>
-      </Card>
-
-      {isLastCard && isAnswered && (
-        <QuizCompletionCard
-          correctAnswers={correctAnswers}
-          totalAttempted={totalAttempted}
-          onRestart={() => {
-            resetQuiz();
-            setCurrentIndex(0);
-          }}
-        />
-      )}
-
-      <QuizNavigation
-        currentIndex={currentIndex}
-        totalCards={flashcards.length}
-        onNavigate={navigateCards}
-      />
-
-      <div className="text-center mt-2 sm:mt-4 text-xs text-muted-foreground">
-        {isMobile ? "Tap to answer" : "Click to answer • Arrow keys to navigate • F for fullscreen"}
-      </div>
-    </>
+    <QuizModalContent
+      currentCard={currentCard}
+      currentIndex={currentIndex}
+      totalCards={flashcards.length}
+      isAnswered={isAnswered}
+      selectedOption={selectedOption}
+      correctAnswers={correctAnswers}
+      totalAttempted={totalAttempted}
+      options={options}
+      isLastCard={isLastCard}
+      isFullscreen={isFullscreen}
+      onOptionSelect={handleOptionSelect}
+      onNavigate={navigateCards}
+      toggleFullscreen={toggleFullscreen}
+      resetQuiz={() => {
+        resetQuiz();
+        setCurrentIndex(0);
+      }}
+    />
   );
 
   return (
@@ -177,68 +109,13 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         totalCards={flashcards.length}
       />
       
-      {/* Card Preview */}
-      <Card className="w-full shadow-sm border hover:shadow-md transition-all cursor-pointer mt-4" onClick={() => setIsModalOpen(true)}>
-        <CardContent className="p-4 sm:p-6">
-          <div className="flex justify-between items-center mb-2 text-sm text-muted-foreground">
-            <span>Multiple Choice Quiz</span>
-            <span>Question {currentIndex + 1} of {flashcards.length}</span>
-          </div>
-          <div className="min-h-[150px] flex items-center justify-center">
-            <p className="text-lg font-medium text-center">
-              {currentCard.question.length > 100 
-                ? currentCard.question.substring(0, 100) + "..." 
-                : currentCard.question}
-            </p>
-          </div>
-          <div className="flex justify-end pt-2">
-            <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={(e) => {
-              e.stopPropagation();
-              setIsModalOpen(true);
-            }}>
-              <Maximize2 className="h-4 w-4 mr-1" />
-              Open Quiz
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Controls */}
-      <div className="flex flex-col sm:flex-row gap-2 justify-between mt-4">
-        <div className="flex gap-2 w-full sm:w-auto">
-          <Button 
-            variant="outline" 
-            onClick={() => navigateCards('prev')} 
-            disabled={currentIndex === 0}
-            className="flex-1 sm:flex-none"
-          >
-            <ChevronLeft className="h-4 w-4 mr-1" />
-            Previous
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => navigateCards('next')} 
-            disabled={currentIndex === flashcards.length - 1}
-            className="flex-1 sm:flex-none"
-          >
-            Next
-            <ChevronRight className="h-4 w-4 ml-1" />
-          </Button>
-        </div>
-        
-        <Button 
-          variant="default" 
-          onClick={() => setIsModalOpen(true)}
-          className="w-full sm:w-auto"
-        >
-          <BookOpen className="h-4 w-4 mr-1" />
-          Take Quiz
-        </Button>
-      </div>
-      
-      <div className="text-center mt-4 text-xs text-muted-foreground">
-        <p>Tip: Navigate through questions and test your knowledge with multiple choice options</p>
-      </div>
+      <QuizCardPreview
+        currentCard={currentCard}
+        currentIndex={currentIndex}
+        totalCards={flashcards.length}
+        onOpenModal={() => setIsModalOpen(true)}
+        onNavigate={navigateCards}
+      />
 
       {isMobile ? (
         <Drawer open={isModalOpen} onOpenChange={(open) => setIsModalOpen(open)}>
