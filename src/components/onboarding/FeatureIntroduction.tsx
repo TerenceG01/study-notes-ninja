@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Bookmark, BookOpen, BrainCircuit, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Sparkles, Bookmark, BookOpen, BrainCircuit, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FeatureMessage {
@@ -89,8 +89,9 @@ export const FeatureIntroduction = ({
       <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-background rounded-lg">
         <div className="p-6">
           <div className="space-y-4 mb-6">
-            {features.map((feature, index) => (
-              visibleMessages.includes(index) && (
+            {features.map((feature, index) => {
+              if (!visibleMessages.includes(index)) return null;
+              return (
                 <div 
                   key={feature.id}
                   className={cn(
@@ -111,8 +112,8 @@ export const FeatureIntroduction = ({
                     )}
                   </div>
                 </div>
-              )
-            )}
+              );
+            })}
           </div>
           
           {visibleMessages.length === features.length && (
