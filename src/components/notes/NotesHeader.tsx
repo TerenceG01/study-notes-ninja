@@ -1,6 +1,5 @@
 
 import { CommonSubjects } from "./CommonSubjects";
-import { useState } from "react";
 import { DialogFooterActions } from "./DialogFooterActions";
 import { NoteCreationControls } from "./header/NoteCreationControls";
 import { useNoteEditorState } from "@/hooks/useNoteEditorState";
