@@ -6,6 +6,7 @@ import { MultipleChoiceMode } from "@/components/flashcards/MultipleChoiceMode";
 import { useStandardModeKeyboardNavigation } from "@/hooks/useStandardModeKeyboardNavigation";
 import { useFlashcardStudy } from "@/hooks/useFlashcardStudy";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Card } from "@/components/ui/card";
 
 interface StudyModeContainerProps {
   flashcards: any[];
@@ -39,7 +40,7 @@ export const StudyModeContainer: React.FC<StudyModeContainerProps> = ({
   });
   
   return (
-    <div className="w-full max-w-full space-y-4">
+    <Card className="w-full max-w-full p-4 md:p-6 space-y-4 border shadow-sm">
       <StudyModeHeader
         mode={mode}
         setMode={setMode}
@@ -62,6 +63,6 @@ export const StudyModeContainer: React.FC<StudyModeContainerProps> = ({
       ) : (
         <MultipleChoiceMode flashcards={flashcards} deckId={deckId} />
       )}
-    </div>
+    </Card>
   );
 };
