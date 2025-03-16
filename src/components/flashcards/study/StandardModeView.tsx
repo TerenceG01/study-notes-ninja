@@ -1,7 +1,8 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { EnhancedFlashcard } from "@/components/flashcards/EnhancedFlashcard";
+import { ArrowLeft, ArrowRight, Maximize2 } from "lucide-react";
+import { useState } from "react";
+import { FlashcardModal } from "@/components/flashcards/FlashcardModal";
 
 interface StandardModeViewProps {
   currentCard: any;
@@ -24,54 +25,32 @@ export const StandardModeView = ({
   isMobile,
   swipeHandlers = {}
 }: StandardModeViewProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(true);
+  
   return (
     <div className="flex flex-col items-center w-full min-w-full max-w-full overflow-hidden">
-      {!isMobile && (
-        <div className="text-sm text-muted-foreground mb-2 w-full px-0">
-          Card {currentIndex + 1} of {cardsLength}
+      {!isModalOpen && (
+        <div className="w-full min-w-full max-w-full flex items-center justify-center mt-8">
+          <Button 
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2"
+          >
+            <Maximize2 className="h-4 w-4" />
+            Open Flashcard
+          </Button>
         </div>
       )}
       
-      <div className="w-full min-w-full max-w-full mx-auto flex-shrink-0 px-0 overflow-hidden">
-        <EnhancedFlashcard 
-          card={currentCard}
-          isFlipped={isFlipped}
-          onFlip={setIsFlipped}
-          onNext={() => navigateCards('next')}
-          onPrev={() => navigateCards('prev')}
-          {...(isMobile ? swipeHandlers : {})}
-        />
-      </div>
-
-      <div className={`${isMobile ? 'mt-3 grid grid-cols-2 gap-2 w-full max-w-full px-0' : 'flex justify-between items-center mt-6 w-full px-0'}`}>
-        <Button 
-          variant="outline" 
-          onClick={() => navigateCards('prev')} 
-          disabled={currentIndex === 0}
-          size={isMobile ? "sm" : "default"}
-          className="w-full sm:w-auto"
-        >
-          <ArrowLeft className="h-4 w-4 mr-1" />
-          {isMobile ? "Prev" : "Previous Card"}
-        </Button>
-
-        <Button 
-          variant="outline" 
-          onClick={() => navigateCards('next')} 
-          disabled={currentIndex === cardsLength - 1}
-          size={isMobile ? "sm" : "default"}
-          className="w-full sm:w-auto"
-        >
-          {isMobile ? "Next" : "Next Card"}
-          <ArrowRight className="h-4 w-4 ml-1" />
-        </Button>
-      </div>
-      
-      <div className="text-center mt-2 text-[10px] sm:text-xs text-muted-foreground w-full px-0 break-words">
-        {isMobile ? 
-          "Swipe left/right to navigate" : 
-          "Arrow keys to navigate • Space to flip"}
-      </div>
+      <FlashcardModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        currentCard={currentCard}
+        isFlipped={isFlipped}
+        setIsFlipped={setIsFlipped}
+        navigateCards={navigateCards}
+        currentIndex={currentIndex}
+        cardsLength={cardsLength}
+      />
     </div>
   );
 };
