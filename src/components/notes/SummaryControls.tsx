@@ -62,7 +62,7 @@ export const SummaryControls = ({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
-                disabled={summarizing || !hasContent} 
+                disabled={summarizing} 
                 variant="secondary"
                 size="sm"
                 className="h-9 text-xs px-2 relative"
@@ -146,7 +146,7 @@ export const SummaryControls = ({
               size={isMobile ? "sm" : "sm"} 
               variant="outline" 
               className={`gap-1 ${isMobile ? 'h-9 px-2 aspect-square' : 'h-10'} relative`}
-              disabled={enhancing || !hasContent}
+              disabled={enhancing}
               title={isMobile ? "Enhance with AI" : ""}
             >
               {enhancing ? (
