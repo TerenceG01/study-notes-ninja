@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Note } from "@/hooks/useNotes";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
-import { NoteContentContainer } from "../NoteContentContainer";
+import { NoteContentContainer } from "../container/NoteContentContainer";
 import { DialogFooterActions } from "../DialogFooterActions";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DialogWrapper } from "./DialogWrapper";
