@@ -72,7 +72,7 @@ export const QuizModalContent = ({
           <h3 className={`${isMobile ? 'text-sm' : 'text-base'} font-medium mb-3 text-center`}>
             {currentCard.question}
           </h3>
-          <div className="flex-grow flex items-start justify-center w-full overflow-y-auto">
+          <div className="flex-grow flex flex-col w-full overflow-y-auto">
             <MultipleChoiceOptions
               options={options}
               isAnswered={isAnswered}
