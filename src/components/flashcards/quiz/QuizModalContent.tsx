@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Maximize2, Minimize2 } from "lucide-react";
 import { MultipleChoiceOptions } from "@/components/flashcards/MultipleChoiceOptions";
-import { QuizCompletionCard } from "@/components/flashcards/QuizCompletionCard";
+import { QuizCompletionDialog } from "@/components/flashcards/quiz/QuizCompletionDialog";
 import { QuizNavigation } from "@/components/flashcards/quiz/QuizNavigation";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useState, useEffect } from "react";
 
 interface QuizModalContentProps {
   currentCard: any;
@@ -41,6 +42,14 @@ export const QuizModalContent = ({
   resetQuiz
 }: QuizModalContentProps) => {
   const isMobile = useIsMobile();
+  const [showCompletionDialog, setShowCompletionDialog] = useState(false);
+  
+  // Show completion dialog when the last card is answered
+  useEffect(() => {
+    if (isLastCard && isAnswered && totalAttempted > 0) {
+      setShowCompletionDialog(true);
+    }
+  }, [isLastCard, isAnswered, totalAttempted]);
   
   return (
     <>
@@ -74,15 +83,16 @@ export const QuizModalContent = ({
         </CardContent>
       </Card>
 
-      {isLastCard && isAnswered && (
-        <QuizCompletionCard
-          correctAnswers={correctAnswers}
-          totalAttempted={totalAttempted}
-          onRestart={() => {
-            resetQuiz();
-          }}
-        />
-      )}
+      <QuizCompletionDialog
+        isOpen={showCompletionDialog}
+        onClose={() => setShowCompletionDialog(false)}
+        correctAnswers={correctAnswers}
+        totalAttempted={totalAttempted}
+        onRestart={() => {
+          resetQuiz();
+          setShowCompletionDialog(false);
+        }}
+      />
 
       <QuizNavigation
         currentIndex={currentIndex}
