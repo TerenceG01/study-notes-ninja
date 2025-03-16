@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Note } from "@/hooks/useNotes";
 import { SummaryLevel } from "@/hooks/useNoteSummary";
@@ -27,6 +26,9 @@ export interface NoteDialogProps {
   isFullscreen?: boolean;
   isSaved?: boolean;
   saveDisabled?: boolean;
+  lastSaved?: Date | null;
+  autoSaveEnabled?: boolean;
+  onToggleAutoSave?: () => void;
 }
 
 export const NoteDialog = ({
@@ -47,13 +49,16 @@ export const NoteDialog = ({
   onSilentSave,
   isFullscreen = true,
   isSaved = false,
-  saveDisabled = false
+  saveDisabled = false,
+  lastSaved: initialLastSaved = null,
+  autoSaveEnabled: initialAutoSave = true,
+  onToggleAutoSave
 }: NoteDialogProps) => {
   const isMobile = useIsMobile();
   const [localIsFullscreen, setLocalIsFullscreen] = useState(isFullscreen);
   const [wordCount, setWordCount] = useState(0);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+  const [lastSaved, setLastSaved] = useState<Date | null>(initialLastSaved);
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(initialAutoSave);
   const [localIsSaved, setLocalIsSaved] = useState(isSaved);
   const [originalContent, setOriginalContent] = useState("");
   const [changesMade, setChangesMade] = useState(false);
@@ -159,7 +164,13 @@ export const NoteDialog = ({
   };
 
   const toggleAutoSave = () => {
-    setAutoSaveEnabled(!autoSaveEnabled);
+    const newValue = !autoSaveEnabled;
+    setAutoSaveEnabled(newValue);
+    
+    // Call parent handler if provided
+    if (onToggleAutoSave) {
+      onToggleAutoSave();
+    }
     
     // If enabling auto-save and there are unsaved changes, save immediately
     if (!autoSaveEnabled && changesMade && onSilentSave) {

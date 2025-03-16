@@ -11,12 +11,14 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { NoteEditor } from "@/components/notes/NoteEditor";
 import { CommonSubjects } from "@/components/notes/CommonSubjects";
 import { navigationItems } from "./NavigationItems";
+import { NewNoteDialog } from "@/components/notes/NewNoteDialog";
 
 export const MobileNavigationBar = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const location = useLocation();
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showNewNoteDialog, setShowNewNoteDialog] = useState(false);
 
   const { createNote } = useNotes();
   const { 
@@ -28,10 +30,15 @@ export const MobileNavigationBar = () => {
   } = useNoteEditor();
 
   const handleCreateNote = () => {
-    toast({
-      title: "Feature Disabled",
-      description: "The create note dialog has been disabled.",
-    });
+    if (user) {
+      setShowNewNoteDialog(true);
+    } else {
+      toast({
+        title: "Authentication Required",
+        description: "Please login to create notes.",
+      });
+      setShowProfileModal(true);
+    }
   };
 
   const handleSaveNote = async () => {
@@ -121,24 +128,10 @@ export const MobileNavigationBar = () => {
         onOpenChange={setShowProfileModal}
       />
 
-      <Sheet open={false} onOpenChange={() => {}}>
-        <SheetContent
-          side="top"
-          className="h-screen w-screen p-4 overflow-y-auto"
-        >
-          <SheetHeader className="mb-4">
-            <SheetTitle>Create New Note</SheetTitle>
-          </SheetHeader>
-          
-          <NoteEditor
-            note={newNote}
-            commonSubjects={CommonSubjects}
-            onNoteChange={handleNoteChange}
-            onCancel={() => setIsEditorExpanded(false)}
-            onSave={handleSaveNote}
-          />
-        </SheetContent>
-      </Sheet>
+      <NewNoteDialog
+        open={showNewNoteDialog}
+        onOpenChange={setShowNewNoteDialog}
+      />
     </>
   );
 };
