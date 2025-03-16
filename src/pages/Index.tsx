@@ -1,7 +1,8 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTour } from "@/contexts/TourContext";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { NavigationBar } from "@/components/navigation/NavigationBar";
 import { HeroSection } from "@/components/landing/HeroSection";
@@ -10,16 +11,13 @@ import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { CTASection } from "@/components/landing/CTASection";
 import { useVisibilityObserver } from "@/components/landing/useVisibilityObserver";
-import { FeatureIntroduction } from "@/components/onboarding/FeatureIntroduction";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
-  const { user, isFirstTimeUser, setIsFirstTimeUser } = useAuth();
+  const { user } = useAuth();
+  const { startTour } = useTour();
   const navigate = useNavigate();
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [authTab, setAuthTab] = useState<"sign-in" | "sign-up">("sign-up");
-  const [showIntroduction, setShowIntroduction] = useState(false);
   
   // Section visibility with custom hook
   const isVisible = useVisibilityObserver([
@@ -29,36 +27,6 @@ const Index = () => {
     'testimonials', 
     'cta'
   ]);
-
-  useEffect(() => {
-    // If user is logged in and it's their first time, show the introduction
-    if (user && isFirstTimeUser) {
-      setShowIntroduction(true);
-    }
-  }, [user, isFirstTimeUser]);
-
-  const handleIntroComplete = async () => {
-    if (user) {
-      // Update the user's profile to mark that they've seen the introduction
-      try {
-        const { error } = await supabase
-          .from('profiles')
-          .update({ has_seen_intro: true })
-          .eq('id', user.id);
-          
-        if (error) throw error;
-        
-        // Update local state
-        setIsFirstTimeUser(false);
-        toast({
-          title: "Welcome to StudyMate!",
-          description: "You're all set to start your learning journey."
-        });
-      } catch (error) {
-        console.error("Error updating profile:", error);
-      }
-    }
-  };
 
   const handleGetStarted = () => {
     if (user) {
@@ -106,12 +74,6 @@ const Index = () => {
         open={showAuthDialog} 
         onOpenChange={setShowAuthDialog}
         defaultTab={authTab}
-      />
-
-      <FeatureIntroduction
-        open={showIntroduction}
-        onOpenChange={setShowIntroduction}
-        onComplete={handleIntroComplete}
       />
     </div>
   );
