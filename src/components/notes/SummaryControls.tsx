@@ -39,6 +39,9 @@ export const SummaryControls = ({
 }: SummaryControlsProps) => {
   const isMobile = useIsMobile();
   
+  // Check if we have content to work with for the AI features
+  const hasContent = editingNote && editingNote.content && editingNote.content.trim().length > 0;
+  
   return (
     <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm py-2 border-b border-border flex flex-wrap items-center justify-between">
       <div className={`flex ${isMobile ? 'flex-wrap gap-2' : 'gap-4'} items-center`}>
@@ -59,7 +62,7 @@ export const SummaryControls = ({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
-                disabled={summarizing} 
+                disabled={summarizing || !hasContent} 
                 variant="secondary"
                 size="sm"
                 className="h-9 text-xs px-2 relative"
@@ -91,6 +94,7 @@ export const SummaryControls = ({
                   onSummaryLevelChange('brief');
                   onGenerateSummary();
                 }}
+                disabled={!hasContent}
               >
                 Brief Summary (30%)
               </DropdownMenuItem>
@@ -99,6 +103,7 @@ export const SummaryControls = ({
                   onSummaryLevelChange('medium');
                   onGenerateSummary();
                 }}
+                disabled={!hasContent}
               >
                 Medium Summary (50%)
               </DropdownMenuItem>
@@ -107,6 +112,7 @@ export const SummaryControls = ({
                   onSummaryLevelChange('detailed');
                   onGenerateSummary();
                 }}
+                disabled={!hasContent}
               >
                 Detailed Summary (70%)
               </DropdownMenuItem>
@@ -115,7 +121,7 @@ export const SummaryControls = ({
         ) : (
           <Button 
             onClick={onGenerateSummary} 
-            disabled={summarizing} 
+            disabled={summarizing || !hasContent} 
             variant="secondary"
             size="default"
             className="relative"
@@ -140,7 +146,7 @@ export const SummaryControls = ({
               size={isMobile ? "sm" : "sm"} 
               variant="outline" 
               className={`gap-1 ${isMobile ? 'h-9 px-2 aspect-square' : 'h-10'} relative`}
-              disabled={enhancing || !editingNote?.content}
+              disabled={enhancing || !hasContent}
               title={isMobile ? "Enhance with AI" : ""}
             >
               {enhancing ? (
@@ -165,10 +171,16 @@ export const SummaryControls = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => onEnhanceNote('grammar')}>
+            <DropdownMenuItem 
+              onClick={() => onEnhanceNote('grammar')}
+              disabled={!hasContent}
+            >
               Fix Grammar & Spelling
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onEnhanceNote('structure')}>
+            <DropdownMenuItem 
+              onClick={() => onEnhanceNote('structure')}
+              disabled={!hasContent}
+            >
               Improve Structure & Format
             </DropdownMenuItem>
           </DropdownMenuContent>

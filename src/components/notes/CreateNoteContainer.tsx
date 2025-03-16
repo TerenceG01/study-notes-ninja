@@ -56,6 +56,17 @@ export const CreateNoteContainer = ({
     }
   };
   
+  // Ensure we have a properly formatted note object for the child components
+  const formattedNote: Note = {
+    id: 'new-note-temp-id',
+    title: newNote.title || '',
+    content: newNote.content || '',
+    subject: newNote.subject || 'General',
+    created_at: new Date().toISOString(),
+    folder: 'My Notes',
+    summary: newNote.summary || ''
+  };
+  
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <CreateNoteHeader 
@@ -71,15 +82,7 @@ export const CreateNoteContainer = ({
       />
 
       <NoteContentScrollArea 
-        editingNote={{
-          id: 'new-note-temp-id',
-          title: newNote.title,
-          content: newNote.content,
-          subject: newNote.subject || 'General',
-          created_at: new Date().toISOString(),
-          folder: 'My Notes',
-          summary: newNote.summary || ''
-        }}
+        editingNote={formattedNote}
         isFullscreen={isFullscreen}
         showSummary={showSummary}
         summaryLevel={summaryLevel}

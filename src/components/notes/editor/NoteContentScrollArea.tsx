@@ -41,13 +41,14 @@ export const NoteContentScrollArea = ({
 }: NoteContentScrollAreaProps) => {
   // Check if we have content to work with for the AI features
   const hasContent = editingNote && editingNote.content && editingNote.content.trim().length > 0;
+  const hasSummary = editingNote?.summary && editingNote.summary.trim().length > 0;
   
   return (
     <div className="flex-grow overflow-y-auto overflow-x-hidden no-scrollbar">
       <SummaryControls 
         summaryLevel={summaryLevel}
         summarizing={summarizing}
-        hasSummary={!!editingNote?.summary}
+        hasSummary={hasSummary}
         showSummary={showSummary}
         editingNote={editingNote}
         enhancing={enhancing}
