@@ -1,6 +1,5 @@
 
 import { StudyModeHeader } from "@/components/flashcards/study/StudyModeHeader";
-import { Flashcard } from "@/components/flashcards/Flashcard";
 import { useFlashcardStudy } from "@/hooks/useFlashcardStudy";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useEffect } from "react";
@@ -23,7 +22,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     currentCard,
     updateFlashcardMutation,
     navigateCards,
-    shuffleCards // This prop is still used elsewhere, but not passed to StudyModeHeader
+    shuffleCards 
   } = useFlashcardStudy(flashcards, deckId);
   
   const isMobile = useIsMobile();
@@ -74,6 +73,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
           currentIndex={currentIndex}
           cardsLength={cards.length}
           isMobile={isMobile}
+          shuffleCards={shuffleCards}
         />
       ) : (
         <MultipleChoiceMode flashcards={flashcards} deckId={deckId} />
