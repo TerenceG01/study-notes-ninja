@@ -43,14 +43,14 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
 
   if (!currentCard) {
     return (
-      <div className="text-center py-8 w-full mx-auto">
+      <div className="text-center py-8 w-full min-w-full max-w-full mx-auto">
         <p className="text-lg font-medium text-primary mb-4">No flashcards available</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full mx-0 px-0 max-w-full overflow-hidden">
+    <div className="w-full min-w-full max-w-full mx-0 px-0 overflow-hidden">
       <StudyModeHeader
         mode={mode}
         setMode={setMode}
@@ -72,7 +72,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
           swipeHandlers={isMobile ? swipeHandlers : {}}
         />
       ) : (
-        <div className="w-full max-w-full overflow-hidden px-0">
+        <div className="w-full min-w-full max-w-full overflow-hidden px-0">
           <MultipleChoiceMode flashcards={cards} deckId={deckId} />
         </div>
       )}

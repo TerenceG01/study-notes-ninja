@@ -25,14 +25,14 @@ export const StandardModeView = ({
   swipeHandlers = {}
 }: StandardModeViewProps) => {
   return (
-    <div className="flex flex-col items-center w-full max-w-full overflow-hidden">
+    <div className="flex flex-col items-center w-full min-w-full max-w-full overflow-hidden">
       {!isMobile && (
         <div className="text-sm text-muted-foreground mb-2 w-full px-0">
           Card {currentIndex + 1} of {cardsLength}
         </div>
       )}
       
-      <div className="w-full max-w-full mx-0 flex-shrink-0 px-0 overflow-hidden">
+      <div className="w-full min-w-full max-w-full mx-0 flex-shrink-0 px-0 overflow-hidden">
         <EnhancedFlashcard 
           card={currentCard}
           isFlipped={isFlipped}
