@@ -39,8 +39,7 @@ export const NoteContentScrollArea = ({
   onEnhanceNote,
   onToggleAutoSave
 }: NoteContentScrollAreaProps) => {
-  // Check if we have content to work with for the AI features
-  const hasContent = editingNote && editingNote.content && editingNote.content.trim().length > 0;
+  // Check if there's a summary available
   const hasSummary = editingNote?.summary && editingNote.summary.trim().length > 0;
   
   return (
