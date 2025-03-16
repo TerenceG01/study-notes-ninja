@@ -27,7 +27,7 @@ export const QuizCardPreview = ({
             <span>Multiple Choice Quiz</span>
             <span>Question {currentIndex + 1} of {totalCards}</span>
           </div>
-          <div className="min-h-[150px] flex items-center justify-center">
+          <div className="min-h-[180px] flex items-center justify-center">
             <p className="text-lg font-medium text-center">
               {currentCard.question.length > 100 
                 ? currentCard.question.substring(0, 100) + "..." 

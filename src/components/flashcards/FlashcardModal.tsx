@@ -99,7 +99,7 @@ export const FlashcardModal = ({
         </div>
       </div>
 
-      <div className="w-full flex-grow overflow-hidden px-0">
+      <div className="w-full h-[350px] sm:h-[400px] overflow-hidden">
         <EnhancedFlashcard 
           card={currentCard}
           isFlipped={isFlipped}
@@ -115,7 +115,7 @@ export const FlashcardModal = ({
           onClick={() => navigateCards('prev')} 
           disabled={currentIndex === 0}
           size={isMobile ? "sm" : "default"}
-          className="w-full sm:w-auto"
+          className="w-[45%] sm:w-auto"
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
           {isMobile ? "Prev" : "Previous Card"}
@@ -126,7 +126,7 @@ export const FlashcardModal = ({
           onClick={() => navigateCards('next')} 
           disabled={currentIndex === cardsLength - 1}
           size={isMobile ? "sm" : "default"}
-          className="w-full sm:w-auto"
+          className="w-[45%] sm:w-auto"
         >
           {isMobile ? "Next" : "Next Card"}
           <ArrowRight className="h-4 w-4 ml-1" />
@@ -144,7 +144,7 @@ export const FlashcardModal = ({
   if (isMobile) {
     return (
       <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DrawerContent className="max-h-[92vh] p-4 pb-6 flex flex-col">
+        <DrawerContent className="max-h-[85vh] p-4 pb-6 flex flex-col">
           {modalContent}
         </DrawerContent>
       </Drawer>
@@ -153,7 +153,7 @@ export const FlashcardModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[800px] h-[90vh] flex flex-col p-6">
+      <DialogContent className="sm:max-w-[700px] w-full h-auto flex flex-col p-6">
         {modalContent}
       </DialogContent>
     </Dialog>

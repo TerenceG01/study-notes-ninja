@@ -58,8 +58,8 @@ export const QuizModalContent = ({
         </Button>
       </div>
 
-      <Card className="w-full flex-shrink-0 max-w-full">
-        <CardContent className={isMobile ? "p-3 overflow-hidden" : "p-4 sm:p-6 overflow-hidden"}>
+      <Card className="w-full flex-shrink-0 max-w-full h-[350px] sm:h-[400px] overflow-auto">
+        <CardContent className={isMobile ? "p-3" : "p-4 sm:p-6"}>
           <h3 className={`${isMobile ? 'text-sm' : 'text-base sm:text-lg'} font-medium mb-3 sm:mb-4 break-words`}>
             {currentCard.question}
           </h3>
