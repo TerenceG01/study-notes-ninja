@@ -99,7 +99,7 @@ export const FlashcardModal = ({
         </div>
       </div>
 
-      <div className="w-full h-[350px] sm:h-[400px] overflow-hidden">
+      <div className="w-full h-[350px] sm:h-[400px] flex items-center">
         <EnhancedFlashcard 
           card={currentCard}
           isFlipped={isFlipped}

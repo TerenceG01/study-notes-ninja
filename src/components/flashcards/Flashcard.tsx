@@ -49,11 +49,11 @@ export const Flashcard = ({
   return (
     <div className="space-y-4 w-full">
       <Card 
-        className="w-full h-[300px] sm:h-[400px] cursor-pointer transition-all hover:shadow-lg relative"
+        className="w-full h-[300px] sm:h-[400px] cursor-pointer transition-all hover:shadow-lg relative flex items-center justify-center"
         onClick={onFlip}
         {...(isMobile ? swipeHandlers : {})}
       >
-        <CardContent className="flex items-center justify-center p-3 sm:p-6 h-full overflow-auto">
+        <CardContent className="flex items-center justify-center p-3 sm:p-6 h-full w-full">
           <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-medium text-center w-full break-words">
             {isFlipped ? card.answer : card.question}
           </div>
