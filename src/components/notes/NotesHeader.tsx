@@ -1,5 +1,4 @@
 
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { CommonSubjects } from "./CommonSubjects";
 import { useState } from "react";
 import { CreateNoteContainer } from "./CreateNoteContainer";
@@ -7,6 +6,7 @@ import { DialogFooterActions } from "./DialogFooterActions";
 import { LectureMode } from "./LectureMode";
 import { NoteCreationControls } from "./header/NoteCreationControls";
 import { useNoteEditorState } from "@/hooks/useNoteEditorState";
+import { DialogWrapper } from "./dialog/DialogWrapper";
 
 interface NotesHeaderProps {
   onSearch: (query: string) => void;
@@ -71,51 +71,50 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
         onCreateNote={handleCreateNote} 
       />
 
-      <Sheet open={isEditorExpanded} onOpenChange={setIsEditorExpanded}>
-        <SheetContent
-          side="top"
-          className="h-screen w-screen p-6 flex flex-col max-h-screen overflow-hidden bg-background"
-        >
-          <div className="flex flex-col h-full overflow-hidden">
-            <CreateNoteContainer
-              newNote={{
-                id: '',
-                title: newNote.title,
-                content: newNote.content,
-                subject: newNote.subject,
-                created_at: new Date().toISOString(),
-                folder: 'My Notes',
-                summary: newNote.summary
-              }}
-              isFullscreen={isFullscreen}
-              wordCount={wordCount}
-              lastSaved={lastSaved}
-              autoSaveEnabled={autoSaveEnabled}
-              commonSubjects={CommonSubjects}
-              summarizing={summarizing}
-              summaryLevel={summaryLevel}
-              enhancing={enhancing}
-              showSummary={showSummary}
-              onNoteChange={handleNoteChange}
-              onNoteContentChange={handleNoteContentChange}
-              onToggleAutoSave={toggleAutoSave}
-              onToggleLectureMode={toggleLectureMode}
-              onToggleFullscreen={toggleFullscreen}
-              onSummaryLevelChange={setSummaryLevel}
-              onGenerateSummary={handleGenerateSummary}
-              onToggleSummary={handleToggleSummary}
-              onEnhanceNote={handleEnhanceNote}
-            />
-            
-            <DialogFooterActions
-              onSave={handleSave}
-              onCancel={() => setIsEditorExpanded(false)}
-              isSaved={isSaved}
-              saveDisabled={!changesMade}
-            />
-          </div>
-        </SheetContent>
-      </Sheet>
+      <DialogWrapper 
+        open={isEditorExpanded} 
+        onOpenChange={setIsEditorExpanded}
+        isFullscreen={isFullscreen}
+      >
+        <div className="flex flex-col h-full overflow-hidden">
+          <CreateNoteContainer
+            newNote={{
+              id: '',
+              title: newNote.title,
+              content: newNote.content,
+              subject: newNote.subject,
+              created_at: new Date().toISOString(),
+              folder: 'My Notes',
+              summary: newNote.summary
+            }}
+            isFullscreen={isFullscreen}
+            wordCount={wordCount}
+            lastSaved={lastSaved}
+            autoSaveEnabled={autoSaveEnabled}
+            commonSubjects={CommonSubjects}
+            summarizing={summarizing}
+            summaryLevel={summaryLevel}
+            enhancing={enhancing}
+            showSummary={showSummary}
+            onNoteChange={handleNoteChange}
+            onNoteContentChange={handleNoteContentChange}
+            onToggleAutoSave={toggleAutoSave}
+            onToggleLectureMode={toggleLectureMode}
+            onToggleFullscreen={toggleFullscreen}
+            onSummaryLevelChange={setSummaryLevel}
+            onGenerateSummary={handleGenerateSummary}
+            onToggleSummary={handleToggleSummary}
+            onEnhanceNote={handleEnhanceNote}
+          />
+          
+          <DialogFooterActions
+            onSave={handleSave}
+            onCancel={() => setIsEditorExpanded(false)}
+            isSaved={isSaved}
+            saveDisabled={!changesMade}
+          />
+        </div>
+      </DialogWrapper>
     </>
   );
 };
