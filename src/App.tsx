@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,6 +24,7 @@ import { ProfileButton } from "./components/navigation/ProfileButton";
 import { NoteModelProvider } from "./contexts/NoteModelContext";
 import { TourProvider } from "./contexts/TourContext";
 import { AppTour } from "./components/onboarding/AppTour";
+import { CookiesDisclaimerDialog } from "./components/ui/CookiesDisclaimerDialog";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -98,6 +98,7 @@ function App() {
                 <AuthProvider>
                   <TourProvider>
                     <AppTour />
+                    <CookiesDisclaimerDialog />
                     <Routes>
                       <Route path="/" element={<MainLayout><Index /></MainLayout>} />
                       <Route path="/reset-password" element={<ResetPassword />} />
