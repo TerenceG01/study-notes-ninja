@@ -29,6 +29,7 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
     summaryLevel,
     showSummary,
     enhancing,
+    changesMade,
     handleSave,
     toggleAutoSave,
     toggleLectureMode,
@@ -110,6 +111,7 @@ export const NotesHeader = ({ onSearch }: NotesHeaderProps) => {
               onSave={handleSave}
               onCancel={() => setIsEditorExpanded(false)}
               isSaved={isSaved}
+              saveDisabled={!changesMade}
             />
           </div>
         </SheetContent>

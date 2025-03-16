@@ -25,6 +25,7 @@ export const useNoteEditorState = () => {
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
   const [lectureMode, setLectureMode] = useState(false);
+  const [changesMade, setChangesMade] = useState(false);
   
   // AI Enhancement & Summary features
   const { enhancing, enhanceNote } = useNoteEnhancement();
@@ -43,6 +44,7 @@ export const useNoteEditorState = () => {
     if (content) {
       const words = content.trim().split(/\s+/).filter(Boolean).length;
       setWordCount(words);
+      setChangesMade(true);
     } else {
       setWordCount(0);
     }
@@ -54,6 +56,7 @@ export const useNoteEditorState = () => {
     if (success) {
       setIsSaved(true);
       setLastSaved(new Date());
+      setChangesMade(false);
       toast({
         title: "Success",
         description: "Note created successfully!",
@@ -186,6 +189,7 @@ export const useNoteEditorState = () => {
     summaryLevel,
     showSummary,
     enhancing,
+    changesMade,
     handleSave,
     toggleAutoSave,
     toggleLectureMode,

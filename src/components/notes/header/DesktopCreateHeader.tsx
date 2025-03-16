@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Note } from "../types";
-import { Maximize2, Minimize2, BookOpen } from "lucide-react";
+import { Maximize2, Minimize2, BookOpen, Clock, X } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AutoSaveControl } from "./AutoSaveControl";
 
