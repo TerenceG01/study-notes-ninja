@@ -50,7 +50,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
   }
 
   return (
-    <div className="w-full mx-auto px-0 max-w-full overflow-hidden">
+    <div className="w-full mx-0 px-0 max-w-full overflow-hidden">
       <StudyModeHeader
         mode={mode}
         setMode={setMode}
