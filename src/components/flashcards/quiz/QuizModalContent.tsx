@@ -67,12 +67,14 @@ export const QuizModalContent = ({
         </Button>
       </div>
 
-      <Card className="w-full flex-shrink-0 max-w-full h-[320px] sm:h-[380px] flex flex-col">
+      <Card className="w-full flex-shrink-0 max-w-full h-[400px] sm:h-[400px] flex flex-col">
         <CardContent className={`${isMobile ? "p-3" : "p-4"} h-full w-full flex flex-col`}>
-          <h3 className={`${isMobile ? 'text-sm' : 'text-base'} font-medium mb-3 text-center`}>
-            {currentCard.question}
-          </h3>
-          <div className="flex-grow flex flex-col w-full overflow-y-auto">
+          <div className="h-[80px] flex items-center justify-center mb-2">
+            <h3 className={`${isMobile ? 'text-sm' : 'text-base'} font-medium text-center`}>
+              {currentCard.question}
+            </h3>
+          </div>
+          <div className="flex-grow flex flex-col w-full">
             <MultipleChoiceOptions
               options={options}
               isAnswered={isAnswered}
