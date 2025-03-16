@@ -17,19 +17,19 @@ export const QuizCompletionCard = ({ correctAnswers, totalAttempted, onRestart }
     "Don't give up!";
 
   return (
-    <Card className="mt-6">
-      <CardContent className="p-6">
-        <h3 className="text-xl font-semibold mb-4 text-center">Quiz Complete!</h3>
-        <div className="space-y-4">
+    <Card className="mt-4 mb-2 w-full">
+      <CardContent className="p-4">
+        <h3 className="text-xl font-semibold mb-3 text-center">Quiz Complete!</h3>
+        <div className="space-y-3">
           <div className="text-center">
             <p className="text-3xl font-bold text-primary">{percentageScore}%</p>
-            <p className="text-lg text-muted-foreground mt-2">{scoreMessage}</p>
+            <p className="text-lg text-muted-foreground mt-1">{scoreMessage}</p>
           </div>
           <div className="text-sm text-muted-foreground text-center">
             Correct answers: {correctAnswers} out of {totalAttempted}
           </div>
           <Button 
-            className="w-full mt-4"
+            className="w-full mt-3"
             onClick={onRestart}
           >
             Restart Quiz
