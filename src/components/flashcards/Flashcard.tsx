@@ -1,7 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Check, X, ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useSwipeDetection } from "@/hooks/useSwipeDetection";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -90,50 +90,28 @@ export const Flashcard = ({
         </div>
       </Card>
 
-      {/* Card navigation and actions */}
-      <div className="grid grid-cols-2 gap-2 sm:flex sm:justify-between sm:items-center w-full">
-        <div className="flex gap-2 col-span-2 sm:col-span-1">
-          <Button 
-            variant="outline" 
-            onClick={onPrev} 
-            disabled={currentIndex === 0}
-            size={isMobile ? "sm" : "default"}
-            className="w-full sm:w-auto"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            {isMobile ? "Prev" : "Previous"}
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={onNext} 
-            disabled={currentIndex === totalCards - 1}
-            size={isMobile ? "sm" : "default"}
-            className="w-full sm:w-auto"
-          >
-            {isMobile ? "Next" : "Next"}
-            <ArrowRight className="h-4 w-4 ml-1" />
-          </Button>
-        </div>
-        <div className="flex gap-2 col-span-2 sm:col-span-1">
-          <Button 
-            variant="outline" 
-            onClick={() => updateFlashcard({ id: card.id, learned: false })}
-            size={isMobile ? "sm" : "default"}
-            className="w-full sm:w-auto"
-          >
-            <X className="h-4 w-4 mr-1" />
-            {isMobile ? "Retry" : "Need to practice"}
-          </Button>
-          <Button 
-            variant="default" 
-            onClick={() => updateFlashcard({ id: card.id, learned: true })}
-            size={isMobile ? "sm" : "default"}
-            className="w-full sm:w-auto"
-          >
-            <Check className="h-4 w-4 mr-1" />
-            {isMobile ? "Know" : "I know this"}
-          </Button>
-        </div>
+      {/* Card navigation buttons */}
+      <div className="flex justify-between items-center w-full">
+        <Button 
+          variant="outline" 
+          onClick={onPrev} 
+          disabled={currentIndex === 0}
+          size={isMobile ? "sm" : "default"}
+          className="w-full sm:w-auto"
+        >
+          <ArrowLeft className="h-4 w-4 mr-1" />
+          {isMobile ? "Prev" : "Previous"}
+        </Button>
+        <Button 
+          variant="outline" 
+          onClick={onNext} 
+          disabled={currentIndex === totalCards - 1}
+          size={isMobile ? "sm" : "default"}
+          className="w-full sm:w-auto"
+        >
+          {isMobile ? "Next" : "Next"}
+          <ArrowRight className="h-4 w-4 ml-1" />
+        </Button>
       </div>
       
       <div className="text-center mt-2">
