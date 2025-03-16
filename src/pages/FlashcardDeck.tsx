@@ -76,7 +76,7 @@ const FlashcardDeck = () => {
       isOpen ? "ml-40" : "ml-20",
       isMobile && "ml-0 pb-16" // Remove sidebar margin and add bottom padding for mobile nav
     )}>
-      <ResponsiveContainer fullWidth className="pr-2 sm:pr-4">
+      <ResponsiveContainer fullWidth className="pr-0">
         <DeckHeader title={deck.title} description={deck.description} />
 
         <Tabs defaultValue="study" className="space-y-3 sm:space-y-4 overflow-hidden">
