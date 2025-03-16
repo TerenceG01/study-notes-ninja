@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Maximize2 } from "lucide-react";
+import { Maximize2 } from "lucide-react";
 import { useState } from "react";
 import { FlashcardModal } from "@/components/flashcards/FlashcardModal";
 

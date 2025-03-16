@@ -1,7 +1,7 @@
 
 import { useEffect } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X, ArrowLeft, ArrowRight, Maximize2, Minimize2 } from "lucide-react";
 import { EnhancedFlashcard } from "@/components/flashcards/EnhancedFlashcard";

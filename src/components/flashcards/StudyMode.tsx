@@ -5,6 +5,7 @@ import { useFlashcardStudy } from "@/hooks/useFlashcardStudy";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useEffect } from "react";
 import { MultipleChoiceMode } from "@/components/flashcards/MultipleChoiceMode";
+import { StandardModeView } from "@/components/flashcards/study/StandardModeView";
 
 interface StudyModeProps {
   flashcards: any[];
@@ -65,15 +66,14 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
       />
 
       {mode === 'standard' ? (
-        <Flashcard
-          card={currentCard}
+        <StandardModeView
+          currentCard={currentCard}
           isFlipped={isFlipped}
-          onFlip={() => setIsFlipped(!isFlipped)}
-          onPrev={() => navigateCards('prev')}
-          onNext={() => navigateCards('next')}
-          totalCards={cards.length}
+          setIsFlipped={setIsFlipped}
+          navigateCards={navigateCards}
           currentIndex={currentIndex}
-          updateFlashcard={updateFlashcardMutation.mutate}
+          cardsLength={cards.length}
+          isMobile={isMobile}
         />
       ) : (
         <MultipleChoiceMode flashcards={flashcards} deckId={deckId} />
