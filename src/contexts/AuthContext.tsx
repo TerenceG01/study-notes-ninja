@@ -6,11 +6,15 @@ import type { User } from "@supabase/supabase-js";
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  isFirstTimeUser: boolean;
+  setIsFirstTimeUser: (value: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  loading: true
+  loading: true,
+  isFirstTimeUser: false,
+  setIsFirstTimeUser: () => {}
 });
 
 export const useAuth = () => {
@@ -24,12 +28,32 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isFirstTimeUser, setIsFirstTimeUser] = useState(false);
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setLoading(false);
+      
+      // Check if it's the first time the user has logged in
+      if (session?.user) {
+        const checkFirstLogin = async () => {
+          // Try to get the user's profile
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('has_seen_intro')
+            .eq('id', session.user.id)
+            .single();
+          
+          // If there's no profile or has_seen_intro is false, set isFirstTimeUser to true
+          if (error || !data || data.has_seen_intro === false) {
+            setIsFirstTimeUser(true);
+          }
+        };
+        
+        checkFirstLogin();
+      }
     });
 
     // Listen for auth changes
@@ -38,6 +62,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       setLoading(false);
+      
+      if (session?.user) {
+        // Check if this is the first time the user has logged in
+        const checkFirstLogin = async () => {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('has_seen_intro')
+            .eq('id', session.user.id)
+            .single();
+          
+          // If there's no profile or has_seen_intro is false, set isFirstTimeUser to true
+          if (error || !data || data.has_seen_intro === false) {
+            setIsFirstTimeUser(true);
+          }
+        };
+        
+        checkFirstLogin();
+      }
     });
 
     return () => {
@@ -47,7 +89,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, isFirstTimeUser, setIsFirstTimeUser }}>
       {children}
     </AuthContext.Provider>
   );
