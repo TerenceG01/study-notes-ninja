@@ -45,24 +45,24 @@ export const DesktopCreateHeader = ({
           </DialogTitle>
         </DialogHeader>
         
-        {onToggleFullscreen && (
-          <div className="flex items-center gap-1 ml-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="outline"
-                  size="icon" 
-                  onClick={onToggleLectureMode}
-                  className="h-8 w-8"
-                >
-                  <BookOpen className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Lecture Mode</p>
-              </TooltipContent>
-            </Tooltip>
-            
+        <div className="flex items-center gap-1 ml-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="outline"
+                size="icon" 
+                onClick={onToggleLectureMode}
+                className="h-8 w-8"
+              >
+                <BookOpen className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Lecture Mode</p>
+            </TooltipContent>
+          </Tooltip>
+          
+          {onToggleFullscreen && (
             <Button 
               variant="ghost" 
               size="icon" 
@@ -74,8 +74,8 @@ export const DesktopCreateHeader = ({
                 <Maximize2 className="h-4 w-4" />
               }
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">

@@ -49,7 +49,7 @@ export const useNoteEditorState = () => {
   };
 
   const handleSave = async () => {
-    if (!user) return;
+    if (!user) return false;
     const success = await createNote(newNote, user.id);
     if (success) {
       setIsSaved(true);
@@ -64,7 +64,9 @@ export const useNoteEditorState = () => {
         setIsSaved(false);
         setShowSummary(false);
       }, 1000);
+      return true;
     }
+    return false;
   };
 
   const toggleAutoSave = () => {
@@ -129,21 +131,43 @@ export const useNoteEditorState = () => {
   };
   
   const handleEnhanceNote = async (enhanceType: 'grammar' | 'structure' | 'all') => {
-    // Create a properly formatted Note object
-    const fullNote = {
-      id: 'new-note-temp-id',
-      title: newNote.title,
-      content: newNote.content,
-      subject: newNote.subject || 'General',
-      created_at: new Date().toISOString(),
-      folder: 'My Notes'
-    };
-    
-    await enhanceNote(fullNote, enhanceType, (enhancedNote) => {
-      if (enhancedNote) {
-        handleNoteChange('content', enhancedNote.content);
-      }
-    });
+    try {
+      // Show loading toast
+      const loadingToastId = toast({
+        title: "Enhancing note...",
+        description: "Our AI is improving your note.",
+      }).id;
+      
+      // Create a properly formatted Note object
+      const fullNote = {
+        id: 'new-note-temp-id',
+        title: newNote.title,
+        content: newNote.content,
+        subject: newNote.subject || 'General',
+        created_at: new Date().toISOString(),
+        folder: 'My Notes'
+      };
+      
+      await enhanceNote(fullNote, enhanceType, (enhancedNote) => {
+        if (enhancedNote) {
+          handleNoteChange('content', enhancedNote.content);
+          
+          // Dismiss loading toast
+          toast.dismiss(loadingToastId);
+          
+          toast({
+            title: "Note enhanced",
+            description: "Your note has been improved successfully.",
+          });
+        }
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Enhancement failed",
+        description: "There was an error enhancing your note.",
+      });
+    }
   };
 
   return {

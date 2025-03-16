@@ -49,9 +49,10 @@ export const CreateNoteContainer = ({
 }: CreateNoteContainerProps) => {
   const handleNoteChangeAdapter = (note: Note | null) => {
     if (note) {
-      onNoteChange('title', note.title || '');
-      onNoteContentChange(note.content || '');
-      onNoteChange('subject', note.subject || 'General');
+      if (note.title !== undefined) onNoteChange('title', note.title || '');
+      if (note.content !== undefined) onNoteContentChange(note.content || '');
+      if (note.subject !== undefined) onNoteChange('subject', note.subject || 'General');
+      if (note.summary !== undefined) onNoteChange('summary', note.summary);
     }
   };
   
