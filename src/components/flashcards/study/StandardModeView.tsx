@@ -41,7 +41,7 @@ export const StandardModeView = ({
   const progress = Math.round(((currentIndex + 1) / cardsLength) * 100);
   
   return (
-    <div className="flex flex-col items-center w-full max-w-full overflow-hidden">
+    <div className="flex flex-col items-center w-full min-w-full max-w-full overflow-hidden">
       {/* Progress indicator */}
       <div className="w-full max-w-2xl mx-auto mb-3">
         <div className="flex justify-between items-center text-xs text-muted-foreground mb-1.5">
@@ -63,9 +63,11 @@ export const StandardModeView = ({
                 Card {currentIndex + 1} of {cardsLength}
               </Badge>
             </div>
-            <div className="min-h-[180px] flex items-center justify-center overflow-auto">
-              <p className="text-lg font-medium text-center break-words w-full px-2">
-                {isFlipped ? currentCard.answer : currentCard.question}
+            <div className="min-h-[180px] flex items-center justify-center">
+              <p className="text-lg font-medium text-center">
+                {currentCard.question.length > 120 
+                  ? currentCard.question.substring(0, 120) + "..." 
+                  : currentCard.question}
               </p>
             </div>
             <div className="flex justify-end pt-2 opacity-80 group-hover:opacity-100 transition-opacity">

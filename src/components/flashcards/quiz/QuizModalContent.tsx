@@ -70,7 +70,7 @@ export const QuizModalContent = ({
       <Card className="w-full flex-shrink-0 max-w-full h-[400px] sm:h-[400px] flex flex-col">
         <CardContent className={`${isMobile ? "p-3" : "p-4"} h-full w-full flex flex-col`}>
           <div className="h-[80px] flex items-center justify-center mb-2 overflow-y-auto">
-            <div className={`${isMobile ? 'text-sm' : 'text-base'} font-medium text-center break-words px-2 w-full`}>
+            <div className={`${isMobile ? 'text-sm' : 'text-base'} font-medium text-center px-2`}>
               {currentCard.question}
             </div>
           </div>
