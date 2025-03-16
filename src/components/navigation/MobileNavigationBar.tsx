@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
@@ -29,10 +28,9 @@ export const MobileNavigationBar = () => {
   } = useNoteEditor();
 
   const handleCreateNote = () => {
-    setIsEditorExpanded(true);
     toast({
-      title: "Create Note",
-      description: "Opening note editor...",
+      title: "Feature Disabled",
+      description: "The create note dialog has been disabled.",
     });
   };
 
@@ -123,7 +121,7 @@ export const MobileNavigationBar = () => {
         onOpenChange={setShowProfileModal}
       />
 
-      <Sheet open={isEditorExpanded} onOpenChange={setIsEditorExpanded}>
+      <Sheet open={false} onOpenChange={() => {}}>
         <SheetContent
           side="top"
           className="h-screen w-screen p-4 overflow-y-auto"
