@@ -1,11 +1,9 @@
-
-import { useSwipeDetection } from "@/hooks/useSwipeDetection";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { MultipleChoiceMode } from "@/components/flashcards/MultipleChoiceMode";
+import { StudyModeHeader } from "@/components/flashcards/study/StudyModeHeader";
+import { Flashcard } from "@/components/flashcards/Flashcard";
 import { useFlashcardStudy } from "@/hooks/useFlashcardStudy";
-import { useFlashcardKeyboardNavigation } from "@/hooks/useFlashcardKeyboardNavigation";
-import { StudyModeHeader } from "./study/StudyModeHeader";
-import { StandardModeView } from "./study/StandardModeView";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useEffect } from "react";
+import { MultipleChoiceMode } from "@/components/flashcards/MultipleChoiceMode";
 
 interface StudyModeProps {
   flashcards: any[];
@@ -13,8 +11,6 @@ interface StudyModeProps {
 }
 
 export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
-  const isMobile = useIsMobile();
-  
   const {
     mode,
     setMode,
@@ -23,58 +19,63 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     setIsFlipped,
     cards,
     currentCard,
+    updateFlashcardMutation,
     navigateCards,
-    shuffleCards
+    shuffleCards // This prop is still used elsewhere, but not passed to StudyModeHeader
   } = useFlashcardStudy(flashcards, deckId);
+  
+  const isMobile = useIsMobile();
+  
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowLeft') {
+        navigateCards('prev');
+      } else if (event.key === 'ArrowRight') {
+        navigateCards('next');
+      } else if (event.key === ' ' || event.key === 'Spacebar') {
+        setIsFlipped(!isFlipped);
+      } else if (event.key === 'f') {
+        const element = document.documentElement;
+        if (!document.fullscreenElement) {
+          element.requestFullscreen().catch((err) => {
+            console.error("Error attempting to enable fullscreen:", err);
+          });
+        } else {
+          document.exitFullscreen();
+        }
+      }
+    };
 
-  const swipeHandlers = useSwipeDetection(
-    () => navigateCards('next'),       // Swipe left to go to next card
-    () => navigateCards('prev'),       // Swipe right to go to previous card
-    () => setIsFlipped(!isFlipped)     // Swipe up to flip card
-  );
+    window.addEventListener('keydown', handleKeyDown);
 
-  // Setup keyboard navigation
-  useFlashcardKeyboardNavigation({
-    isFlipped,
-    setIsFlipped,
-    navigateCards,
-    isMobile
-  });
-
-  if (!currentCard) {
-    return (
-      <div className="text-center py-8 w-full min-w-full max-w-full mx-auto">
-        <p className="text-lg font-medium text-primary mb-4">No flashcards available</p>
-      </div>
-    );
-  }
-
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [navigateCards, setIsFlipped]);
+  
   return (
-    <div className="w-full min-w-full max-w-full mx-auto px-0 overflow-hidden">
+    <div className="w-full max-w-full space-y-4">
       <StudyModeHeader
         mode={mode}
         setMode={setMode}
-        shuffleCards={shuffleCards}
         currentIndex={currentIndex}
         totalCards={cards.length}
         isMobile={isMobile}
       />
 
       {mode === 'standard' ? (
-        <StandardModeView
-          currentCard={currentCard}
+        <Flashcard
+          card={currentCard}
           isFlipped={isFlipped}
-          setIsFlipped={setIsFlipped}
-          navigateCards={navigateCards}
+          onFlip={() => setIsFlipped(!isFlipped)}
+          onPrev={() => navigateCards('prev')}
+          onNext={() => navigateCards('next')}
+          totalCards={cards.length}
           currentIndex={currentIndex}
-          cardsLength={cards.length}
-          isMobile={isMobile}
-          swipeHandlers={isMobile ? swipeHandlers : {}}
+          updateFlashcard={updateFlashcardMutation.mutate}
         />
       ) : (
-        <div className="w-full min-w-full max-w-full overflow-hidden px-0">
-          <MultipleChoiceMode flashcards={cards} deckId={deckId} />
-        </div>
+        <MultipleChoiceMode flashcards={flashcards} deckId={deckId} />
       )}
     </div>
   );
