@@ -53,7 +53,7 @@ export const MultipleChoiceOptions = ({
             onClick={() => option.content ? onSelect(option.id, option.is_correct) : null}
             disabled={isAnswered || !option.content}
           >
-            <div className="flex items-start gap-2 w-full">
+            <div className="flex items-start gap-2 w-full overflow-hidden">
               <div className="flex-shrink-0 mt-1">
                 {isAnswered && option.is_correct && (
                   <Check className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-white`} />
@@ -62,24 +62,19 @@ export const MultipleChoiceOptions = ({
                   <X className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} text-white`} />
                 )}
               </div>
-              <span className="break-words line-clamp-2">{option.content}</span>
+              <span className="break-words line-clamp-2 overflow-hidden">{option.content}</span>
             </div>
           </Button>
         ))}
       </div>
       
-      {isAnswered && options.find(o => o.id === selectedOption)?.explanation && (
-        <div className="mt-2 p-2 bg-muted rounded-lg h-[60px] overflow-auto">
+      <div className="mt-2 p-2 bg-muted rounded-lg h-[60px] overflow-auto">
+        {isAnswered && options.find(o => o.id === selectedOption)?.explanation ? (
           <p className="text-xs break-words">{options.find(o => o.id === selectedOption)?.explanation}</p>
-        </div>
-      )}
-      
-      {/* Placeholder for explanation when not answered or no explanation */}
-      {(!isAnswered || !options.find(o => o.id === selectedOption)?.explanation) && (
-        <div className="mt-2 h-[60px] invisible">
-          <p className="text-xs">Placeholder for explanation</p>
-        </div>
-      )}
+        ) : (
+          <p className="text-xs text-transparent select-none">Placeholder for explanation</p>
+        )}
+      </div>
     </div>
   );
 };
