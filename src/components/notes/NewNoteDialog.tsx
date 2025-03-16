@@ -2,6 +2,7 @@
 import { SummaryLevel } from "@/hooks/useNoteSummary";
 import { NoteDialog } from "./dialog/NoteDialog";
 import { Note } from "./types";
+import { useNoteModel } from "@/contexts/NoteModelContext";
 
 interface NewNoteDialogProps {
   open: boolean;
@@ -45,12 +46,14 @@ export const NewNoteDialog = ({
   onSave,
   isFullscreen = true
 }: NewNoteDialogProps) => {
+  const { selectedSubject, setSelectedSubject } = useNoteModel();
+
   // Format the note for consumption by the NoteDialog component
   const formattedNote: Note = {
     id: 'new-note-temp-id',
     title: newNote.title || '',
     content: newNote.content || '',
-    subject: newNote.subject || 'General',
+    subject: newNote.subject || selectedSubject || 'General',
     created_at: new Date().toISOString(),
     folder: 'My Notes',
     summary: newNote.summary || ''
@@ -61,7 +64,11 @@ export const NewNoteDialog = ({
     if (note) {
       if (note.title !== undefined) onNoteChange('title', note.title);
       if (note.content !== undefined) onNoteContentChange(note.content);
-      if (note.subject !== undefined) onNoteChange('subject', note.subject);
+      if (note.subject !== undefined) {
+        onNoteChange('subject', note.subject);
+        // Update the subject in the context as well
+        setSelectedSubject(note.subject);
+      }
       if (note.summary !== undefined) onNoteChange('summary', note.summary);
     }
   };

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Note } from "@/hooks/useNotes";
 import { useState, useEffect } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface TitleSubjectEditorProps {
   open: boolean;
@@ -76,19 +77,21 @@ export const TitleSubjectEditor = ({
               value={localSubject}
               onValueChange={handleSubjectChange}
             >
-              <SelectTrigger className="h-9">
+              <SelectTrigger id="subject" className="h-9">
                 <SelectValue placeholder="Select subject" />
               </SelectTrigger>
-              <SelectContent>
-                {commonSubjects.map(subject => (
-                  <SelectItem 
-                    key={subject} 
-                    value={subject}
-                    className="hover:bg-muted cursor-pointer"
-                  >
-                    {subject}
-                  </SelectItem>
-                ))}
+              <SelectContent position="popper" className="bg-background border max-h-[200px] z-50">
+                <ScrollArea className="max-h-[180px]">
+                  {commonSubjects.map(subject => (
+                    <SelectItem 
+                      key={subject} 
+                      value={subject}
+                      className="cursor-pointer hover:bg-muted py-1.5"
+                    >
+                      {subject}
+                    </SelectItem>
+                  ))}
+                </ScrollArea>
               </SelectContent>
             </Select>
           </div>

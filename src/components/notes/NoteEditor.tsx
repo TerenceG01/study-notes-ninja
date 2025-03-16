@@ -7,6 +7,7 @@ import { Plus, BookOpen, Tag } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface NoteEditorProps {
   note: {
@@ -62,22 +63,27 @@ export const NoteEditor = ({
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-full max-w-[300px] p-0 max-h-[300px] overflow-y-auto" align="start">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-0.5 p-1">
-              {commonSubjects.map((subject) => (
-                <Button
-                  key={subject}
-                  variant="ghost"
-                  className={cn(
-                    "justify-start text-left h-8 text-sm",
-                    note.subject === subject && "bg-muted font-medium"
-                  )}
-                  onClick={() => onNoteChange('subject', subject)}
-                >
-                  <span className="truncate">{subject}</span>
-                </Button>
-              ))}
-            </div>
+          <PopoverContent 
+            className="w-full max-w-[300px] p-0 max-h-[300px] z-50 bg-background" 
+            align="start"
+          >
+            <ScrollArea className="max-h-[280px] p-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-0.5">
+                {commonSubjects.map((subject) => (
+                  <Button
+                    key={subject}
+                    variant="ghost"
+                    className={cn(
+                      "justify-start text-left h-8 text-sm",
+                      note.subject === subject && "bg-muted font-medium"
+                    )}
+                    onClick={() => onNoteChange('subject', subject)}
+                  >
+                    <span className="truncate">{subject}</span>
+                  </Button>
+                ))}
+              </div>
+            </ScrollArea>
           </PopoverContent>
         </Popover>
         
