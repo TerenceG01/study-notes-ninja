@@ -280,6 +280,7 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           full_name: string | null
+          has_seen_intro: boolean | null
           id: string
           preferred_flashcard_mode: string | null
           theme_preference: string | null
@@ -291,6 +292,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           full_name?: string | null
+          has_seen_intro?: boolean | null
           id: string
           preferred_flashcard_mode?: string | null
           theme_preference?: string | null
@@ -302,6 +304,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           full_name?: string | null
+          has_seen_intro?: boolean | null
           id?: string
           preferred_flashcard_mode?: string | null
           theme_preference?: string | null
