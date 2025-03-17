@@ -47,7 +47,7 @@ export function ReminderForm({ onSubmit }: ReminderFormProps) {
               )}
             >
               <CalendarIcon className="mr-1 h-4 w-4" />
-              {date ? format(date, "MMM d") : <span>Pick date</span>}
+              {date ? format(date, "MMM d") : null}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="end">
