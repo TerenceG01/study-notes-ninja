@@ -23,7 +23,7 @@ export const StudyModeHeader = ({
         {isMobile ? (
           <>
             <div className="text-xs text-muted-foreground">
-              {currentIndex + 1}/{totalCards}
+              {currentIndex + 1} of {totalCards}
             </div>
           </>
         ) : (
@@ -39,7 +39,7 @@ export const StudyModeHeader = ({
               </Button>
             </div>
             <div className="text-sm text-muted-foreground">
-              {currentIndex + 1}/{totalCards}
+              {currentIndex + 1} of {totalCards}
             </div>
           </>
         )}
