@@ -42,7 +42,7 @@ export function ReminderForm({ onSubmit }: ReminderFormProps) {
               variant="outline"
               size="sm"
               className={cn(
-                "justify-start text-left font-normal w-28",
+                "justify-start text-left font-normal w-26",
                 !date && "text-muted-foreground"
               )}
             >
