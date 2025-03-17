@@ -13,7 +13,7 @@ export const QuizNavigation = ({ currentIndex, totalCards, onNavigate }: QuizNav
   const isMobile = useIsMobile();
   
   return (
-    <div className={`${isMobile ? 'grid grid-cols-2 gap-2' : 'flex justify-between'} mt-4 sm:mt-6 w-full`}>
+    <div className={`${isMobile ? 'grid grid-cols-2 gap-3' : 'flex justify-between'} mt-4 sm:mt-6 w-full`}>
       <Button
         variant="outline"
         onClick={() => onNavigate('prev')}
