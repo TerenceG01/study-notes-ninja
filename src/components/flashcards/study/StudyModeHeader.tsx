@@ -39,7 +39,7 @@ export const StudyModeHeader = ({
               </Button>
             </div>
             <div className="text-sm text-muted-foreground">
-              {currentIndex + 1} of {totalCards}
+              {currentIndex + 1} {totalCards}
             </div>
           </>
         )}
