@@ -13,15 +13,15 @@ export const QuizNavigation = ({ currentIndex, totalCards, onNavigate }: QuizNav
   const isMobile = useIsMobile();
   
   return (
-    <div className="flex justify-between items-center mt-4 sm:mt-6">
+    <div className={`${isMobile ? 'grid grid-cols-2 gap-2' : 'flex justify-between'} mt-4 sm:mt-6 w-full`}>
       <Button
         variant="outline"
         onClick={() => onNavigate('prev')}
         disabled={currentIndex === 0}
         size={isMobile ? "sm" : "default"}
-        className={isMobile ? "text-xs" : ""}
+        className={`${isMobile ? 'w-full text-xs' : 'w-auto'}`}
       >
-        <ArrowLeft className="h-4 w-4 mr-1 sm:mr-2" />
+        <ArrowLeft className={`${isMobile ? 'h-3 w-3 mr-1' : 'h-4 w-4 mr-2'}`} />
         {isMobile ? "Prev" : "Previous Card"}
       </Button>
 
@@ -30,10 +30,10 @@ export const QuizNavigation = ({ currentIndex, totalCards, onNavigate }: QuizNav
         onClick={() => onNavigate('next')}
         disabled={currentIndex === totalCards - 1}
         size={isMobile ? "sm" : "default"}
-        className={isMobile ? "text-xs" : ""}
+        className={`${isMobile ? 'w-full text-xs' : 'w-auto'}`}
       >
         {isMobile ? "Next" : "Next Card"}
-        <ArrowRight className="h-4 w-4 ml-1 sm:ml-2" />
+        <ArrowRight className={`${isMobile ? 'h-3 w-3 ml-1' : 'h-4 w-4 ml-2'}`} />
       </Button>
     </div>
   );

@@ -4,6 +4,7 @@ import { StandardModeView } from "@/components/flashcards/study/StandardModeView
 import { MultipleChoiceMode } from "@/components/flashcards/MultipleChoiceMode";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ResponsiveContainer } from "@/components/ui/responsive-container";
 
 interface FlashcardPopupProps {
   open: boolean;
@@ -52,23 +53,25 @@ export const FlashcardPopup = ({
           <X className="h-4 w-4" />
         </Button>
         
-        <div className="py-6 px-4 flex-grow overflow-hidden">
-          {mode === 'standard' ? (
-            <StandardModeView
-              currentCard={currentCard}
-              isFlipped={isFlipped}
-              setIsFlipped={setIsFlipped}
-              navigateCards={navigateCards}
-              currentIndex={currentIndex}
-              cardsLength={cardsLength}
-              isMobile={isMobile}
-              swipeHandlers={swipeHandlers}
-            />
-          ) : (
-            <div className="w-full max-w-full overflow-hidden">
-              <MultipleChoiceMode flashcards={flashcards} deckId={deckId} />
-            </div>
-          )}
+        <div className="py-6 px-4 flex-grow overflow-auto">
+          <ResponsiveContainer isPopup={true} withPadding={false}>
+            {mode === 'standard' ? (
+              <StandardModeView
+                currentCard={currentCard}
+                isFlipped={isFlipped}
+                setIsFlipped={setIsFlipped}
+                navigateCards={navigateCards}
+                currentIndex={currentIndex}
+                cardsLength={cardsLength}
+                isMobile={isMobile}
+                swipeHandlers={swipeHandlers}
+              />
+            ) : (
+              <div className="w-full overflow-hidden">
+                <MultipleChoiceMode flashcards={flashcards} deckId={deckId} />
+              </div>
+            )}
+          </ResponsiveContainer>
         </div>
       </div>
     </DialogWrapper>

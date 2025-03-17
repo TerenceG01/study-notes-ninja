@@ -43,13 +43,13 @@ export const StandardModeView = ({
         />
       </div>
 
-      <div className={`${isMobile ? 'mt-3 grid grid-cols-2 gap-2 w-full max-w-full px-2' : 'flex justify-between items-center mt-6 w-full px-2'}`}>
+      <div className={`${isMobile ? 'mt-3 grid grid-cols-2 gap-2 w-full max-w-full px-2' : 'flex justify-between mt-6 w-full px-2'}`}>
         <Button 
           variant="outline" 
           onClick={() => navigateCards('prev')} 
           disabled={currentIndex === 0}
           size={isMobile ? "sm" : "default"}
-          className="w-full sm:w-auto"
+          className={`${isMobile ? 'w-full' : 'w-auto'}`}
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
           {isMobile ? "Prev" : "Previous Card"}
@@ -60,7 +60,7 @@ export const StandardModeView = ({
           onClick={() => navigateCards('next')} 
           disabled={currentIndex === cardsLength - 1}
           size={isMobile ? "sm" : "default"}
-          className="w-full sm:w-auto"
+          className={`${isMobile ? 'w-full' : 'w-auto'}`}
         >
           {isMobile ? "Next" : "Next Card"}
           <ArrowRight className="h-4 w-4 ml-1" />
