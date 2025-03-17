@@ -5,6 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import type { Note } from "@/components/notes/types";
+import { cn } from "@/lib/utils";
 
 interface NoteCardProps {
   note: Note;
@@ -27,7 +28,8 @@ export const NoteCard: React.FC<NoteCardProps> = ({
   onSelectToggle,
   isMobile = false
 }) => {
-  const handleToggle = () => {
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!isPending) {
       onShareToggle(note.id, !isShared);
     }
@@ -40,31 +42,41 @@ export const NoteCard: React.FC<NoteCardProps> = ({
   };
 
   const truncateText = (text: string, length: number) => {
+    if (!text) return "Untitled";
     if (text.length <= length) return text;
     return text.substring(0, length) + '...';
   };
 
   return (
     <Card 
-      className={`border ${isMultiSelect && isSelected ? 'border-primary' : ''} ${isMobile ? 'p-0' : ''}`}
+      className={cn(
+        "border transition-all duration-200 hover:shadow-md",
+        isMultiSelect && "cursor-pointer",
+        isMultiSelect && isSelected && "border-primary bg-primary/5",
+        isMobile ? "p-0" : ""
+      )}
       onClick={isMultiSelect ? handleSelectToggle : undefined}
     >
-      <CardContent className={`${isMobile ? 'p-2' : 'p-4'} flex items-center justify-between`}>
+      <CardContent className={cn(
+        "flex items-center justify-between",
+        isMobile ? "p-3" : "p-4"
+      )}>
         <div className={`flex ${isMultiSelect ? 'space-x-2' : ''} items-center flex-1 min-w-0`}>
           {isMultiSelect && (
             <Checkbox 
               checked={isSelected} 
               onCheckedChange={() => onSelectToggle?.(note.id, !isSelected)}
               className={isMobile ? "h-3 w-3" : ""}
+              onClick={(e) => e.stopPropagation()}
             />
           )}
 
           <div className="flex-1 min-w-0">
             <h3 className={`font-medium ${isMobile ? 'text-sm' : 'text-base'} truncate`}>
-              {isMobile ? truncateText(note.title || 'Untitled', 25) : note.title || 'Untitled'}
+              {isMobile ? truncateText(note.title || 'Untitled', 25) : (note.title || 'Untitled')}
             </h3>
             <p className={`text-muted-foreground ${isMobile ? 'text-xs' : 'text-sm'} truncate`}>
-              {isMobile ? truncateText(note.subject || 'No subject', 20) : note.subject || 'No subject'}
+              {isMobile ? truncateText(note.subject || 'No subject', 20) : (note.subject || 'No subject')}
             </p>
           </div>
         </div>
@@ -81,9 +93,10 @@ export const NoteCard: React.FC<NoteCardProps> = ({
               )}
               <Switch 
                 checked={isShared}
-                onCheckedChange={handleToggle}
+                onCheckedChange={() => onShareToggle(note.id, !isShared)}
                 disabled={isPending}
-                className={isMobile ? "h-3 w-6" : ""}
+                className={isMobile ? "h-4 w-7" : ""}
+                onClick={handleToggle}
               />
             </>
           )}

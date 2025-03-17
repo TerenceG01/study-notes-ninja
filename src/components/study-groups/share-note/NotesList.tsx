@@ -33,30 +33,30 @@ export const NotesList: React.FC<NotesListProps> = ({
     return <LoadingState />;
   }
 
+  if (!notes?.length) {
+    return <EmptyNotesList />;
+  }
+
   return (
     <ScrollArea className={isMobile ? "h-[350px] pr-2" : "h-[400px] pr-4"}>
-      <div className={`space-y-${isMobile ? "2" : "4"}`}>
-        {notes?.length ? (
-          notes.map((note) => {
-            const isShared = sharedNotes?.includes(note.id);
-            const isSelected = selectedNotes.includes(note.id);
-            return (
-              <NoteCard
-                key={note.id}
-                note={note}
-                isShared={!!isShared}
-                isPending={isPending}
-                onShareToggle={onShareToggle}
-                isMultiSelect={isMultiSelect}
-                isSelected={isSelected}
-                onSelectToggle={onSelectToggle}
-                isMobile={isMobile}
-              />
-            );
-          })
-        ) : (
-          <EmptyNotesList />
-        )}
+      <div className={`space-y-${isMobile ? "2" : "3"}`}>
+        {notes.map((note) => {
+          const isShared = sharedNotes?.includes(note.id);
+          const isSelected = selectedNotes.includes(note.id);
+          return (
+            <NoteCard
+              key={note.id}
+              note={note}
+              isShared={!!isShared}
+              isPending={isPending}
+              onShareToggle={onShareToggle}
+              isMultiSelect={isMultiSelect}
+              isSelected={isSelected}
+              onSelectToggle={onSelectToggle}
+              isMobile={isMobile}
+            />
+          );
+        })}
       </div>
     </ScrollArea>
   );
