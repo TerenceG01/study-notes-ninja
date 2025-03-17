@@ -15,6 +15,7 @@ interface NotesListProps {
   isMultiSelect?: boolean;
   selectedNotes?: string[];
   onSelectToggle?: (noteId: string, isSelected: boolean) => void;
+  isMobile?: boolean;
 }
 
 export const NotesList: React.FC<NotesListProps> = ({
@@ -25,15 +26,16 @@ export const NotesList: React.FC<NotesListProps> = ({
   onShareToggle,
   isMultiSelect = false,
   selectedNotes = [],
-  onSelectToggle
+  onSelectToggle,
+  isMobile = false
 }) => {
   if (isLoading) {
     return <LoadingState />;
   }
 
   return (
-    <ScrollArea className="h-[400px] pr-4">
-      <div className="space-y-4">
+    <ScrollArea className={isMobile ? "h-[350px] pr-2" : "h-[400px] pr-4"}>
+      <div className={`space-y-${isMobile ? "2" : "4"}`}>
         {notes?.length ? (
           notes.map((note) => {
             const isShared = sharedNotes?.includes(note.id);
@@ -48,6 +50,7 @@ export const NotesList: React.FC<NotesListProps> = ({
                 isMultiSelect={isMultiSelect}
                 isSelected={isSelected}
                 onSelectToggle={onSelectToggle}
+                isMobile={isMobile}
               />
             );
           })
