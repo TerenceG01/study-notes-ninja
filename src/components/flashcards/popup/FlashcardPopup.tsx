@@ -43,7 +43,7 @@ export const FlashcardPopup = ({
       onOpenChange={onOpenChange}
       isFullscreen={false}
     >
-      <div className="relative flex flex-col w-full max-h-[95vh] overflow-hidden">
+      <div className="relative flex flex-col w-full max-h-[90vh] overflow-hidden">
         <Button 
           variant="ghost" 
           size="icon" 
@@ -53,7 +53,7 @@ export const FlashcardPopup = ({
           <X className="h-5 w-5" />
         </Button>
         
-        <div className="py-2 px-2 flex-grow overflow-auto">
+        <div className="py-4 px-2 flex-grow overflow-auto">
           <ResponsiveContainer isPopup={true} withPadding={false}>
             {mode === 'standard' ? (
               <StandardModeView
