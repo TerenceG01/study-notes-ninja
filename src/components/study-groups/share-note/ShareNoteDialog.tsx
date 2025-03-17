@@ -16,6 +16,7 @@ import { useShareNote } from "./useShareNote";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { EmptyNotesList } from "./EmptyNotesList";
 
 interface ShareNoteDialogProps {
   groupId: string;
@@ -91,6 +92,8 @@ export const ShareNoteDialog: React.FC<ShareNoteDialogProps> = ({ groupId }) => 
     setSelectedNotes([]);
     setIsMultiSelectMode(false);
   };
+
+  const showEmptyState = !loadingNotes && (!filteredNotes || filteredNotes.length === 0);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -180,17 +183,21 @@ export const ShareNoteDialog: React.FC<ShareNoteDialogProps> = ({ groupId }) => 
 
           {/* Notes list */}
           <div className="py-1">
-            <NotesList
-              notes={filteredNotes}
-              sharedNotes={sharedNotes}
-              isLoading={loadingNotes || loadingSharedNotes}
-              isPending={isPending}
-              onShareToggle={handleShareToggle}
-              isMultiSelect={isMultiSelectMode}
-              selectedNotes={selectedNotes}
-              onSelectToggle={handleSelectToggle}
-              isMobile={isMobile}
-            />
+            {showEmptyState ? (
+              <EmptyNotesList isFiltered={!!searchTerm.trim()} />
+            ) : (
+              <NotesList
+                notes={filteredNotes}
+                sharedNotes={sharedNotes}
+                isLoading={loadingNotes || loadingSharedNotes}
+                isPending={isPending}
+                onShareToggle={handleShareToggle}
+                isMultiSelect={isMultiSelectMode}
+                selectedNotes={selectedNotes}
+                onSelectToggle={handleSelectToggle}
+                isMobile={isMobile}
+              />
+            )}
           </div>
         </div>
         

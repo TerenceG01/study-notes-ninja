@@ -28,8 +28,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
   onSelectToggle,
   isMobile = false
 }) => {
-  const handleToggle = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleShareToggle = () => {
     if (!isPending) {
       onShareToggle(note.id, !isShared);
     }
@@ -93,10 +92,9 @@ export const NoteCard: React.FC<NoteCardProps> = ({
               )}
               <Switch 
                 checked={isShared}
-                onCheckedChange={() => onShareToggle(note.id, !isShared)}
+                onCheckedChange={handleShareToggle}
                 disabled={isPending}
                 className={isMobile ? "h-4 w-7" : ""}
-                onClick={handleToggle}
               />
             </>
           )}

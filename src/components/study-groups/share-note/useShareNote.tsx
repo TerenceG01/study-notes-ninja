@@ -45,7 +45,7 @@ export const useShareNote = (groupId: string) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('notes')
-        .select('id, title, content, created_at')
+        .select('id, title, content, subject, created_at')
         .eq('user_id', user?.id);
 
       if (error) throw error;
@@ -99,6 +99,20 @@ export const useShareNote = (groupId: string) => {
         throw new Error('Cannot share note: Missing required data');
       }
 
+      // First check if the note is already shared
+      const { data: existingShares, error: checkError } = await supabase
+        .from('study_group_notes')
+        .select('id')
+        .eq('group_id', groupId)
+        .eq('note_id', noteId);
+
+      if (checkError) throw checkError;
+      
+      // If already shared, we don't need to share it again
+      if (existingShares && existingShares.length > 0) {
+        return existingShares;
+      }
+
       const nextOrder = (maxOrder || 0) + 1;
       
       const insertData = {
@@ -141,9 +155,27 @@ export const useShareNote = (groupId: string) => {
         throw new Error('Cannot share notes: Missing required data');
       }
 
+      // First check which notes are already shared
+      const { data: existingShares, error: checkError } = await supabase
+        .from('study_group_notes')
+        .select('note_id')
+        .eq('group_id', groupId)
+        .in('note_id', noteIds);
+
+      if (checkError) throw checkError;
+      
+      // Filter out notes that are already shared
+      const existingNoteIds = existingShares?.map(share => share.note_id) || [];
+      const newNoteIds = noteIds.filter(id => !existingNoteIds.includes(id));
+      
+      // If all notes are already shared, return early
+      if (newNoteIds.length === 0) {
+        return existingShares;
+      }
+
       const currentMaxOrder = (maxOrder || 0);
       
-      const insertData = noteIds.map((noteId, index) => ({
+      const insertData = newNoteIds.map((noteId, index) => ({
         group_id: groupId,
         note_id: noteId,
         shared_by: user.id,
@@ -220,9 +252,9 @@ export const useShareNote = (groupId: string) => {
 
   const handleShareToggle = (noteId: string, isShared: boolean) => {
     if (isShared) {
-      unshareNoteMutation.mutate(noteId);
-    } else {
       shareNoteMutation.mutate(noteId);
+    } else {
+      unshareNoteMutation.mutate(noteId);
     }
   };
 

@@ -41,13 +41,13 @@ export const NotesList: React.FC<NotesListProps> = ({
     <ScrollArea className={isMobile ? "h-[350px] pr-2" : "h-[400px] pr-4"}>
       <div className={`space-y-${isMobile ? "2" : "3"}`}>
         {notes.map((note) => {
-          const isShared = sharedNotes?.includes(note.id);
+          const isShared = sharedNotes?.includes(note.id) || false;
           const isSelected = selectedNotes.includes(note.id);
           return (
             <NoteCard
               key={note.id}
               note={note}
-              isShared={!!isShared}
+              isShared={isShared}
               isPending={isPending}
               onShareToggle={onShareToggle}
               isMultiSelect={isMultiSelect}
