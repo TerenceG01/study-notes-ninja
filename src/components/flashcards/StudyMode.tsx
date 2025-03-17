@@ -79,7 +79,11 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
         />
       ) : (
         <div className="w-full max-w-full overflow-hidden px-2 sm:px-0">
-          <MultipleChoiceMode flashcards={cards} deckId={deckId} />
+          <MultipleChoiceMode 
+            flashcards={cards} 
+            deckId={deckId} 
+            onExpand={() => setIsPopupOpen(true)}
+          />
         </div>
       )}
 

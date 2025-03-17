@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Loader2, Maximize2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
@@ -11,13 +11,15 @@ import { QuizNavigation } from "./quiz/QuizNavigation";
 import { DifficultyToggle } from "./quiz/DifficultyToggle";
 import { useQuizState } from "@/hooks/useQuizState";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button";
 
 interface MultipleChoiceModeProps {
   flashcards: any[];
   deckId: string;
+  onExpand?: () => void;
 }
 
-export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModeProps) => {
+export const MultipleChoiceMode = ({ flashcards, deckId, onExpand }: MultipleChoiceModeProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -105,7 +107,7 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
         totalCards={flashcards.length}
       />
 
-      <Card className="w-full flex-shrink-0 max-w-full">
+      <Card className="w-full flex-shrink-0 max-w-full relative">
         <CardContent className={isMobile ? "p-3 overflow-hidden" : "p-4 sm:p-6 overflow-hidden"}>
           <h3 className={`${isMobile ? 'text-sm' : 'text-base sm:text-lg'} font-medium mb-3 sm:mb-4 break-words`}>
             {currentCard.question}
@@ -117,6 +119,18 @@ export const MultipleChoiceMode = ({ flashcards, deckId }: MultipleChoiceModePro
             onSelect={handleOptionSelect}
           />
         </CardContent>
+        
+        {/* Expand button */}
+        {onExpand && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="absolute right-1 top-1 p-1 h-8 w-8 bg-background/80 rounded-full"
+            onClick={() => onExpand()}
+          >
+            <Maximize2 className="h-4 w-4 text-muted-foreground" />
+          </Button>
+        )}
       </Card>
 
       {isLastCard && isAnswered && (

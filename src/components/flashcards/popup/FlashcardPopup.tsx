@@ -68,7 +68,10 @@ export const FlashcardPopup = ({
               />
             ) : (
               <div className="w-full overflow-hidden">
-                <MultipleChoiceMode flashcards={flashcards} deckId={deckId} />
+                <MultipleChoiceMode 
+                  flashcards={flashcards} 
+                  deckId={deckId} 
+                />
               </div>
             )}
           </ResponsiveContainer>
