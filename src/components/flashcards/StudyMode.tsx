@@ -27,7 +27,6 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
     cards,
     currentCard,
     navigateCards,
-    shuffleCards
   } = useFlashcardStudy(flashcards, deckId);
 
   const swipeHandlers = useSwipeDetection(
@@ -58,7 +57,6 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
         <StudyModeHeader
           mode={mode}
           setMode={setMode}
-          shuffleCards={shuffleCards}
           currentIndex={currentIndex}
           totalCards={cards.length}
           isMobile={isMobile}
