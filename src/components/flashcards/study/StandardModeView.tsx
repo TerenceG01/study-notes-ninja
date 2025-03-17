@@ -29,7 +29,7 @@ export const StandardModeView = ({
   return (
     <div className="flex flex-col items-center w-full max-w-full overflow-hidden">
       {!isMobile && (
-        <div className="text-sm text-muted-foreground mb-2 w-full px-2">
+        <div className="text-sm text-muted-foreground mb-1 w-full px-2">
           Card {currentIndex + 1} of {cardsLength}
         </div>
       )}
@@ -46,7 +46,7 @@ export const StandardModeView = ({
         />
       </div>
 
-      <div className={`${isMobile ? 'mt-3 grid grid-cols-2 gap-2 w-full max-w-full px-2' : 'flex justify-between mt-6 w-full px-2'}`}>
+      <div className={`${isMobile ? 'mt-2 grid grid-cols-2 gap-2 w-full max-w-full px-2' : 'flex justify-between mt-3 w-full px-2'}`}>
         <Button 
           variant="outline" 
           onClick={() => navigateCards('prev')} 
@@ -70,7 +70,7 @@ export const StandardModeView = ({
         </Button>
       </div>
       
-      <div className="text-center mt-2 text-[10px] sm:text-xs text-muted-foreground w-full px-2 break-words">
+      <div className="text-center mt-1 text-[10px] sm:text-xs text-muted-foreground w-full px-2 break-words">
         {isMobile ? 
           "Swipe left/right to navigate" : 
           "Arrow keys to navigate • Space to flip"}

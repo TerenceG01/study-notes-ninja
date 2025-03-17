@@ -19,7 +19,7 @@ export const StudyModeHeader = ({
 }: StudyModeHeaderProps) => {
   return (
     <>
-      <div className={`${isMobile ? 'flex justify-between items-center mb-3' : 'flex justify-between items-center mb-5'}`}>
+      <div className={`${isMobile ? 'flex justify-between items-center mb-2' : 'flex justify-between items-center mb-3'}`}>
         {isMobile ? (
           <>
             <div className="text-xs text-muted-foreground">
@@ -43,7 +43,7 @@ export const StudyModeHeader = ({
       </div>
 
       {isMobile && (
-        <div className="mb-3">
+        <div className="mb-2">
           <div className="grid grid-cols-2 gap-2">
             <Button 
               variant={mode === 'standard' ? 'default' : 'outline'} 

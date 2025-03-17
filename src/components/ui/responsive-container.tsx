@@ -23,8 +23,8 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
                 "w-full mx-auto max-w-[1400px] overflow-hidden",
                 withPadding && (
                     isMobile 
-                        ? "px-2 py-2" 
-                        : "px-2 sm:px-6 lg:px-8 py-4 sm:py-6"
+                        ? "px-2 py-1" 
+                        : "px-2 sm:px-4 lg:px-6 py-2 sm:py-3"
                 ),
                 isPopup && "max-w-[95vw] sm:max-w-[85vw] md:max-w-[75vw] lg:max-w-[65vw]",
                 className
