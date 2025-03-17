@@ -26,7 +26,7 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
                         ? "px-1 py-1" 
                         : "px-2 sm:px-4 lg:px-6 py-2"
                 ),
-                isPopup && "max-w-[98vw] sm:max-w-[90vw] md:max-w-[85vw] lg:max-w-[80vw]",
+                isPopup && "max-w-[98vw] sm:max-w-[95vw] md:max-w-[90vw] lg:max-w-[85vw]",
                 className
             )}
         >

@@ -34,7 +34,7 @@ export const StandardModeView = ({
         </div>
       )}
       
-      <div className="w-full max-w-full mx-auto flex-shrink-0 px-0 sm:px-4 md:px-6 lg:px-8 overflow-hidden">
+      <div className="w-full max-w-full mx-auto flex-shrink-0 px-0 sm:px-2 md:px-4 lg:px-6 overflow-hidden">
         <EnhancedFlashcard 
           card={currentCard}
           isFlipped={isFlipped}
@@ -46,7 +46,7 @@ export const StandardModeView = ({
         />
       </div>
 
-      <div className={`${isMobile ? 'mt-3 grid grid-cols-2 gap-3 w-full max-w-full px-2' : 'flex justify-between mt-4 w-full px-4 md:px-8'}`}>
+      <div className={`${isMobile ? 'mt-2 grid grid-cols-2 gap-3 w-full max-w-full px-2' : 'flex justify-between mt-3 w-full px-2 md:px-6'}`}>
         <Button 
           variant="outline" 
           onClick={() => navigateCards('prev')} 
