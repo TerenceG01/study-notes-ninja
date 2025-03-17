@@ -26,16 +26,16 @@ export function ReminderForm({ onSubmit }: ReminderFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-full max-w-full">
       <div className="w-full">
         <Textarea
           placeholder="Add a new reminder or deadline..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full min-h-[60px] resize-y text-sm"
+          className="w-full min-h-[60px] max-h-[100px] resize-y text-sm text-wrap"
         />
       </div>
-      <div className="flex gap-2 justify-end">
+      <div className="flex gap-2 justify-end flex-wrap">
         <Popover>
           <PopoverTrigger asChild>
             <Button
