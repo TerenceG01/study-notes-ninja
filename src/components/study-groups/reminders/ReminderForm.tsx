@@ -42,7 +42,7 @@ export function ReminderForm({ onSubmit }: ReminderFormProps) {
               variant="outline"
               size="sm"
               className={cn(
-                "justify-start text-left font-normal",
+                "justify-start text-left font-normal w-28",
                 !date && "text-muted-foreground"
               )}
             >
@@ -63,7 +63,7 @@ export function ReminderForm({ onSubmit }: ReminderFormProps) {
         <Button 
           type="submit" 
           size="sm" 
-          className="shrink-0"
+          className="shrink-0 w-20"
           disabled={!date || !title.trim()}
         >
           <Plus className="h-4 w-4 mr-1" />
