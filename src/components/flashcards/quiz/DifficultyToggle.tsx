@@ -1,5 +1,6 @@
 
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface DifficultyToggleProps {
   currentIndex: number;
@@ -12,6 +13,11 @@ export const DifficultyToggle = ({
 }: DifficultyToggleProps) => {
   const isMobile = useIsMobile();
   
-  // Return null to completely remove the component from rendering
-  return null;
+  return (
+    <div className="flex justify-between items-center mb-3 sm:mb-4">
+      <div className="text-xs sm:text-sm text-muted-foreground">
+        {currentIndex + 1}/{totalCards}
+      </div>
+    </div>
+  );
 };

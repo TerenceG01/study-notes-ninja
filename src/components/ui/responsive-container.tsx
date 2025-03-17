@@ -6,27 +6,23 @@ interface ResponsiveContainerProps {
     children: React.ReactNode;
     className?: string;
     withPadding?: boolean;
-    fullWidth?: boolean;
 }
 
 export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
     children,
     className,
-    withPadding = true,
-    fullWidth = false
+    withPadding = true
 }) => {
     const isMobile = useIsMobile();
     
     return (
         <div
             className={cn(
-                "w-full min-w-full mx-auto overflow-hidden",
-                !fullWidth && "max-w-[100%]", 
-                fullWidth && "max-w-full",
+                "w-full mx-auto max-w-[1400px] overflow-hidden",
                 withPadding && (
                     isMobile 
-                        ? "px-1 py-2" 
-                        : "px-1 sm:px-2 py-4"
+                        ? "px-2 py-2" 
+                        : "px-2 sm:px-6 lg:px-8 py-4 sm:py-6"
                 ),
                 className
             )}

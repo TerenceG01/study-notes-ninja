@@ -72,14 +72,14 @@ const FlashcardDeck = () => {
   
   return (
     <div className={cn(
-      "h-full flex-grow overflow-hidden pt-4 w-full",
+      "h-full flex-grow overflow-hidden pt-6",
       isOpen ? "ml-40" : "ml-20",
       isMobile && "ml-0 pb-16" // Remove sidebar margin and add bottom padding for mobile nav
     )}>
-      <ResponsiveContainer fullWidth className="w-full mx-auto">
+      <ResponsiveContainer>
         <DeckHeader title={deck.title} description={deck.description} />
 
-        <Tabs defaultValue="study" className="space-y-3 sm:space-y-4 overflow-hidden w-full">
+        <Tabs defaultValue="study" className="space-y-3 sm:space-y-4 overflow-hidden">
           <TabsList className="w-full max-w-[280px] mx-auto">
             <TabsTrigger value="study" className="flex-1 text-xs sm:text-sm">
               <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
@@ -91,9 +91,9 @@ const FlashcardDeck = () => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="study" className="space-y-4 overflow-hidden w-full">
+          <TabsContent value="study" className="space-y-4 overflow-hidden">
             {flashcards && flashcards.length > 0 ? (
-              <div className="overflow-x-hidden w-full">
+              <div className="overflow-x-hidden">
                 <StudyMode flashcards={flashcards} deckId={id!} />
               </div>
             ) : (
@@ -101,10 +101,10 @@ const FlashcardDeck = () => {
             )}
           </TabsContent>
 
-          <TabsContent value="manage" className="overflow-hidden w-full">
+          <TabsContent value="manage" className="overflow-hidden">
             {flashcards && flashcards.length > 0 ? (
               <>
-                <div className="mb-4 relative w-full">
+                <div className="mb-4 relative">
                   <div className="relative">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input

@@ -32,11 +32,11 @@ export const EnhancedFlashcard = ({
   
   return (
     <Card 
-      className="w-full h-full cursor-pointer transition-all hover:shadow-lg relative flex-shrink-0"
+      className="w-full max-w-[100%] h-[200px] sm:h-[300px] cursor-pointer transition-all hover:shadow-lg relative flex-shrink-0 overflow-hidden"
       onClick={() => onFlip(!isFlipped)}
       {...swipeHandlers}
     >
-      <CardContent className="flex items-center justify-center p-3 sm:p-6 h-full">
+      <CardContent className="flex items-center justify-center p-3 sm:p-6 h-full overflow-auto">
         <div className="text-base sm:text-lg md:text-xl font-medium text-center w-full break-words text-primary">
           {isFlipped ? card.answer : card.question}
         </div>
@@ -50,7 +50,7 @@ export const EnhancedFlashcard = ({
               e.stopPropagation();
               onPrev();
             }}
-            className="absolute left-1 top-1/2 -translate-y-1/2 bg-background/80 p-1.5 rounded-full shadow-sm"
+            className="absolute left-1 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full"
             disabled={false}
           >
             <ChevronLeft className="h-4 w-4 text-muted-foreground" />
@@ -60,7 +60,7 @@ export const EnhancedFlashcard = ({
               e.stopPropagation();
               onNext();
             }}
-            className="absolute right-1 top-1/2 -translate-y-1/2 bg-background/80 p-1.5 rounded-full shadow-sm"
+            className="absolute right-1 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full"
             disabled={false}
           >
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
@@ -68,7 +68,7 @@ export const EnhancedFlashcard = ({
         </>
       )}
       
-      <div className="absolute bottom-2 right-2.5 text-xs text-muted-foreground bg-background/70 px-2 py-0.5 rounded-sm">
+      <div className="absolute bottom-1 right-2 text-[10px] text-muted-foreground">
         <span>{isMobile ? "Tap to flip" : "Space to flip"}</span>
       </div>
     </Card>
