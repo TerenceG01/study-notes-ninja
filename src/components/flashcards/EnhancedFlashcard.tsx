@@ -39,11 +39,23 @@ export const EnhancedFlashcard = ({
       onClick={() => onFlip(!isFlipped)}
       {...swipeHandlers}
     >
-      <CardContent className="flex items-center justify-center p-3 sm:p-6 h-full overflow-auto">
-        <div className="text-base sm:text-lg md:text-xl font-medium text-center w-full break-words text-primary">
-          {isFlipped ? card.answer : card.question}
+      <div className="absolute inset-0 w-full h-full">
+        <div className={`w-full h-full transition-all duration-300 ${isFlipped ? 'opacity-0 absolute' : 'opacity-100'}`}>
+          <CardContent className="flex items-center justify-center p-3 sm:p-6 h-full overflow-auto">
+            <div className="text-base sm:text-lg md:text-xl font-medium text-center w-full break-words text-primary">
+              {card.question}
+            </div>
+          </CardContent>
         </div>
-      </CardContent>
+        
+        <div className={`w-full h-full transition-all duration-300 ${isFlipped ? 'opacity-100' : 'opacity-0 absolute'}`}>
+          <CardContent className="flex items-center justify-center p-3 sm:p-6 h-full overflow-auto">
+            <div className="text-base sm:text-lg md:text-xl font-medium text-center w-full break-words text-primary">
+              {card.answer}
+            </div>
+          </CardContent>
+        </div>
+      </div>
       
       {/* Navigation arrows */}
       {isMobile && (
@@ -53,7 +65,7 @@ export const EnhancedFlashcard = ({
               e.stopPropagation();
               onPrev();
             }}
-            className="absolute left-1 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full"
+            className="absolute left-1 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full z-10"
             disabled={false}
           >
             <ChevronLeft className="h-4 w-4 text-muted-foreground" />
@@ -63,7 +75,7 @@ export const EnhancedFlashcard = ({
               e.stopPropagation();
               onNext();
             }}
-            className="absolute right-1 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full"
+            className="absolute right-1 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full z-10"
             disabled={false}
           >
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
@@ -76,7 +88,7 @@ export const EnhancedFlashcard = ({
         <Button 
           variant="ghost" 
           size="icon" 
-          className="absolute right-1 top-1 p-1 h-8 w-8 bg-background/80 rounded-full"
+          className="absolute right-1 top-1 p-1 h-8 w-8 bg-background/80 rounded-full z-10"
           onClick={(e) => {
             e.stopPropagation();
             onExpand();
@@ -86,7 +98,7 @@ export const EnhancedFlashcard = ({
         </Button>
       )}
       
-      <div className="absolute bottom-1 right-2 text-[10px] text-muted-foreground">
+      <div className="absolute bottom-1 right-2 text-[10px] text-muted-foreground z-10">
         <span>{isMobile ? "Tap to flip" : "Space to flip"}</span>
       </div>
     </Card>
