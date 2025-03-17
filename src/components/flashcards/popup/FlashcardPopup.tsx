@@ -53,8 +53,8 @@ export const FlashcardPopup = ({
           <X className="h-5 w-5" />
         </Button>
         
-        <div className="py-2 px-0 sm:py-2 md:py-2 flex-grow overflow-auto w-full">
-          <ResponsiveContainer isPopup={true} withPadding={false} className="w-full max-w-full">
+        <div className="py-2 px-1 sm:py-3 md:py-4 flex-grow overflow-auto">
+          <ResponsiveContainer isPopup={true} withPadding={false}>
             {mode === 'standard' ? (
               <StandardModeView
                 currentCard={currentCard}

@@ -29,12 +29,12 @@ export const StandardModeView = ({
   return (
     <div className="flex flex-col items-center w-full max-w-full overflow-hidden">
       {!isMobile && (
-        <div className="text-sm text-muted-foreground mb-1 w-full px-0">
+        <div className="text-sm text-muted-foreground mb-1 w-full px-2">
           Card {currentIndex + 1} of {cardsLength}
         </div>
       )}
       
-      <div className="w-full flex justify-center mx-auto flex-shrink-0 px-0 overflow-hidden">
+      <div className="w-full flex justify-center mx-auto flex-shrink-0 px-0 sm:px-2 md:px-3 lg:px-4 overflow-hidden">
         <EnhancedFlashcard 
           card={currentCard}
           isFlipped={isFlipped}
