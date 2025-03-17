@@ -2,7 +2,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useSwipeDetection } from "@/hooks/useSwipeDetection";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface EnhancedFlashcardProps {
   card: {
@@ -14,6 +15,7 @@ interface EnhancedFlashcardProps {
   onFlip: (flipped: boolean) => void;
   onNext: () => void;
   onPrev: () => void;
+  onExpand?: () => void;
 }
 
 export const EnhancedFlashcard = ({ 
@@ -21,7 +23,8 @@ export const EnhancedFlashcard = ({
   isFlipped, 
   onFlip, 
   onNext, 
-  onPrev 
+  onPrev,
+  onExpand
 }: EnhancedFlashcardProps) => {
   const isMobile = useIsMobile();
   const swipeHandlers = useSwipeDetection(
@@ -66,6 +69,21 @@ export const EnhancedFlashcard = ({
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           </button>
         </>
+      )}
+      
+      {/* Expand button */}
+      {onExpand && (
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="absolute right-1 top-1 p-1 h-8 w-8 bg-background/80 rounded-full"
+          onClick={(e) => {
+            e.stopPropagation();
+            onExpand();
+          }}
+        >
+          <Maximize2 className="h-4 w-4 text-muted-foreground" />
+        </Button>
       )}
       
       <div className="absolute bottom-1 right-2 text-[10px] text-muted-foreground">

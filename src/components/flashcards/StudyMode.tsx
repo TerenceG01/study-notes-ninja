@@ -6,8 +6,6 @@ import { useFlashcardStudy } from "@/hooks/useFlashcardStudy";
 import { useFlashcardKeyboardNavigation } from "@/hooks/useFlashcardKeyboardNavigation";
 import { StudyModeHeader } from "./study/StudyModeHeader";
 import { StandardModeView } from "./study/StandardModeView";
-import { Maximize2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { FlashcardPopup } from "./popup/FlashcardPopup";
 
@@ -65,16 +63,6 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
           totalCards={cards.length}
           isMobile={isMobile}
         />
-        
-        <Button 
-          variant="outline" 
-          size={isMobile ? "sm" : "default"} 
-          className="ml-2"
-          onClick={() => setIsPopupOpen(true)}
-        >
-          <Maximize2 className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} mr-1`} />
-          {isMobile ? "Expand" : "Popup View"}
-        </Button>
       </div>
 
       {mode === 'standard' ? (
@@ -87,6 +75,7 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
           cardsLength={cards.length}
           isMobile={isMobile}
           swipeHandlers={isMobile ? swipeHandlers : {}}
+          onExpand={() => setIsPopupOpen(true)}
         />
       ) : (
         <div className="w-full max-w-full overflow-hidden px-2 sm:px-0">

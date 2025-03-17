@@ -12,6 +12,7 @@ interface StandardModeViewProps {
   cardsLength: number;
   isMobile: boolean;
   swipeHandlers?: any;
+  onExpand?: () => void;
 }
 
 export const StandardModeView = ({
@@ -22,7 +23,8 @@ export const StandardModeView = ({
   currentIndex,
   cardsLength,
   isMobile,
-  swipeHandlers = {}
+  swipeHandlers = {},
+  onExpand
 }: StandardModeViewProps) => {
   return (
     <div className="flex flex-col items-center w-full max-w-full overflow-hidden">
@@ -39,6 +41,7 @@ export const StandardModeView = ({
           onFlip={setIsFlipped}
           onNext={() => navigateCards('next')}
           onPrev={() => navigateCards('prev')}
+          onExpand={onExpand}
           {...(isMobile ? swipeHandlers : {})}
         />
       </div>
