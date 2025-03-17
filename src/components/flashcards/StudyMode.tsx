@@ -6,6 +6,10 @@ import { useFlashcardStudy } from "@/hooks/useFlashcardStudy";
 import { useFlashcardKeyboardNavigation } from "@/hooks/useFlashcardKeyboardNavigation";
 import { StudyModeHeader } from "./study/StudyModeHeader";
 import { StandardModeView } from "./study/StandardModeView";
+import { Maximize2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { FlashcardPopup } from "./popup/FlashcardPopup";
 
 interface StudyModeProps {
   flashcards: any[];
@@ -14,6 +18,7 @@ interface StudyModeProps {
 
 export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
   const isMobile = useIsMobile();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   
   const {
     mode,
@@ -51,14 +56,26 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
 
   return (
     <div className="w-full mx-auto px-2 sm:px-0 max-w-full overflow-hidden">
-      <StudyModeHeader
-        mode={mode}
-        setMode={setMode}
-        shuffleCards={shuffleCards}
-        currentIndex={currentIndex}
-        totalCards={cards.length}
-        isMobile={isMobile}
-      />
+      <div className="flex justify-between items-center mb-4">
+        <StudyModeHeader
+          mode={mode}
+          setMode={setMode}
+          shuffleCards={shuffleCards}
+          currentIndex={currentIndex}
+          totalCards={cards.length}
+          isMobile={isMobile}
+        />
+        
+        <Button 
+          variant="outline" 
+          size={isMobile ? "sm" : "default"} 
+          className="ml-2"
+          onClick={() => setIsPopupOpen(true)}
+        >
+          <Maximize2 className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'} mr-1`} />
+          {isMobile ? "Expand" : "Popup View"}
+        </Button>
+      </div>
 
       {mode === 'standard' ? (
         <StandardModeView
@@ -76,6 +93,22 @@ export const StudyMode = ({ flashcards, deckId }: StudyModeProps) => {
           <MultipleChoiceMode flashcards={cards} deckId={deckId} />
         </div>
       )}
+
+      {/* Popup for flashcard display */}
+      <FlashcardPopup
+        open={isPopupOpen}
+        onOpenChange={setIsPopupOpen}
+        mode={mode}
+        flashcards={cards}
+        deckId={deckId}
+        currentIndex={currentIndex}
+        isFlipped={isFlipped}
+        setIsFlipped={setIsFlipped}
+        navigateCards={navigateCards}
+        cardsLength={cards.length}
+        isMobile={isMobile}
+        swipeHandlers={isMobile ? swipeHandlers : {}}
+      />
     </div>
   );
 };

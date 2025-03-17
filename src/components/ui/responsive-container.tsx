@@ -6,12 +6,14 @@ interface ResponsiveContainerProps {
     children: React.ReactNode;
     className?: string;
     withPadding?: boolean;
+    isPopup?: boolean;
 }
 
 export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
     children,
     className,
-    withPadding = true
+    withPadding = true,
+    isPopup = false
 }) => {
     const isMobile = useIsMobile();
     
@@ -24,6 +26,7 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
                         ? "px-2 py-2" 
                         : "px-2 sm:px-6 lg:px-8 py-4 sm:py-6"
                 ),
+                isPopup && "max-w-[95vw] sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw]",
                 className
             )}
         >
