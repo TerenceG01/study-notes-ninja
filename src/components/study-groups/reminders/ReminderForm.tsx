@@ -36,6 +36,15 @@ export function ReminderForm({ onSubmit }: ReminderFormProps) {
         />
       </div>
       <div className="flex gap-2 justify-end flex-wrap">
+        <Button 
+          type="submit" 
+          size="sm" 
+          className="shrink-0"
+          disabled={!date || !title.trim()}
+        >
+          <Plus className="h-4 w-4 mr-1" />
+          Add
+        </Button>
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -60,15 +69,6 @@ export function ReminderForm({ onSubmit }: ReminderFormProps) {
             />
           </PopoverContent>
         </Popover>
-        <Button 
-          type="submit" 
-          size="sm" 
-          className="shrink-0"
-          disabled={!date || !title.trim()}
-        >
-          <Plus className="h-4 w-4 mr-1" />
-          Add
-        </Button>
       </div>
     </form>
   );
