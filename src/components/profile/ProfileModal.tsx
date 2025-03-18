@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ProfileInfoCard } from "@/components/profile/ProfileInfoCard";
 import { AppearanceCard } from "@/components/profile/AppearanceCard";
@@ -29,12 +28,10 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
     toggleTheme
   } = useProfileData(open);
 
-  // Force cleanup of any pointer-events issues
   const forceCleanup = () => {
     document.body.style.pointerEvents = '';
     document.documentElement.style.pointerEvents = '';
     
-    // Reset all elements with pointer-events style
     const elements = document.querySelectorAll('*');
     elements.forEach(element => {
       if (element instanceof HTMLElement && element.style.pointerEvents === 'none') {
@@ -42,11 +39,9 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
       }
     });
     
-    // Force browser repaint to ensure styles are applied
     document.body.getBoundingClientRect();
   };
 
-  // Handle mounting state
   useEffect(() => {
     setMounted(true);
     forceCleanup();
@@ -56,28 +51,22 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
     };
   }, []);
 
-  // Ensure proper cleanup when dialog close state changes
   useEffect(() => {
     if (!open) {
       forceCleanup();
       
-      // Additional cleanup after a delay to ensure any async operations complete
       const timeoutId = setTimeout(forceCleanup, 150);
       return () => clearTimeout(timeoutId);
     }
   }, [open]);
 
-  // Handle the dialog close event properly
   const handleOpenChange = (newOpenState: boolean) => {
     if (!newOpenState) {
-      // Apply cleanup immediately
       forceCleanup();
       
-      // Use requestAnimationFrame to ensure UI updates before state changes
       requestAnimationFrame(() => {
         onOpenChange(newOpenState);
         
-        // Additional cleanup after state change
         setTimeout(forceCleanup, 50);
       });
     } else {
@@ -92,6 +81,16 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-[95vw] sm:max-w-[90vw] md:max-w-[85vw] lg:max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => handleOpenChange(false)} 
+          className="absolute right-4 top-4 rounded-full p-2 z-10"
+          aria-label="Close profile modal"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+        
         <div className="py-2 sm:py-4">
           <div className="mb-4 sm:mb-6">
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">My Profile</h1>
@@ -122,18 +121,6 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
                 isLoading={statsLoading}
               />
             </div>
-          </div>
-          
-          {/* Cancel button */}
-          <div className="flex justify-center mt-6 sm:mt-8">
-            <Button 
-              variant="outline" 
-              className="w-full max-w-xs" 
-              onClick={() => handleOpenChange(false)}
-            >
-              <X className="mr-2 h-4 w-4" />
-              Cancel
-            </Button>
           </div>
         </div>
       </DialogContent>

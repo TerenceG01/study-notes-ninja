@@ -36,6 +36,15 @@ export const QuizCompletionDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => onOpenChange(false)}
+          className="absolute right-4 top-4 rounded-full p-2 z-10"
+          aria-label="Close quiz completion"
+        >
+          <X className="h-4 w-4" />
+        </Button>
         <DialogHeader>
           <DialogTitle className="text-center">Quiz Complete!</DialogTitle>
         </DialogHeader>
@@ -47,12 +56,8 @@ export const QuizCompletionDialog = ({
           <div className="text-sm text-muted-foreground text-center">
             Correct answers: {correctAnswers} out of {totalAttempted}
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 mt-4">
-            <Button variant="outline" className="w-full" onClick={() => onOpenChange(false)}>
-              <X className="mr-2 h-4 w-4" />
-              Cancel
-            </Button>
-            <Button className="w-full" onClick={onRestart}>
+          <div className="flex justify-center mt-4">
+            <Button className="w-full max-w-xs" onClick={onRestart}>
               Restart Quiz
             </Button>
           </div>
