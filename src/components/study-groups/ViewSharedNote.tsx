@@ -9,9 +9,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Save, X } from "lucide-react";
 import { RichTextEditor } from "@/components/notes/editor/RichTextEditor";
 
 interface ViewSharedNoteProps {
@@ -67,6 +66,15 @@ export const ViewSharedNote = ({ note, open, onOpenChange }: ViewSharedNoteProps
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[90vw] max-h-[90vh] p-4 md:p-6 md:w-[80vw] lg:w-[60vw] xl:w-[800px] overflow-y-auto">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => onOpenChange(false)}
+          className="absolute right-4 top-4 rounded-full p-2 z-10"
+          aria-label="Close shared note"
+        >
+          <X className="h-4 w-4" />
+        </Button>
         <DialogHeader className="space-y-4">
           <DialogTitle className="text-xl md:text-2xl">{note.title}</DialogTitle>
           <div className="flex justify-end space-x-2">
@@ -99,10 +107,12 @@ export const ViewSharedNote = ({ note, open, onOpenChange }: ViewSharedNoteProps
               placeholder="Edit note content..."
             />
           ) : (
-            <div 
-              className="prose max-w-none prose-headings:font-semibold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-primary"
-              dangerouslySetInnerHTML={{ __html: content }}
-            />
+            <div className="ProseMirror prose max-w-none">
+              <div 
+                className="prose max-w-none prose-sm sm:prose prose-headings:font-semibold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-primary prose-p:my-2 prose-ul:pl-6 prose-ol:pl-6"
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
+            </div>
           )}
         </div>
       </DialogContent>
