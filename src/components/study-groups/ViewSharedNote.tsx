@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Save } from "lucide-react";
+import { RichTextEditor } from "@/components/notes/editor/RichTextEditor";
 
 interface ViewSharedNoteProps {
   note: {
@@ -91,13 +92,17 @@ export const ViewSharedNote = ({ note, open, onOpenChange }: ViewSharedNoteProps
         </DialogHeader>
         <div className="mt-4 md:mt-6">
           {isEditing ? (
-            <Textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
+            <RichTextEditor
+              content={content}
+              onChange={setContent}
               className="min-h-[200px] md:min-h-[300px] lg:min-h-[400px]"
+              placeholder="Edit note content..."
             />
           ) : (
-            <div className="whitespace-pre-wrap prose max-w-none">{content}</div>
+            <div 
+              className="prose max-w-none prose-headings:font-semibold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-primary"
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
           )}
         </div>
       </DialogContent>
