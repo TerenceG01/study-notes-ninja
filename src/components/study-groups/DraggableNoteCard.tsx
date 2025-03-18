@@ -45,6 +45,15 @@ export const DraggableNoteCard = ({
     .join("")
     .toUpperCase();
 
+  // Create a temporary div to strip HTML tags for the preview
+  const getTextContentFromHTML = (html: string) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  };
+
+  const contentPreview = getTextContentFromHTML(note.note.content);
+
   return (
     <Card
       ref={setNodeRef}
@@ -79,7 +88,7 @@ export const DraggableNoteCard = ({
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-            {note.note.content}
+            {contentPreview}
           </p>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
