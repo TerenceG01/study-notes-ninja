@@ -107,9 +107,9 @@ export const ViewSharedNote = ({ note, open, onOpenChange }: ViewSharedNoteProps
               placeholder="Edit note content..."
             />
           ) : (
-            <div className="ProseMirror prose max-w-none">
+            <div className="prose prose-sm sm:prose max-w-none p-2 sm:p-4 border rounded-md bg-white dark:bg-gray-950">
               <div 
-                className="prose max-w-none prose-sm sm:prose prose-headings:font-semibold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-primary prose-p:my-2 prose-ul:pl-6 prose-ol:pl-6"
+                className="ProseMirror prose-sm sm:prose max-w-none focus:outline-none prose-headings:font-semibold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-primary prose-p:my-2 prose-ul:pl-6 prose-ol:pl-6"
                 dangerouslySetInnerHTML={{ __html: content }}
               />
             </div>
