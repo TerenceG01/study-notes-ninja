@@ -5,13 +5,13 @@ import { Loader2, Maximize2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { QuizCompletionCard } from "./QuizCompletionCard";
 import { MultipleChoiceOptions } from "./MultipleChoiceOptions";
 import { QuizNavigation } from "./quiz/QuizNavigation";
 import { DifficultyToggle } from "./quiz/DifficultyToggle";
 import { useQuizState } from "@/hooks/useQuizState";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
+import { QuizCompletionDialog } from "./quiz/QuizCompletionDialog";
 
 interface MultipleChoiceModeProps {
   flashcards: any[];
@@ -21,6 +21,7 @@ interface MultipleChoiceModeProps {
 
 export const MultipleChoiceMode = ({ flashcards, deckId, onExpand }: MultipleChoiceModeProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showCompletionDialog, setShowCompletionDialog] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
@@ -83,6 +84,17 @@ export const MultipleChoiceMode = ({ flashcards, deckId, onExpand }: MultipleCho
     }
   };
 
+  // Show completion dialog when the last card is answered
+  if (isLastCard && isAnswered && !showCompletionDialog) {
+    setShowCompletionDialog(true);
+  }
+
+  const handleRestartQuiz = () => {
+    resetQuiz();
+    setCurrentIndex(0);
+    setShowCompletionDialog(false);
+  };
+
   if (!currentCard || !options) {
     return (
       <div className="text-center py-8">
@@ -133,16 +145,14 @@ export const MultipleChoiceMode = ({ flashcards, deckId, onExpand }: MultipleCho
         )}
       </Card>
 
-      {isLastCard && isAnswered && (
-        <QuizCompletionCard
-          correctAnswers={correctAnswers}
-          totalAttempted={totalAttempted}
-          onRestart={() => {
-            resetQuiz();
-            setCurrentIndex(0);
-          }}
-        />
-      )}
+      {/* Quiz completion dialog as a popup */}
+      <QuizCompletionDialog
+        open={showCompletionDialog}
+        onOpenChange={setShowCompletionDialog}
+        correctAnswers={correctAnswers}
+        totalAttempted={totalAttempted}
+        onRestart={handleRestartQuiz}
+      />
 
       <QuizNavigation
         currentIndex={currentIndex}
