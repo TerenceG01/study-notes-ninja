@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 interface QuizCompletionDialogProps {
   open: boolean;
@@ -46,9 +47,15 @@ export const QuizCompletionDialog = ({
           <div className="text-sm text-muted-foreground text-center">
             Correct answers: {correctAnswers} out of {totalAttempted}
           </div>
-          <Button className="w-full mt-4" onClick={onRestart}>
-            Restart Quiz
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-3 mt-4">
+            <Button variant="outline" className="w-full" onClick={() => onOpenChange(false)}>
+              <X className="mr-2 h-4 w-4" />
+              Cancel
+            </Button>
+            <Button className="w-full" onClick={onRestart}>
+              Restart Quiz
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
