@@ -6,6 +6,8 @@ import { StatsCard } from "@/components/profile/StatsCard";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useProfileData } from "@/hooks/useProfileData";
 import { ResponsiveContainer } from "@/components/ui/responsive-container";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 interface ProfileModalProps {
   open: boolean;
@@ -120,6 +122,18 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
                 isLoading={statsLoading}
               />
             </div>
+          </div>
+          
+          {/* Cancel button */}
+          <div className="flex justify-center mt-6 sm:mt-8">
+            <Button 
+              variant="outline" 
+              className="w-full max-w-xs" 
+              onClick={() => handleOpenChange(false)}
+            >
+              <X className="mr-2 h-4 w-4" />
+              Cancel
+            </Button>
           </div>
         </div>
       </DialogContent>
