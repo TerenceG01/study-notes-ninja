@@ -99,6 +99,13 @@ export const ViewSharedNote = ({ note, open, onOpenChange }: ViewSharedNoteProps
           </div>
         </DialogHeader>
         <div className="mt-4 md:mt-6">
+          <div className="flex justify-center mb-6">
+            <img 
+              src="/lovable-uploads/e162966b-af19-48ea-be18-e2c3a967c8a9.png" 
+              alt="Note icon" 
+              className="w-24 h-24 object-contain"
+            />
+          </div>
           {isEditing ? (
             <RichTextEditor
               content={content}
