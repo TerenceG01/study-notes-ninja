@@ -87,13 +87,9 @@ export const DraggableNoteCard = ({
           </div>
         </CardHeader>
         <CardContent>
-          <div className="aspect-w-1 aspect-h-1 w-full mb-4 flex items-center justify-center">
-            <img 
-              src="/lovable-uploads/e162966b-af19-48ea-be18-e2c3a967c8a9.png" 
-              alt="Note preview" 
-              className="w-20 h-20 object-contain mx-auto"
-            />
-          </div>
+          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+            {contentPreview}
+          </p>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Avatar className="h-6 w-6">
