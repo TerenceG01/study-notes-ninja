@@ -661,4 +661,4 @@ export const translations = {
     newPassword: "新密码",
     confirmNewPassword: "确认新密码",
     enterNewPassword: "输入新密码",
-    confirmNewPasswordPlaceholder
+    confirm
