@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -160,11 +161,11 @@ export const NavigationBar = () => {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem onClick={handleProfileClick}>
                   <User className="mr-2 h-4 w-4" />
-                  <span>{t("profile")}</span>
+                  <span>Profile</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>{t("logOut")}</span>
+                  <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
