@@ -89,7 +89,11 @@ export const TestimonialsSection = ({ isVisible }: TestimonialsSectionProps) => 
                 </div>
                 <div className="text-left">
                   <p className="font-medium">{testimonial.name}</p>
-                  <p className="text-sm text-muted-foreground">{t(testimonial.role)}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {testimonial.role === "medicalStudent" ? t("medicalStudent") :
+                     testimonial.role === "engineeringMajor" ? t("engineeringMajor") :
+                     t("psychologyStudent")}
+                  </p>
                 </div>
               </div>
             </div>
