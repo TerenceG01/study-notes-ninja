@@ -1,30 +1,34 @@
+
 import { Users } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface TestimonialsSectionProps {
   isVisible: boolean;
 }
 
-// Testimonial data
-const testimonials = [
-  {
-    quote: "This app has completely transformed how I study for exams. The AI summaries save me hours of review time!",
-    name: "Emily K.",
-    role: "Medical Student",
-  },
-  {
-    quote: "The collaborative features helped our study group stay organized during our entire senior project.",
-    name: "James L.",
-    role: "Engineering Major",
-  },
-  {
-    quote: "I used to struggle keeping my notes organized. Now everything is searchable and I can actually find what I need.",
-    name: "Sarah T.",
-    role: "Psychology Student",
-  },
-];
-
 export const TestimonialsSection = ({ isVisible }: TestimonialsSectionProps) => {
+  const { t } = useLanguage();
+  
+  // Testimonial data with translations
+  const testimonials = [
+    {
+      quote: t("testimonial1"),
+      name: "Emily K.",
+      role: t("medicalStudent"),
+    },
+    {
+      quote: t("testimonial2"),
+      name: "James L.",
+      role: t("engineeringMajor"),
+    },
+    {
+      quote: t("testimonial3"),
+      name: "Sarah T.",
+      role: t("psychologyStudent"),
+    },
+  ];
+
   return (
     <section id="testimonials" className="py-16 min-h-[80vh] flex items-center">
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl text-center">
@@ -39,14 +43,14 @@ export const TestimonialsSection = ({ isVisible }: TestimonialsSectionProps) => 
             isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
           )}>
             <Users className="w-4 h-4 mr-2" />
-            Student Success Stories
+            {t("studentSuccessStories")}
           </div>
           
           <h2 className={cn(
             "text-3xl md:text-4xl font-bold mb-16 transition-all duration-700 delay-100",
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           )}>
-            Join Thousands of Students Already Excelling
+            {t("joinThousands")}
           </h2>
         </div>
         
