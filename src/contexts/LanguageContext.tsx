@@ -100,7 +100,7 @@ export const translations = {
     captureThoughtsDescription: "Capturez vos pensées rapidement avec notre éditeur intuitif et notre application mobile.",
     
     readyToElevate: "Prêt à améliorer votre expérience d'étude ?",
-    joinThousands: "Rejoignez des milliers d'étudiants qui transforment déjà leur façon d'apprendre. Découvrez la puissance des outils d'étude améliorés par l'IA dès aujourd'hui.",
+    joinThousands: "Rejoignez des milliers d'étudiants qui transforment déjà leur façon d'apprendre.",
     goToMyNotes: "Accéder à Mes Notes",
     
     selectLanguage: "Choisir la Langue",
