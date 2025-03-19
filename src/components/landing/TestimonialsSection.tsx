@@ -10,17 +10,14 @@ interface TestimonialsSectionProps {
 // Testimonial data
 const testimonials = [
   {
-    quote: "This app has completely transformed how I study for exams. The AI summaries save me hours of review time!",
     name: "Emily K.",
     role: "medicalStudent",
   },
   {
-    quote: "The collaborative features helped our study group stay organized during our entire senior project.",
     name: "James L.",
     role: "engineeringMajor",
   },
   {
-    quote: "I used to struggle keeping my notes organized. Now everything is searchable and I can actually find what I need.",
     name: "Sarah T.",
     role: "psychologyStudent",
   },
@@ -79,9 +76,9 @@ export const TestimonialsSection = ({ isVisible }: TestimonialsSectionProps) => 
                 "text-foreground mb-6 flex-grow italic transition-all duration-700",
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
               )} style={{ transitionDelay: `${index * 200 + 300}ms` }}>
-                "{index === 0 ? t("testimonial1") : 
-                   index === 1 ? t("testimonial2") : 
-                   t("testimonial3")}"
+                {index === 0 ? t("testimonial1") : 
+                 index === 1 ? t("testimonial2") : 
+                 t("testimonial3")}
               </p>
               <div className={cn(
                 "flex items-center mt-auto transition-all duration-700",
