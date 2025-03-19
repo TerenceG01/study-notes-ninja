@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 const formSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -26,7 +25,6 @@ export function ResetPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
-  const { t } = useLanguage();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -80,16 +78,16 @@ export function ResetPassword() {
     return (
       <Card className="w-full max-w-md mx-auto">
         <CardHeader>
-          <CardTitle>{t("resetPassword")}</CardTitle>
-          <CardDescription>{t("createNewPassword")}</CardDescription>
+          <CardTitle>Password Reset</CardTitle>
+          <CardDescription>Your password has been updated successfully</CardDescription>
         </CardHeader>
         <CardContent>
           <Alert>
             <AlertDescription className="flex flex-col items-center text-center py-4">
               <CheckCircle className="h-12 w-12 text-green-500 mb-2" />
-              <h3 className="text-lg font-medium">{t("passwordUpdated")}</h3>
+              <h3 className="text-lg font-medium">Password Updated</h3>
               <p className="text-sm text-muted-foreground mt-1">
-                {t("passwordUpdatedSuccess")}
+                Your password has been changed successfully. You'll be redirected to the app in a moment.
               </p>
             </AlertDescription>
           </Alert>
@@ -97,7 +95,7 @@ export function ResetPassword() {
             onClick={() => navigate("/notes")} 
             className="w-full mt-4"
           >
-            {t("goToApp")}
+            Go to App
           </Button>
         </CardContent>
       </Card>
@@ -107,8 +105,8 @@ export function ResetPassword() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>{t("resetPassword")}</CardTitle>
-        <CardDescription>{t("createNewPassword")}</CardDescription>
+        <CardTitle>Reset Your Password</CardTitle>
+        <CardDescription>Create a new password for your account</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -118,9 +116,9 @@ export function ResetPassword() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("newPassword")}</FormLabel>
+                  <FormLabel>New Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder={t("enterNewPassword")} {...field} />
+                    <Input type="password" placeholder="Enter new password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -131,16 +129,16 @@ export function ResetPassword() {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("confirmNewPassword")}</FormLabel>
+                  <FormLabel>Confirm New Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder={t("confirmNewPasswordPlaceholder")} {...field} />
+                    <Input type="password" placeholder="Confirm new password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? t("updatingPassword") : t("updatePassword")}
+              {isLoading ? "Updating Password..." : "Update Password"}
             </Button>
           </form>
         </Form>

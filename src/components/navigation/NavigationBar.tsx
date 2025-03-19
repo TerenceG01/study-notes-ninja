@@ -10,8 +10,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { ProfileModal } from "@/components/profile/ProfileModal";
-import { LanguageSelector } from "@/components/language/LanguageSelector";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export const NavigationBar = () => {
@@ -22,7 +20,6 @@ export const NavigationBar = () => {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [authTab, setAuthTab] = useState<"sign-in" | "sign-up">("sign-in");
-  const { t } = useLanguage();
 
   // Function to reset pointer-events to ensure UI stays interactive
   const resetPointerEvents = () => {
@@ -136,12 +133,11 @@ export const NavigationBar = () => {
         <div className="container flex items-center justify-between h-16 px-4 sm:px-6">
           <Link to="/" className="font-semibold text-xl">StudyBuddy</Link>
           <div className="flex items-center space-x-4">
-            <LanguageSelector />
             <Button variant="ghost" onClick={handleSignIn}>
-              {t("signIn")}
+              Sign In
             </Button>
             <Button onClick={handleGetStarted}>
-              {t("getStartedFree")}
+              Get Started
             </Button>
           </div>
         </div>
@@ -151,7 +147,6 @@ export const NavigationBar = () => {
         <div className="container flex items-center justify-between h-16 px-4 sm:px-6">
           <Link to="/" className="font-semibold text-xl">StudyBuddy</Link>
           <div className="flex items-center space-x-4">
-            <LanguageSelector variant="minimal" />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon" className="rounded-full">
@@ -161,11 +156,11 @@ export const NavigationBar = () => {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem onClick={handleProfileClick}>
                   <User className="mr-2 h-4 w-4" />
-                  <span>{t("profile")}</span>
+                  <span>Profile</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>{t("logOut")}</span>
+                  <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

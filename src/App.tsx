@@ -1,11 +1,9 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route, Navigate, useLocation, BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
-import { LanguageProvider } from "./contexts/LanguageContext";
 import Index from "./pages/Index";
 import Notes from "./pages/Notes";
 import Flashcards from "./pages/Flashcards";
@@ -91,53 +89,51 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
-        <LanguageProvider>
-          <Toaster />
-          <Sonner />
-          <TooltipProvider>
-            <SidebarProvider>
-              <NoteModelProvider>
-                <QueryClientProvider client={queryClient}>
-                  <AuthProvider>
-                    <TourProvider>
-                      <AppTour />
-                      <CookiesDisclaimerDialog />
-                      <Routes>
-                        <Route path="/" element={<MainLayout><Index /></MainLayout>} />
-                        <Route path="/reset-password" element={<ResetPassword />} />
-                        <Route
-                          path="/notes"
-                          element={<ProtectedRoute><AppLayout><Notes /></AppLayout></ProtectedRoute>}
-                        />
-                        <Route
-                          path="/flashcards"
-                          element={<ProtectedRoute><AppLayout><Flashcards /></AppLayout></ProtectedRoute>}
-                        />
-                        <Route
-                          path="/flashcards/:id"
-                          element={<ProtectedRoute><AppLayout><FlashcardDeck /></AppLayout></ProtectedRoute>}
-                        />
-                        <Route
-                          path="/study-groups"
-                          element={<ProtectedRoute><AppLayout><StudyGroups /></AppLayout></ProtectedRoute>}
-                        />
-                        <Route
-                          path="/study-groups/:id"
-                          element={<ProtectedRoute><AppLayout><StudyGroupDetails /></AppLayout></ProtectedRoute>}
-                        />
-                        <Route
-                          path="/study-groups/join/:code"
-                          element={<ProtectedRoute><AppLayout><JoinStudyGroup /></AppLayout></ProtectedRoute>}
-                        />
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </TourProvider>
-                  </AuthProvider>
-                </QueryClientProvider>
-              </NoteModelProvider>
-            </SidebarProvider>
-          </TooltipProvider>
-        </LanguageProvider>
+        <Toaster />
+        <Sonner />
+        <TooltipProvider>
+          <SidebarProvider>
+            <NoteModelProvider>
+              <QueryClientProvider client={queryClient}>
+                <AuthProvider>
+                  <TourProvider>
+                    <AppTour />
+                    <CookiesDisclaimerDialog />
+                    <Routes>
+                      <Route path="/" element={<MainLayout><Index /></MainLayout>} />
+                      <Route path="/reset-password" element={<ResetPassword />} />
+                      <Route
+                        path="/notes"
+                        element={<ProtectedRoute><AppLayout><Notes /></AppLayout></ProtectedRoute>}
+                      />
+                      <Route
+                        path="/flashcards"
+                        element={<ProtectedRoute><AppLayout><Flashcards /></AppLayout></ProtectedRoute>}
+                      />
+                      <Route
+                        path="/flashcards/:id"
+                        element={<ProtectedRoute><AppLayout><FlashcardDeck /></AppLayout></ProtectedRoute>}
+                      />
+                      <Route
+                        path="/study-groups"
+                        element={<ProtectedRoute><AppLayout><StudyGroups /></AppLayout></ProtectedRoute>}
+                      />
+                      <Route
+                        path="/study-groups/:id"
+                        element={<ProtectedRoute><AppLayout><StudyGroupDetails /></AppLayout></ProtectedRoute>}
+                      />
+                      <Route
+                        path="/study-groups/join/:code"
+                        element={<ProtectedRoute><AppLayout><JoinStudyGroup /></AppLayout></ProtectedRoute>}
+                      />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </TourProvider>
+                </AuthProvider>
+              </QueryClientProvider>
+            </NoteModelProvider>
+          </SidebarProvider>
+        </TooltipProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

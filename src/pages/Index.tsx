@@ -11,7 +11,6 @@ import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { CTASection } from "@/components/landing/CTASection";
 import { useVisibilityObserver } from "@/components/landing/useVisibilityObserver";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
   const { user } = useAuth();
@@ -19,7 +18,6 @@ const Index = () => {
   const navigate = useNavigate();
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [authTab, setAuthTab] = useState<"sign-in" | "sign-up">("sign-up");
-  const { t } = useLanguage();
   
   // Section visibility with custom hook
   const isVisible = useVisibilityObserver([

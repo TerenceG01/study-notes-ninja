@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 interface CTASectionProps {
   isVisible: boolean;
@@ -14,7 +13,6 @@ interface CTASectionProps {
 export const CTASection = ({ isVisible, handleGetStarted }: CTASectionProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { t } = useLanguage();
   
   const handleNavigateToNotes = () => {
     navigate('/notes');
@@ -28,10 +26,11 @@ export const CTASection = ({ isVisible, handleGetStarted }: CTASectionProps) => 
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"
         )}>
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-            {t("readyToElevate")}
+            Ready to Elevate Your Study Experience?
           </h2>
           <p className="max-w-2xl text-lg text-muted-foreground">
-            {t("joinThousands")}
+            Join thousands of students who are already transforming how they learn. 
+            Experience the power of AI-enhanced study tools today.
           </p>
           {user ? (
             <Button 
@@ -39,7 +38,7 @@ export const CTASection = ({ isVisible, handleGetStarted }: CTASectionProps) => 
               className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-primary/25"
               onClick={handleNavigateToNotes}
             >
-              {t("goToMyNotes")}
+              Go to My Notes
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
@@ -48,7 +47,7 @@ export const CTASection = ({ isVisible, handleGetStarted }: CTASectionProps) => 
               className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-primary/25"
               onClick={handleGetStarted}
             >
-              {t("getStartedFree")}
+              Get Started Free
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           )}

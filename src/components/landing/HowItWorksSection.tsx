@@ -1,33 +1,29 @@
-
 import { ArrowRight, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 interface HowItWorksSectionProps {
   isVisible: boolean;
   handleGetStarted: () => void;
 }
 
-export const HowItWorksSection = ({ isVisible, handleGetStarted }: HowItWorksSectionProps) => {
-  const { t } = useLanguage();
-  
-  // How it works steps
-  const steps = [
-    {
-      title: t("takeNotesYourWay"),
-      description: t("captureIdeas"),
-    },
-    {
-      title: t("getAIEnhancements"),
-      description: t("aiToolsHelp"),
-    },
-    {
-      title: t("studySmarter"),
-      description: t("generateFlashcards"),
-    },
-  ];
+// How it works steps
+const steps = [
+  {
+    title: "Take Notes Your Way",
+    description: "Capture ideas with our flexible editor that adapts to your style.",
+  },
+  {
+    title: "Get AI Enhancements",
+    description: "Our AI tools help organize, summarize, and improve your notes.",
+  },
+  {
+    title: "Study Smarter",
+    description: "Generate flashcards, summaries, and study materials automatically.",
+  },
+];
 
+export const HowItWorksSection = ({ isVisible, handleGetStarted }: HowItWorksSectionProps) => {
   return (
     <section id="howItWorks" className="py-16 bg-secondary/20 min-h-[80vh] flex items-center">
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl">
@@ -42,21 +38,22 @@ export const HowItWorksSection = ({ isVisible, handleGetStarted }: HowItWorksSec
             isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
           )}>
             <Lightbulb className="w-4 h-4 mr-2" />
-            {t("howItWorks")}
+            How It Works
           </div>
           
           <h2 className={cn(
             "text-3xl md:text-4xl font-bold transition-all duration-700 delay-100",
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           )}>
-            {t("superchargeStudy")}
+            Supercharge Your Study Process
           </h2>
           
           <p className={cn(
             "text-lg text-muted-foreground transition-all duration-700 delay-200",
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           )}>
-            {t("platformUsesAI")}
+            Our platform uses AI to help you create better study materials, understand complex topics,
+            and retain information more effectively.
           </p>
           
           <div className="w-full max-w-md space-y-10 mt-8">
@@ -100,7 +97,7 @@ export const HowItWorksSection = ({ isVisible, handleGetStarted }: HowItWorksSec
             )}
             onClick={handleGetStarted}
           >
-            {t("startTakingNotes")}
+            Start Taking Notes
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
