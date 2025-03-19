@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface HeroSectionProps {
   isVisible: boolean;
@@ -18,6 +19,7 @@ export const HeroSection = ({
 }: HeroSectionProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   
   const handleNavigateToNotes = () => {
     navigate('/notes');
@@ -36,25 +38,21 @@ export const HeroSection = ({
               isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
             )}>
               <Sparkles className="w-4 h-4 mr-2" />
-              Smart Note-Taking for Students
+              {t("smartNoteTaking")}
             </div>
             
             <h1 className={cn(
               "text-4xl md:text-5xl lg:text-6xl font-bold leading-tight transition-all duration-1000 delay-200",
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
             )}>
-              <span className="block mb-2">Transform Notes into</span>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-blue-500">
-                Lasting Knowledge
-              </span>
+              <span className="block mb-2">{t("transformNotes")}</span>
             </h1>
             
             <p className={cn(
               "text-lg md:text-xl text-muted-foreground transition-all duration-1000 delay-300",
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
             )}>
-              The intelligent note-taking platform designed for students. Organize, collaborate, 
-              and excel with AI-powered study tools.
+              {t("intelligentNoteTaking")}
             </p>
             
             <div className={cn(
@@ -67,7 +65,7 @@ export const HeroSection = ({
                   className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-primary/25" 
                   onClick={handleNavigateToNotes}
                 >
-                  Go to My Notes
+                  {t("goToMyNotes")}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               ) : (
@@ -77,7 +75,7 @@ export const HeroSection = ({
                     className="rounded-full bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-primary/25" 
                     onClick={handleGetStarted}
                   >
-                    Get Started Free
+                    {t("getStartedFree")}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                   <Button 
@@ -86,7 +84,7 @@ export const HeroSection = ({
                     className="rounded-full border-primary/20 hover:bg-primary/5" 
                     onClick={handleSignIn}
                   >
-                    Sign In
+                    {t("signIn")}
                   </Button>
                 </>
               )}
