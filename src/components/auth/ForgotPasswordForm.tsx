@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, Mail } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -23,6 +24,7 @@ interface ForgotPasswordFormProps {
 export function ForgotPasswordForm({ onBackToSignIn }: ForgotPasswordFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const { t } = useLanguage();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,7 +66,7 @@ export function ForgotPasswordForm({ onBackToSignIn }: ForgotPasswordFormProps) 
         onClick={onBackToSignIn}
       >
         <ArrowLeft className="h-4 w-4" />
-        Back to sign in
+        {t("backToSignIn")}
       </Button>
 
       {emailSent ? (
@@ -72,21 +74,21 @@ export function ForgotPasswordForm({ onBackToSignIn }: ForgotPasswordFormProps) 
           <Alert>
             <AlertDescription className="flex flex-col items-center text-center py-4">
               <Mail className="h-12 w-12 text-primary mb-2" />
-              <h3 className="text-lg font-medium">Check your email</h3>
+              <h3 className="text-lg font-medium">{t("checkYourEmail")}</h3>
               <p className="text-sm text-muted-foreground mt-1">
-                We've sent password reset instructions to your email address.
+                {t("resetInstructions")}
               </p>
             </AlertDescription>
           </Alert>
           <div className="text-sm text-center text-muted-foreground">
-            <p>Didn't receive an email? Check your spam folder or</p>
+            <p>{t("didntReceiveEmail")}</p>
             <Button
               variant="link"
               className="p-0 h-auto text-primary"
               onClick={() => form.handleSubmit(onSubmit)()}
               disabled={isLoading}
             >
-              try again
+              {t("tryAgain")}
             </Button>
           </div>
         </div>
@@ -98,19 +100,19 @@ export function ForgotPasswordForm({ onBackToSignIn }: ForgotPasswordFormProps) 
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t("email")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your email address" {...field} />
+                    <Input placeholder={t("enterYourEmail")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <p className="text-sm text-muted-foreground">
-              Enter your email address and we'll send you a link to reset your password.
+              {t("enterEmailForReset")}
             </p>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Sending..." : "Send Reset Link"}
+              {isLoading ? t("sending") : t("sendResetLink")}
             </Button>
           </form>
         </Form>

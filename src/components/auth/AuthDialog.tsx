@@ -4,7 +4,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -14,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ForgotPasswordForm } from "@/components/auth/ForgotPasswordForm";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -32,6 +32,8 @@ export function AuthDialog({
   const [isLoading, setIsLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
+  const { t } = useLanguage();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -78,7 +80,7 @@ export function AuthDialog({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Reset Your Password</DialogTitle>
+            <DialogTitle>{t("resetYourPassword")}</DialogTitle>
           </DialogHeader>
           <ForgotPasswordForm onBackToSignIn={handleBackToSignIn} />
         </DialogContent>
@@ -90,12 +92,12 @@ export function AuthDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Welcome to StudyNotes</DialogTitle>
+          <DialogTitle>{t("welcomeToStudyNotes")}</DialogTitle>
         </DialogHeader>
         <Tabs defaultValue={defaultTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="sign-in">Sign In</TabsTrigger>
-            <TabsTrigger value="sign-up">Sign Up</TabsTrigger>
+            <TabsTrigger value="sign-in">{t("signIn")}</TabsTrigger>
+            <TabsTrigger value="sign-up">{t("getStartedFree")}</TabsTrigger>
           </TabsList>
           <TabsContent value="sign-in">
             <Form {...form}>
@@ -105,9 +107,9 @@ export function AuthDialog({
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>{t("email")}</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter your email" {...field} />
+                        <Input placeholder={t("enterYourEmail")} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -118,9 +120,9 @@ export function AuthDialog({
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{t("password")}</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="Enter your password" {...field} />
+                        <Input type="password" placeholder={t("enterYourPassword")} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -133,11 +135,11 @@ export function AuthDialog({
                     className="p-0 h-auto text-sm text-primary"
                     onClick={() => setShowForgotPassword(true)}
                   >
-                    Forgot password?
+                    {t("forgotPassword")}
                   </Button>
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Signing in..." : "Sign In"}
+                  {isLoading ? t("signingIn") : t("signIn")}
                 </Button>
               </form>
             </Form>
@@ -150,9 +152,9 @@ export function AuthDialog({
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>{t("email")}</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter your email" {...field} />
+                        <Input placeholder={t("enterYourEmail")} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -163,16 +165,16 @@ export function AuthDialog({
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{t("password")}</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="Create a password" {...field} />
+                        <Input type="password" placeholder={t("createPassword")} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Creating account..." : "Create Account"}
+                  {isLoading ? t("creatingAccount") : t("createAccount")}
                 </Button>
               </form>
             </Form>
