@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 // Define available languages
@@ -25,6 +24,17 @@ export const translations = {
     
     // Features section
     everythingToExcel: "Everything You Need to Excel",
+    platformDescription: "Our platform combines powerful tools to help you study smarter, not harder.",
+    
+    // Feature cards
+    smartOrganization: "Smart Organization",
+    organizeNotesDescription: "Automatically organize your notes by subject, topic, and importance.",
+    aiPoweredInsights: "AI-Powered Insights",
+    intelligentSummariesDescription: "Get intelligent summaries and study recommendations based on your notes.",
+    collaborativeStudy: "Collaborative Study",
+    shareNotesDescription: "Share notes and study together with classmates in real-time.",
+    quickCapture: "Quick Capture",
+    captureThoughtsDescription: "Capture your thoughts quickly with our intuitive editor and mobile app.",
     
     // CTA section
     readyToElevate: "Ready to Elevate Your Study Experience?",
@@ -33,6 +43,10 @@ export const translations = {
     
     // Language selector
     selectLanguage: "Select Language",
+    
+    // Navigation
+    profile: "Profile",
+    logOut: "Log out",
     
     // Empty states
     noNotesYet: "No notes have been shared yet",
@@ -73,6 +87,17 @@ export const translations = {
     signIn: "Se Connecter",
     
     everythingToExcel: "Tout ce dont vous avez besoin pour exceller",
+    platformDescription: "Notre plateforme combine des outils puissants pour vous aider à étudier plus intelligemment, pas plus difficilement.",
+    
+    // Feature cards
+    smartOrganization: "Organisation Intelligente",
+    organizeNotesDescription: "Organisez automatiquement vos notes par sujet, thème et importance.",
+    aiPoweredInsights: "Insights Alimentés par l'IA",
+    intelligentSummariesDescription: "Obtenez des résumés intelligents et des recommandations d'étude basées sur vos notes.",
+    collaborativeStudy: "Étude Collaborative",
+    shareNotesDescription: "Partagez des notes et étudiez ensemble avec vos camarades de classe en temps réel.",
+    quickCapture: "Capture Rapide",
+    captureThoughtsDescription: "Capturez vos pensées rapidement avec notre éditeur intuitif et notre application mobile.",
     
     readyToElevate: "Prêt à améliorer votre expérience d'étude ?",
     joinThousands: "Rejoignez des milliers d'étudiants qui transforment déjà leur façon d'apprendre. Découvrez la puissance des outils d'étude améliorés par l'IA dès aujourd'hui.",
@@ -109,6 +134,10 @@ export const translations = {
     
     // Empty notes row
     noNotesFound: "Aucune note trouvée. Créez votre première note ci-dessus !",
+    
+    // Navigation
+    profile: "Profil",
+    logOut: "Déconnexion",
   },
   es: {
     smartNoteTaking: "Toma de Notas Inteligente para Estudiantes",
@@ -118,6 +147,17 @@ export const translations = {
     signIn: "Iniciar Sesión",
     
     everythingToExcel: "Todo lo que necesitas para destacar",
+    platformDescription: "Nuestra plataforma combina herramientas potentes para ayudarte a estudiar de forma más inteligente, no más difícil.",
+    
+    // Feature cards
+    smartOrganization: "Organización Inteligente",
+    organizeNotesDescription: "Organiza automáticamente tus notas por asignatura, tema e importancia.",
+    aiPoweredInsights: "Análisis Impulsados por IA",
+    intelligentSummariesDescription: "Obtén resúmenes inteligentes y recomendaciones de estudio basadas en tus notas.",
+    collaborativeStudy: "Estudio Colaborativo",
+    shareNotesDescription: "Comparte notas y estudia junto con tus compañeros de clase en tiempo real.",
+    quickCapture: "Captura Rápida",
+    captureThoughtsDescription: "Captura tus pensamientos rápidamente con nuestro editor intuitivo y aplicación móvil.",
     
     readyToElevate: "¿Listo para elevar tu experiencia de estudio?",
     joinThousands: "Únete a miles de estudiantes que ya están transformando su forma de aprender. Experimenta el poder de las herramientas de estudio mejoradas por IA hoy.",
@@ -154,6 +194,10 @@ export const translations = {
     
     // Empty notes row
     noNotesFound: "No se encontraron notas. ¡Crea tu primera nota arriba!",
+    
+    // Navigation
+    profile: "Perfil",
+    logOut: "Cerrar sesión",
   },
   it: {
     smartNoteTaking: "Appunti Intelligenti per Studenti",
@@ -163,6 +207,17 @@ export const translations = {
     signIn: "Accedi",
     
     everythingToExcel: "Tutto ciò di cui hai bisogno per eccellere",
+    platformDescription: "La nostra piattaforma combina potenti strumenti per aiutarti a studiare in modo più intelligente, non più difficile.",
+    
+    // Feature cards
+    smartOrganization: "Organizzazione Intelligente",
+    organizeNotesDescription: "Organizza automaticamente le tue note per materia, argomento e importanza.",
+    aiPoweredInsights: "Approfondimenti Basati sull'IA",
+    intelligentSummariesDescription: "Ottieni riassunti intelligenti e raccomandazioni di studio basate sulle tue note.",
+    collaborativeStudy: "Studio Collaborativo",
+    shareNotesDescription: "Condividi appunti e studia insieme ai tuoi compagni di classe in tempo reale.",
+    quickCapture: "Acquisizione Rapida",
+    captureThoughtsDescription: "Cattura i tuoi pensieri rapidamente con il nostro editor intuitivo e l'app mobile.",
     
     readyToElevate: "Pronto a migliorare la tua esperienza di studio?",
     joinThousands: "Unisciti a migliaia di studenti che stanno già trasformando il loro modo di apprendere. Scopri oggi la potenza degli strumenti di studio potenziati dall'IA.",
@@ -199,6 +254,10 @@ export const translations = {
     
     // Empty notes row
     noNotesFound: "Nessun appunto trovato. Crea il tuo primo appunto qui sopra!",
+    
+    // Navigation
+    profile: "Profilo",
+    logOut: "Disconnetti",
   },
   de: {
     smartNoteTaking: "Intelligente Notizen für Studenten",
@@ -208,6 +267,17 @@ export const translations = {
     signIn: "Anmelden",
     
     everythingToExcel: "Alles was du brauchst, um zu glänzen",
+    platformDescription: "Unsere Plattform kombiniert leistungsstarke Tools, um dir zu helfen, intelligenter zu lernen, nicht härter.",
+    
+    // Feature cards
+    smartOrganization: "Intelligente Organisation",
+    organizeNotesDescription: "Organisiere deine Notizen automatisch nach Fach, Thema und Wichtigkeit.",
+    aiPoweredInsights: "KI-gestützte Erkenntnisse",
+    intelligentSummariesDescription: "Erhalte intelligente Zusammenfassungen und Studienempfehlungen basierend auf deinen Notizen.",
+    collaborativeStudy: "Kollaboratives Lernen",
+    shareNotesDescription: "Teile Notizen und lerne gemeinsam mit Klassenkameraden in Echtzeit.",
+    quickCapture: "Schnelle Erfassung",
+    captureThoughtsDescription: "Erfasse deine Gedanken schnell mit unserem intuitiven Editor und der mobilen App.",
     
     readyToElevate: "Bereit, dein Studienerlebnis zu verbessern?",
     joinThousands: "Schließe dich Tausenden von Studenten an, die bereits ihre Lernweise transformieren. Erlebe noch heute die Kraft der KI-verbesserten Lerntools.",
@@ -244,6 +314,10 @@ export const translations = {
     
     // Empty notes row
     noNotesFound: "Keine Notizen gefunden. Erstelle deine erste Notiz oben!",
+    
+    // Navigation
+    profile: "Profil",
+    logOut: "Abmelden",
   },
   pt: {
     smartNoteTaking: "Anotações Inteligentes para Estudantes",
@@ -253,6 +327,17 @@ export const translations = {
     signIn: "Entrar",
     
     everythingToExcel: "Tudo o que você precisa para se destacar",
+    platformDescription: "Nossa plataforma combina ferramentas poderosas para ajudá-lo a estudar de forma mais inteligente, não mais difícil.",
+    
+    // Feature cards
+    smartOrganization: "Organização Inteligente",
+    organizeNotesDescription: "Organize automaticamente suas anotações por disciplina, tópico e importância.",
+    aiPoweredInsights: "Insights Impulsionados por IA",
+    intelligentSummariesDescription: "Obtenha resumos inteligentes e recomendações de estudo com base em suas anotações.",
+    collaborativeStudy: "Estudo Colaborativo",
+    shareNotesDescription: "Compartilhe anotações e estude junto com colegas de classe em tempo real.",
+    quickCapture: "Captura Rápida",
+    captureThoughtsDescription: "Capture seus pensamentos rapidamente com nosso editor intuitivo e aplicativo móvel.",
     
     readyToElevate: "Pronto para elevar sua experiência de estudo?",
     joinThousands: "Junte-se a milhares de estudantes que já estão transformando a maneira como aprendem. Experimente hoje o poder das ferramentas de estudo aprimoradas por IA.",
@@ -289,7 +374,11 @@ export const translations = {
     
     // Empty notes row
     noNotesFound: "Nenhuma nota encontrada. Crie sua primeira nota acima!",
-  }
+    
+    // Navigation
+    profile: "Perfil",
+    logOut: "Sair",
+  },
 };
 
 interface LanguageContextType {

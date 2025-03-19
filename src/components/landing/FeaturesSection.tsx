@@ -14,23 +14,23 @@ export const FeaturesSection = ({ isVisible }: FeaturesSectionProps) => {
   const features = [
     {
       icon: <BookOpen className="h-8 w-8 text-primary" />,
-      title: "Smart Organization",
-      description: "Automatically organize your notes by subject, topic, and importance.",
+      title: t("smartOrganization"),
+      description: t("organizeNotesDescription"),
     },
     {
       icon: <Brain className="h-8 w-8 text-primary" />,
-      title: "AI-Powered Insights",
-      description: "Get intelligent summaries and study recommendations based on your notes.",
+      title: t("aiPoweredInsights"),
+      description: t("intelligentSummariesDescription"),
     },
     {
       icon: <Users className="h-8 w-8 text-primary" />,
-      title: "Collaborative Study",
-      description: "Share notes and study together with classmates in real-time.",
+      title: t("collaborativeStudy"),
+      description: t("shareNotesDescription"),
     },
     {
       icon: <Zap className="h-8 w-8 text-primary" />,
-      title: "Quick Capture",
-      description: "Capture your thoughts quickly with our intuitive editor and mobile app.",
+      title: t("quickCapture"),
+      description: t("captureThoughtsDescription"),
     },
   ];
 
@@ -87,7 +87,7 @@ export const FeaturesSection = ({ isVisible }: FeaturesSectionProps) => {
             {t("everythingToExcel")}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Our platform combines powerful tools to help you study smarter, not harder.
+            {t("platformDescription")}
           </p>
         </div>
         
