@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { BookOpen, Trash2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DeckCardProps {
   deck: {
@@ -17,6 +18,7 @@ interface DeckCardProps {
 
 export const DeckCard = ({ deck, cardCount, onDelete }: DeckCardProps) => {
   const isMobile = useIsMobile();
+  const { t } = useLanguage();
   
   return (
     <Link to={`/flashcards/${deck.id}`}>
@@ -36,13 +38,13 @@ export const DeckCard = ({ deck, cardCount, onDelete }: DeckCardProps) => {
             </CardTitle>
           </div>
           <CardDescription className={`line-clamp-${isMobile ? "1" : "2"} text-xs sm:text-sm mt-1`}>
-            {deck.description || "No description"}
+            {deck.description || t("noDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent className={`${isMobile ? "p-3 pt-0" : "p-4 pt-0"} mt-auto`}>
           <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
             <BookOpen className="h-4 w-4" />
-            <span>{cardCount || 0} cards</span>
+            <span>{cardCount || 0} {t("cards")}</span>
           </div>
         </CardContent>
       </Card>

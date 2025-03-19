@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { SaveIcon, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DialogFooterActionsProps {
   onSave: () => void;
@@ -17,6 +18,7 @@ export const DialogFooterActions = ({
   saveDisabled = false
 }: DialogFooterActionsProps) => {
   const isMobile = useIsMobile();
+  const { t } = useLanguage();
   
   return (
     <div className={`flex items-center justify-between border-t border-border pt-4 pb-2 mt-3 ${isMobile ? 'px-2' : ''}`}>
@@ -27,7 +29,7 @@ export const DialogFooterActions = ({
         className="gap-1"
       >
         <X className="w-4 h-4" />
-        Cancel
+        {t("cancel")}
       </Button>
       
       <Button 
@@ -38,7 +40,7 @@ export const DialogFooterActions = ({
         disabled={saveDisabled || isSaved}
       >
         <SaveIcon className="w-4 h-4" />
-        {isSaved ? "Saved" : "Save"}
+        {isSaved ? t("saved") : t("save")}
       </Button>
     </div>
   );

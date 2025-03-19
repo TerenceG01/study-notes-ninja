@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, FileEdit, BookOpen, Clock, X } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Note } from "@/hooks/useNotes";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface MobileNoteHeaderProps {
   editingNote: Note | null;
@@ -21,6 +22,8 @@ export const MobileNoteHeader = ({
   onToggleLectureMode,
   onDismiss
 }: MobileNoteHeaderProps) => {
+  const { t } = useLanguage();
+  
   return (
     <div className="flex items-center justify-between">
       <Button 
@@ -34,10 +37,10 @@ export const MobileNoteHeader = ({
       
       <div className="flex-1 mx-1 truncate">
         <h3 className="text-sm font-medium truncate">
-          {editingNote?.title || "Untitled Note"}
+          {editingNote?.title || t("untitledNote")}
         </h3>
         <p className="text-xs text-muted-foreground truncate">
-          {editingNote?.subject || "General"}
+          {editingNote?.subject || t("general")}
         </p>
       </div>
       
@@ -54,7 +57,7 @@ export const MobileNoteHeader = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Lecture Mode</p>
+            <p>{t("lectureMode")}</p>
           </TooltipContent>
         </Tooltip>
         

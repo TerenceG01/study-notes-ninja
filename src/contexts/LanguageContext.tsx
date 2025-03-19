@@ -104,6 +104,26 @@ export const translations = {
     
     // Empty notes row
     noNotesFound: "No notes found. Create your first note above!",
+
+    // New translations for components
+    subject: "Subject",
+    title: "Title",
+    content: "Content",
+    created: "Created",
+    actions: "Actions",
+    general: "General",
+    untitledNote: "Untitled Note",
+    lectureMode: "Lecture Mode",
+    save: "Save",
+    saved: "Saved",
+    cancel: "Cancel",
+    searchNotes: "Search notes...",
+    newNote: "New Note",
+    noDescription: "No description",
+    cards: "cards",
+    noFlashcardDecks: "No flashcard decks yet",
+    createFlashcardsFromNotes: "Create flashcards from your notes to start studying",
+    createFirstDeck: "Create Your First Deck",
   },
   fr: {
     smartNoteTaking: "Prise de Notes Intelligente pour Étudiants",
@@ -185,6 +205,26 @@ export const translations = {
     
     // Empty notes row
     noNotesFound: "Aucune note trouvée. Créez votre première note ci-dessus !",
+
+    // New translations for components
+    subject: "Matière",
+    title: "Titre",
+    content: "Contenu",
+    created: "Créé",
+    actions: "Actions",
+    general: "Général",
+    untitledNote: "Note sans titre",
+    lectureMode: "Mode cours",
+    save: "Enregistrer",
+    saved: "Enregistré",
+    cancel: "Annuler",
+    searchNotes: "Rechercher des notes...",
+    newNote: "Nouvelle note",
+    noDescription: "Pas de description",
+    cards: "cartes",
+    noFlashcardDecks: "Pas encore de jeux de cartes mémoire",
+    createFlashcardsFromNotes: "Créez des cartes mémoire à partir de vos notes pour commencer à étudier",
+    createFirstDeck: "Créez votre premier jeu",
   },
   es: {
     smartNoteTaking: "Toma de Notas Inteligente para Estudiantes",
@@ -266,6 +306,26 @@ export const translations = {
     
     // Empty notes row
     noNotesFound: "No se encontraron notas. ¡Crea tu primera nota arriba!",
+
+    // New translations for components
+    subject: "Asignatura",
+    title: "Título",
+    content: "Contenido",
+    created: "Creado",
+    actions: "Acciones",
+    general: "General",
+    untitledNote: "Nota sin título",
+    lectureMode: "Modo conferencia",
+    save: "Guardar",
+    saved: "Guardado",
+    cancel: "Cancelar",
+    searchNotes: "Buscar notas...",
+    newNote: "Nueva nota",
+    noDescription: "Sin descripción",
+    cards: "tarjetas",
+    noFlashcardDecks: "Aún no hay mazos de tarjetas",
+    createFlashcardsFromNotes: "Crea tarjetas a partir de tus notas para empezar a estudiar",
+    createFirstDeck: "Crea tu primer mazo",
   },
   it: {
     smartNoteTaking: "Appunti Intelligenti per Studenti",
@@ -347,6 +407,26 @@ export const translations = {
     
     // Empty notes row
     noNotesFound: "Nessun appunto trovato. Crea il tuo primo appunto qui sopra!",
+
+    // New translations for components
+    subject: "Materia",
+    title: "Titolo",
+    content: "Contenuto",
+    created: "Creato",
+    actions: "Azioni",
+    general: "Generale",
+    untitledNote: "Nota senza titolo",
+    lectureMode: "Modalità lezione",
+    save: "Salva",
+    saved: "Salvato",
+    cancel: "Annulla",
+    searchNotes: "Cerca note...",
+    newNote: "Nuova nota",
+    noDescription: "Nessuna descrizione",
+    cards: "carte",
+    noFlashcardDecks: "Nessun mazzo di flashcard ancora",
+    createFlashcardsFromNotes: "Crea flashcard dalle tue note per iniziare a studiare",
+    createFirstDeck: "Crea il tuo primo mazzo",
   },
   de: {
     smartNoteTaking: "Intelligente Notizen für Studenten",
@@ -428,6 +508,26 @@ export const translations = {
     
     // Empty notes row
     noNotesFound: "Keine Notizen gefunden. Erstelle deine erste Notiz oben!",
+
+    // New translations for components
+    subject: "Fach",
+    title: "Titel",
+    content: "Inhalt",
+    created: "Erstellt",
+    actions: "Aktionen",
+    general: "Allgemein",
+    untitledNote: "Unbenannte Notiz",
+    lectureMode: "Vorlesungsmodus",
+    save: "Speichern",
+    saved: "Gespeichert",
+    cancel: "Abbrechen",
+    searchNotes: "Notizen suchen...",
+    newNote: "Neue Notiz",
+    noDescription: "Keine Beschreibung",
+    cards: "Karten",
+    noFlashcardDecks: "Noch keine Karteikarten-Stapel",
+    createFlashcardsFromNotes: "Erstelle Karteikarten aus deinen Notizen, um mit dem Lernen zu beginnen",
+    createFirstDeck: "Erstelle deinen ersten Stapel",
   },
   pt: {
     smartNoteTaking: "Anotações Inteligentes para Estudantes",
@@ -509,6 +609,26 @@ export const translations = {
     
     // Empty notes row
     noNotesFound: "Nenhuma nota encontrada. Crie sua primeira nota acima!",
+
+    // New translations for components
+    subject: "Assunto",
+    title: "Título",
+    content: "Conteúdo",
+    created: "Criado",
+    actions: "Ações",
+    general: "Geral",
+    untitledNote: "Nota sem título",
+    lectureMode: "Modo palestra",
+    save: "Salvar",
+    saved: "Salvo",
+    cancel: "Cancelar",
+    searchNotes: "Pesquisar notas...",
+    newNote: "Nova nota",
+    noDescription: "Sem descrição",
+    cards: "cartões",
+    noFlashcardDecks: "Ainda não há baralhos de flashcards",
+    createFlashcardsFromNotes: "Crie flashcards a partir de suas notas para começar a estudar",
+    createFirstDeck: "Crie seu primeiro baralho",
   },
   zh: {
     smartNoteTaking: "为学生设计的智能笔记",
@@ -541,100 +661,4 @@ export const translations = {
     newPassword: "新密码",
     confirmNewPassword: "确认新密码",
     enterNewPassword: "输入新密码",
-    confirmNewPasswordPlaceholder: "确认新密码",
-    updatingPassword: "更新密码中...",
-    updatePassword: "更新密码",
-    passwordUpdated: "密码已更新",
-    passwordUpdatedSuccess: "您的密码已成功更改。稍后将重定向到应用程序。",
-    goToApp: "前往应用程序",
-    
-    resetYourPassword: "重置您的密码",
-    backToSignIn: "返回登录",
-    sendResetLink: "发送重置链接",
-    sending: "发送中...",
-    checkYourEmail: "查看您的邮箱",
-    resetInstructions: "我们已将密码重置说明发送到您的邮箱地址。",
-    didntReceiveEmail: "没有收到邮件？检查您的垃圾邮件文件夹或",
-    tryAgain: "重试",
-    enterEmailForReset: "输入您的邮箱地址，我们将向您发送重置密码的链接。",
-    
-    profile: "个人资料",
-    logOut: "退出登录",
-    
-    noNotesYet: "尚未分享任何笔记",
-    noRemindersYet: "暂无提醒",
-    addDates: "为您的小组添加重要日期",
-    pageNotFound: "哎呀！找不到页面",
-    returnToHome: "返回首页",
-
-    // New translations for TestimonialsSection
-    studentSuccessStories: "学生成功故事",
-    medicalStudent: "医学专业学生",
-    engineeringMajor: "工程专业学生",
-    psychologyStudent: "心理学专业学生",
-    testimonial1: "这个应用程序彻底改变了我备考的方式。AI总结为我节省了数小时的复习时间！",
-    testimonial2: "协作功能帮助我们的学习小组在整个毕业项目期间保持组织有序。",
-    testimonial3: "我过去总是难以保持笔记的条理性。现在所有内容都可搜索，我能够找到我需要的东西。",
-    
-    // New translations for HowItWorksSection
-    howItWorks: "工作原理",
-    superchargeStudy: "提升您的学习过程",
-    platformUsesAI: "我们的平台使用AI帮助您创建更好的学习材料，理解复杂主题，并更有效地记忆信息。",
-    takeNotesYourWay: "按照您的方式做笔记",
-    captureIdeas: "使用我们灵活的编辑器捕捉想法，适应您的风格。",
-    getAIEnhancements: "获取AI增强",
-    aiToolsHelp: "我们的AI工具帮助组织、总结和改进您的笔记。",
-    studySmarter: "更智能地学习",
-    generateFlashcards: "自动生成抽认卡、摘要和学习材料。",
-    startTakingNotes: "开始记笔记",
-    
-    // Empty notes row
-    noNotesFound: "未找到笔记。在上方创建您的第一个笔记！",
-  }
-};
-
-interface LanguageContextType {
-  language: LanguageCode;
-  setLanguage: (lang: LanguageCode) => void;
-  t: (key: keyof typeof translations.en) => string;
-}
-
-const LanguageContext = createContext<LanguageContextType>({
-  language: "en",
-  setLanguage: () => {},
-  t: (key) => key as string,
-});
-
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Get saved language from localStorage, default to 'en'
-  const [language, setLanguageState] = useState<LanguageCode>(() => {
-    const savedLanguage = localStorage.getItem("language") as LanguageCode;
-    return savedLanguage && translations[savedLanguage] ? savedLanguage : "en";
-  });
-
-  // Update language and save to localStorage
-  const setLanguage = (lang: LanguageCode) => {
-    setLanguageState(lang);
-    localStorage.setItem("language", lang);
-    document.documentElement.lang = lang;
-  };
-
-  // Set HTML lang attribute on mount and when language changes
-  useEffect(() => {
-    document.documentElement.lang = language;
-  }, [language]);
-
-  // Translation function
-  const t = (key: keyof typeof translations.en) => {
-    return translations[language][key] || translations.en[key] || key;
-  };
-
-  return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
-      {children}
-    </LanguageContext.Provider>
-  );
-};
-
-// Custom hook to use the language context
-export const useLanguage = () => useContext(LanguageContext);
+    confirmNewPasswordPlaceholder
