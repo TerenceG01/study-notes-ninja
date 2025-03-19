@@ -1,5 +1,7 @@
+
 import { Users } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface TestimonialsSectionProps {
   isVisible: boolean;
@@ -25,6 +27,8 @@ const testimonials = [
 ];
 
 export const TestimonialsSection = ({ isVisible }: TestimonialsSectionProps) => {
+  const { t } = useLanguage();
+  
   return (
     <section id="testimonials" className="py-16 min-h-[80vh] flex items-center">
       <div className="container px-4 sm:px-6 mx-auto max-w-7xl text-center">
@@ -39,14 +43,14 @@ export const TestimonialsSection = ({ isVisible }: TestimonialsSectionProps) => 
             isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
           )}>
             <Users className="w-4 h-4 mr-2" />
-            Student Success Stories
+            {t("studentSuccessStories")}
           </div>
           
           <h2 className={cn(
             "text-3xl md:text-4xl font-bold mb-16 transition-all duration-700 delay-100",
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           )}>
-            Join Thousands of Students Already Excelling
+            {t("joinThousands")}
           </h2>
         </div>
         
@@ -75,7 +79,7 @@ export const TestimonialsSection = ({ isVisible }: TestimonialsSectionProps) => 
                 "text-foreground mb-6 flex-grow italic transition-all duration-700",
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
               )} style={{ transitionDelay: `${index * 200 + 300}ms` }}>
-                "{testimonial.quote}"
+                "{t(`testimonial${index + 1}`)}"
               </p>
               <div className={cn(
                 "flex items-center mt-auto transition-all duration-700",
@@ -86,7 +90,7 @@ export const TestimonialsSection = ({ isVisible }: TestimonialsSectionProps) => 
                 </div>
                 <div className="text-left">
                   <p className="font-medium">{testimonial.name}</p>
-                  <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                  <p className="text-sm text-muted-foreground">{t(testimonial.role.toLowerCase().replace(' ', ''))}</p>
                 </div>
               </div>
             </div>

@@ -80,6 +80,30 @@ export const translations = {
     addDates: "Add important dates for your group",
     pageNotFound: "Oops! Page not found",
     returnToHome: "Return to Home",
+
+    // New translations for TestimonialsSection
+    studentSuccessStories: "Student Success Stories",
+    medicalStudent: "Medical Student",
+    engineeringMajor: "Engineering Major",
+    psychologyStudent: "Psychology Student",
+    testimonial1: "This app has completely transformed how I study for exams. The AI summaries save me hours of review time!",
+    testimonial2: "The collaborative features helped our study group stay organized during our entire senior project.",
+    testimonial3: "I used to struggle keeping my notes organized. Now everything is searchable and I can actually find what I need.",
+    
+    // New translations for HowItWorksSection
+    howItWorks: "How It Works",
+    superchargeStudy: "Supercharge Your Study Process",
+    platformUsesAI: "Our platform uses AI to help you create better study materials, understand complex topics, and retain information more effectively.",
+    takeNotesYourWay: "Take Notes Your Way",
+    captureIdeas: "Capture ideas with our flexible editor that adapts to your style.",
+    getAIEnhancements: "Get AI Enhancements",
+    aiToolsHelp: "Our AI tools help organize, summarize, and improve your notes.",
+    studySmarter: "Study Smarter",
+    generateFlashcards: "Generate flashcards, summaries, and study materials automatically.",
+    startTakingNotes: "Start Taking Notes",
+    
+    // Empty notes row
+    noNotesFound: "No notes found. Create your first note above!",
   },
   fr: {
     smartNoteTaking: "Prise de Notes Intelligente pour Étudiants",
@@ -137,6 +161,30 @@ export const translations = {
     addDates: "Ajouter des dates importantes pour votre groupe",
     pageNotFound: "Oops! Page non trouvée",
     returnToHome: "Retour à l'accueil",
+
+    // New translations for TestimonialsSection
+    studentSuccessStories: "Témoignages de Réussite Étudiante",
+    medicalStudent: "Étudiant en Médecine",
+    engineeringMajor: "Étudiant en Ingénierie",
+    psychologyStudent: "Étudiant en Psychologie",
+    testimonial1: "Cette application a complètement transformé ma façon d'étudier pour les examens. Les résumés IA me font gagner des heures de révision !",
+    testimonial2: "Les fonctionnalités collaboratives ont aidé notre groupe d'étude à rester organisé pendant tout notre projet de fin d'études.",
+    testimonial3: "J'avais du mal à garder mes notes organisées. Maintenant, tout est consultable et je peux trouver ce dont j'ai besoin.",
+    
+    // New translations for HowItWorksSection
+    howItWorks: "Comment Ça Marche",
+    superchargeStudy: "Optimisez Votre Processus d'Étude",
+    platformUsesAI: "Notre plateforme utilise l'IA pour vous aider à créer de meilleurs supports d'étude, comprendre des sujets complexes et retenir les informations plus efficacement.",
+    takeNotesYourWay: "Prenez des Notes à Votre Façon",
+    captureIdeas: "Capturez vos idées avec notre éditeur flexible qui s'adapte à votre style.",
+    getAIEnhancements: "Obtenez des Améliorations IA",
+    aiToolsHelp: "Nos outils IA aident à organiser, résumer et améliorer vos notes.",
+    studySmarter: "Étudiez Plus Intelligemment",
+    generateFlashcards: "Générez automatiquement des cartes mémoire, des résumés et des supports d'étude.",
+    startTakingNotes: "Commencez à Prendre des Notes",
+    
+    // Empty notes row
+    noNotesFound: "Aucune note trouvée. Créez votre première note ci-dessus !",
   },
   es: {
     smartNoteTaking: "Toma de Notas Inteligente para Estudiantes",
@@ -194,6 +242,30 @@ export const translations = {
     addDates: "Añade fechas importantes para tu grupo",
     pageNotFound: "¡Ups! Página no encontrada",
     returnToHome: "Volver al inicio",
+
+    // New translations for TestimonialsSection
+    studentSuccessStories: "Historias de Éxito de Estudiantes",
+    medicalStudent: "Estudiante de Medicina",
+    engineeringMajor: "Estudiante de Ingeniería",
+    psychologyStudent: "Estudiante de Psicología",
+    testimonial1: "Esta aplicación ha transformado completamente mi forma de estudiar para los exámenes. ¡Los resúmenes de IA me ahorran horas de tiempo de revisión!",
+    testimonial2: "Las funciones colaborativas ayudaron a nuestro grupo de estudio a mantenerse organizado durante todo nuestro proyecto final.",
+    testimonial3: "Solía tener dificultades para mantener mis notas organizadas. Ahora todo es consultable y puedo encontrar lo que necesito.",
+    
+    // New translations for HowItWorksSection
+    howItWorks: "Cómo Funciona",
+    superchargeStudy: "Potencia tu Proceso de Estudio",
+    platformUsesAI: "Nuestra plataforma utiliza IA para ayudarte a crear mejores materiales de estudio, comprender temas complejos y retener información de manera más efectiva.",
+    takeNotesYourWay: "Toma Notas a Tu Manera",
+    captureIdeas: "Captura ideas con nuestro editor flexible que se adapta a tu estilo.",
+    getAIEnhancements: "Obtén Mejoras de IA",
+    aiToolsHelp: "Nuestras herramientas de IA ayudan a organizar, resumir y mejorar tus notas.",
+    studySmarter: "Estudia de Forma más Inteligente",
+    generateFlashcards: "Genera automáticamente tarjetas de memoria, resúmenes y materiales de estudio.",
+    startTakingNotes: "Comienza a Tomar Notas",
+    
+    // Empty notes row
+    noNotesFound: "No se encontraron notas. ¡Crea tu primera nota arriba!",
   },
   it: {
     smartNoteTaking: "Appunti Intelligenti per Studenti",
@@ -251,6 +323,30 @@ export const translations = {
     addDates: "Aggiungi date importanti per il tuo gruppo",
     pageNotFound: "Ops! Pagina non trovata",
     returnToHome: "Torna alla home",
+
+    // New translations for TestimonialsSection
+    studentSuccessStories: "Storie di Successo degli Studenti",
+    medicalStudent: "Studente di Medicina",
+    engineeringMajor: "Studente di Ingegneria",
+    psychologyStudent: "Studente di Psicologia",
+    testimonial1: "Questa app ha completamente trasformato il mio modo di studiare per gli esami. I riassunti AI mi fanno risparmiare ore di tempo di revisione!",
+    testimonial2: "Le funzionalità collaborative hanno aiutato il nostro gruppo di studio a rimanere organizzato durante l'intero progetto finale.",
+    testimonial3: "Mi è sempre stato difficile tenere organizzati i miei appunti. Ora tutto è consultabile e posso trovare ciò di cui ho bisogno.",
+    
+    // New translations for HowItWorksSection
+    howItWorks: "Come Funziona",
+    superchargeStudy: "Potenzia il Tuo Processo di Studio",
+    platformUsesAI: "La nostra piattaforma utilizza l'IA per aiutarti a creare migliori materiali di studio, comprendere argomenti complessi e memorizzare le informazioni in modo più efficace.",
+    takeNotesYourWay: "Prendi Appunti a Modo Tuo",
+    captureIdeas: "Cattura idee con il nostro editor flessibile che si adatta al tuo stile.",
+    getAIEnhancements: "Ottieni Miglioramenti IA",
+    aiToolsHelp: "I nostri strumenti IA aiutano a organizzare, riassumere e migliorare i tuoi appunti.",
+    studySmarter: "Studia in Modo più Intelligente",
+    generateFlashcards: "Genera automaticamente flashcard, riassunti e materiali di studio.",
+    startTakingNotes: "Inizia a Prendere Appunti",
+    
+    // Empty notes row
+    noNotesFound: "Nessun appunto trovato. Crea il tuo primo appunto qui sopra!",
   },
   de: {
     smartNoteTaking: "Intelligente Notizen für Studenten",
@@ -308,6 +404,30 @@ export const translations = {
     addDates: "Füge wichtige Termine für deine Gruppe hinzu",
     pageNotFound: "Hoppla! Seite nicht gefunden",
     returnToHome: "Zurück zur Startseite",
+
+    // New translations for TestimonialsSection
+    studentSuccessStories: "Erfolgsgeschichten von Studenten",
+    medicalStudent: "Medizinstudent",
+    engineeringMajor: "Ingenieurstudent",
+    psychologyStudent: "Psychologiestudent",
+    testimonial1: "Diese App hat meine Art zu lernen komplett verändert. Die KI-Zusammenfassungen sparen mir Stunden an Wiederholungszeit!",
+    testimonial2: "Die Kollaborationsfunktionen halfen unserer Lerngruppe, während unseres gesamten Abschlussprojekts organisiert zu bleiben.",
+    testimonial3: "Ich hatte immer Schwierigkeiten, meine Notizen zu organisieren. Jetzt ist alles durchsuchbar und ich kann finden, was ich brauche.",
+    
+    // New translations for HowItWorksSection
+    howItWorks: "Wie Es Funktioniert",
+    superchargeStudy: "Optimiere deinen Lernprozess",
+    platformUsesAI: "Unsere Plattform nutzt KI, um dir zu helfen, bessere Lernmaterialien zu erstellen, komplexe Themen zu verstehen und Informationen effektiver zu behalten.",
+    takeNotesYourWay: "Mach Notizen auf deine Weise",
+    captureIdeas: "Erfasse Ideen mit unserem flexiblen Editor, der sich deinem Stil anpasst.",
+    getAIEnhancements: "Erhalte KI-Verbesserungen",
+    aiToolsHelp: "Unsere KI-Tools helfen, deine Notizen zu organisieren, zusammenzufassen und zu verbessern.",
+    studySmarter: "Lerne Intelligenter",
+    generateFlashcards: "Generiere automatisch Karteikarten, Zusammenfassungen und Lernmaterialien.",
+    startTakingNotes: "Beginne mit dem Notizen machen",
+    
+    // Empty notes row
+    noNotesFound: "Keine Notizen gefunden. Erstelle deine erste Notiz oben!",
   },
   pt: {
     smartNoteTaking: "Anotações Inteligentes para Estudantes",
@@ -365,6 +485,30 @@ export const translations = {
     addDates: "Adicione datas importantes para seu grupo",
     pageNotFound: "Ops! Página não encontrada",
     returnToHome: "Retornar à página inicial",
+
+    // New translations for TestimonialsSection
+    studentSuccessStories: "Histórias de Sucesso de Estudantes",
+    medicalStudent: "Estudante de Medicina",
+    engineeringMajor: "Estudante de Engenharia",
+    psychologyStudent: "Estudante de Psicologia",
+    testimonial1: "Este aplicativo transformou completamente minha forma de estudar para os exames. Os resumos de IA me economizam horas de revisão!",
+    testimonial2: "Os recursos colaborativos ajudaram nosso grupo de estudo a permanecer organizado durante todo o nosso projeto final.",
+    testimonial3: "Eu costumava ter dificuldade em manter minhas anotações organizadas. Agora tudo é pesquisável e posso encontrar o que preciso.",
+    
+    // New translations for HowItWorksSection
+    howItWorks: "Como Funciona",
+    superchargeStudy: "Potencialize Seu Processo de Estudo",
+    platformUsesAI: "Nossa plataforma usa IA para ajudá-lo a criar melhores materiais de estudo, entender tópicos complexos e reter informações de forma mais eficaz.",
+    takeNotesYourWay: "Faça Anotações do Seu Jeito",
+    captureIdeas: "Capture ideias com nosso editor flexível que se adapta ao seu estilo.",
+    getAIEnhancements: "Obtenha Melhorias de IA",
+    aiToolsHelp: "Nossas ferramentas de IA ajudam a organizar, resumir e melhorar suas anotações.",
+    studySmarter: "Estude de Forma mais Inteligente",
+    generateFlashcards: "Gere automaticamente flashcards, resumos e materiais de estudo.",
+    startTakingNotes: "Comece a Fazer Anotações",
+    
+    // Empty notes row
+    noNotesFound: "Nenhuma nota encontrada. Crie sua primeira nota acima!",
   },
   zh: {
     smartNoteTaking: "为学生设计的智能笔记",
@@ -422,6 +566,30 @@ export const translations = {
     addDates: "为您的小组添加重要日期",
     pageNotFound: "哎呀！找不到页面",
     returnToHome: "返回首页",
+
+    // New translations for TestimonialsSection
+    studentSuccessStories: "学生成功故事",
+    medicalStudent: "医学专业学生",
+    engineeringMajor: "工程专业学生",
+    psychologyStudent: "心理学专业学生",
+    testimonial1: "这个应用程序彻底改变了我备考的方式。AI总结为我节省了数小时的复习时间！",
+    testimonial2: "协作功能帮助我们的学习小组在整个毕业项目期间保持组织有序。",
+    testimonial3: "我过去总是难以保持笔记的条理性。现在所有内容都可搜索，我能够找到我需要的东西。",
+    
+    // New translations for HowItWorksSection
+    howItWorks: "工作原理",
+    superchargeStudy: "提升您的学习过程",
+    platformUsesAI: "我们的平台使用AI帮助您创建更好的学习材料，理解复杂主题，并更有效地记忆信息。",
+    takeNotesYourWay: "按照您的方式做笔记",
+    captureIdeas: "使用我们灵活的编辑器捕捉想法，适应您的风格。",
+    getAIEnhancements: "获取AI增强",
+    aiToolsHelp: "我们的AI工具帮助组织、总结和改进您的笔记。",
+    studySmarter: "更智能地学习",
+    generateFlashcards: "自动生成抽认卡、摘要和学习材料。",
+    startTakingNotes: "开始记笔记",
+    
+    // Empty notes row
+    noNotesFound: "未找到笔记。在上方创建您的第一个笔记！",
   }
 };
 
